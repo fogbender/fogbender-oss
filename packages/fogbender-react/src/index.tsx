@@ -10,8 +10,7 @@ export const ExampleComponent = ({ text }: Props) => {
 };
 
 export type Token = {
-  vendorId: string;
-  workspaceId: string;
+  widgetId: string;
   customerExternalId: string;
   customerName: string;
   userExternalId: string;
@@ -48,8 +47,6 @@ export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, toke
             id: token.userExternalId,
             name: token.userName,
             picture: token.userPicture,
-            workspaceId: token.workspaceId,
-            vendorId: token.vendorId,
           },
         });
       }
