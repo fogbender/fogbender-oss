@@ -43,11 +43,6 @@ export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, toke
           rootEl: ref,
           url: clientUrl,
           token,
-          init: {
-            id: token.userExternalId,
-            name: token.userName,
-            picture: token.userPicture,
-          },
         });
       }
     }
