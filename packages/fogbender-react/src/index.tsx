@@ -14,6 +14,7 @@ export type Token = {
   customerExternalId: string;
   customerName: string;
   userExternalId: string;
+  userHash?: string;
   userName: string;
   userPicture?: string;
   userEmail?: string;
