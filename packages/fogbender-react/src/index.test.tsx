@@ -1,7 +1,7 @@
-import { ExampleComponent } from ".";
+import { FogbenderWidget } from ".";
 
-describe("ExampleComponent", () => {
+describe("FogbenderWidget", () => {
   it("is truthy", () => {
-    expect(ExampleComponent).toBeTruthy();
+    expect(FogbenderWidget).toBeTruthy();
   });
 });

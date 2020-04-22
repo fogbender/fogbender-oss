@@ -1,24 +1,17 @@
 import * as React from "react";
-import styles from "./styles.module.css";
-
-interface Props {
-  text: string;
-}
-
-export const ExampleComponent = ({ text }: Props) => {
-  return <div className={styles.test}>Example Component: {text}</div>;
-};
 
 export type Token = {
-  vendorId: string;
-  workspaceId: string;
+  widgetId: string;
   customerExternalId: string;
   customerName: string;
   userExternalId: string;
+  userHash?: string;
   userName: string;
   userPicture?: string;
   userEmail?: string;
 };
+
+export type Fogbender = (opts: { rootEl?: HTMLElement; url?: string; token?: Token }) => void;
 
 export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, token: Token) {
   const onLoad = () => {
@@ -38,19 +31,12 @@ export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, toke
   if (loaded) {
     if (once.current === false) {
       once.current = true;
-      const w = window as typeof window & { Fogbender?: Function };
+      const w = window as typeof window & { Fogbender?: Fogbender };
       if (typeof w.Fogbender === "function") {
         w.Fogbender({
-          rootEl: ref,
+          rootEl: ref || undefined,
           url: clientUrl,
           token,
-          init: {
-            id: token.userExternalId,
-            name: token.userName,
-            picture: token.userPicture,
-            workspaceId: token.workspaceId,
-            vendorId: token.vendorId,
-          },
         });
       }
     }
