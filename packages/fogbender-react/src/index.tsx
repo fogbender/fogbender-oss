@@ -7,8 +7,8 @@ export type Token = {
   userExternalId: string;
   userHash?: string;
   userName: string;
-  userPicture?: string;
   userEmail?: string;
+  userAvatarUrl?: string;
 };
 
 export type Fogbender = (opts: { rootEl?: HTMLElement; url?: string; token?: Token }) => void;
