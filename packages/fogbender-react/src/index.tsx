@@ -5,7 +5,9 @@ export type Token = {
   customerId: string;
   customerName: string;
   userId: string;
-  userHash?: string;
+  userHMAC?: string;
+  userPaseto?: string;
+  userJWT?: string;
   userName: string;
   userEmail?: string;
   userAvatarUrl?: string;
