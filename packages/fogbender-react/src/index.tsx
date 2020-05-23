@@ -2,10 +2,12 @@ import * as React from "react";
 
 export type Token = {
   widgetId: string;
-  customerExternalId: string;
+  customerId: string;
   customerName: string;
-  userExternalId: string;
-  userHash?: string;
+  userId: string;
+  userHMAC?: string;
+  userPaseto?: string;
+  userJWT?: string;
   userName: string;
   userEmail?: string;
   userAvatarUrl?: string;
