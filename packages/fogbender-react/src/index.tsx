@@ -6,11 +6,11 @@ export type Token = {
   customerName: string;
   userId: string;
   userHMAC?: string;
-  userPaseto?: string;
   userJWT?: string;
+  userPaseto?: string;
   userName: string;
-  userEmail?: string;
   userAvatarUrl?: string;
+  userEmail?: string;
 };
 
 export type Fogbender = (opts: { rootEl?: HTMLElement; url?: string; token?: Token }) => void;
