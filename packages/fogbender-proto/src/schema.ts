@@ -49,7 +49,9 @@ export type APISchema = {
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<
     StreamGet,
-    StreamGetOk<EventCustomer | EventRoom | EventMessage | EventTyping | EventSeen | EventBadge>
+    StreamGetOk<
+      EventCustomer | EventRoom | EventMessage | EventTyping | EventSeen | EventBadge | EventAgent
+    >
   >;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -354,6 +356,20 @@ export type EventCustomer = {
   name: string;
   updatedTs: number;
   createdTs: number;
+};
+
+export type EventAgent = {
+  msgId?: string;
+  msgType: "Event.Agent";
+  id: string;
+  email: string;
+  role: "owner" | "admin" | "agent";
+  imageUrl: string;
+  createdTs: number;
+  updatedTs: number;
+  deletedTs: number;
+  deletedById: string;
+  updatedById: string;
 };
 
 export type TypingUser = {
