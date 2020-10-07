@@ -26,6 +26,11 @@
   "peerDependencies": {
     "react": "^16.0.0"
   },
+  "dependencies": {
+    "@types/bson": "^4.0.2",
+    "bson": "^4.0.4",
+    "react-use-websocket": "^2.1.1"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
