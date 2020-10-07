@@ -1,5 +1,6 @@
 import {
   AnyToken,
+  EventAgent,
   EventBadge,
   EventCustomer,
   EventMessage,
@@ -768,6 +769,26 @@ export const useNotifications = ({
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
+  const [agents, setAgents] = useImmer<EventAgent[]>([]);
+
+  const updateAgent = React.useCallback(
+    (a: EventAgent) => {
+      setAgents(x => {
+        const index = x.findIndex(y => y.id === a.id);
+        if (index !== -1) {
+          if (!a.deletedById) {
+            x[index] = a;
+          } else {
+            x.splice(index, 1);
+          }
+        } else {
+          x.push(a);
+        }
+      });
+    },
+    [setAgents]
+  );
+
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
       setBadges(x => {
@@ -803,13 +824,18 @@ export const useNotifications = ({
 
       serverCall({
         msgType: "Stream.Get",
-        topic: `vendor/${vendorId}/agents`,
+        topic: `agent/${userId}/agents`,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
+        x.items.forEach(a => {
+          if (a.msgType === "Event.Agent") {
+            updateAgent(a);
+          }
+        });
       });
       serverCall({
         msgType: "Stream.Sub",
-        topic: `vendor/${vendorId}/agents`,
+        topic: `agent/${userId}/agents`,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
@@ -828,7 +854,7 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [updateBadge, token, workspaceId, vendorId, userId, serverCall]);
+  }, [updateAgent, updateBadge, token, workspaceId, vendorId, userId, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Notification.Message") {
@@ -838,5 +864,5 @@ export const useNotifications = ({
     }
   }, [updateBadge, setNotification, lastIncomingMessage]);
 
-  return { badges, notification };
+  return { agents, badges, notification };
 };
