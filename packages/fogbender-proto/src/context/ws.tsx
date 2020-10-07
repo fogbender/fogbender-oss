@@ -11,6 +11,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  SearchOk,
   StreamGetOk,
   StreamSubOk,
   StreamUnSubOk,
@@ -110,6 +111,19 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
+  React.useEffect(() => {
+    if (workspaceId && rosterFilter) {
+      serverCall({
+        msgType: "Search.Roster",
+        workspaceId,
+        term: rosterFilter,
+        type: "duolog",
+      }).then((x: SearchOk) => {
+        console.assert(x.msgType === "Search.Ok");
+      });
+    }
+  }, [rosterFilter, helpdeskId, serverCall]);
+
   const filteredRooms = React.useMemo(() => {
     return rosterFilter
       ? rooms.filter(
@@ -118,7 +132,7 @@ export const useRoster = ({
             nameMatchesFilter(r.customerName, rosterFilter)
         )
       : rooms;
-  }, [rooms, rosterFilter]);
+  }, [helpdeskId, serverCall, rooms, rosterFilter]);
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
@@ -822,6 +836,7 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
 
+      /*
       serverCall({
         msgType: "Stream.Get",
         topic: `agent/${userId}/agents`,
@@ -839,6 +854,7 @@ export const useNotifications = ({
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
+      */
 
       serverCall({
         msgType: "Stream.Sub",

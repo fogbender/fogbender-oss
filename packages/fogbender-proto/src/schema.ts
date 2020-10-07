@@ -62,6 +62,7 @@ export type APISchema = {
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
+  SearchRosterRPC: RPC<SearchRoster, SearchOk>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -215,6 +216,20 @@ export type TypingSet = {
   msgId?: string;
   msgType: "Typing.Set";
   roomId: string;
+};
+
+export type SearchRoster = {
+  msgId?: string;
+  msgType: "Search.Roster";
+  workspaceId?: string;
+  helpdeskId?: string;
+  term: string;
+  type: "duolog";
+};
+
+export type SearchOk = {
+  msgId: string;
+  msgType: "Search.Ok";
 };
 
 export type AuthUser = {
