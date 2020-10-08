@@ -1,5 +1,4 @@
 import {
-  AgentToken,
   EventBadge,
   EventCustomer,
   EventMessage,
@@ -13,14 +12,14 @@ import {
   StreamGetOk,
   StreamSubOk,
   StreamUnSubOk,
-  useServerWs,
-} from "fogbender-proto";
+} from "../schema";
 import type { Token } from "fogbender-react";
 import throttle from "lodash.throttle";
 import React from "react";
 import { useImmer } from "use-immer";
 
 import { useLoadAround } from "./loadAround";
+import { AgentToken, useServerWs } from "../useServerWs";
 
 export type Message = {
   id: string;
