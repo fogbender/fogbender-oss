@@ -115,14 +115,14 @@ export const useRoster = ({
     if (workspaceId && rosterFilter) {
       serverCall({
         msgType: "Search.Roster",
-        workspaceId,
+        workspaceId: workspaceId,
         term: rosterFilter,
-        type: "duolog",
+        type: "dialog",
       }).then((x: SearchOk) => {
         console.assert(x.msgType === "Search.Ok");
       });
     }
-  }, [rosterFilter, helpdeskId, serverCall]);
+  }, [rosterFilter, serverCall]);
 
   const filteredRooms = React.useMemo(() => {
     return rosterFilter

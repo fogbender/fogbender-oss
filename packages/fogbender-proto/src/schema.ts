@@ -224,7 +224,7 @@ export type SearchRoster = {
   workspaceId?: string;
   helpdeskId?: string;
   term: string;
-  type: "duolog";
+  type: "dialog";
 };
 
 export type SearchOk = {
