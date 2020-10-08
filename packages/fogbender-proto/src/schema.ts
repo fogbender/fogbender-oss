@@ -425,4 +425,7 @@ export type EventRoom = {
   ts: number;
   vendorId: string;
   workspaceId: string;
+  imageUrl: string;
+  created: boolean;
+  type: "dialog" | "public" | "private";
 };

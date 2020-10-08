@@ -111,19 +111,6 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
-  React.useEffect(() => {
-    if (workspaceId && rosterFilter) {
-      serverCall({
-        msgType: "Search.Roster",
-        workspaceId: workspaceId,
-        term: rosterFilter,
-        type: "dialog",
-      }).then((x: SearchOk) => {
-        console.assert(x.msgType === "Search.Ok");
-      });
-    }
-  }, [rosterFilter, serverCall]);
-
   const filteredRooms = React.useMemo(() => {
     return rosterFilter
       ? rooms.filter(
@@ -205,6 +192,21 @@ export const useRoster = ({
       forceUpdate();
     }
   }, []);
+
+  React.useEffect(() => {
+    const internalCustomer = customers.find(c => c.name.startsWith("$Cust_Internal_"));
+    if (internalCustomer && workspaceId && rosterFilter) {
+      serverCall({
+        msgType: "Search.Roster",
+        workspaceId: workspaceId,
+        helpdeskId: internalCustomer.helpdeskId,
+        term: rosterFilter,
+        type: "dialog",
+      }).then((x: SearchOk) => {
+        console.assert(x.msgType === "Search.Ok");
+      });
+    }
+  }, [customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {
