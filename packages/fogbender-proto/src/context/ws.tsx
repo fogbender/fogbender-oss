@@ -11,6 +11,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  RoomOk,
   SearchOk,
   StreamGetOk,
   StreamSubOk,
@@ -111,6 +112,9 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
+  const [filteredRooms, setFilteredRooms] = useImmer<EventRoom[]>([]);
+
+  /*
   const filteredRooms = React.useMemo(() => {
     return rosterFilter
       ? rooms.filter(
@@ -120,6 +124,7 @@ export const useRoster = ({
         )
       : rooms;
   }, [helpdeskId, serverCall, rooms, rosterFilter]);
+  */
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
@@ -165,12 +170,14 @@ export const useRoster = ({
   }, [lastIncomingMessage, updateRoster]);
 
   const createRoom = React.useCallback(
-    (name: string, helpdeskId: string) =>
+    params =>
       serverCall({
         msgType: "Room.Create",
-        name,
-        helpdeskId,
-      }).then(x => {
+        name: params.name,
+        type: params.type,
+        members: params.members,
+        helpdeskId: params.helpdeskId,
+      }).then((x: RoomOk) => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -202,11 +209,26 @@ export const useRoster = ({
         helpdeskId: internalCustomer.helpdeskId,
         term: rosterFilter,
         type: "dialog",
-      }).then((x: SearchOk) => {
+      }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
+        setFilteredRooms(y => {
+          y.length = 0;
+          x.items.forEach(r => {
+            if (r.msgType === "Event.Room") {
+              y.push(r);
+            }
+          });
+        });
+      });
+    } else if (!rosterFilter) {
+      setFilteredRooms(x => {
+        x.length = 0;
+        rooms.forEach(r => {
+          x.push(r);
+        });
       });
     }
-  }, [customers, rosterFilter, serverCall]);
+  }, [rooms, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {

@@ -62,7 +62,7 @@ export type APISchema = {
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
-  SearchRosterRPC: RPC<SearchRoster, SearchOk>;
+  SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -100,8 +100,10 @@ export type RoomInProgress = {
 export type RoomCreate = {
   msgId?: string;
   msgType: "Room.Create";
-  name: string;
   helpdeskId: string;
+  name?: string;
+  members?: string[];
+  type?: "public" | "private" | "dialog";
 };
 
 export type RoomOk = {
@@ -227,9 +229,10 @@ export type SearchRoster = {
   type: "dialog";
 };
 
-export type SearchOk = {
+export type SearchOk<Item> = {
   msgId: string;
   msgType: "Search.Ok";
+  items: Item[];
 };
 
 export type AuthUser = {
@@ -428,4 +431,6 @@ export type EventRoom = {
   imageUrl: string;
   created: boolean;
   type: "dialog" | "public" | "private";
+  agentId?: string;
+  userId?: string;
 };
