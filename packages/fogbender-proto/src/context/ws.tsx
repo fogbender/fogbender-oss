@@ -18,6 +18,7 @@ import throttle from "lodash.throttle";
 import React from "react";
 import { useImmer } from "use-immer";
 
+import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
 import { AgentToken, useServerWs } from "../useServerWs";
 
@@ -51,7 +52,7 @@ export type WsContext = ReturnType<typeof useProviderValue>;
 const WsContext = React.createContext<WsContext | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(token: AgentToken | Token | undefined) {
+function useProviderValue(token: AgentToken | Token | undefined, env?: Env) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
@@ -66,15 +67,16 @@ function useProviderValue(token: AgentToken | Token | undefined) {
       })(),
     []
   );
-  const value = useServerWs(client, token);
+  const value = useServerWs(client, token, env);
   return { ...value, token, fogSessionId, userId, helpdeskId };
 }
 
 export const WsProvider: React.FC<{
   token: AgentToken | Token | undefined;
+  env?: Env;
   children?: React.ReactNode;
-}> = ({ token, ...props }) => {
-  const value = useProviderValue(token);
+}> = ({ token, env, ...props }) => {
+  const value = useProviderValue(token, env);
   return <WsContext.Provider value={value} {...props} />;
 };
 
