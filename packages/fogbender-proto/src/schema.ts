@@ -311,7 +311,7 @@ export type EventMessage = {
   fromId: string;
   fromName: string;
   fromAvatarUrl: string;
-  fromType: "User" | "Agent";
+  fromType: "user" | "agent";
   roomId: string;
   id: string;
   text: string;
@@ -424,13 +424,23 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
-  status: RoomStatus;
+  imageUrl: string;
+  email: string; // search template
+  agentId: string; // search template
+  userId: string; // search template
   ts: number;
   vendorId: string;
   workspaceId: string;
-  imageUrl: string;
   created: boolean;
   type: "dialog" | "public" | "private";
-  agentId?: string;
-  userId?: string;
+  members?: RoomMember[];
+  status: RoomStatus; // deprecated
+};
+
+export type RoomMember = {
+  id: string;
+  type: "agent" | "user";
+  imageUrl: string;
+  name: string;
+  email: string;
 };

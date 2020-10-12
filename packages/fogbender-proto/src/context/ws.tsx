@@ -114,18 +114,6 @@ export const useRoster = ({
 
   const [filteredRooms, setFilteredRooms] = useImmer<EventRoom[]>([]);
 
-  /*
-  const filteredRooms = React.useMemo(() => {
-    return rosterFilter
-      ? rooms.filter(
-          r =>
-            nameMatchesFilter(r.name, rosterFilter) ||
-            nameMatchesFilter(r.customerName, rosterFilter)
-        )
-      : rooms;
-  }, [helpdeskId, serverCall, rooms, rosterFilter]);
-  */
-
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
     roomsIn.forEach(room => {
@@ -201,12 +189,10 @@ export const useRoster = ({
   }, []);
 
   React.useEffect(() => {
-    const internalCustomer = customers.find(c => c.name.startsWith("$Cust_Internal_"));
-    if (internalCustomer && workspaceId && rosterFilter) {
+    if (workspaceId && rosterFilter) {
       serverCall({
         msgType: "Search.Roster",
         workspaceId: workspaceId,
-        helpdeskId: internalCustomer.helpdeskId,
         term: rosterFilter,
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
