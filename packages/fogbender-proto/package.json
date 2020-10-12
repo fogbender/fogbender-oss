@@ -25,12 +25,12 @@
   },
   "peerDependencies": {
     "jotai": "^0.9.2",
-    "immer": "^6.0.1",
     "react": "^16.0.0"
   },
   "dependencies": {
     "@types/bson": "^4.0.2",
     "bson": "^4.0.4",
+    "immer": "^7.0.9",
     "react-use-websocket": "^2.1.1"
   },
   "devDependencies": {
