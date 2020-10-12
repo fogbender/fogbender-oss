@@ -740,7 +740,7 @@ export const useRoomTyping = ({
     }
   }, [lastIncomingMessage, processTypingEvent]);
 
-  const updateTyping = React.useCallback(
+  const updateTyping: () => void = React.useCallback(
     throttle(
       () =>
         serverCall({
