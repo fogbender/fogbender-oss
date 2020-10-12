@@ -1,4 +1,5 @@
 import {
+  AnyToken,
   EventBadge,
   EventCustomer,
   EventMessage,
@@ -13,14 +14,13 @@ import {
   StreamSubOk,
   StreamUnSubOk,
 } from "../schema";
-import type { Token } from "fogbender-react";
 import throttle from "lodash.throttle";
 import React from "react";
 import { useImmer } from "use-immer";
 
 import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
-import { AgentToken, useServerWs } from "../useServerWs";
+import { useServerWs } from "../useServerWs";
 
 export type Message = {
   id: string;
@@ -52,7 +52,7 @@ export type WsContext = ReturnType<typeof useProviderValue>;
 const WsContext = React.createContext<WsContext | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(token: AgentToken | Token | undefined, env?: Env) {
+function useProviderValue(token: AnyToken | undefined, env?: Env) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
@@ -72,7 +72,7 @@ function useProviderValue(token: AgentToken | Token | undefined, env?: Env) {
 }
 
 export const WsProvider: React.FC<{
-  token: AgentToken | Token | undefined;
+  token: AnyToken | undefined;
   env?: Env;
   children?: React.ReactNode;
 }> = ({ token, env, ...props }) => {
