@@ -1,5 +1,6 @@
 import {
   AnyToken,
+  EventAgent,
   EventBadge,
   EventCustomer,
   EventMessage,
@@ -10,6 +11,8 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  RoomOk,
+  SearchOk,
   StreamGetOk,
   StreamSubOk,
   StreamUnSubOk,
@@ -109,15 +112,7 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
-  const filteredRooms = React.useMemo(() => {
-    return rosterFilter
-      ? rooms.filter(
-          r =>
-            nameMatchesFilter(r.name, rosterFilter) ||
-            nameMatchesFilter(r.customerName, rosterFilter)
-        )
-      : rooms;
-  }, [rooms, rosterFilter]);
+  const [filteredRooms, setFilteredRooms] = useImmer<EventRoom[]>([]);
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
@@ -163,12 +158,14 @@ export const useRoster = ({
   }, [lastIncomingMessage, updateRoster]);
 
   const createRoom = React.useCallback(
-    (name: string, helpdeskId: string) =>
+    params =>
       serverCall({
         msgType: "Room.Create",
-        name,
-        helpdeskId,
-      }).then(x => {
+        name: params.name,
+        type: params.type,
+        members: params.members,
+        helpdeskId: params.helpdeskId,
+      }).then((x: RoomOk) => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -190,6 +187,34 @@ export const useRoster = ({
       forceUpdate();
     }
   }, []);
+
+  React.useEffect(() => {
+    if (workspaceId && rosterFilter) {
+      serverCall({
+        msgType: "Search.Roster",
+        workspaceId: workspaceId,
+        term: rosterFilter,
+        type: "dialog",
+      }).then((x: SearchOk<EventRoom>) => {
+        console.assert(x.msgType === "Search.Ok");
+        setFilteredRooms(y => {
+          y.length = 0;
+          x.items.forEach(r => {
+            if (r.msgType === "Event.Room") {
+              y.push(r);
+            }
+          });
+        });
+      });
+    } else if (!rosterFilter) {
+      setFilteredRooms(x => {
+        x.length = 0;
+        rooms.forEach(r => {
+          x.push(r);
+        });
+      });
+    }
+  }, [rooms, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {
@@ -768,6 +793,26 @@ export const useNotifications = ({
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
+  const [agents, setAgents] = useImmer<EventAgent[]>([]);
+
+  const updateAgent = React.useCallback(
+    (a: EventAgent) => {
+      setAgents(x => {
+        const index = x.findIndex(y => y.id === a.id);
+        if (index !== -1) {
+          if (!a.deletedById) {
+            x[index] = a;
+          } else {
+            x.splice(index, 1);
+          }
+        } else {
+          x.push(a);
+        }
+      });
+    },
+    [setAgents]
+  );
+
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
       setBadges(x => {
@@ -801,18 +846,25 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
 
+      /*
       serverCall({
         msgType: "Stream.Get",
-        topic: `vendor/${vendorId}/agents`,
+        topic: `agent/${userId}/agents`,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
+        x.items.forEach(a => {
+          if (a.msgType === "Event.Agent") {
+            updateAgent(a);
+          }
+        });
       });
       serverCall({
         msgType: "Stream.Sub",
-        topic: `vendor/${vendorId}/agents`,
+        topic: `agent/${userId}/agents`,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
+      */
 
       serverCall({
         msgType: "Stream.Sub",
@@ -828,7 +880,7 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [updateBadge, token, workspaceId, vendorId, userId, serverCall]);
+  }, [updateAgent, updateBadge, token, workspaceId, vendorId, userId, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Notification.Message") {
@@ -838,5 +890,5 @@ export const useNotifications = ({
     }
   }, [updateBadge, setNotification, lastIncomingMessage]);
 
-  return { badges, notification };
+  return { agents, badges, notification };
 };

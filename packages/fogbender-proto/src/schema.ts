@@ -49,7 +49,9 @@ export type APISchema = {
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<
     StreamGet,
-    StreamGetOk<EventCustomer | EventRoom | EventMessage | EventTyping | EventSeen | EventBadge>
+    StreamGetOk<
+      EventCustomer | EventRoom | EventMessage | EventTyping | EventSeen | EventBadge | EventAgent
+    >
   >;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -60,6 +62,7 @@ export type APISchema = {
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
+  SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -97,8 +100,10 @@ export type RoomInProgress = {
 export type RoomCreate = {
   msgId?: string;
   msgType: "Room.Create";
-  name: string;
   helpdeskId: string;
+  name?: string;
+  members?: string[];
+  type?: "public" | "private" | "dialog";
 };
 
 export type RoomOk = {
@@ -215,6 +220,21 @@ export type TypingSet = {
   roomId: string;
 };
 
+export type SearchRoster = {
+  msgId?: string;
+  msgType: "Search.Roster";
+  workspaceId?: string;
+  helpdeskId?: string;
+  term: string;
+  type: "dialog";
+};
+
+export type SearchOk<Item> = {
+  msgId: string;
+  msgType: "Search.Ok";
+  items: Item[];
+};
+
 export type AuthUser = {
   msgId?: string;
   msgType: "Auth.User";
@@ -291,7 +311,7 @@ export type EventMessage = {
   fromId: string;
   fromName: string;
   fromAvatarUrl: string;
-  fromType: "User" | "Agent";
+  fromType: "user" | "agent";
   roomId: string;
   id: string;
   text: string;
@@ -356,6 +376,20 @@ export type EventCustomer = {
   createdTs: number;
 };
 
+export type EventAgent = {
+  msgId?: string;
+  msgType: "Event.Agent";
+  id: string;
+  email: string;
+  role: "owner" | "admin" | "agent";
+  imageUrl: string;
+  createdTs: number;
+  updatedTs: number;
+  deletedTs: number;
+  deletedById: string;
+  updatedById: string;
+};
+
 export type TypingUser = {
   id: string;
   name: string;
@@ -390,8 +424,23 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
-  status: RoomStatus;
+  imageUrl: string;
+  email: string; // search template
+  agentId: string; // search template
+  userId: string; // search template
   ts: number;
   vendorId: string;
   workspaceId: string;
+  created: boolean;
+  type: "dialog" | "public" | "private";
+  members?: RoomMember[];
+  status: RoomStatus; // deprecated
+};
+
+export type RoomMember = {
+  id: string;
+  type: "agent" | "user";
+  imageUrl: string;
+  name: string;
+  email: string;
 };
