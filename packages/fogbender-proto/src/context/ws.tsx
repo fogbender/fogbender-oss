@@ -30,7 +30,7 @@ export type Message = {
   author: {
     id: string;
     name: string;
-    type: string;
+    type: "agent" | "user";
     avatarUrl?: string;
     isAgent?: boolean;
   };
