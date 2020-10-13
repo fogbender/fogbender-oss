@@ -1,20 +1,14 @@
 import { serialize } from "bson";
-import type { Token } from "fogbender-react";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
 import { Env, getServerApiUrl, getServerWsUrl } from "./config";
-import { FogSchema, ServerCalls, ServerEvents } from "./schema";
+import { AnyToken, FogSchema, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
 type Requests = {
   message: ServerCalls["outbound"];
   resolve: (r: ServerCalls["inbound"]) => void;
-};
-
-export type AgentToken = {
-  agentId: string;
-  vendorId: string;
 };
 
 export type ServerCall = <T extends ServerCalls["orig"]>(
@@ -23,7 +17,7 @@ export type ServerCall = <T extends ServerCalls["orig"]>(
 
 export type ServerEvent = ServerEvents["inbound"];
 
-export function useServerWs(client: Client, token: Token | AgentToken | undefined, env?: Env) {
+export function useServerWs(client: Client, token: AnyToken | undefined, env?: Env) {
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
   >();

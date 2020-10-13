@@ -1,5 +1,6 @@
 import * as React from "react";
 
+// make sure to keep in sync with fogbender-ptoto schema
 export type Token = {
   widgetId: string;
   customerId: string;

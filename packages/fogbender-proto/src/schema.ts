@@ -1,4 +1,23 @@
-import { Token } from "fogbender-react";
+// configuration types
+export type UserToken = {
+  widgetId: string;
+  customerId: string;
+  customerName: string;
+  userId: string;
+  userHMAC?: string;
+  userJWT?: string;
+  userPaseto?: string;
+  userName: string;
+  userAvatarUrl?: string;
+  userEmail?: string;
+};
+
+export type AgentToken = {
+  agentId: string;
+  vendorId: string;
+};
+
+export type AnyToken = UserToken | AgentToken;
 
 // UTILITY TYPES
 
@@ -199,15 +218,13 @@ export type TypingSet = {
 export type AuthUser = {
   msgId?: string;
   msgType: "Auth.User";
-} & Token;
+} & UserToken;
 
 export type AuthAgent = {
   msgId?: string;
   msgType: "Auth.Agent";
-  agentId: string;
-  vendorId: string;
   token: string;
-};
+} & AgentToken;
 
 export type AuthOk = {
   msgId: string;
