@@ -19,7 +19,8 @@ import {
 } from "../schema";
 import throttle from "lodash.throttle";
 import React from "react";
-import { useImmer } from "use-immer";
+import { atom } from "jotai";
+import { useImmerAtom } from "jotai/immer";
 
 import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
@@ -779,6 +780,9 @@ export const useRoomTyping = ({
 
   return { typingNames, updateTyping };
 };
+function useImmer<T>(initialValue: T) {
+  return useImmerAtom(React.useRef(atom(initialValue)).current);
+}
 
 export const useNotifications = ({
   vendorId,
