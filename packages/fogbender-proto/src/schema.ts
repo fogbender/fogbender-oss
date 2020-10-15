@@ -284,9 +284,9 @@ export type MessageLink = {
   targetMessageId: string;
   targetRoomId: string;
   linkType: "forward" | "reply";
-  sourceFromId: string;
-  sourceFromName: string;
-  sourceInsertedTs: number;
+  targetFromId: string;
+  targetFromName: string;
+  targetInsertedTs: number;
 };
 
 export declare type File = {
