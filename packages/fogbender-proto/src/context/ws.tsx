@@ -122,7 +122,7 @@ export const useRoster = ({
       newRoster.push(room);
     });
     // TODO: convert ts to milliseconds from microseconds
-    newRoster.sort((a, b) => b.ts - a.ts);
+    newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
     roomsRef.current = newRoster;
     forceUpdate();
   }, []);
@@ -135,18 +135,30 @@ export const useRoster = ({
       return;
     }
     if (fogSessionId && !rosterLoaded) {
+      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
       serverCall({
         msgType: "Stream.Sub",
-        topic: workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`,
+        topic,
         before: oldestRoomTs,
       }).then((x: StreamSubOk<EventRoom>) => {
         console.assert(x.msgType === "Stream.SubOk");
+
         if (x.msgType === "Stream.SubOk") {
-          updateRoster(x.items);
-          setOldestRoomTs(Math.min(...x.items.map(x => x.ts), oldestRoomTs || Infinity));
-          if (x.items.length === 0) {
-            setRosterLoaded(true);
-          }
+          serverCall({
+            msgType: "Stream.Get",
+            topic,
+            before: oldestRoomTs,
+          }).then((x: StreamGetOk<EventRoom>) => {
+            console.assert(x.msgType === "Stream.GetOk");
+
+            if (x.msgType === "Stream.GetOk") {
+              updateRoster(x.items);
+              setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
+              if (x.items.length === 0) {
+                setRosterLoaded(true);
+              }
+            }
+          });
         }
       });
     }

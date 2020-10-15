@@ -128,6 +128,7 @@ export type StreamSubOk<Item> = {
   msgType: "Stream.SubOk";
   topic: string;
   items: Item[];
+  tooManyUpdates?: boolean;
 };
 
 export type StreamUnSub = {
@@ -428,7 +429,8 @@ export type EventRoom = {
   email: string; // search template
   agentId: string; // search template
   userId: string; // search template
-  ts: number;
+  createdTs: number;
+  updatedTs: number;
   vendorId: string;
   workspaceId: string;
   created: boolean;
