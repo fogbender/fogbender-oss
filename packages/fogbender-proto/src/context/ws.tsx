@@ -427,6 +427,8 @@ export const useRoomHistory = ({
   aroundId: string | undefined;
   isIdle: boolean;
 }) => {
+  const mounted = React.useRef(false);
+
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
   const {
@@ -458,6 +460,9 @@ export const useRoomHistory = ({
               endId: linkEndMessageId,
             }).then((x: StreamGetOk<EventMessage>) => {
               console.assert(x.msgType === "Stream.GetOk");
+              if (!mounted.current) {
+                return;
+              }
               if (x.msgType === "Stream.GetOk") {
                 expandLink(id, x.items);
               }
@@ -489,6 +494,9 @@ export const useRoomHistory = ({
       topic: `room/${roomId}/messages`,
     }).then(async x => {
       console.assert(x.msgType === "Stream.GetOk");
+      if (!mounted.current) {
+        return;
+      }
       if (x.msgType === "Stream.GetOk") {
         await processAndStoreMessages(x.items as EventMessage[], "page");
         setNewerHistoryComplete(true);
@@ -518,6 +526,9 @@ export const useRoomHistory = ({
       }).then(async (x: StreamGetOk<EventMessage>) => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
+          if (!mounted.current) {
+            return;
+          }
           await processAndStoreMessages(x.items as EventMessage[], "page");
           if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
             setOlderHistoryComplete(true);
@@ -540,6 +551,9 @@ export const useRoomHistory = ({
         since: ts,
       }).then(async (x: StreamGetOk<EventMessage>) => {
         console.assert(x.msgType === "Stream.GetOk");
+        if (!mounted.current) {
+          return;
+        }
         if (x.msgType === "Stream.GetOk") {
           await processAndStoreMessages(x.items as EventMessage[], "page");
           setFetchingNewer(false);
@@ -562,6 +576,9 @@ export const useRoomHistory = ({
         aroundId,
       }).then(async (x: StreamGetOk<EventMessage>) => {
         console.assert(x.msgType === "Stream.GetOk");
+        if (!mounted.current) {
+          return;
+        }
         if (x.msgType === "Stream.GetOk") {
           setHistoryMode("around");
           await processAndStoreMessages(x.items as EventMessage[], "page");
@@ -670,6 +687,9 @@ export const useRoomHistory = ({
         topic: `agent/${userId}/seen`,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
+        if (!mounted.current) {
+          return;
+        }
         if (x.msgType === "Stream.GetOk") {
           const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
 
@@ -687,6 +707,9 @@ export const useRoomHistory = ({
     (args: MessageCreate) => {
       serverCall(args).then(x => {
         console.assert(x.msgType === "Message.Ok");
+        if (!mounted.current) {
+          return;
+        }
         if (args.roomId === roomId) {
           setSeenUpToMessageId(x.messageId);
         }
@@ -696,7 +719,9 @@ export const useRoomHistory = ({
   );
 
   React.useEffect(() => {
+    mounted.current = true;
     return () => {
+      mounted.current = false;
       clearLatestHistory();
       clearAroundHistory();
       serverCall({
@@ -710,8 +735,6 @@ export const useRoomHistory = ({
         topic: `room/${roomId}/messages`,
       }).then((x: StreamUnSubOk) => {
         console.assert(x.msgType === "Stream.UnSubOk");
-        setSubscribed(false);
-        setSubscribing(false);
       });
     };
   }, [roomId, clearLatestHistory, clearAroundHistory, serverCall]);
@@ -742,6 +765,8 @@ export const useRoomTyping = ({
   userId: string | undefined;
   roomId: string;
 }) => {
+  const mounted = React.useRef(false);
+
   const { serverCall, lastIncomingMessage } = useWs();
 
   const [typingNames, setTypingNames] = React.useState<string>();
@@ -766,6 +791,9 @@ export const useRoomTyping = ({
       topic: `room/${roomId}/typing`,
     }).then(x => {
       console.assert(x.msgType === "Stream.SubOk");
+      if (!mounted.current) {
+        return;
+      }
       if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
         processTypingEvent(x.items[0]);
       }
@@ -790,6 +818,13 @@ export const useRoomTyping = ({
     [roomId, serverCall]
   );
 
+  React.useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
   return { typingNames, updateTyping };
 };
 function useImmer<T>(initialValue: T) {
@@ -805,6 +840,8 @@ export const useNotifications = ({
   workspaceId: string;
   userId: string | undefined;
 }) => {
+  const mounted = React.useRef(false);
+
   const { token, serverCall, lastIncomingMessage } = useWs();
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
@@ -847,6 +884,9 @@ export const useNotifications = ({
         topic: `agent/${userId}/badges`,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
+        if (!mounted.current) {
+          return;
+        }
         if (x.msgType === "Stream.GetOk") {
           x.items.forEach(b => {
             if (b.msgType === "Event.Badge") {
@@ -905,6 +945,13 @@ export const useNotifications = ({
       updateBadge(lastIncomingMessage);
     }
   }, [updateBadge, setNotification, lastIncomingMessage]);
+
+  React.useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   return { agents, badges, notification };
 };
