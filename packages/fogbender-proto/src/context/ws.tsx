@@ -28,15 +28,16 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 
+export type Author = {
+  id: string;
+  name: string;
+  type: "agent" | "user";
+  avatarUrl?: string;
+};
+
 export type Message = {
   id: string;
-  author: {
-    id: string;
-    name: string;
-    type: "agent" | "user";
-    avatarUrl?: string;
-    isAgent?: boolean;
-  };
+  author: Author;
   createdTs: number;
   updatedTs: number;
   parsed: string;
@@ -100,9 +101,11 @@ export const nameMatchesFilter = (name: string, filter: string) =>
 export const useRoster = ({
   workspaceId,
   helpdeskId,
+  userId,
 }: {
   workspaceId?: string;
   helpdeskId?: string;
+  userId?: string;
 }) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
@@ -121,7 +124,17 @@ export const useRoster = ({
     let newRoster = roomsRef.current;
     roomsIn.forEach(room => {
       newRoster = newRoster.filter(x => room.id !== x.id);
-      newRoster.push(room);
+      if (userId && room.type === "dialog" && room.members) {
+        // TODO: transform into a local Room object (like Message), add counterpart field/struct
+        const counterpart = room.members.find(m => m.id !== userId);
+        if (counterpart) {
+          newRoster.push({ ...room, name: counterpart.name });
+        } else {
+          newRoster.push(room);
+        }
+      } else {
+        newRoster.push(room);
+      }
     });
     // TODO: convert ts to milliseconds from microseconds
     newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
@@ -916,26 +929,6 @@ export const useNotifications = ({
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
-
-      /*
-      serverCall({
-        msgType: "Stream.Get",
-        topic: `agent/${userId}/agents`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        x.items.forEach(a => {
-          if (a.msgType === "Event.Agent") {
-            updateAgent(a);
-          }
-        });
-      });
-      serverCall({
-        msgType: "Stream.Sub",
-        topic: `agent/${userId}/agents`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-      */
 
       serverCall({
         msgType: "Stream.Sub",
