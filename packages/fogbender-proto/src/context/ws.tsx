@@ -25,6 +25,7 @@ import { useImmerAtom } from "jotai/immer";
 import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
+import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 
 export type Message = {
   id: string;
@@ -427,9 +428,9 @@ export const useRoomHistory = ({
   aroundId: string | undefined;
   isIdle: boolean;
 }) => {
-  const mounted = React.useRef(false);
-
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
+
+  const rejectIfUnmounted = useRejectIfUnmounted();
 
   const {
     messages,
@@ -458,15 +459,15 @@ export const useRoomHistory = ({
               topic: `room/${linkRoomId}/messages`,
               startId: linkStartMessageId,
               endId: linkEndMessageId,
-            }).then((x: StreamGetOk<EventMessage>) => {
-              console.assert(x.msgType === "Stream.GetOk");
-              if (!mounted.current) {
-                return;
-              }
-              if (x.msgType === "Stream.GetOk") {
-                expandLink(id, x.items);
-              }
             })
+              .then(rejectIfUnmounted)
+              .then((x: StreamGetOk<EventMessage>) => {
+                console.assert(x.msgType === "Stream.GetOk");
+                if (x.msgType === "Stream.GetOk") {
+                  expandLink(id, x.items);
+                }
+              })
+              .catch(() => {})
           );
         }
       });
@@ -492,18 +493,18 @@ export const useRoomHistory = ({
     serverCall({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
-    }).then(async x => {
-      console.assert(x.msgType === "Stream.GetOk");
-      if (!mounted.current) {
-        return;
-      }
-      if (x.msgType === "Stream.GetOk") {
-        await processAndStoreMessages(x.items as EventMessage[], "page");
-        setNewerHistoryComplete(true);
-        setSubscribed(true);
-        setSubscribing(false);
-      }
-    });
+    })
+      .then(rejectIfUnmounted)
+      .then(async x => {
+        console.assert(x.msgType === "Stream.GetOk");
+        if (x.msgType === "Stream.GetOk") {
+          await processAndStoreMessages(x.items as EventMessage[], "page");
+          setNewerHistoryComplete(true);
+          setSubscribed(true);
+          setSubscribing(false);
+        }
+      })
+      .catch(() => {});
   }, [
     roomId,
     subscribed,
@@ -523,19 +524,19 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          if (!mounted.current) {
-            return;
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
+              setOlderHistoryComplete(true);
+            }
+            setFetchingOlder(false);
           }
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
-            setOlderHistoryComplete(true);
-          }
-          setFetchingOlder(false);
-        }
-      });
+        })
+        .catch(() => {});
     },
     [roomId, messages, serverCall, processAndStoreMessages]
   );
@@ -549,16 +550,16 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (!mounted.current) {
-          return;
-        }
-        if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          setFetchingNewer(false);
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            setFetchingNewer(false);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall, processAndStoreMessages]
   );
@@ -574,18 +575,18 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (!mounted.current) {
-          return;
-        }
-        if (x.msgType === "Stream.GetOk") {
-          setHistoryMode("around");
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          setIsAroundFetched(true);
-          setIsAroundFetching(false);
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            setHistoryMode("around");
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            setIsAroundFetched(true);
+            setIsAroundFetching(false);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall, processAndStoreMessages, setHistoryMode]
   );
@@ -685,43 +686,41 @@ export const useRoomHistory = ({
       serverCall({
         msgType: "Stream.Get",
         topic: `agent/${userId}/seen`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (!mounted.current) {
-          return;
-        }
-        if (x.msgType === "Stream.GetOk") {
-          const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
 
-          if (seen && seen.msgType === "Event.Seen") {
-            setSeenUpToMessageId(seen.messageId);
-          } else {
-            setSeenUpToMessageId(undefined);
+            if (seen && seen.msgType === "Event.Seen") {
+              setSeenUpToMessageId(seen.messageId);
+            } else {
+              setSeenUpToMessageId(undefined);
+            }
           }
-        }
-      });
+        })
+        .catch(() => {});
     }
   }, [roomId, token, userId, serverCall]);
 
   const messageCreate = React.useCallback(
     (args: MessageCreate) => {
-      serverCall(args).then(x => {
-        console.assert(x.msgType === "Message.Ok");
-        if (!mounted.current) {
-          return;
-        }
-        if (args.roomId === roomId) {
-          setSeenUpToMessageId(x.messageId);
-        }
-      });
+      serverCall(args)
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Message.Ok");
+          if (args.roomId === roomId) {
+            setSeenUpToMessageId(x.messageId);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall]
   );
 
   React.useEffect(() => {
-    mounted.current = true;
     return () => {
-      mounted.current = false;
       clearLatestHistory();
       clearAroundHistory();
       serverCall({
@@ -765,9 +764,9 @@ export const useRoomTyping = ({
   userId: string | undefined;
   roomId: string;
 }) => {
-  const mounted = React.useRef(false);
-
   const { serverCall, lastIncomingMessage } = useWs();
+
+  const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [typingNames, setTypingNames] = React.useState<string>();
 
@@ -789,15 +788,15 @@ export const useRoomTyping = ({
     serverCall({
       msgType: "Stream.Sub",
       topic: `room/${roomId}/typing`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-      if (!mounted.current) {
-        return;
-      }
-      if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
-        processTypingEvent(x.items[0]);
-      }
-    });
+    })
+      .then(rejectIfUnmounted)
+      .then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+        if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
+          processTypingEvent(x.items[0]);
+        }
+      })
+      .catch(() => {});
   }, [roomId, serverCall, processTypingEvent]);
 
   React.useEffect(() => {
@@ -818,13 +817,6 @@ export const useRoomTyping = ({
     [roomId, serverCall]
   );
 
-  React.useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
   return { typingNames, updateTyping };
 };
 function useImmer<T>(initialValue: T) {
@@ -840,9 +832,8 @@ export const useNotifications = ({
   workspaceId: string;
   userId: string | undefined;
 }) => {
-  const mounted = React.useRef(false);
-
   const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
@@ -882,19 +873,19 @@ export const useNotifications = ({
       serverCall({
         msgType: "Stream.Get",
         topic: `agent/${userId}/badges`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (!mounted.current) {
-          return;
-        }
-        if (x.msgType === "Stream.GetOk") {
-          x.items.forEach(b => {
-            if (b.msgType === "Event.Badge") {
-              updateBadge(b);
-            }
-          });
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            x.items.forEach(b => {
+              if (b.msgType === "Event.Badge") {
+                updateBadge(b);
+              }
+            });
+          }
+        })
+        .catch(() => {});
       serverCall({
         msgType: "Stream.Sub",
         topic: `agent/${userId}/badges`,
@@ -945,13 +936,6 @@ export const useNotifications = ({
       updateBadge(lastIncomingMessage);
     }
   }, [updateBadge, setNotification, lastIncomingMessage]);
-
-  React.useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
 
   return { agents, badges, notification };
 };
