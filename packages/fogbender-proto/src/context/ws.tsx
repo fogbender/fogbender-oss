@@ -227,6 +227,23 @@ export const useRoster = ({
           });
         });
       });
+    } else if (helpdeskId && rosterFilter) {
+      serverCall({
+        msgType: "Search.Roster",
+        helpdeskId,
+        term: rosterFilter,
+        type: "dialog",
+      }).then((x: SearchOk<EventRoom>) => {
+        console.assert(x.msgType === "Search.Ok");
+        setFilteredRooms(y => {
+          y.length = 0;
+          x.items.forEach(r => {
+            if (r.msgType === "Event.Room") {
+              y.push(r);
+            }
+          });
+        });
+      });
     } else if (!rosterFilter) {
       setFilteredRooms(x => {
         x.length = 0;
