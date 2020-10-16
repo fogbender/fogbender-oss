@@ -135,7 +135,7 @@ export const useRoster = ({
     if (!workspaceId && !helpdeskId) {
       return;
     }
-    if (fogSessionId && !rosterLoaded) {
+    if (fogSessionId) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
       serverCall({
         msgType: "Stream.Sub",
@@ -143,23 +143,29 @@ export const useRoster = ({
         before: oldestRoomTs,
       }).then((x: StreamSubOk<EventRoom>) => {
         console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [fogSessionId, workspaceId, helpdeskId]);
 
-        if (x.msgType === "Stream.SubOk") {
-          serverCall({
-            msgType: "Stream.Get",
-            topic,
-            before: oldestRoomTs,
-          }).then((x: StreamGetOk<EventRoom>) => {
-            console.assert(x.msgType === "Stream.GetOk");
+  React.useEffect(() => {
+    if (!workspaceId && !helpdeskId) {
+      return;
+    }
+    if (fogSessionId && !rosterLoaded) {
+      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+        before: oldestRoomTs,
+      }).then((x: StreamGetOk<EventRoom>) => {
+        console.assert(x.msgType === "Stream.GetOk");
 
-            if (x.msgType === "Stream.GetOk") {
-              updateRoster(x.items);
-              setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
-              if (x.items.length === 0) {
-                setRosterLoaded(true);
-              }
-            }
-          });
+        if (x.msgType === "Stream.GetOk") {
+          updateRoster(x.items);
+          setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
+          if (x.items.length === 0) {
+            setRosterLoaded(true);
+          }
         }
       });
     }
