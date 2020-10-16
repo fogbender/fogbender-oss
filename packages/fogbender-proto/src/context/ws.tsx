@@ -11,6 +11,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  RoomCreate,
   RoomOk,
   SearchOk,
   StreamGetOk,
@@ -178,7 +179,7 @@ export const useRoster = ({
   }, [lastIncomingMessage, updateRoster]);
 
   const createRoom = React.useCallback(
-    params =>
+    (params: Pick<RoomCreate, "name" | "type" | "members" | "helpdeskId">) =>
       serverCall({
         msgType: "Room.Create",
         name: params.name,
