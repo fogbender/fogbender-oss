@@ -35,9 +35,11 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
     };
   }, []);
 
+  const connect = token !== undefined;
   const { sendMessage: sendMessageOrig, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketUrl,
-    opts
+    opts,
+    connect
   );
   ready.current = readyState;
 
