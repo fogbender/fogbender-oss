@@ -25,6 +25,7 @@ import { useImmerAtom } from "jotai/immer";
 import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
+import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 
 export type Message = {
   id: string;
@@ -134,7 +135,7 @@ export const useRoster = ({
     if (!workspaceId && !helpdeskId) {
       return;
     }
-    if (fogSessionId && !rosterLoaded) {
+    if (fogSessionId) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
       serverCall({
         msgType: "Stream.Sub",
@@ -142,23 +143,29 @@ export const useRoster = ({
         before: oldestRoomTs,
       }).then((x: StreamSubOk<EventRoom>) => {
         console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [fogSessionId, workspaceId, helpdeskId]);
 
-        if (x.msgType === "Stream.SubOk") {
-          serverCall({
-            msgType: "Stream.Get",
-            topic,
-            before: oldestRoomTs,
-          }).then((x: StreamGetOk<EventRoom>) => {
-            console.assert(x.msgType === "Stream.GetOk");
+  React.useEffect(() => {
+    if (!workspaceId && !helpdeskId) {
+      return;
+    }
+    if (fogSessionId && !rosterLoaded) {
+      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+        before: oldestRoomTs,
+      }).then((x: StreamGetOk<EventRoom>) => {
+        console.assert(x.msgType === "Stream.GetOk");
 
-            if (x.msgType === "Stream.GetOk") {
-              updateRoster(x.items);
-              setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
-              if (x.items.length === 0) {
-                setRosterLoaded(true);
-              }
-            }
-          });
+        if (x.msgType === "Stream.GetOk") {
+          updateRoster(x.items);
+          setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
+          if (x.items.length === 0) {
+            setRosterLoaded(true);
+          }
         }
       });
     }
@@ -429,6 +436,8 @@ export const useRoomHistory = ({
 }) => {
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
   const {
     messages,
     addMessages,
@@ -456,12 +465,15 @@ export const useRoomHistory = ({
               topic: `room/${linkRoomId}/messages`,
               startId: linkStartMessageId,
               endId: linkEndMessageId,
-            }).then((x: StreamGetOk<EventMessage>) => {
-              console.assert(x.msgType === "Stream.GetOk");
-              if (x.msgType === "Stream.GetOk") {
-                expandLink(id, x.items);
-              }
             })
+              .then(rejectIfUnmounted)
+              .then((x: StreamGetOk<EventMessage>) => {
+                console.assert(x.msgType === "Stream.GetOk");
+                if (x.msgType === "Stream.GetOk") {
+                  expandLink(id, x.items);
+                }
+              })
+              .catch(() => {})
           );
         }
       });
@@ -487,15 +499,18 @@ export const useRoomHistory = ({
     serverCall({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
-    }).then(async x => {
-      console.assert(x.msgType === "Stream.GetOk");
-      if (x.msgType === "Stream.GetOk") {
-        await processAndStoreMessages(x.items as EventMessage[], "page");
-        setNewerHistoryComplete(true);
-        setSubscribed(true);
-        setSubscribing(false);
-      }
-    });
+    })
+      .then(rejectIfUnmounted)
+      .then(async x => {
+        console.assert(x.msgType === "Stream.GetOk");
+        if (x.msgType === "Stream.GetOk") {
+          await processAndStoreMessages(x.items as EventMessage[], "page");
+          setNewerHistoryComplete(true);
+          setSubscribed(true);
+          setSubscribing(false);
+        }
+      })
+      .catch(() => {});
   }, [
     roomId,
     subscribed,
@@ -515,16 +530,19 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
-            setOlderHistoryComplete(true);
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
+              setOlderHistoryComplete(true);
+            }
+            setFetchingOlder(false);
           }
-          setFetchingOlder(false);
-        }
-      });
+        })
+        .catch(() => {});
     },
     [roomId, messages, serverCall, processAndStoreMessages]
   );
@@ -538,13 +556,16 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          setFetchingNewer(false);
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            setFetchingNewer(false);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall, processAndStoreMessages]
   );
@@ -560,15 +581,18 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
-      }).then(async (x: StreamGetOk<EventMessage>) => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          setHistoryMode("around");
-          await processAndStoreMessages(x.items as EventMessage[], "page");
-          setIsAroundFetched(true);
-          setIsAroundFetching(false);
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(async (x: StreamGetOk<EventMessage>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            setHistoryMode("around");
+            await processAndStoreMessages(x.items as EventMessage[], "page");
+            setIsAroundFetched(true);
+            setIsAroundFetching(false);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall, processAndStoreMessages, setHistoryMode]
   );
@@ -668,29 +692,35 @@ export const useRoomHistory = ({
       serverCall({
         msgType: "Stream.Get",
         topic: `agent/${userId}/seen`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
 
-          if (seen && seen.msgType === "Event.Seen") {
-            setSeenUpToMessageId(seen.messageId);
-          } else {
-            setSeenUpToMessageId(undefined);
+            if (seen && seen.msgType === "Event.Seen") {
+              setSeenUpToMessageId(seen.messageId);
+            } else {
+              setSeenUpToMessageId(undefined);
+            }
           }
-        }
-      });
+        })
+        .catch(() => {});
     }
   }, [roomId, token, userId, serverCall]);
 
   const messageCreate = React.useCallback(
     (args: MessageCreate) => {
-      serverCall(args).then(x => {
-        console.assert(x.msgType === "Message.Ok");
-        if (args.roomId === roomId) {
-          setSeenUpToMessageId(x.messageId);
-        }
-      });
+      serverCall(args)
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Message.Ok");
+          if (args.roomId === roomId) {
+            setSeenUpToMessageId(x.messageId);
+          }
+        })
+        .catch(() => {});
     },
     [roomId, serverCall]
   );
@@ -710,8 +740,6 @@ export const useRoomHistory = ({
         topic: `room/${roomId}/messages`,
       }).then((x: StreamUnSubOk) => {
         console.assert(x.msgType === "Stream.UnSubOk");
-        setSubscribed(false);
-        setSubscribing(false);
       });
     };
   }, [roomId, clearLatestHistory, clearAroundHistory, serverCall]);
@@ -744,6 +772,8 @@ export const useRoomTyping = ({
 }) => {
   const { serverCall, lastIncomingMessage } = useWs();
 
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
   const [typingNames, setTypingNames] = React.useState<string>();
 
   const processTypingEvent = React.useCallback(
@@ -764,12 +794,15 @@ export const useRoomTyping = ({
     serverCall({
       msgType: "Stream.Sub",
       topic: `room/${roomId}/typing`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-      if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
-        processTypingEvent(x.items[0]);
-      }
-    });
+    })
+      .then(rejectIfUnmounted)
+      .then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+        if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
+          processTypingEvent(x.items[0]);
+        }
+      })
+      .catch(() => {});
   }, [roomId, serverCall, processTypingEvent]);
 
   React.useEffect(() => {
@@ -806,6 +839,7 @@ export const useNotifications = ({
   userId: string | undefined;
 }) => {
   const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
@@ -845,16 +879,19 @@ export const useNotifications = ({
       serverCall({
         msgType: "Stream.Get",
         topic: `agent/${userId}/badges`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          x.items.forEach(b => {
-            if (b.msgType === "Event.Badge") {
-              updateBadge(b);
-            }
-          });
-        }
-      });
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            x.items.forEach(b => {
+              if (b.msgType === "Event.Badge") {
+                updateBadge(b);
+              }
+            });
+          }
+        })
+        .catch(() => {});
       serverCall({
         msgType: "Stream.Sub",
         topic: `agent/${userId}/badges`,
