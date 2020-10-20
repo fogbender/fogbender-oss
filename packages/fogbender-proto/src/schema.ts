@@ -182,8 +182,7 @@ export type FileUpload = {
   roomId: string;
   fileName: string;
   fileType: string;
-  binaryData: Buffer;
-};
+} & ({ binaryData: Buffer } | { base64Data: string });
 
 export type FileOk = {
   msgId: string;
