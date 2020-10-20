@@ -424,7 +424,7 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
-  imageUrl: string;
+  imageUrl: string; // search template
   email: string; // search template
   agentId: string; // search template
   userId: string; // search template

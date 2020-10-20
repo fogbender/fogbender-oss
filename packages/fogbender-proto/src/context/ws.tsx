@@ -11,6 +11,8 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  RoomCreate,
+  RoomMember,
   RoomOk,
   SearchOk,
   StreamGetOk,
@@ -27,15 +29,16 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 
+export type Author = {
+  id: string;
+  name: string;
+  type: "agent" | "user";
+  avatarUrl?: string;
+};
+
 export type Message = {
   id: string;
-  author: {
-    id: string;
-    name: string;
-    type: "agent" | "user";
-    avatarUrl?: string;
-    isAgent?: boolean;
-  };
+  author: Author;
   createdTs: number;
   updatedTs: number;
   parsed: string;
@@ -50,6 +53,10 @@ export type Message = {
   linkType?: "forward" | "reply";
   deletedTs?: number;
   deletedByName?: string;
+};
+
+export type Room = EventRoom & {
+  counterpart?: RoomMember; // when type === "dialog"
 };
 
 export type WsContext = ReturnType<typeof useProviderValue>;
@@ -99,28 +106,52 @@ export const nameMatchesFilter = (name: string, filter: string) =>
 export const useRoster = ({
   workspaceId,
   helpdeskId,
+  userId,
 }: {
   workspaceId?: string;
   helpdeskId?: string;
+  userId?: string;
 }) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
-  const roomsRef = React.useRef<EventRoom[]>([]);
+  const roomsRef = React.useRef<Room[]>([]);
   const rooms = roomsRef.current;
 
   const roomById = React.useCallback((id: string) => roomsRef.current.find(r => r.id === id), []);
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
-  const [filteredRooms, setFilteredRooms] = useImmer<EventRoom[]>([]);
+  const [filteredRooms, setFilteredRooms] = useImmer<Room[]>([]);
+
+  const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
+    if (e.created) {
+      const counterpart = e.members && e.members.find(m => m.id !== ourUserId);
+      return counterpart ? { ...e, counterpart } : e;
+    } else {
+      const type: "agent" | "user" = e.agentId ? "agent" : "user";
+      const counterpart = {
+        id: e.agentId || e.userId,
+        type,
+        imageUrl: e.imageUrl,
+        name: e.name,
+        email: e.email,
+      };
+
+      return { ...e, counterpart };
+    }
+  };
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
     roomsIn.forEach(room => {
       newRoster = newRoster.filter(x => room.id !== x.id);
-      newRoster.push(room);
+      if (userId && room.type === "dialog" && room.members) {
+        newRoster.push(eventRoomToRoom(room, userId));
+      } else {
+        newRoster.push(room);
+      }
     });
     // TODO: convert ts to milliseconds from microseconds
     newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
@@ -178,7 +209,7 @@ export const useRoster = ({
   }, [lastIncomingMessage, updateRoster]);
 
   const createRoom = React.useCallback(
-    params =>
+    (params: Pick<RoomCreate, "name" | "type" | "members" | "helpdeskId">) =>
       serverCall({
         msgType: "Room.Create",
         name: params.name,
@@ -220,6 +251,23 @@ export const useRoster = ({
         setFilteredRooms(y => {
           y.length = 0;
           x.items.forEach(r => {
+            if (r.msgType === "Event.Room" && userId) {
+              y.push(eventRoomToRoom(r, userId));
+            }
+          });
+        });
+      });
+    } else if (helpdeskId && rosterFilter) {
+      serverCall({
+        msgType: "Search.Roster",
+        helpdeskId,
+        term: rosterFilter,
+        type: "dialog",
+      }).then((x: SearchOk<EventRoom>) => {
+        console.assert(x.msgType === "Search.Ok");
+        setFilteredRooms(y => {
+          y.length = 0;
+          x.items.forEach(r => {
             if (r.msgType === "Event.Room") {
               y.push(r);
             }
@@ -230,11 +278,13 @@ export const useRoster = ({
       setFilteredRooms(x => {
         x.length = 0;
         rooms.forEach(r => {
-          x.push(r);
+          if (userId) {
+            x.push(eventRoomToRoom(r, userId));
+          }
         });
       });
     }
-  }, [rooms, customers, rosterFilter, serverCall]);
+  }, [userId, rooms, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {
@@ -898,26 +948,6 @@ export const useNotifications = ({
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
-
-      /*
-      serverCall({
-        msgType: "Stream.Get",
-        topic: `agent/${userId}/agents`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        x.items.forEach(a => {
-          if (a.msgType === "Event.Agent") {
-            updateAgent(a);
-          }
-        });
-      });
-      serverCall({
-        msgType: "Stream.Sub",
-        topic: `agent/${userId}/agents`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-      */
 
       serverCall({
         msgType: "Stream.Sub",
