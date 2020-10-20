@@ -12,6 +12,7 @@ import {
   MessageLink,
   MessageOk,
   RoomCreate,
+  RoomMember,
   RoomOk,
   SearchOk,
   StreamGetOk,
@@ -52,6 +53,10 @@ export type Message = {
   linkType?: "forward" | "reply";
   deletedTs?: number;
   deletedByName?: string;
+};
+
+export type Room = EventRoom & {
+  counterpart?: RoomMember; // when type === "dialog"
 };
 
 export type WsContext = ReturnType<typeof useProviderValue>;
@@ -111,27 +116,39 @@ export const useRoster = ({
 
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
-  const roomsRef = React.useRef<EventRoom[]>([]);
+  const roomsRef = React.useRef<Room[]>([]);
   const rooms = roomsRef.current;
 
   const roomById = React.useCallback((id: string) => roomsRef.current.find(r => r.id === id), []);
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
 
-  const [filteredRooms, setFilteredRooms] = useImmer<EventRoom[]>([]);
+  const [filteredRooms, setFilteredRooms] = useImmer<Room[]>([]);
+
+  const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
+    if (e.created) {
+      const counterpart = e.members && e.members.find(m => m.id !== ourUserId);
+      return counterpart ? { ...e, counterpart } : e;
+    } else {
+      const type: "agent" | "user" = e.agentId ? "agent" : "user";
+      const counterpart = {
+        id: e.agentId || e.userId,
+        type,
+        imageUrl: e.imageUrl,
+        name: e.name,
+        email: e.email,
+      };
+
+      return { ...e, counterpart };
+    }
+  };
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     let newRoster = roomsRef.current;
     roomsIn.forEach(room => {
       newRoster = newRoster.filter(x => room.id !== x.id);
       if (userId && room.type === "dialog" && room.members) {
-        // TODO: transform into a local Room object (like Message), add counterpart field/struct
-        const counterpart = room.members.find(m => m.id !== userId);
-        if (counterpart) {
-          newRoster.push({ ...room, name: counterpart.name });
-        } else {
-          newRoster.push(room);
-        }
+        newRoster.push(eventRoomToRoom(room, userId));
       } else {
         newRoster.push(room);
       }
@@ -234,8 +251,8 @@ export const useRoster = ({
         setFilteredRooms(y => {
           y.length = 0;
           x.items.forEach(r => {
-            if (r.msgType === "Event.Room") {
-              y.push(r);
+            if (r.msgType === "Event.Room" && userId) {
+              y.push(eventRoomToRoom(r, userId));
             }
           });
         });
@@ -261,11 +278,13 @@ export const useRoster = ({
       setFilteredRooms(x => {
         x.length = 0;
         rooms.forEach(r => {
-          x.push(r);
+          if (userId) {
+            x.push(eventRoomToRoom(r, userId));
+          }
         });
       });
     }
-  }, [rooms, customers, rosterFilter, serverCall]);
+  }, [userId, rooms, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {
