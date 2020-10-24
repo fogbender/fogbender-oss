@@ -420,8 +420,6 @@ export type Customer = {
   name: string;
 };
 
-export type RoomStatus = "active" | "progress" | "closed" | "archived" | "removed";
-
 export type EventRoom = {
   msgId?: string;
   msgType: "Event.Room";
@@ -441,7 +439,6 @@ export type EventRoom = {
   created: boolean;
   type: "dialog" | "public" | "private";
   members?: RoomMember[];
-  status: RoomStatus; // deprecated
 };
 
 export type RoomMember = {
