@@ -292,13 +292,19 @@ export declare type File = {
   id: string;
   filename: string;
   contentType: string;
-  fileBase64: string;
   thumbnail?: {
     url: string;
     height: number;
     width: number;
   };
-};
+} & (
+  | {
+      fileBase64: string;
+    }
+  | {
+      fileUrl: string;
+    }
+);
 
 export type EventMessage = {
   msgId?: string;
