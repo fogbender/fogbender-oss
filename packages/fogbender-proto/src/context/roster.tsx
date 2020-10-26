@@ -42,6 +42,12 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
   const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
+  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
+    filteredRoster,
+  ]);
+  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
+    filteredRoster,
+  ]);
 
   const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
     if (e.created) {
@@ -223,5 +229,14 @@ export const useRoster = ({
     });
   }, [workspaceId, updateCustomers, serverCall]);
 
-  return { roster, roomById, filteredRoster, setRosterFilter, createRoom, customers };
+  return {
+    roster,
+    roomById,
+    filteredRoster,
+    filteredRooms,
+    filteredDialogs,
+    setRosterFilter,
+    createRoom,
+    customers,
+  };
 };
