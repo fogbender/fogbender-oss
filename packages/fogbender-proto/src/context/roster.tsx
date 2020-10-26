@@ -1,6 +1,6 @@
-import React from "react";
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
+import React from "react";
 
 import {
   EventCustomer,
@@ -19,9 +19,9 @@ export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
 };
 
-function useImmer<T>(initialValue: T) {
-  return useImmerAtom(React.useRef(atom(initialValue)).current);
-}
+const roomsAtom = atom<Room[]>([]);
+const rosterLoadedAtom = atom(false);
+const oldestRoomTsAtom = atom(Infinity);
 
 export const useRoster = ({
   workspaceId,
@@ -36,14 +36,12 @@ export const useRoster = ({
 
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
-  const roomsRef = React.useRef<Room[]>([]);
-  const rooms = roomsRef.current;
+  const [rooms, setRooms] = useImmerAtom(roomsAtom);
 
-  const roomById = React.useCallback((id: string) => roomsRef.current.find(r => r.id === id), []);
+  const roomById = React.useCallback((id: string) => rooms.find(r => r.id === id), [rooms]);
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
-
-  const [filteredRooms, setFilteredRooms] = useImmer<Room[]>([]);
+  const [filteredRooms, setFilteredRooms] = React.useState([] as Room[]);
 
   const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
     if (e.created) {
@@ -64,23 +62,24 @@ export const useRoster = ({
   };
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
-    let newRoster = roomsRef.current;
-    roomsIn.forEach(room => {
-      newRoster = newRoster.filter(x => room.id !== x.id);
-      if (userId && room.type === "dialog" && room.members) {
-        newRoster.push(eventRoomToRoom(room, userId));
-      } else {
-        newRoster.push(room);
-      }
+    setRooms(rooms => {
+      let newRoster = rooms;
+      roomsIn.forEach(room => {
+        newRoster = newRoster.filter(x => room.id !== x.id);
+        if (userId && room.type === "dialog" && room.members) {
+          newRoster.push(eventRoomToRoom(room, userId));
+        } else {
+          newRoster.push(room);
+        }
+      });
+      // TODO: convert ts to milliseconds from microseconds
+      newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
+      return newRoster;
     });
-    // TODO: convert ts to milliseconds from microseconds
-    newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
-    roomsRef.current = newRoster;
-    forceUpdate();
   }, []);
 
-  const [rosterLoaded, setRosterLoaded] = React.useState(false);
-  const [oldestRoomTs, setOldestRoomTs] = React.useState<number>(Infinity);
+  const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
+  const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
 
   React.useEffect(() => {
     if (!workspaceId && !helpdeskId) {
@@ -168,14 +167,13 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRooms(y => {
-          y.length = 0;
-          x.items.forEach(r => {
-            if (r.msgType === "Event.Room" && userId) {
-              y.push(eventRoomToRoom(r, userId));
-            }
-          });
+        const y = [] as Room[];
+        x.items.forEach(r => {
+          if (r.msgType === "Event.Room" && userId) {
+            y.push(eventRoomToRoom(r, userId));
+          }
         });
+        setFilteredRooms(y);
       });
     } else if (helpdeskId && rosterFilter) {
       serverCall({
@@ -185,24 +183,22 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRooms(y => {
-          y.length = 0;
-          x.items.forEach(r => {
-            if (r.msgType === "Event.Room") {
-              y.push(r);
-            }
-          });
-        });
-      });
-    } else if (!rosterFilter) {
-      setFilteredRooms(x => {
-        x.length = 0;
-        rooms.forEach(r => {
-          if (userId) {
-            x.push(eventRoomToRoom(r, userId));
+        const y = [] as Room[];
+        x.items.forEach(r => {
+          if (r.msgType === "Event.Room") {
+            y.push(r);
           }
         });
+        setFilteredRooms(y);
       });
+    } else if (!rosterFilter) {
+      const y = [] as Room[];
+      rooms.forEach(r => {
+        if (userId) {
+          y.push(eventRoomToRoom(r, userId));
+        }
+      });
+      setFilteredRooms(y);
     }
   }, [userId, rooms, customers, rosterFilter, serverCall]);
 
