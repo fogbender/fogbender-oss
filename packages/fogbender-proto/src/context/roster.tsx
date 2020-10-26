@@ -19,7 +19,7 @@ export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
 };
 
-const roomsAtom = atom<Room[]>([]);
+const rosterAtom = atom<Room[]>([]);
 const rosterLoadedAtom = atom(false);
 const oldestRoomTsAtom = atom(Infinity);
 
@@ -36,12 +36,12 @@ export const useRoster = ({
 
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
-  const [rooms, setRooms] = useImmerAtom(roomsAtom);
+  const [roster, setRoster] = useImmerAtom(rosterAtom);
 
-  const roomById = React.useCallback((id: string) => rooms.find(r => r.id === id), [rooms]);
+  const roomById = React.useCallback((id: string) => roster.find(r => r.id === id), [roster]);
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
-  const [filteredRooms, setFilteredRooms] = React.useState([] as Room[]);
+  const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
 
   const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
     if (e.created) {
@@ -62,8 +62,8 @@ export const useRoster = ({
   };
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
-    setRooms(rooms => {
-      let newRoster = rooms;
+    setRoster(roster => {
+      let newRoster = roster;
       roomsIn.forEach(room => {
         newRoster = newRoster.filter(x => room.id !== x.id);
         if (userId && room.type === "dialog" && room.members) {
@@ -173,7 +173,7 @@ export const useRoster = ({
             y.push(eventRoomToRoom(r, userId));
           }
         });
-        setFilteredRooms(y);
+        setFilteredRoster(y);
       });
     } else if (helpdeskId && rosterFilter) {
       serverCall({
@@ -189,18 +189,18 @@ export const useRoster = ({
             y.push(r);
           }
         });
-        setFilteredRooms(y);
+        setFilteredRoster(y);
       });
     } else if (!rosterFilter) {
       const y = [] as Room[];
-      rooms.forEach(r => {
+      roster.forEach(r => {
         if (userId) {
           y.push(eventRoomToRoom(r, userId));
         }
       });
-      setFilteredRooms(y);
+      setFilteredRoster(y);
     }
-  }, [userId, rooms, customers, rosterFilter, serverCall]);
+  }, [userId, roster, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
     if (!workspaceId) {
@@ -223,5 +223,5 @@ export const useRoster = ({
     });
   }, [workspaceId, updateCustomers, serverCall]);
 
-  return { rooms, roomById, filteredRooms, setRosterFilter, createRoom, customers };
+  return { roster, roomById, filteredRoster, setRosterFilter, createRoom, customers };
 };
