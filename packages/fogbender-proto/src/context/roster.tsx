@@ -49,11 +49,11 @@ export const useRoster = ({
     filteredRoster,
   ]);
 
-  const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
-    if (e.created) {
-      const counterpart = e.members && e.members.find(m => m.id !== ourUserId);
+  const eventRoomToRoom = (e: EventRoom) => {
+    if (userId && e.type === "dialog" && e.created) {
+      const counterpart = e.members?.find(m => m.id !== userId);
       return counterpart ? { ...e, counterpart } : e;
-    } else {
+    } else if (userId && e.type === "dialog") {
       const type: "agent" | "user" = e.agentId ? "agent" : "user";
       const counterpart = {
         id: e.agentId || e.userId,
@@ -62,21 +62,23 @@ export const useRoster = ({
         name: e.name,
         email: e.email,
       };
-
       return { ...e, counterpart };
+    } else {
+      return e;
     }
   };
+
+  const filterNotMonolog = (rooms: Room[]) =>
+    rooms
+      .filter(x => x.counterpart?.id !== userId)
+      .filter(x => !x.members || x.members.length === 0 || !x.members.every(y => y.id === userId));
 
   const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
     setRoster(roster => {
       let newRoster = roster;
       roomsIn.forEach(room => {
         newRoster = newRoster.filter(x => room.id !== x.id);
-        if (userId && room.type === "dialog" && room.members) {
-          newRoster.push(eventRoomToRoom(room, userId));
-        } else {
-          newRoster.push(room);
-        }
+        newRoster.push(eventRoomToRoom(room));
       });
       // TODO: convert ts to milliseconds from microseconds
       newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
@@ -173,13 +175,7 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        const y = [] as Room[];
-        x.items.forEach(r => {
-          if (r.msgType === "Event.Room" && userId) {
-            y.push(eventRoomToRoom(r, userId));
-          }
-        });
-        setFilteredRoster(y);
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
       });
     } else if (helpdeskId && rosterFilter) {
       serverCall({
@@ -189,22 +185,10 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        const y = [] as Room[];
-        x.items.forEach(r => {
-          if (r.msgType === "Event.Room") {
-            y.push(r);
-          }
-        });
-        setFilteredRoster(y);
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
       });
     } else if (!rosterFilter) {
-      const y = [] as Room[];
-      roster.forEach(r => {
-        if (userId) {
-          y.push(eventRoomToRoom(r, userId));
-        }
-      });
-      setFilteredRoster(y);
+      setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y))));
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
 
