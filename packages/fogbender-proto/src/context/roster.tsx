@@ -68,7 +68,7 @@ export const useRoster = ({
     }
   };
 
-  const rejectMonolog = (rooms: Room[]) =>
+  const filterNotMonolog = (rooms: Room[]) =>
     rooms
       .filter(x => x.counterpart?.id !== userId)
       .filter(x => !x.members || x.members.length === 0 || !x.members.every(y => y.id === userId));
@@ -175,7 +175,7 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRoster(rejectMonolog(x.items.map(y => eventRoomToRoom(y))));
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
       });
     } else if (helpdeskId && rosterFilter) {
       serverCall({
@@ -185,10 +185,10 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRoster(rejectMonolog(x.items.map(y => eventRoomToRoom(y))));
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
       });
     } else if (!rosterFilter) {
-      setFilteredRoster(rejectMonolog(roster.map(y => eventRoomToRoom(y))));
+      setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y))));
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
 
