@@ -265,9 +265,20 @@ export const useRoomMembers = ({
   roomId: string;
   userId: string | undefined;
 }) => {
-  const { token, serverCall } = useWs();
+  const { token, serverCall, lastIncomingMessage } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
   const [rooms, setRooms] = useImmer<Room[]>([]);
+  const [roomUpdate, setRoomUpdate] = useImmer<EventRoom | undefined>(undefined);
+
+  React.useEffect(() => {
+    if (userId && lastIncomingMessage?.msgType === "Event.Room") {
+      if (lastIncomingMessage.id === roomId) {
+        setRoomUpdate(() => {
+          return lastIncomingMessage;
+        });
+      }
+    }
+  }, [lastIncomingMessage]);
 
   React.useEffect(() => {
     if (userId && token) {
@@ -279,11 +290,10 @@ export const useRoomMembers = ({
         .then((x: SearchOk<EventRoom>) => {
           console.assert(x.msgType === "Search.Ok");
           setRooms(y => {
-            const l = y.length;
-            let i = 0;
+            const len = y.length;
 
-            for (i; i++; i < l) {
-              y.pop();
+            for (let i = 0; i < len; i++) {
+              y.shift();
             }
 
             x.items.forEach(q => {
@@ -293,7 +303,7 @@ export const useRoomMembers = ({
           });
         });
     }
-  }, [roomId, token, serverCall]);
+  }, [roomUpdate, roomId, token, serverCall]);
 
   return { rooms };
 };
