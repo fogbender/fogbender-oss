@@ -77,7 +77,13 @@ export const useRoster = ({
   const filterNotMonolog = (rooms: Room[]) =>
     rooms
       .filter(x => x.counterpart?.id !== userId)
-      .filter(x => !x.members || x.members.length === 0 || !x.members.every(y => y.id === userId));
+      .filter(
+        x =>
+          x.type !== "dialog" ||
+          !x.members ||
+          x.members.length === 0 ||
+          !x.members.every(y => y.id === userId)
+      );
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[]) => {
