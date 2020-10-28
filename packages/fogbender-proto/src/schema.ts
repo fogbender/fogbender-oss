@@ -41,6 +41,7 @@ export type APISchema = {
   RoomReOpenRPC: RPC<RoomReOpen, RoomOk>;
   RoomInProgressRPC: RPC<RoomInProgress, RoomOk>;
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
+  UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   StreamSubRPC: RPC<
     StreamSub,
     | (Error<"Stream.Err"> & { topic: null | string })
@@ -105,6 +106,15 @@ export type RoomCreate = {
   name?: string;
   members?: string[];
   type?: "public" | "private" | "dialog";
+};
+
+export type RoomUpdate = {
+  msgId?: string;
+  msgType: "Room.Update";
+  roomId: string;
+  name?: string;
+  membersToAdd?: string[];
+  membersToRemove?: string[];
 };
 
 export type RoomOk = {

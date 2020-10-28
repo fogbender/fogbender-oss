@@ -8,6 +8,7 @@ import {
   RoomCreate,
   RoomMember,
   RoomOk,
+  RoomUpdate,
   SearchOk,
   StreamGetOk,
   StreamSubOk,
@@ -160,6 +161,21 @@ export const useRoster = ({
     [serverCall]
   );
 
+  const updateRoom = React.useCallback(
+    (params: Pick<RoomUpdate, "roomId" | "name" | "membersToAdd" | "membersToRemove">) =>
+      serverCall({
+        msgType: "Room.Update",
+        roomId: params.roomId,
+        name: params.name,
+        membersToAdd: params.membersToAdd,
+        membersToRemove: params.membersToRemove,
+      }).then((x: RoomOk) => {
+        console.assert(x.msgType === "Room.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
   const customersRef = React.useRef<EventCustomer[]>([]);
   const customers = customersRef.current;
 
@@ -231,6 +247,7 @@ export const useRoster = ({
     filteredDialogs,
     setRosterFilter,
     createRoom,
+    updateRoom,
     customers,
   };
 };
