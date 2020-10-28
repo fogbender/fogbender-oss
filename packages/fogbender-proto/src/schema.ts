@@ -63,6 +63,7 @@ export type APISchema = {
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
+  SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -227,6 +228,14 @@ export type SearchRoster = {
   helpdeskId?: string;
   term: string;
   type: "dialog";
+};
+
+export type SearchMembers = {
+  msgId?: string;
+  msgType: "Search.Members";
+  workspaceId?: string;
+  helpdeskId?: string;
+  roomId: string;
 };
 
 export type SearchOk<Item> = {
@@ -420,6 +429,9 @@ export type Customer = {
   name: string;
 };
 
+// deprecated
+export type RoomStatus = "active" | "progress" | "closed" | "archived" | "removed";
+
 export type EventRoom = {
   msgId?: string;
   msgType: "Event.Room";
@@ -439,6 +451,7 @@ export type EventRoom = {
   created: boolean;
   type: "dialog" | "public" | "private";
   members?: RoomMember[];
+  status: RoomStatus; // deprecated
 };
 
 export type RoomMember = {

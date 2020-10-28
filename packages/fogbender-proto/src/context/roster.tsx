@@ -15,9 +15,33 @@ import {
 
 import { useWs } from "./ws";
 
+import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
+
 export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
 };
+
+const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
+  if (e.created) {
+    const counterpart = e.members && e.members.find(m => m.id !== ourUserId);
+    return counterpart ? { ...e, counterpart } : e;
+  } else {
+    const type: "agent" | "user" = e.agentId ? "agent" : "user";
+    const counterpart = {
+      id: e.agentId || e.userId,
+      type,
+      imageUrl: e.imageUrl,
+      name: e.name,
+      email: e.email,
+    };
+
+    return { ...e, counterpart };
+  }
+};
+
+function useImmer<T>(initialValue: T) {
+  return useImmerAtom(React.useRef(atom(initialValue)).current);
+}
 
 const rosterAtom = atom<Room[]>([]);
 const rosterLoadedAtom = atom(false);
@@ -49,42 +73,28 @@ export const useRoster = ({
     filteredRoster,
   ]);
 
-  const eventRoomToRoom = (e: EventRoom) => {
-    if (userId && e.type === "dialog" && e.created) {
-      const counterpart = e.members?.find(m => m.id !== userId);
-      return counterpart ? { ...e, counterpart } : e;
-    } else if (userId && e.type === "dialog") {
-      const type: "agent" | "user" = e.agentId ? "agent" : "user";
-      const counterpart = {
-        id: e.agentId || e.userId,
-        type,
-        imageUrl: e.imageUrl,
-        name: e.name,
-        email: e.email,
-      };
-      return { ...e, counterpart };
-    } else {
-      return e;
-    }
-  };
-
   const filterNotMonolog = (rooms: Room[]) =>
     rooms
       .filter(x => x.counterpart?.id !== userId)
       .filter(x => !x.members || x.members.length === 0 || !x.members.every(y => y.id === userId));
 
-  const updateRoster = React.useCallback((roomsIn: EventRoom[]) => {
-    setRoster(roster => {
-      let newRoster = roster;
-      roomsIn.forEach(room => {
-        newRoster = newRoster.filter(x => room.id !== x.id);
-        newRoster.push(eventRoomToRoom(room));
-      });
-      // TODO: convert ts to milliseconds from microseconds
-      newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
-      return newRoster;
-    });
-  }, []);
+  const updateRoster = React.useCallback(
+    (roomsIn: EventRoom[]) => {
+      if (userId) {
+        setRoster(roster => {
+          let newRoster = roster;
+          roomsIn.forEach(room => {
+            newRoster = newRoster.filter(x => room.id !== x.id);
+            newRoster.push(eventRoomToRoom(room, userId));
+          });
+          // TODO: convert ts to milliseconds from microseconds
+          newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
+          return newRoster;
+        });
+      }
+    },
+    [userId]
+  );
 
   const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
   const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
@@ -167,7 +177,7 @@ export const useRoster = ({
   }, []);
 
   React.useEffect(() => {
-    if (workspaceId && rosterFilter) {
+    if (userId && workspaceId && rosterFilter) {
       serverCall({
         msgType: "Search.Roster",
         workspaceId: workspaceId,
@@ -175,9 +185,9 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
-    } else if (helpdeskId && rosterFilter) {
+    } else if (userId && helpdeskId && rosterFilter) {
       serverCall({
         msgType: "Search.Roster",
         helpdeskId,
@@ -185,10 +195,10 @@ export const useRoster = ({
         type: "dialog",
       }).then((x: SearchOk<EventRoom>) => {
         console.assert(x.msgType === "Search.Ok");
-        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y))));
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
-    } else if (!rosterFilter) {
-      setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y))));
+    } else if (userId && !rosterFilter) {
+      setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y, userId))));
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
 
@@ -223,4 +233,44 @@ export const useRoster = ({
     createRoom,
     customers,
   };
+};
+
+export const useRoomMembers = ({
+  roomId,
+  userId,
+}: {
+  roomId: string;
+  userId: string | undefined;
+}) => {
+  const { token, serverCall } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+  const [rooms, setRooms] = useImmer<Room[]>([]);
+
+  React.useEffect(() => {
+    if (userId && token) {
+      serverCall({
+        msgType: "Search.Members",
+        roomId,
+      })
+        .then(rejectIfUnmounted)
+        .then((x: SearchOk<EventRoom>) => {
+          console.assert(x.msgType === "Search.Ok");
+          setRooms(y => {
+            const l = y.length;
+            let i = 0;
+
+            for (i; i++; i < l) {
+              y.pop();
+            }
+
+            x.items.forEach(q => {
+              const r = eventRoomToRoom(q, userId);
+              y.push(r);
+            });
+          });
+        });
+    }
+  }, [roomId, token, serverCall]);
+
+  return { rooms };
 };
