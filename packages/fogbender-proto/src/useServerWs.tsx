@@ -185,7 +185,11 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
 
   const failedPingCount = React.useRef(0);
 
+  const isConnected = readyState === ReadyState.OPEN;
   React.useEffect(() => {
+    if (!isConnected) {
+      return;
+    }
     const interval = setInterval(() => {
       if (failedPingCount.current >= 1) {
         onError("error", "server_stopped_responding", new Error("Server stopped responding"));
@@ -207,7 +211,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     return () => {
       clearInterval(interval);
     };
-  }, [getWebSocket, readyState, serverCall]);
+  }, [getWebSocket, readyState, serverCall, isConnected]);
   return { serverCall, lastIncomingMessage, respondToMessage };
 }
 
