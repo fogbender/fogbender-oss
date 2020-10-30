@@ -64,8 +64,11 @@ function useProviderValue(token: AnyToken | undefined, env?: Env) {
       setUserId(userId);
       setHelpdeskId(helpdeskId);
     },
+    getEnv() {
+      return env;
+    },
   }));
-  const value = useServerWs(client, token, env);
+  const value = useServerWs(client, token);
   return { ...value, token, fogSessionId, userId, helpdeskId };
 }
 

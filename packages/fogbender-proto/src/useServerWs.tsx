@@ -2,7 +2,7 @@ import { serialize } from "bson";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
-import { Env, getServerApiUrl, getServerWsUrl } from "./config";
+import { getServerApiUrl, getServerWsUrl } from "./config";
 import { AnyToken, FogSchema, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
@@ -17,7 +17,7 @@ export type ServerCall = <T extends ServerCalls["orig"]>(
 
 export type ServerEvent = ServerEvents["inbound"];
 
-export function useServerWs(client: Client, token: AnyToken | undefined, env?: Env) {
+export function useServerWs(client: Client, token: AnyToken | undefined) {
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
   >();
@@ -25,6 +25,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
   const authenticated = React.useRef(false);
+  const env = client.getEnv?.();
   const socketUrl = getServerWsUrl(env);
 
   const opts = React.useMemo((): Options => {
