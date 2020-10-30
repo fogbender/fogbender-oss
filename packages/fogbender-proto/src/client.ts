@@ -1,7 +1,7 @@
 import { Env } from "./config";
 
 export type ErrorType = "error" | "warning" | "other";
-export type ErrorKind = "other";
+export type ErrorKind = "server_stopped_responding" | "other";
 
 export interface Client {
   getEnv?(): Env | undefined;

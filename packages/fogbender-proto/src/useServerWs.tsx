@@ -188,7 +188,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
   React.useEffect(() => {
     const interval = setInterval(() => {
       if (failedPingCount.current >= 1) {
-        onError("error", "other", new Error("Server stopped responding"));
+        onError("error", "server_stopped_responding", new Error("Server stopped responding"));
         getWebSocket().close();
       }
       failedPingCount.current = failedPingCount.current + 1;
