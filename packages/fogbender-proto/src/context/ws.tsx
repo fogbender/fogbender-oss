@@ -317,6 +317,12 @@ export const useRoomHistory = ({
 
   const [subscribed, setSubscribed] = React.useState(false);
   const [subscribing, setSubscribing] = React.useState(false);
+
+  React.useEffect(() => {
+    setSubscribed(false);
+    setSubscribing(false);
+  }, [fogSessionId]);
+
   React.useEffect(() => {
     if (subscribed || subscribing) {
       return;
@@ -350,6 +356,7 @@ export const useRoomHistory = ({
     processAndStoreMessages,
     setNewerHistoryComplete,
     serverCall,
+    fogSessionId,
   ]);
 
   const [fetchingOlder, setFetchingOlder] = React.useState(false);
@@ -670,7 +677,7 @@ export const useNotifications = ({
   workspaceId: string;
   userId: string | undefined;
 }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const { fogSessionId, token, serverCall, lastIncomingMessage } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
   const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
@@ -745,7 +752,7 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [updateAgent, updateBadge, token, workspaceId, vendorId, userId, serverCall]);
+  }, [fogSessionId, updateAgent, updateBadge, token, workspaceId, vendorId, userId, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Notification.Message") {
