@@ -67,6 +67,7 @@ function useProviderValue(token: AnyToken | undefined, client?: Client) {
     getEnv() {
       return client?.getEnv?.();
     },
+    onError: client?.onError,
   }));
   const value = useServerWs(providerClient, token);
   return { ...value, token, fogSessionId, userId, helpdeskId };
