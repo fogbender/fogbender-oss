@@ -59,7 +59,7 @@ function useProviderValue(token: AnyToken | undefined, env?: Env) {
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
   const [client] = React.useState<Client>(() => ({
-    setSession(sessionId: string, userId: string, helpdeskId: string) {
+    setSession(sessionId, userId, helpdeskId) {
       setFogSessionId(sessionId);
       setUserId(userId);
       setHelpdeskId(helpdeskId);
