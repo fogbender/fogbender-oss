@@ -21,6 +21,7 @@ import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
+import { Client } from "../client";
 
 export type Author = {
   id: string;
@@ -57,17 +58,13 @@ function useProviderValue(token: AnyToken | undefined, env?: Env) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
-  const client = React.useMemo(
-    () =>
-      new (class HelpWidgetClient {
-        setSession(sessionId: string, userId: string, helpdeskId: string) {
-          setFogSessionId(sessionId);
-          setUserId(userId);
-          setHelpdeskId(helpdeskId);
-        }
-      })(),
-    []
-  );
+  const [client] = React.useState<Client>(() => ({
+    setSession(sessionId: string, userId: string, helpdeskId: string) {
+      setFogSessionId(sessionId);
+      setUserId(userId);
+      setHelpdeskId(helpdeskId);
+    },
+  }));
   const value = useServerWs(client, token, env);
   return { ...value, token, fogSessionId, userId, helpdeskId };
 }
