@@ -189,7 +189,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     const interval = setInterval(() => {
       if (failedPingCount.current >= 1) {
         onError("error", "server_stopped_responding", new Error("Server stopped responding"));
-        getWebSocket().close();
+        getWebSocket()?.close();
       }
       failedPingCount.current = failedPingCount.current + 1;
       serverCall({
