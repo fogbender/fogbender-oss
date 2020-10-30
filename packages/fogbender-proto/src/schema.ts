@@ -41,6 +41,7 @@ export type APISchema = {
   RoomReOpenRPC: RPC<RoomReOpen, RoomOk>;
   RoomInProgressRPC: RPC<RoomInProgress, RoomOk>;
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
+  UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   StreamSubRPC: RPC<
     StreamSub,
     | (Error<"Stream.Err"> & { topic: null | string })
@@ -63,6 +64,7 @@ export type APISchema = {
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
+  SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -104,6 +106,15 @@ export type RoomCreate = {
   name?: string;
   members?: string[];
   type?: "public" | "private" | "dialog";
+};
+
+export type RoomUpdate = {
+  msgId?: string;
+  msgType: "Room.Update";
+  roomId: string;
+  name?: string;
+  membersToAdd?: string[];
+  membersToRemove?: string[];
 };
 
 export type RoomOk = {
@@ -227,6 +238,14 @@ export type SearchRoster = {
   helpdeskId?: string;
   term: string;
   type: "dialog";
+};
+
+export type SearchMembers = {
+  msgId?: string;
+  msgType: "Search.Members";
+  workspaceId?: string;
+  helpdeskId?: string;
+  roomId: string;
 };
 
 export type SearchOk<Item> = {
@@ -420,6 +439,7 @@ export type Customer = {
   name: string;
 };
 
+// deprecated
 export type RoomStatus = "active" | "progress" | "closed" | "archived" | "removed";
 
 export type EventRoom = {
