@@ -123,7 +123,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
           r => {
             const { sessionId, userId, helpdeskId } = r;
             authenticated.current = true;
-            client.setSession(sessionId, userId, helpdeskId);
+            client.setSession?.(sessionId, userId, helpdeskId);
           },
           r => {
             console.error(r);
@@ -150,7 +150,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
               r => {
                 const { sessionId } = r;
                 authenticated.current = true;
-                client.setSession(sessionId);
+                client.setSession?.(sessionId);
               },
               r => {
                 console.error(r);
