@@ -2,7 +2,7 @@ import { serialize } from "bson";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
-import { Env, getServerApiUrl, getServerWsUrl } from "./config";
+import { getServerApiUrl, getServerWsUrl } from "./config";
 import { AnyToken, FogSchema, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
@@ -17,7 +17,20 @@ export type ServerCall = <T extends ServerCalls["orig"]>(
 
 export type ServerEvent = ServerEvents["inbound"];
 
-export function useServerWs(client: Client, token: AnyToken | undefined, env?: Env) {
+const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) => {
+  if (type === "error") {
+    // eslint-disable-next-line no-console
+    console.error(kind, ...errors);
+  } else if (type === "warning") {
+    // eslint-disable-next-line no-console
+    console.warn(kind, ...errors);
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(kind, ...errors);
+  }
+};
+
+export function useServerWs(client: Client, token: AnyToken | undefined) {
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
   >();
@@ -25,6 +38,8 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
   const authenticated = React.useRef(false);
+  const env = client.getEnv?.();
+  const onError = client.onError || defaultOnError;
   const socketUrl = getServerWsUrl(env);
 
   const opts = React.useMemo((): Options => {
@@ -49,7 +64,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
       try {
         message = JSON.parse(lastMessage.data);
       } catch (e) {
-        console.error("Failed to parse incoming data", e);
+        onError("error", "other", new Error("Failed to parse incoming data"), e);
       }
       if (message) {
         if (!isServerEvent(message)) {
@@ -109,8 +124,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
   );
 
   React.useEffect(() => {
-    // tslint:disable-next-line:no-console
-    console.log(ReadyState[readyState]);
+    onError("other", "other", ReadyState[readyState]);
 
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
       if ("widgetId" in token) {
@@ -122,10 +136,10 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
           r => {
             const { sessionId, userId, helpdeskId } = r;
             authenticated.current = true;
-            client.setSession(sessionId, userId, helpdeskId);
+            client.setSession?.(sessionId, userId, helpdeskId);
           },
           r => {
-            console.error(r);
+            onError("error", "other", r);
           }
         );
       } else if ("agentId" in token) {
@@ -149,10 +163,10 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
               r => {
                 const { sessionId } = r;
                 authenticated.current = true;
-                client.setSession(sessionId);
+                client.setSession?.(sessionId);
               },
               r => {
-                console.error(r);
+                onError("error", "other", r);
               }
             );
           })
@@ -171,11 +185,15 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
 
   const failedPingCount = React.useRef(0);
 
+  const isConnected = readyState === ReadyState.OPEN;
   React.useEffect(() => {
+    if (!isConnected) {
+      return;
+    }
     const interval = setInterval(() => {
       if (failedPingCount.current >= 1) {
-        console.error("Server stopped responding");
-        getWebSocket().close();
+        onError("error", "server_stopped_responding", new Error("Server stopped responding"));
+        getWebSocket()?.close();
       }
       failedPingCount.current = failedPingCount.current + 1;
       serverCall({
@@ -186,14 +204,14 @@ export function useServerWs(client: Client, token: AnyToken | undefined, env?: E
           console.assert(r.msgType === "Ping.Pong");
         },
         r => {
-          console.error(r);
+          onError("error", "other", r);
         }
       );
     }, 30_000);
     return () => {
       clearInterval(interval);
     };
-  }, [getWebSocket, readyState, serverCall]);
+  }, [getWebSocket, readyState, serverCall, isConnected]);
   return { serverCall, lastIncomingMessage, respondToMessage };
 }
 

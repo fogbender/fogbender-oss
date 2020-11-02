@@ -17,10 +17,10 @@ import React from "react";
 import { atom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
 
-import { Env } from "../config";
 import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
+import { Client } from "../client";
 
 export type Author = {
   id: string;
@@ -53,31 +53,32 @@ export type WsContext = ReturnType<typeof useProviderValue>;
 const WsContext = React.createContext<WsContext | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(token: AnyToken | undefined, env?: Env) {
+function useProviderValue(token: AnyToken | undefined, client?: Client) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
-  const client = React.useMemo(
-    () =>
-      new (class HelpWidgetClient {
-        setSession(sessionId: string, userId: string, helpdeskId: string) {
-          setFogSessionId(sessionId);
-          setUserId(userId);
-          setHelpdeskId(helpdeskId);
-        }
-      })(),
-    []
-  );
-  const value = useServerWs(client, token, env);
+  const [providerClient] = React.useState<Client>(() => ({
+    setSession(sessionId, userId, helpdeskId) {
+      setFogSessionId(sessionId);
+      setUserId(userId);
+      setHelpdeskId(helpdeskId);
+      client?.setSession?.(sessionId, userId, helpdeskId);
+    },
+    getEnv() {
+      return client?.getEnv?.();
+    },
+    onError: client?.onError,
+  }));
+  const value = useServerWs(providerClient, token);
   return { ...value, token, fogSessionId, userId, helpdeskId };
 }
 
 export const WsProvider: React.FC<{
   token: AnyToken | undefined;
-  env?: Env;
+  client?: Client;
   children?: React.ReactNode;
-}> = ({ token, env, ...props }) => {
-  const value = useProviderValue(token, env);
+}> = ({ token, client, ...props }) => {
+  const value = useProviderValue(token, client);
   return <WsContext.Provider value={value} {...props} />;
 };
 
