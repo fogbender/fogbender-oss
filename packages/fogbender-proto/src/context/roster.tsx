@@ -168,13 +168,20 @@ export const useRoster = ({
   );
 
   const updateRoom = React.useCallback(
-    (params: Pick<RoomUpdate, "roomId" | "name" | "membersToAdd" | "membersToRemove">) =>
+    (
+      params: Pick<
+        RoomUpdate,
+        "roomId" | "name" | "membersToAdd" | "membersToRemove" | "tagsToAdd" | "tagsToRemove"
+      >
+    ) =>
       serverCall({
         msgType: "Room.Update",
         roomId: params.roomId,
         name: params.name,
         membersToAdd: params.membersToAdd,
         membersToRemove: params.membersToRemove,
+        tagsToAdd: params.tagsToAdd,
+        tagsToRemove: params.tagsToRemove,
       }).then((x: RoomOk) => {
         console.assert(x.msgType === "Room.Ok");
         return x;

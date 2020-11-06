@@ -115,6 +115,8 @@ export type RoomUpdate = {
   name?: string;
   membersToAdd?: string[];
   membersToRemove?: string[];
+  tagsToAdd?: string[];
+  tagsToRemove?: string[];
 };
 
 export type RoomOk = {
@@ -461,6 +463,7 @@ export type EventRoom = {
   created: boolean;
   type: "dialog" | "public" | "private";
   members?: RoomMember[];
+  tags?: Tag[];
   status: RoomStatus; // deprecated
 };
 
@@ -470,4 +473,10 @@ export type RoomMember = {
   imageUrl: string;
   name: string;
   email: string;
+};
+
+export type Tag = {
+  id: string;
+  name: string;
+  workspaceId: string;
 };
