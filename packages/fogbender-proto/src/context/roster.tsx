@@ -24,7 +24,7 @@ export type Room = EventRoom & {
 
 const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
   if (e.created) {
-    const counterpart = e.members && e.members.find(m => m.id !== ourUserId);
+    const counterpart = e.type === "dialog" && e.members?.find(m => m.id !== ourUserId);
     return counterpart ? { ...e, counterpart } : e;
   } else {
     const type: "agent" | "user" = e.agentId ? "agent" : "user";
