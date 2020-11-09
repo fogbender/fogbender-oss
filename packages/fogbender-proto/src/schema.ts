@@ -106,6 +106,7 @@ export type RoomCreate = {
   name?: string;
   members?: string[];
   type?: "public" | "private" | "dialog";
+  tags?: string[]; // tag ids; see workspace.tags
 };
 
 export type RoomUpdate = {
