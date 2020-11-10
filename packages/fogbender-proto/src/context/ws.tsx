@@ -763,5 +763,5 @@ export const useNotifications = ({
     }
   }, [updateBadge, setNotification, lastIncomingMessage]);
 
-  return { agents, badges, notification };
+  return { agents, badges, notification, lastIncomingMessage };
 };
