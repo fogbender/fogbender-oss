@@ -153,7 +153,19 @@ export const useRoster = ({
   }, [lastIncomingMessage, updateRoster]);
 
   const createRoom = React.useCallback(
-    (params: Pick<RoomCreate, "name" | "type" | "members" | "helpdeskId" | "tags">) =>
+    (
+      params: Pick<
+        RoomCreate,
+        | "name"
+        | "type"
+        | "members"
+        | "helpdeskId"
+        | "tags"
+        | "linkRoomId"
+        | "linkStartMessageId"
+        | "linkEndMessageId"
+      >
+    ) =>
       serverCall({
         msgType: "Room.Create",
         name: params.name,
@@ -161,6 +173,9 @@ export const useRoster = ({
         members: params.members,
         helpdeskId: params.helpdeskId,
         tags: params.tags,
+        linkRoomId: params.linkRoomId,
+        linkStartMessageId: params.linkStartMessageId,
+        linkEndMessageId: params.linkEndMessageId,
       }).then((x: RoomOk) => {
         console.assert(x.msgType === "Room.Ok");
         return x;

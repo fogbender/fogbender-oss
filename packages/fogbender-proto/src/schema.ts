@@ -107,6 +107,10 @@ export type RoomCreate = {
   members?: string[];
   type?: "public" | "private" | "dialog";
   tags?: string[]; // tag ids; see workspace.tags
+  // create and forward
+  linkRoomId?: string;
+  linkStartMessageId?: string;
+  linkEndMessageId?: string;
 };
 
 export type RoomUpdate = {
