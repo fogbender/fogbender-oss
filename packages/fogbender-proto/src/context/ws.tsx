@@ -58,16 +58,13 @@ function useProviderValue(token: AnyToken | undefined, client?: Client) {
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
   const [providerClient] = React.useState<Client>(() => ({
+    ...client,
     setSession(sessionId, userId, helpdeskId) {
       setFogSessionId(sessionId);
       setUserId(userId);
       setHelpdeskId(helpdeskId);
       client?.setSession?.(sessionId, userId, helpdeskId);
     },
-    getEnv() {
-      return client?.getEnv?.();
-    },
-    onError: client?.onError,
   }));
   const value = useServerWs(providerClient, token);
   return { ...value, token, fogSessionId, userId, helpdeskId };
