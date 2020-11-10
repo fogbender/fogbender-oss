@@ -57,8 +57,8 @@ export type APISchema = {
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
-  AuthUserRPC: RPC<AuthUser, AuthOk>;
-  AuthAgentRPC: RPC<AuthAgent, AuthOk>;
+  AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
+  AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
@@ -272,6 +272,8 @@ export type AuthAgent = {
   msgType: "Auth.Agent";
   token: string;
 } & AgentToken;
+
+export type AuthError = Error<"Auth.Err">;
 
 export type AuthOk = {
   msgId: string;
