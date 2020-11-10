@@ -38,6 +38,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
   const authenticated = React.useRef(false);
+  const wrongToken = React.useRef(false);
   const env = client.getEnv?.();
   const onError = client.onError || defaultOnError;
   const socketUrl = getServerWsUrl(env);
@@ -50,7 +51,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     };
   }, []);
 
-  const connect = token !== undefined;
+  const connect = !(token === undefined || wrongToken.current);
   const { sendMessage: sendMessageOrig, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketUrl,
     opts,
@@ -123,6 +124,12 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     [sendMessage]
   );
 
+  const onWrongToken = (token: AnyToken) => {
+    wrongToken.current = true;
+    client.onWrongToken?.(token);
+    getWebSocket()?.close();
+  };
+
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
@@ -134,9 +141,15 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
           widgetId: token.widgetId,
         }).then(
           r => {
-            const { sessionId, userId, helpdeskId } = r;
-            authenticated.current = true;
-            client.setSession?.(sessionId, userId, helpdeskId);
+            if (r.msgType === "Auth.Ok") {
+              const { sessionId, userId, helpdeskId } = r;
+              authenticated.current = true;
+              client.setSession?.(sessionId, userId, helpdeskId);
+            } else if (r.msgType === "Auth.Err") {
+              if (r.code === 401 || r.code === 403) {
+                onWrongToken(token);
+              }
+            }
           },
           r => {
             onError("error", "other", r);
@@ -161,9 +174,15 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
               token: apiToken,
             }).then(
               r => {
-                const { sessionId } = r;
-                authenticated.current = true;
-                client.setSession?.(sessionId);
+                if (r.msgType === "Auth.Ok") {
+                  const { sessionId } = r;
+                  authenticated.current = true;
+                  client.setSession?.(sessionId);
+                } else if (r.msgType === "Auth.Err") {
+                  if (r.code === 401 || r.code === 403) {
+                    onWrongToken(token);
+                  }
+                }
               },
               r => {
                 onError("error", "other", r);
@@ -180,6 +199,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
   React.useEffect(() => {
     return () => {
       authenticated.current = false;
+      wrongToken.current = false;
     };
   }, [token]);
 
@@ -187,7 +207,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
 
   const isConnected = readyState === ReadyState.OPEN;
   React.useEffect(() => {
-    if (!isConnected) {
+    if (!isConnected || wrongToken.current) {
       return;
     }
     const interval = setInterval(() => {
