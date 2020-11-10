@@ -44,8 +44,7 @@ export type APISchema = {
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   StreamSubRPC: RPC<
     StreamSub,
-    | (Error<"Stream.Err"> & { topic: null | string })
-    | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
+    StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
   >;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<
@@ -148,6 +147,8 @@ export type StreamSubOk<Item> = {
   items: Item[];
   tooManyUpdates?: boolean;
 };
+
+export type StreamError = Error<"Stream.Err"> & { topic: null | string };
 
 export type StreamUnSub = {
   msgId?: string;
