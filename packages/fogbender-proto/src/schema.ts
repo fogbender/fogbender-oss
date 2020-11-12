@@ -44,8 +44,7 @@ export type APISchema = {
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   StreamSubRPC: RPC<
     StreamSub,
-    | (Error<"Stream.Err"> & { topic: null | string })
-    | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
+    StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
   >;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<
@@ -58,8 +57,8 @@ export type APISchema = {
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
-  AuthUserRPC: RPC<AuthUser, AuthOk>;
-  AuthAgentRPC: RPC<AuthAgent, AuthOk>;
+  AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
+  AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
@@ -148,6 +147,8 @@ export type StreamSubOk<Item> = {
   items: Item[];
   tooManyUpdates?: boolean;
 };
+
+export type StreamError = Error<"Stream.Err"> & { topic: null | string };
 
 export type StreamUnSub = {
   msgId?: string;
@@ -271,6 +272,8 @@ export type AuthAgent = {
   msgType: "Auth.Agent";
   token: string;
 } & AgentToken;
+
+export type AuthError = Error<"Auth.Err">;
 
 export type AuthOk = {
   msgId: string;
