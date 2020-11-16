@@ -432,7 +432,8 @@ export const useRoomMembers = ({
               y.push(r);
             });
           });
-        });
+        })
+        .catch(() => {});
     }
   }, [roomUpdate, roomId, token, serverCall]);
 
