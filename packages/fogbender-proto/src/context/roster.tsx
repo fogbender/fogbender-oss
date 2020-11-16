@@ -147,7 +147,7 @@ export const useRoster = ({
               const { lastUnreadMessageId } = badge;
               return { ...room, orderWeight: lastUnreadMessageId };
             } else if (room.id === badge.roomId && badge.count === 0) {
-              return { ...room, orderWeight: undefined };
+              return { ...room };
             } else {
               return room;
             }
