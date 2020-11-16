@@ -3,6 +3,7 @@ import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
 import {
+  EventBadge,
   EventCustomer,
   EventRoom,
   RoomCreate,
@@ -19,6 +20,7 @@ import { useWs } from "./ws";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 
 export type Room = EventRoom & {
+  orderWeight?: string;
   counterpart?: RoomMember; // when type === "dialog"
 };
 
@@ -65,6 +67,10 @@ export const useRoster = ({
 
   const roomById = React.useCallback((id: string) => roster.find(r => r.id === id), [roster]);
 
+  const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
+
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
   const [rosterFilter, setRosterFilter] = React.useState<string>();
   const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
   const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
@@ -85,6 +91,26 @@ export const useRoster = ({
           !x.members.every(y => y.id === userId)
       );
 
+  const sortRoster = (roster: Room[]) => {
+    return roster
+      .sort((a, b) => {
+        if (a.orderWeight && b.orderWeight) {
+          if (a.orderWeight === b.orderWeight) {
+            return 0;
+          } else {
+            return a.orderWeight < b.orderWeight ? -1 : 1;
+          }
+        } else if (a.orderWeight) {
+          return 1;
+        } else if (b.orderWeight) {
+          return -1;
+        } else {
+          return a.updatedTs - b.updatedTs;
+        }
+      })
+      .reverse();
+  };
+
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[]) => {
       if (userId) {
@@ -92,11 +118,42 @@ export const useRoster = ({
           let newRoster = roster;
           roomsIn.forEach(room => {
             newRoster = newRoster.filter(x => room.id !== x.id);
-            newRoster.push(eventRoomToRoom(room, userId));
+            const r = eventRoomToRoom(room, userId);
+
+            const badge = badges[r.id];
+
+            if (badge?.lastUnreadMessageId) {
+              newRoster.push({ ...r, orderWeight: badge.lastUnreadMessageId });
+            } else {
+              newRoster.push(r);
+            }
           });
           // TODO: convert ts to milliseconds from microseconds
-          newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
+          // newRoster.sort((a, b) => b.updatedTs - a.updatedTs);
+          newRoster = sortRoster(newRoster);
           return newRoster;
+        });
+      }
+    },
+    [userId]
+  );
+
+  const updateRosterWithBadge = React.useCallback(
+    (badge: EventBadge) => {
+      if (userId) {
+        setRoster(roster => {
+          const newRoster = roster.map(room => {
+            if (room.id === badge.roomId && badge.count > 0) {
+              const { lastUnreadMessageId } = badge;
+              return { ...room, orderWeight: lastUnreadMessageId };
+            } else if (room.id === badge.roomId && badge.count === 0) {
+              return { ...room };
+            } else {
+              return room;
+            }
+          });
+
+          return sortRoster(newRoster);
         });
       }
     },
@@ -137,7 +194,7 @@ export const useRoster = ({
 
         if (x.msgType === "Stream.GetOk") {
           updateRoster(x.items);
-          setOldestRoomTs(Math.min(...x.items.map(x => x.updatedTs), oldestRoomTs || Infinity));
+          setOldestRoomTs(Math.min(...x.items.map(x => x.createdTs), oldestRoomTs || Infinity));
           if (x.items.length === 0) {
             setRosterLoaded(true);
           }
@@ -147,10 +204,38 @@ export const useRoster = ({
   }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
 
   React.useEffect(() => {
+    if (fogSessionId && rosterLoaded) {
+      // TODO maybe there's a better way to tell users and agents apart?
+      if (userId && userId.startsWith("a")) {
+        serverCall({
+          msgType: "Stream.Get",
+          topic: `agent/${userId}/badges`,
+        })
+          .then(rejectIfUnmounted)
+          .then(x => {
+            console.assert(x.msgType === "Stream.GetOk");
+            if (x.msgType === "Stream.GetOk") {
+              x.items.forEach(b => {
+                if (b.msgType === "Event.Badge") {
+                  updateBadge(b);
+                  updateRosterWithBadge(b);
+                }
+              });
+            }
+          })
+          .catch(() => {});
+      }
+    }
+  }, [userId, rosterLoaded, serverCall]);
+
+  React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage]);
+    } else if (lastIncomingMessage?.msgType === "Event.Badge") {
+      updateBadge(lastIncomingMessage);
+      updateRosterWithBadge(lastIncomingMessage);
     }
-  }, [lastIncomingMessage, updateRoster]);
+  }, [lastIncomingMessage, updateRoster, updateRosterWithBadge]);
 
   const createRoom = React.useCallback(
     (
@@ -268,6 +353,28 @@ export const useRoster = ({
     });
   }, [workspaceId, updateCustomers, serverCall]);
 
+  const updateBadge = React.useCallback(
+    (b: EventBadge) => {
+      setBadges(x => {
+        x[b.roomId] = x[b.roomId] || {};
+        x[b.roomId] = b;
+      });
+    },
+    [setBadges]
+  );
+
+  React.useEffect(() => {
+    // TODO maybe there's a better way to tell users and agents apart?
+    if (userId && userId.startsWith("a")) {
+      serverCall({
+        msgType: "Stream.Sub",
+        topic: `agent/${userId}/badges`,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [fogSessionId, updateBadge, workspaceId, userId, serverCall]);
+
   return {
     roster,
     roomById,
@@ -278,6 +385,7 @@ export const useRoster = ({
     createRoom,
     updateRoom,
     customers,
+    badges,
   };
 };
 
@@ -324,7 +432,8 @@ export const useRoomMembers = ({
               y.push(r);
             });
           });
-        });
+        })
+        .catch(() => {});
     }
   }, [roomUpdate, roomId, token, serverCall]);
 

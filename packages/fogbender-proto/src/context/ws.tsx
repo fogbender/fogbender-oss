@@ -1,7 +1,6 @@
 import {
   AnyToken,
   EventAgent,
-  EventBadge,
   EventMessage,
   EventNotificationMessage,
   EventTyping,
@@ -676,8 +675,6 @@ export const useNotifications = ({
   userId: string | undefined;
 }) => {
   const { fogSessionId, token, serverCall, lastIncomingMessage } = useWs();
-  const rejectIfUnmounted = useRejectIfUnmounted();
-  const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
   const [agents, setAgents] = useImmer<EventAgent[]>([]);
@@ -700,42 +697,9 @@ export const useNotifications = ({
     [setAgents]
   );
 
-  const updateBadge = React.useCallback(
-    (b: EventBadge) => {
-      setBadges(x => {
-        x[b.roomId] = x[b.roomId] || {};
-        x[b.roomId] = b;
-      });
-    },
-    [setBadges]
-  );
-
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
     if (token && userId && userId.startsWith("a")) {
-      serverCall({
-        msgType: "Stream.Get",
-        topic: `agent/${userId}/badges`,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
-          if (x.msgType === "Stream.GetOk") {
-            x.items.forEach(b => {
-              if (b.msgType === "Event.Badge") {
-                updateBadge(b);
-              }
-            });
-          }
-        })
-        .catch(() => {});
-      serverCall({
-        msgType: "Stream.Sub",
-        topic: `agent/${userId}/badges`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-
       serverCall({
         msgType: "Stream.Sub",
         topic: `agent/${userId}/seen`,
@@ -750,15 +714,13 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, updateAgent, updateBadge, token, workspaceId, vendorId, userId, serverCall]);
+  }, [fogSessionId, updateAgent, token, workspaceId, vendorId, userId, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Notification.Message") {
       setNotification(lastIncomingMessage);
-    } else if (lastIncomingMessage?.msgType === "Event.Badge") {
-      updateBadge(lastIncomingMessage);
     }
-  }, [updateBadge, setNotification, lastIncomingMessage]);
+  }, [setNotification, lastIncomingMessage]);
 
-  return { agents, badges, notification, lastIncomingMessage };
+  return { agents, notification, lastIncomingMessage };
 };
