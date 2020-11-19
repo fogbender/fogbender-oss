@@ -6,7 +6,6 @@ import {
   EventBadge,
   EventCustomer,
   EventRoom,
-  EventTag,
   RoomCreate,
   RoomMember,
   RoomOk,
@@ -459,7 +458,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         topic,
       })
         .then(rejectIfUnmounted)
-        .then((x: StreamGetOk<EventTag>) => {
+        .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
           console.log(x);
         })
