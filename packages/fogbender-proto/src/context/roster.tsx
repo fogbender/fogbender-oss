@@ -6,6 +6,7 @@ import {
   EventBadge,
   EventCustomer,
   EventRoom,
+  EventTag,
   RoomCreate,
   RoomMember,
   RoomOk,
@@ -438,4 +439,40 @@ export const useRoomMembers = ({
   }, [roomUpdate, roomId, token, serverCall]);
 
   return { rooms };
+};
+
+export const useUserTags = ({ userId }: { userId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  React.useEffect(() => {
+    if (userId && lastIncomingMessage?.msgType === "Event.Tag") {
+      console.log(lastIncomingMessage);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (userId && userId.startsWith("u") && token) {
+      const topic = `user/${userId}/tags`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then((x: StreamGetOk<EventTag>) => {
+          console.assert(x.msgType === "Stream.GetOk");
+          console.log(x);
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [userId, token, serverCall]);
+
+  return {};
 };
