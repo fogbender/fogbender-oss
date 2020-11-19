@@ -289,6 +289,7 @@ export type AuthOk = {
   sessionId: string;
   userId: string;
   helpdeskId: string;
+  helpdesk?: Helpdesk;
 };
 
 export type EchoGet = {
@@ -313,7 +314,7 @@ export type PingPong = {
   msgType: "Ping.Pong";
 };
 
-// EVENTS
+// BEGIN events
 
 export type MessageLink = {
   sourceMessageId: string;
@@ -324,24 +325,6 @@ export type MessageLink = {
   targetFromName: string;
   targetInsertedTs: number;
 };
-
-export declare type File = {
-  id: string;
-  filename: string;
-  contentType: string;
-  thumbnail?: {
-    url: string;
-    height: number;
-    width: number;
-  };
-} & (
-  | {
-      fileBase64: string;
-    }
-  | {
-      fileUrl: string;
-    }
-);
 
 export type EventMessage = {
   msgId?: string;
@@ -433,11 +416,6 @@ export type EventAgent = {
   updatedById: string;
 };
 
-export type TypingUser = {
-  id: string;
-  name: string;
-};
-
 export type EventTyping = {
   msgId?: string;
   msgType: "Event.Typing";
@@ -452,14 +430,7 @@ export type EventSeen = {
   messageId?: string;
 };
 
-export type Customer = {
-  id: string;
-  name: string;
-};
-
 // deprecated
-export type RoomStatus = "active" | "progress" | "closed" | "archived" | "removed";
-
 export type EventRoom = {
   msgId?: string;
   msgType: "Event.Room";
@@ -483,6 +454,47 @@ export type EventRoom = {
   status: RoomStatus; // deprecated
 };
 
+// END events
+
+// BEGIN nested types
+export type RoomStatus = "active" | "progress" | "closed" | "archived" | "removed";
+
+export type TypingUser = {
+  id: string;
+  name: string;
+};
+
+export declare type File = {
+  id: string;
+  filename: string;
+  contentType: string;
+  thumbnail?: {
+    url: string;
+    height: number;
+    width: number;
+  };
+} & (
+  | {
+      fileBase64: string;
+    }
+  | {
+      fileUrl: string;
+    }
+);
+
+export type Customer = {
+  id: string;
+  name: string;
+};
+
+export type EventTag = {
+  msgId?: string;
+  msgType: "Event.Tag";
+  id: string;
+  name: string;
+  remove?: boolean;
+};
+
 export type RoomMember = {
   id: string;
   type: "agent" | "user";
@@ -494,13 +506,11 @@ export type RoomMember = {
 export type Tag = {
   id: string;
   name: string;
-  workspaceId: string;
+  workspaceId?: string;
 };
 
-export type EventTag = {
-  msgId?: string;
-  msgType: "Event.Tag";
+export type Helpdesk = {
   id: string;
-  name: string;
-  remove?: boolean;
+  tags: Tag[];
 };
+// END nested types
