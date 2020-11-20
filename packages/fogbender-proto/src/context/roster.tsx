@@ -6,6 +6,7 @@ import {
   EventBadge,
   EventCustomer,
   EventRoom,
+  EventTag,
   RoomCreate,
   RoomMember,
   RoomOk,
@@ -13,6 +14,7 @@ import {
   SearchOk,
   StreamGetOk,
   StreamSubOk,
+  StreamUnSubOk,
 } from "../schema";
 
 import { useWs } from "./ws";
@@ -438,4 +440,69 @@ export const useRoomMembers = ({
   }, [roomUpdate, roomId, token, serverCall]);
 
   return { rooms };
+};
+
+export const useUserTags = ({ userId }: { userId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  const [tags, setTags] = React.useState<{ id: string; name: string }[]>([]);
+
+  const updateTags = React.useCallback(
+    (tagsIn: EventTag[]) => {
+      let newTags = tags;
+      tagsIn.forEach(tag => {
+        newTags = newTags.filter(x => x.id !== tag.id);
+        if (!tag.remove) {
+          newTags.push({ id: tag.id, name: tag.name });
+        }
+      });
+      setTags(newTags);
+    },
+    [tags]
+  );
+
+  React.useEffect(() => {
+    if (userId && lastIncomingMessage?.msgType === "Event.Tag") {
+      updateTags([lastIncomingMessage]);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (userId && userId.startsWith("u") && token) {
+      const topic = `user/${userId}/tags`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          updateTags(x.items as EventTag[]);
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [userId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (userId && userId.startsWith("u") && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `user/${userId}/tags`,
+        }).then((x: StreamUnSubOk) => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [userId, serverCall]);
+
+  return { tags };
 };

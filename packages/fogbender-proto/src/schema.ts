@@ -50,7 +50,14 @@ export type APISchema = {
   StreamGetRPC: RPC<
     StreamGet,
     StreamGetOk<
-      EventCustomer | EventRoom | EventMessage | EventTyping | EventSeen | EventBadge | EventAgent
+      | EventCustomer
+      | EventRoom
+      | EventMessage
+      | EventTyping
+      | EventSeen
+      | EventBadge
+      | EventAgent
+      | EventTag
     >
   >;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
@@ -71,6 +78,7 @@ export type APISchema = {
   EventNotificationMessageEVT: RPC<undefined, EventNotificationMessage>;
   EventBadgeEVT: RPC<undefined, EventBadge>;
   EventCustomerEVT: RPC<undefined, EventCustomer>;
+  EventTagEVT: RPC<undefined, EventTag>;
 };
 
 export type Error<Type> = {
@@ -487,4 +495,12 @@ export type Tag = {
   id: string;
   name: string;
   workspaceId: string;
+};
+
+export type EventTag = {
+  msgId?: string;
+  msgType: "Event.Tag";
+  id: string;
+  name: string;
+  remove?: boolean;
 };
