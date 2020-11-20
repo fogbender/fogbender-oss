@@ -3,7 +3,7 @@ import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import { AnyToken, FogSchema, ServerCalls, ServerEvents } from "./schema";
+import { AnyToken, Helpdesk, FogSchema, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
 type Requests = {
@@ -31,6 +31,7 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
 };
 
 export function useServerWs(client: Client, token: AnyToken | undefined) {
+  const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
   >();
@@ -152,6 +153,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
             if (r.msgType === "Auth.Ok") {
               const { sessionId, userId, helpdeskId } = r;
               authenticated.current = true;
+              setHelpdesk(r.helpdesk);
               client.setSession?.(sessionId, userId, helpdeskId);
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
@@ -188,6 +190,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
                 if (r.msgType === "Auth.Ok") {
                   const { sessionId } = r;
                   authenticated.current = true;
+                  setHelpdesk(r.helpdesk);
                   client.setSession?.(sessionId);
                 } else if (r.msgType === "Auth.Err") {
                   if (r.code === 401 || r.code === 403) {
@@ -213,6 +216,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     return () => {
       authenticated.current = false;
       wrongToken.current = false;
+      setHelpdesk(undefined);
     };
   }, [token]);
 
@@ -245,7 +249,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
       clearInterval(interval);
     };
   }, [getWebSocket, readyState, serverCall, isConnected]);
-  return { serverCall, lastIncomingMessage, respondToMessage };
+  return { serverCall, lastIncomingMessage, respondToMessage, helpdesk };
 }
 
 function ensureId(message: ServerCalls["orig"]): FogSchema["outbound"] {
