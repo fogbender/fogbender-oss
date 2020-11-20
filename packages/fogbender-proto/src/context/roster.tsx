@@ -443,7 +443,7 @@ export const useRoomMembers = ({
 };
 
 export const useUserTags = ({ userId }: { userId: string | undefined }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const { token, serverCall, lastIncomingMessage, helpdesk } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [tags, setTags] = React.useState<{ id: string; name: string }[]>([]);
@@ -504,5 +504,5 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
     };
   }, [userId, serverCall]);
 
-  return { tags };
+  return { tags, helpdeskTags: helpdesk?.tags || [] };
 };
