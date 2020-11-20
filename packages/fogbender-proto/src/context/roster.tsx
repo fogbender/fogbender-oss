@@ -13,6 +13,7 @@ import {
   SearchOk,
   StreamGetOk,
   StreamSubOk,
+  StreamUnSubOk,
 } from "../schema";
 
 import { useWs } from "./ws";
@@ -472,6 +473,19 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
       });
     }
   }, [userId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (userId && userId.startsWith("u") && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `user/${userId}/tags`,
+        }).then((x: StreamUnSubOk) => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [userId, serverCall]);
 
   return {};
 };
