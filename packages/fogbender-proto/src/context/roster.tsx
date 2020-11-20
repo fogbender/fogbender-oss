@@ -6,6 +6,7 @@ import {
   EventBadge,
   EventCustomer,
   EventRoom,
+  EventTag,
   RoomCreate,
   RoomMember,
   RoomOk,
@@ -445,9 +446,25 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
   const { token, serverCall, lastIncomingMessage } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
 
+  const [tags, setTags] = React.useState<{ id: string; name: string }[]>([]);
+
+  const updateTags = React.useCallback(
+    (tagsIn: EventTag[]) => {
+      let newTags = tags;
+      tagsIn.forEach(tag => {
+        newTags = newTags.filter(x => x.id !== tag.id);
+        if (!tag.remove) {
+          newTags.push({ id: tag.id, name: tag.name });
+        }
+      });
+      setTags(newTags);
+    },
+    [tags]
+  );
+
   React.useEffect(() => {
     if (userId && lastIncomingMessage?.msgType === "Event.Tag") {
-      console.log(lastIncomingMessage);
+      updateTags([lastIncomingMessage]);
     }
   }, [lastIncomingMessage]);
 
@@ -461,7 +478,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
-          console.log(x);
+          updateTags(x.items as EventTag[]);
         })
         .catch(() => {});
 
@@ -487,5 +504,5 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
     };
   }, [userId, serverCall]);
 
-  return {};
+  return { tags };
 };
