@@ -561,6 +561,27 @@ export const useRoomHistory = ({
     [roomId, serverCall]
   );
 
+  const messageCreateMany = React.useCallback(
+    (messages: MessageCreate[]) => {
+      serverCall({
+        msgType: "Message.CreateMany",
+        clientId: messages.map(m => m.clientId).join("-"),
+        messages: messages,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Message.Ok");
+          x?.messageIds?.forEach(messageId => {
+            if (messages.every(m => m.roomId === roomId)) {
+              setSeenUpToMessageId(messageId);
+            }
+          });
+        })
+        .catch(() => {});
+    },
+    [roomId, serverCall]
+  );
+
   React.useEffect(() => {
     return () => {
       clearLatestHistory();
@@ -596,6 +617,7 @@ export const useRoomHistory = ({
     onSeen,
     seenUpToMessageId,
     messageCreate,
+    messageCreateMany,
   };
 };
 
