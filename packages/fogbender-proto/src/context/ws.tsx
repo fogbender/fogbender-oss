@@ -12,9 +12,9 @@ import {
   StreamUnSubOk,
 } from "../schema";
 import throttle from "lodash.throttle";
-import React from "react";
 import { atom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
+import React from "react";
 
 import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
@@ -547,8 +547,8 @@ export const useRoomHistory = ({
   }, [roomId, token, userId, serverCall]);
 
   const messageCreate = React.useCallback(
-    (args: MessageCreate) => {
-      serverCall(args)
+    async (args: MessageCreate) =>
+      await serverCall(args)
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Message.Ok");
@@ -556,8 +556,28 @@ export const useRoomHistory = ({
             setSeenUpToMessageId(x.messageId);
           }
         })
-        .catch(() => {});
-    },
+        .catch(() => {}),
+    [roomId, serverCall]
+  );
+
+  const messageCreateMany = React.useCallback(
+    async (messages: MessageCreate[]) =>
+      await serverCall({
+        msgType: "Message.CreateMany",
+        clientId: messages.map(m => m.clientId).join("-"),
+        messages: messages,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Message.Ok");
+          x?.messageIds?.forEach(messageId => {
+            if (messages.every(m => m.roomId === roomId)) {
+              setSeenUpToMessageId(messageId);
+            }
+          });
+          return x;
+        })
+        .catch(() => {}),
     [roomId, serverCall]
   );
 
@@ -596,6 +616,7 @@ export const useRoomHistory = ({
     onSeen,
     seenUpToMessageId,
     messageCreate,
+    messageCreateMany,
   };
 };
 

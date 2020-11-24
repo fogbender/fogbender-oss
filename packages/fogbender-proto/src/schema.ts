@@ -61,6 +61,7 @@ export type APISchema = {
     >
   >;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
+  MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
@@ -203,6 +204,13 @@ export type MessageCreate = {
   linkType?: "forward" | "reply";
 };
 
+export type MessageCreateMany = {
+  msgId?: string;
+  msgType: "Message.CreateMany";
+  clientId: string;
+  messages: MessageCreate[];
+};
+
 export type FileUpload = {
   msgId?: string;
   msgType: "File.Upload";
@@ -238,7 +246,8 @@ export type MessageSeen = {
 export type MessageOk = {
   msgId: string;
   msgType: "Message.Ok";
-  messageId: string;
+  messageId?: string;
+  messageIds?: string[];
 };
 
 export type TypingSet = {
