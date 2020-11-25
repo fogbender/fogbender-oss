@@ -19,7 +19,7 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { Client } from "../client";
-import { extractEventMessage, extractEventSeen } from "../utils/castTypes";
+import { extractEventMessage, extractEventSeen, extractEventTyping } from "../utils/castTypes";
 
 export type Author = {
   id: string;
@@ -656,8 +656,10 @@ export const useRoomTyping = ({
       .then(rejectIfUnmounted)
       .then(x => {
         console.assert(x.msgType === "Stream.SubOk");
-        if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
-          processTypingEvent(x.items[0]);
+        if (x.msgType === "Stream.SubOk") {
+          extractEventTyping(x.items).forEach(t => {
+            processTypingEvent(t);
+          });
         }
       })
       .catch(() => {});

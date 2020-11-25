@@ -1,4 +1,12 @@
-import { EventRoom, EventMessage, EventBadge, EventCustomer, EventTag, EventSeen } from "../schema";
+import {
+  EventRoom,
+  EventMessage,
+  EventBadge,
+  EventCustomer,
+  EventTag,
+  EventSeen,
+  EventTyping,
+} from "../schema";
 
 // suppose you have `items` or type `(A|B|C)[]` but you know it's actually just `A[]`
 // running `extractA(items)` will return you type of `A[]`, it will check that it's
@@ -34,6 +42,8 @@ const isEventCustomer = (x: ExtendsMessage<EventCustomer>): x is EventCustomer =
   x.msgType === "Event.Customer";
 const isEventTag = (x: ExtendsMessage<EventTag>): x is EventTag => x.msgType === "Event.Tag";
 const isEventSeen = (x: ExtendsMessage<EventSeen>): x is EventSeen => x.msgType === "Event.Seen";
+const isEventTyping = (x: ExtendsMessage<EventTyping>): x is EventTyping =>
+  x.msgType === "Event.Typing";
 
 export function extractEventRoom(items: ExtendsMessage<EventRoom>[]) {
   return extract(items, isEventRoom);
@@ -57,4 +67,8 @@ export function extractEventTag(items: ExtendsMessage<EventTag>[]) {
 
 export function extractEventSeen(items: ExtendsMessage<EventSeen>[]) {
   return extract(items, isEventSeen);
+}
+
+export function extractEventTyping(items: ExtendsMessage<EventTyping>[]) {
+  return extract(items, isEventTyping);
 }
