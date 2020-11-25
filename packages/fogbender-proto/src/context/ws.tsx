@@ -19,7 +19,7 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { Client } from "../client";
-import { extractEventMessage } from "../utils/castTypes";
+import { extractEventMessage, extractEventSeen } from "../utils/castTypes";
 
 export type Author = {
   id: string;
@@ -534,7 +534,7 @@ export const useRoomHistory = ({
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
+            const seen = extractEventSeen(x.items).find(s => s.roomId === roomId);
 
             if (seen && seen.msgType === "Event.Seen") {
               setSeenUpToMessageId(seen.messageId);

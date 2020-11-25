@@ -18,7 +18,12 @@ import {
 import { useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { extractEventRoom } from "../utils/castTypes";
+import {
+  extractEventBadge,
+  extractEventCustomer,
+  extractEventRoom,
+  extractEventTag,
+} from "../utils/castTypes";
 
 export type Room = EventRoom & {
   orderWeight?: string;
@@ -216,11 +221,9 @@ export const useRoster = ({
           .then(x => {
             console.assert(x.msgType === "Stream.GetOk");
             if (x.msgType === "Stream.GetOk") {
-              x.items.forEach(b => {
-                if (b.msgType === "Event.Badge") {
-                  updateBadge(b);
-                  updateRosterWithBadge(b);
-                }
+              extractEventBadge(x.items).forEach(b => {
+                updateBadge(b);
+                updateRosterWithBadge(b);
               });
             }
           })
@@ -343,7 +346,7 @@ export const useRoster = ({
     }).then(x => {
       console.assert(x.msgType === "Stream.GetOk");
       if (x.msgType === "Stream.GetOk") {
-        updateCustomers(x.items as EventCustomer[]);
+        updateCustomers(extractEventCustomer(x.items));
       }
     });
     serverCall({
@@ -477,7 +480,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
-          updateTags(x.items as EventTag[]);
+          updateTags(extractEventTag(x.items));
         })
         .catch(() => {});
 
