@@ -7,10 +7,8 @@ import {
   File,
   MessageCreate,
   MessageLink,
-  MessageOk,
+  MessageSeen,
   StreamGet,
-  StreamGetOk,
-  StreamUnSubOk,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -341,7 +339,7 @@ export const useRoomHistory = ({
       .then(async x => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(x.items as EventMessage[], "page");
+          await processAndStoreMessages(extractEventMessage(x.items), "page");
           setNewerHistoryComplete(true);
           setSubscribed(true);
           setSubscribing(false);
@@ -364,17 +362,18 @@ export const useRoomHistory = ({
   const fetchOlderPage = React.useCallback(
     ts => {
       setFetchingOlder(true);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            await processAndStoreMessages(x.items as EventMessage[], "page");
-            if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
+            const items = extractEventMessage(x.items);
+            await processAndStoreMessages(items, "page");
+            if (items.length === 0 || items.every(x => messages.find(m => m.id === x.id))) {
               setOlderHistoryComplete(true);
             }
             setFetchingOlder(false);
@@ -390,16 +389,16 @@ export const useRoomHistory = ({
   const fetchNewerPage = React.useCallback(
     ts => {
       setFetchingNewer(true);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            await processAndStoreMessages(x.items as EventMessage[], "page");
+            await processAndStoreMessages(extractEventMessage(x.items), "page");
             setFetchingNewer(false);
           }
         })
@@ -415,17 +414,17 @@ export const useRoomHistory = ({
     (aroundId: string) => {
       setIsAroundFetching(true);
       setIsAroundFetched(false);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
             setHistoryMode("around");
-            await processAndStoreMessages(x.items as EventMessage[], "page");
+            await processAndStoreMessages(extractEventMessage(x.items), "page");
             setIsAroundFetched(true);
             setIsAroundFetching(false);
           }
@@ -488,11 +487,11 @@ export const useRoomHistory = ({
         setSeenUpToMessageId(messageId);
 
         // XXX TODO: this gets called twice
-        serverCall({
+        serverCall<MessageSeen>({
           msgType: "Message.Seen",
           roomId,
           messageId,
-        }).then((x: MessageOk) => {
+        }).then(x => {
           console.assert(x.msgType === "Message.Ok");
         });
       }
@@ -590,13 +589,13 @@ export const useRoomHistory = ({
       serverCall({
         msgType: "Stream.UnSub",
         topic: `room/${roomId}/typing`,
-      }).then((x: StreamUnSubOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.UnSubOk");
       });
       serverCall({
         msgType: "Stream.UnSub",
         topic: `room/${roomId}/messages`,
-      }).then((x: StreamUnSubOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.UnSubOk");
       });
     };

@@ -9,13 +9,10 @@ import {
   EventTag,
   RoomCreate,
   RoomMember,
-  RoomOk,
   RoomUpdate,
-  SearchOk,
+  SearchRoster,
   StreamGet,
-  StreamGetOk,
-  StreamSubOk,
-  StreamUnSubOk,
+  StreamSub,
 } from "../schema";
 
 import { useWs } from "./ws";
@@ -173,11 +170,11 @@ export const useRoster = ({
     }
     if (fogSessionId) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall({
+      serverCall<StreamSub>({
         msgType: "Stream.Sub",
         topic,
         before: oldestRoomTs,
-      }).then((x: StreamSubOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
@@ -195,7 +192,6 @@ export const useRoster = ({
         before: oldestRoomTs,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
-
         if (x.msgType === "Stream.GetOk") {
           const items = extractEventRoom(x.items);
           updateRoster(items);
@@ -256,7 +252,7 @@ export const useRoster = ({
         | "linkEndMessageId"
       >
     ) =>
-      serverCall({
+      serverCall<RoomCreate>({
         msgType: "Room.Create",
         name: params.name,
         type: params.type,
@@ -266,7 +262,7 @@ export const useRoster = ({
         linkRoomId: params.linkRoomId,
         linkStartMessageId: params.linkStartMessageId,
         linkEndMessageId: params.linkEndMessageId,
-      }).then((x: RoomOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -280,7 +276,7 @@ export const useRoster = ({
         "roomId" | "name" | "membersToAdd" | "membersToRemove" | "tagsToAdd" | "tagsToRemove"
       >
     ) =>
-      serverCall({
+      serverCall<RoomUpdate>({
         msgType: "Room.Update",
         roomId: params.roomId,
         name: params.name,
@@ -288,7 +284,7 @@ export const useRoster = ({
         membersToRemove: params.membersToRemove,
         tagsToAdd: params.tagsToAdd,
         tagsToRemove: params.tagsToRemove,
-      }).then((x: RoomOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -313,22 +309,22 @@ export const useRoster = ({
 
   React.useEffect(() => {
     if (userId && workspaceId && rosterFilter) {
-      serverCall({
+      serverCall<SearchRoster>({
         msgType: "Search.Roster",
         workspaceId: workspaceId,
         term: rosterFilter,
         type: "dialog",
-      }).then((x: SearchOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Search.Ok");
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
     } else if (userId && helpdeskId && rosterFilter) {
-      serverCall({
+      serverCall<SearchRoster>({
         msgType: "Search.Roster",
         helpdeskId,
         term: rosterFilter,
         type: "dialog",
-      }).then((x: SearchOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Search.Ok");
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
@@ -423,7 +419,7 @@ export const useRoomMembers = ({
         roomId,
       })
         .then(rejectIfUnmounted)
-        .then((x: SearchOk<EventRoom>) => {
+        .then(x => {
           console.assert(x.msgType === "Search.Ok");
           setRooms(y => {
             const len = y.length;
@@ -500,7 +496,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         serverCall({
           msgType: "Stream.UnSub",
           topic: `user/${userId}/tags`,
-        }).then((x: StreamUnSubOk) => {
+        }).then(x => {
           console.assert(x.msgType === "Stream.UnSubOk");
         });
       }
