@@ -8,6 +8,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageOk,
+  StreamGet,
   StreamGetOk,
   StreamUnSubOk,
 } from "../schema";
@@ -20,6 +21,7 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { Client } from "../client";
+import { extractEventMessage } from "../utils/castTypes";
 
 export type Author = {
   id: string;
@@ -289,17 +291,17 @@ export const useRoomHistory = ({
         const { id, linkRoomId, linkStartMessageId, linkEndMessageId, linkType } = message;
         if (linkRoomId && linkStartMessageId && linkEndMessageId && linkType) {
           resolveLinkTargets.push(
-            serverCall({
+            serverCall<StreamGet>({
               msgType: "Stream.Get",
               topic: `room/${linkRoomId}/messages`,
               startId: linkStartMessageId,
               endId: linkEndMessageId,
             })
               .then(rejectIfUnmounted)
-              .then((x: StreamGetOk<EventMessage>) => {
+              .then(x => {
                 console.assert(x.msgType === "Stream.GetOk");
                 if (x.msgType === "Stream.GetOk") {
-                  expandLink(id, x.items);
+                  expandLink(id, extractEventMessage(x.items));
                 }
               })
               .catch(() => {})

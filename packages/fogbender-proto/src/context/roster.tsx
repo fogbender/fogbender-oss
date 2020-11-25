@@ -12,6 +12,7 @@ import {
   RoomOk,
   RoomUpdate,
   SearchOk,
+  StreamGet,
   StreamGetOk,
   StreamSubOk,
   StreamUnSubOk,
@@ -20,6 +21,7 @@ import {
 import { useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
+import { extractEventRoom } from "../utils/castTypes";
 
 export type Room = EventRoom & {
   orderWeight?: string;
@@ -187,17 +189,18 @@ export const useRoster = ({
     }
     if (fogSessionId && !rosterLoaded) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
         before: oldestRoomTs,
-      }).then((x: StreamGetOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
 
         if (x.msgType === "Stream.GetOk") {
-          updateRoster(x.items);
-          setOldestRoomTs(Math.min(...x.items.map(x => x.createdTs), oldestRoomTs || Infinity));
-          if (x.items.length === 0) {
+          const items = extractEventRoom(x.items);
+          updateRoster(items);
+          setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
+          if (items.length === 0) {
             setRosterLoaded(true);
           }
         }
