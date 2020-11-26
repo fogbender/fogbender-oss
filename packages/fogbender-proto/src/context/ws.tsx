@@ -7,9 +7,8 @@ import {
   File,
   MessageCreate,
   MessageLink,
-  MessageOk,
-  StreamGetOk,
-  StreamUnSubOk,
+  MessageSeen,
+  StreamGet,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -20,6 +19,7 @@ import { useLoadAround } from "./loadAround";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { Client } from "../client";
+import { extractEventMessage, extractEventSeen, extractEventTyping } from "../utils/castTypes";
 
 export type Author = {
   id: string;
@@ -289,17 +289,17 @@ export const useRoomHistory = ({
         const { id, linkRoomId, linkStartMessageId, linkEndMessageId, linkType } = message;
         if (linkRoomId && linkStartMessageId && linkEndMessageId && linkType) {
           resolveLinkTargets.push(
-            serverCall({
+            serverCall<StreamGet>({
               msgType: "Stream.Get",
               topic: `room/${linkRoomId}/messages`,
               startId: linkStartMessageId,
               endId: linkEndMessageId,
             })
               .then(rejectIfUnmounted)
-              .then((x: StreamGetOk<EventMessage>) => {
+              .then(x => {
                 console.assert(x.msgType === "Stream.GetOk");
                 if (x.msgType === "Stream.GetOk") {
-                  expandLink(id, x.items);
+                  expandLink(id, extractEventMessage(x.items));
                 }
               })
               .catch(() => {})
@@ -339,7 +339,7 @@ export const useRoomHistory = ({
       .then(async x => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(x.items as EventMessage[], "page");
+          await processAndStoreMessages(extractEventMessage(x.items), "page");
           setNewerHistoryComplete(true);
           setSubscribed(true);
           setSubscribing(false);
@@ -362,17 +362,18 @@ export const useRoomHistory = ({
   const fetchOlderPage = React.useCallback(
     ts => {
       setFetchingOlder(true);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            await processAndStoreMessages(x.items as EventMessage[], "page");
-            if (x.items.length === 0 || x.items.every(x => messages.find(m => m.id === x.id))) {
+            const items = extractEventMessage(x.items);
+            await processAndStoreMessages(items, "page");
+            if (items.length === 0 || items.every(x => messages.find(m => m.id === x.id))) {
               setOlderHistoryComplete(true);
             }
             setFetchingOlder(false);
@@ -388,16 +389,16 @@ export const useRoomHistory = ({
   const fetchNewerPage = React.useCallback(
     ts => {
       setFetchingNewer(true);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            await processAndStoreMessages(x.items as EventMessage[], "page");
+            await processAndStoreMessages(extractEventMessage(x.items), "page");
             setFetchingNewer(false);
           }
         })
@@ -413,17 +414,17 @@ export const useRoomHistory = ({
     (aroundId: string) => {
       setIsAroundFetching(true);
       setIsAroundFetched(false);
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
       })
         .then(rejectIfUnmounted)
-        .then(async (x: StreamGetOk<EventMessage>) => {
+        .then(async x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
             setHistoryMode("around");
-            await processAndStoreMessages(x.items as EventMessage[], "page");
+            await processAndStoreMessages(extractEventMessage(x.items), "page");
             setIsAroundFetched(true);
             setIsAroundFetching(false);
           }
@@ -486,11 +487,11 @@ export const useRoomHistory = ({
         setSeenUpToMessageId(messageId);
 
         // XXX TODO: this gets called twice
-        serverCall({
+        serverCall<MessageSeen>({
           msgType: "Message.Seen",
           roomId,
           messageId,
-        }).then((x: MessageOk) => {
+        }).then(x => {
           console.assert(x.msgType === "Message.Ok");
         });
       }
@@ -533,7 +534,7 @@ export const useRoomHistory = ({
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            const seen = x.items.find(s => s.msgType === "Event.Seen" && s.roomId === roomId);
+            const seen = extractEventSeen(x.items).find(s => s.roomId === roomId);
 
             if (seen && seen.msgType === "Event.Seen") {
               setSeenUpToMessageId(seen.messageId);
@@ -588,13 +589,13 @@ export const useRoomHistory = ({
       serverCall({
         msgType: "Stream.UnSub",
         topic: `room/${roomId}/typing`,
-      }).then((x: StreamUnSubOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.UnSubOk");
       });
       serverCall({
         msgType: "Stream.UnSub",
         topic: `room/${roomId}/messages`,
-      }).then((x: StreamUnSubOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.UnSubOk");
       });
     };
@@ -655,8 +656,10 @@ export const useRoomTyping = ({
       .then(rejectIfUnmounted)
       .then(x => {
         console.assert(x.msgType === "Stream.SubOk");
-        if (x.msgType === "Stream.SubOk" && x.items[0]?.msgType === "Event.Typing") {
-          processTypingEvent(x.items[0]);
+        if (x.msgType === "Stream.SubOk") {
+          extractEventTyping(x.items).forEach(t => {
+            processTypingEvent(t);
+          });
         }
       })
       .catch(() => {});

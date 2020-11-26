@@ -9,17 +9,21 @@ import {
   EventTag,
   RoomCreate,
   RoomMember,
-  RoomOk,
   RoomUpdate,
-  SearchOk,
-  StreamGetOk,
-  StreamSubOk,
-  StreamUnSubOk,
+  SearchRoster,
+  StreamGet,
+  StreamSub,
 } from "../schema";
 
 import { useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
+import {
+  extractEventBadge,
+  extractEventCustomer,
+  extractEventRoom,
+  extractEventTag,
+} from "../utils/castTypes";
 
 export type Room = EventRoom & {
   orderWeight?: string;
@@ -171,11 +175,11 @@ export const useRoster = ({
     }
     if (fogSessionId) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall({
+      serverCall<StreamSub>({
         msgType: "Stream.Sub",
         topic,
         before: oldestRoomTs,
-      }).then((x: StreamSubOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
@@ -187,17 +191,17 @@ export const useRoster = ({
     }
     if (fogSessionId && !rosterLoaded) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
         before: oldestRoomTs,
-      }).then((x: StreamGetOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
-
         if (x.msgType === "Stream.GetOk") {
-          updateRoster(x.items);
-          setOldestRoomTs(Math.min(...x.items.map(x => x.createdTs), oldestRoomTs || Infinity));
-          if (x.items.length === 0) {
+          const items = extractEventRoom(x.items);
+          updateRoster(items);
+          setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
+          if (items.length === 0) {
             setRosterLoaded(true);
           }
         }
@@ -217,11 +221,9 @@ export const useRoster = ({
           .then(x => {
             console.assert(x.msgType === "Stream.GetOk");
             if (x.msgType === "Stream.GetOk") {
-              x.items.forEach(b => {
-                if (b.msgType === "Event.Badge") {
-                  updateBadge(b);
-                  updateRosterWithBadge(b);
-                }
+              extractEventBadge(x.items).forEach(b => {
+                updateBadge(b);
+                updateRosterWithBadge(b);
               });
             }
           })
@@ -253,7 +255,7 @@ export const useRoster = ({
         | "linkEndMessageId"
       >
     ) =>
-      serverCall({
+      serverCall<RoomCreate>({
         msgType: "Room.Create",
         name: params.name,
         type: params.type,
@@ -263,7 +265,7 @@ export const useRoster = ({
         linkRoomId: params.linkRoomId,
         linkStartMessageId: params.linkStartMessageId,
         linkEndMessageId: params.linkEndMessageId,
-      }).then((x: RoomOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -277,7 +279,7 @@ export const useRoster = ({
         "roomId" | "name" | "membersToAdd" | "membersToRemove" | "tagsToAdd" | "tagsToRemove"
       >
     ) =>
-      serverCall({
+      serverCall<RoomUpdate>({
         msgType: "Room.Update",
         roomId: params.roomId,
         name: params.name,
@@ -285,7 +287,7 @@ export const useRoster = ({
         membersToRemove: params.membersToRemove,
         tagsToAdd: params.tagsToAdd,
         tagsToRemove: params.tagsToRemove,
-      }).then((x: RoomOk) => {
+      }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         return x;
       }),
@@ -310,22 +312,22 @@ export const useRoster = ({
 
   React.useEffect(() => {
     if (userId && workspaceId && rosterFilter) {
-      serverCall({
+      serverCall<SearchRoster>({
         msgType: "Search.Roster",
         workspaceId: workspaceId,
         term: rosterFilter,
         type: "dialog",
-      }).then((x: SearchOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Search.Ok");
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
     } else if (userId && helpdeskId && rosterFilter) {
-      serverCall({
+      serverCall<SearchRoster>({
         msgType: "Search.Roster",
         helpdeskId,
         term: rosterFilter,
         type: "dialog",
-      }).then((x: SearchOk<EventRoom>) => {
+      }).then(x => {
         console.assert(x.msgType === "Search.Ok");
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
@@ -344,7 +346,7 @@ export const useRoster = ({
     }).then(x => {
       console.assert(x.msgType === "Stream.GetOk");
       if (x.msgType === "Stream.GetOk") {
-        updateCustomers(x.items as EventCustomer[]);
+        updateCustomers(extractEventCustomer(x.items));
       }
     });
     serverCall({
@@ -420,7 +422,7 @@ export const useRoomMembers = ({
         roomId,
       })
         .then(rejectIfUnmounted)
-        .then((x: SearchOk<EventRoom>) => {
+        .then(x => {
           console.assert(x.msgType === "Search.Ok");
           setRooms(y => {
             const len = y.length;
@@ -478,7 +480,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
-          updateTags(x.items as EventTag[]);
+          updateTags(extractEventTag(x.items));
         })
         .catch(() => {});
 
@@ -497,7 +499,7 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
         serverCall({
           msgType: "Stream.UnSub",
           topic: `user/${userId}/tags`,
-        }).then((x: StreamUnSubOk) => {
+        }).then(x => {
           console.assert(x.msgType === "Stream.UnSubOk");
         });
       }
