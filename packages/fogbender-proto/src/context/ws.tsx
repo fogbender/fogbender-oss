@@ -331,7 +331,7 @@ export const useRoomHistory = ({
     }).then(async x => {
       console.assert(x.msgType === "Stream.SubOk");
     });
-    serverCall({
+    serverCall<StreamGet>({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
     })
