@@ -9,6 +9,7 @@ import {
   MessageLink,
   MessageSeen,
   StreamGet,
+  StreamSub,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -257,11 +258,13 @@ export const useRoomHistory = ({
   roomId,
   aroundId,
   isIdle,
+  onlyForwards,
 }: {
   userId: string | undefined;
   roomId: string;
   aroundId: string | undefined;
   isIdle: boolean;
+  onlyForwards?: boolean;
 }) => {
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
@@ -325,15 +328,16 @@ export const useRoomHistory = ({
       return;
     }
     setSubscribing(true);
-    serverCall({
+    serverCall<StreamSub>({
       msgType: "Stream.Sub",
       topic: `room/${roomId}/messages`,
     }).then(async x => {
       console.assert(x.msgType === "Stream.SubOk");
     });
-    serverCall({
+    serverCall<StreamGet>({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
+      onlyForwards,
     })
       .then(rejectIfUnmounted)
       .then(async x => {
@@ -348,6 +352,7 @@ export const useRoomHistory = ({
       .catch(() => {});
   }, [
     roomId,
+    onlyForwards,
     subscribed,
     subscribing,
     processAndStoreMessages,
@@ -366,6 +371,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
+        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -381,7 +387,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, messages, serverCall, processAndStoreMessages]
+    [roomId, messages, onlyForwards, serverCall, processAndStoreMessages]
   );
 
   const [fetchingNewer, setFetchingNewer] = React.useState(false);
@@ -393,6 +399,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
+        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -404,7 +411,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, serverCall, processAndStoreMessages]
+    [roomId, onlyForwards, serverCall, processAndStoreMessages]
   );
 
   const [isAroundFetched, setIsAroundFetched] = React.useState(false);
@@ -418,6 +425,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
+        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -431,7 +439,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, serverCall, processAndStoreMessages, setHistoryMode]
+    [roomId, onlyForwards, serverCall, processAndStoreMessages, setHistoryMode]
   );
 
   const resetHistoryToLastPage = React.useCallback(() => {
@@ -507,7 +515,12 @@ export const useRoomHistory = ({
       if (lastIncomingMessage.fromId === userId) {
         onSeen(lastIncomingMessage.id);
       }
-      processAndStoreMessages([lastIncomingMessage], "event");
+      if (
+        !onlyForwards ||
+        (onlyForwards && lastIncomingMessage.links?.find(x => x.linkType === "forward"))
+      ) {
+        processAndStoreMessages([lastIncomingMessage], "event");
+      }
     } else if (
       lastIncomingMessage?.msgType === "Event.Seen" &&
       lastIncomingMessage?.roomId === roomId
@@ -581,6 +594,16 @@ export const useRoomHistory = ({
         .catch(() => {}),
     [roomId, serverCall]
   );
+
+  React.useEffect(() => {
+    clearLatestHistory();
+    clearAroundHistory();
+    setSubscribed(false);
+    setSubscribing(false);
+    setIsAroundFetched(false);
+    setOlderHistoryComplete(false);
+    setNewerHistoryComplete(false);
+  }, [onlyForwards]);
 
   React.useEffect(() => {
     return () => {
