@@ -515,7 +515,12 @@ export const useRoomHistory = ({
       if (lastIncomingMessage.fromId === userId) {
         onSeen(lastIncomingMessage.id);
       }
-      processAndStoreMessages([lastIncomingMessage], "event");
+      if (
+        !onlyForwards ||
+        (onlyForwards && lastIncomingMessage.links?.find(x => x.linkType === "forward"))
+      ) {
+        processAndStoreMessages([lastIncomingMessage], "event");
+      }
     } else if (
       lastIncomingMessage?.msgType === "Event.Seen" &&
       lastIncomingMessage?.roomId === roomId
