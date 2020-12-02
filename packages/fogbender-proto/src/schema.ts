@@ -115,6 +115,7 @@ export type RoomCreate = {
   members?: string[];
   type?: "public" | "private" | "dialog";
   tags?: string[]; // tag ids; see workspace.tags
+  meta?: string[]; // service-level tag names
   // create and forward
   linkRoomId?: string;
   linkStartMessageId?: string;
