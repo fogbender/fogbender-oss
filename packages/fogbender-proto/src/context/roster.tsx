@@ -253,6 +253,7 @@ export const useRoster = ({
         | "linkRoomId"
         | "linkStartMessageId"
         | "linkEndMessageId"
+        | "meta"
       >
     ) =>
       serverCall<RoomCreate>({
@@ -262,6 +263,7 @@ export const useRoster = ({
         members: params.members,
         helpdeskId: params.helpdeskId,
         tags: params.tags,
+        meta: params.meta,
         linkRoomId: params.linkRoomId,
         linkStartMessageId: params.linkStartMessageId,
         linkEndMessageId: params.linkEndMessageId,

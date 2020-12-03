@@ -115,6 +115,7 @@ export type RoomCreate = {
   members?: string[];
   type?: "public" | "private" | "dialog";
   tags?: string[]; // tag ids; see workspace.tags
+  meta?: string[]; // service-level tag names
   // create and forward
   linkRoomId?: string;
   linkStartMessageId?: string;
@@ -262,8 +263,9 @@ export type SearchRoster = {
   msgType: "Search.Roster";
   workspaceId?: string;
   helpdeskId?: string;
-  term: string;
-  type: "dialog";
+  type?: "dialog";
+  term?: string;
+  tag_ids?: string[];
 };
 
 export type SearchMembers = {
