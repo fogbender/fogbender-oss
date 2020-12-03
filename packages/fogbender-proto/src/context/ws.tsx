@@ -530,18 +530,19 @@ export const useRoomHistory = ({
   }, [onSeen, userId, roomId, lastIncomingMessage, processAndStoreMessages]);
 
   React.useEffect(() => {
-    if (token && userId && userId.startsWith("a")) {
+    if (token && userId) {
       // TODO maybe there's a better way to tell users and agents apart?
+      const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
       serverCall({
         msgType: "Stream.Sub",
-        topic: `agent/${userId}/seen`,
+        topic,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
 
       serverCall({
         msgType: "Stream.Get",
-        topic: `agent/${userId}/seen`,
+        topic,
       })
         .then(rejectIfUnmounted)
         .then(x => {
@@ -746,17 +747,19 @@ export const useNotifications = ({
 
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
-    if (token && userId && userId.startsWith("a")) {
+    if (token && userId) {
       serverCall({
         msgType: "Stream.Sub",
-        topic: `agent/${userId}/seen`,
+        topic: userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
 
       serverCall({
         msgType: "Stream.Sub",
-        topic: `agent/${userId}/notifications`,
+        topic: userId.startsWith("a")
+          ? `agent/${userId}/notifications`
+          : `user/${userId}/notifications`,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });

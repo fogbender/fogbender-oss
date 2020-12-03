@@ -210,25 +210,24 @@ export const useRoster = ({
   }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
 
   React.useEffect(() => {
-    if (fogSessionId && rosterLoaded) {
+    if (fogSessionId && userId && rosterLoaded) {
       // TODO maybe there's a better way to tell users and agents apart?
-      if (userId && userId.startsWith("a")) {
-        serverCall({
-          msgType: "Stream.Get",
-          topic: `agent/${userId}/badges`,
+      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            extractEventBadge(x.items).forEach(b => {
+              updateBadge(b);
+              updateRosterWithBadge(b);
+            });
+          }
         })
-          .then(rejectIfUnmounted)
-          .then(x => {
-            console.assert(x.msgType === "Stream.GetOk");
-            if (x.msgType === "Stream.GetOk") {
-              extractEventBadge(x.items).forEach(b => {
-                updateBadge(b);
-                updateRosterWithBadge(b);
-              });
-            }
-          })
-          .catch(() => {});
-      }
+        .catch(() => {});
     }
   }, [userId, rosterLoaded, serverCall]);
 
@@ -371,10 +370,11 @@ export const useRoster = ({
 
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
-    if (userId && userId.startsWith("a")) {
+    if (userId) {
+      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
       serverCall({
         msgType: "Stream.Sub",
-        topic: `agent/${userId}/badges`,
+        topic,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
