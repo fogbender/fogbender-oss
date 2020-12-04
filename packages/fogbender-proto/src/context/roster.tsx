@@ -410,7 +410,9 @@ export const useRoster = ({
     (b: EventBadge) => {
       setBadges(x => {
         x[b.roomId] = x[b.roomId] || {};
-        x[b.roomId] = b;
+        // Keep latest message from last received badge, when count is 0
+        // (otherwise we lose the message)
+        x[b.roomId] = b.count > 0 ? b : { ...x[b.roomId], count: 0 };
       });
     },
     [setBadges]
