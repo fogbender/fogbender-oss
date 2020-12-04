@@ -475,6 +475,11 @@ export type EventRoom = {
   type: "dialog" | "public" | "private";
   members?: RoomMember[];
   tags?: Tag[];
+  latestMessage?: {
+    text: string;
+    author: string;
+    created: number;
+  };
   status: RoomStatus; // deprecated
   remove?: boolean;
 };
