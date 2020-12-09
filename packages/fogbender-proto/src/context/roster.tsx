@@ -130,7 +130,7 @@ export const useRoster = ({
 
             if (badge?.lastUnreadMessageId) {
               newRoster.push({ ...r, orderWeight: badge.lastUnreadMessageId });
-            } else {
+            } else if (!room.remove) {
               newRoster.push(r);
             }
           });
