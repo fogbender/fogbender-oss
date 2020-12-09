@@ -5,3 +5,4 @@ export * from "./useServerWs";
 export * from "./context/loadAround";
 export * from "./context/roster";
 export * from "./context/ws";
+export * from "./utils/castTypes";
