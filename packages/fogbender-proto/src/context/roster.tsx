@@ -128,10 +128,12 @@ export const useRoster = ({
 
             const badge = badges[r.id];
 
-            if (badge?.lastUnreadMessageId) {
-              newRoster.push({ ...r, orderWeight: badge.lastUnreadMessageId });
-            } else if (!room.remove) {
-              newRoster.push(r);
+            if (!room.remove) {
+              if (badge?.lastUnreadMessageId) {
+                newRoster.push({ ...r, orderWeight: badge.lastUnreadMessageId });
+              } else {
+                newRoster.push(r);
+              }
             }
           });
           // TODO: convert ts to milliseconds from microseconds
