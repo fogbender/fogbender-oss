@@ -266,6 +266,7 @@ export type SearchRoster = {
   type?: "dialog";
   term?: string;
   tag_ids?: string[];
+  meta?: string[];
 };
 
 export type SearchMembers = {
