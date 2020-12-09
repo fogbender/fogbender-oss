@@ -464,6 +464,7 @@ export type EventRoom = {
   members?: RoomMember[];
   tags?: Tag[];
   status: RoomStatus; // deprecated
+  remove?: boolean;
 };
 
 // END events
