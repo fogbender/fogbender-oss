@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 // configuration types
 export type UserToken = {
   widgetId: string;
@@ -27,7 +28,7 @@ export type AnyToken = UserToken | AgentToken;
 export type RPC<Out, In> = {
   orig: Out;
   outbound: { msgId: string } & Out;
-  inbound: { msgId: string } & In;
+  inbound: FatalError | ({ msgId: string } & In);
 };
 
 export type FogSchema = APISchema[keyof APISchema];
@@ -88,6 +89,8 @@ export type Error<Type> = {
   msgId: string;
   msgType: Type;
 };
+
+export type FatalError = Error<"Error.Fatal">;
 
 export type RoomClose = {
   msgId?: string;

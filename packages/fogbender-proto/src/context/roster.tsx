@@ -321,7 +321,9 @@ export const useRoster = ({
         term: rosterFilter,
         type: "dialog",
       }).then(x => {
-        console.assert(x.msgType === "Search.Ok");
+        if (x.msgType !== "Search.Ok") {
+          throw x;
+        }
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
     } else if (userId && helpdeskId && rosterFilter) {
@@ -331,7 +333,9 @@ export const useRoster = ({
         term: rosterFilter,
         type: "dialog",
       }).then(x => {
-        console.assert(x.msgType === "Search.Ok");
+        if (x.msgType !== "Search.Ok") {
+          throw x;
+        }
         setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
       });
     } else if (userId && !rosterFilter) {
@@ -427,7 +431,9 @@ export const useRoomMembers = ({
       })
         .then(rejectIfUnmounted)
         .then(x => {
-          console.assert(x.msgType === "Search.Ok");
+          if (x.msgType !== "Search.Ok") {
+            throw x;
+          }
           setRooms(y => {
             const len = y.length;
 
@@ -483,7 +489,9 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
       })
         .then(rejectIfUnmounted)
         .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
           updateTags(extractEventTag(x.items));
         })
         .catch(() => {});
