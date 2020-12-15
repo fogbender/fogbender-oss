@@ -566,7 +566,9 @@ export const useRoomHistory = ({
       await serverCall(args)
         .then(rejectIfUnmounted)
         .then(x => {
-          console.assert(x.msgType === "Message.Ok");
+          if (x.msgType !== "Message.Ok") {
+            throw x;
+          }
           if (args.roomId === roomId) {
             setSeenUpToMessageId(x.messageId);
           }
@@ -584,7 +586,9 @@ export const useRoomHistory = ({
       })
         .then(rejectIfUnmounted)
         .then(x => {
-          console.assert(x.msgType === "Message.Ok");
+          if (x.msgType !== "Message.Ok") {
+            throw x;
+          }
           x?.messageIds?.forEach(messageId => {
             if (messages.every(m => m.roomId === roomId)) {
               setSeenUpToMessageId(messageId);
