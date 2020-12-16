@@ -88,6 +88,7 @@ export type Error<Type> = {
   error: string;
   msgId: string;
   msgType: Type;
+  data?: { [key: string]: string[] };
 };
 
 export type FatalError = Error<"Error.Fatal">;
