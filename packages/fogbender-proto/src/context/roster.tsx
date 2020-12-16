@@ -67,9 +67,20 @@ export const useRoster = ({
 }) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
-  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
   const [roster, setRoster] = useImmerAtom(rosterAtom);
+  const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
+  const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
+
+  React.useEffect(() => {
+    // Clear roster on user logout
+    if (token === undefined) {
+      setRoster(() => []);
+      setRosterLoaded(false);
+      setOldestRoomTs(Infinity);
+    }
+  }, [token]);
 
   const roomById = React.useCallback((id: string) => roster.find(r => r.id === id), [roster]);
 
@@ -167,9 +178,6 @@ export const useRoster = ({
     },
     [userId]
   );
-
-  const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
-  const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
 
   React.useEffect(() => {
     if (!workspaceId && !helpdeskId) {
