@@ -192,7 +192,6 @@ export const useRoster = ({
       serverCall<StreamSub>({
         msgType: "Stream.Sub",
         topic,
-        before: oldestRoomTs,
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
