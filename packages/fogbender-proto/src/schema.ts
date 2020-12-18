@@ -270,7 +270,7 @@ export type SearchRoster = {
   type?: "dialog";
   term?: string;
   tag_ids?: string[];
-  meta?: string[];
+  tag_names?: string[];
 };
 
 export type SearchMembers = {
