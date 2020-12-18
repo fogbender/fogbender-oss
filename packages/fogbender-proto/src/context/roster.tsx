@@ -158,7 +158,7 @@ export const useRoster = ({
         });
       }
     },
-    [userId]
+    [userId, badges]
   );
 
   const updateRosterWithBadge = React.useCallback(
@@ -428,7 +428,7 @@ export const useRoster = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, updateBadge, workspaceId, userId, serverCall]);
+  }, [fogSessionId, workspaceId, userId, serverCall]);
 
   return {
     roster,
