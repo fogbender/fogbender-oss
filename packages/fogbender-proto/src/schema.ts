@@ -74,6 +74,7 @@ export type APISchema = {
   TypingRPC: RPC<TypingSet, undefined>;
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
+  SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -292,6 +293,13 @@ export type SearchMembers = {
   roomId: string;
 };
 
+export type SearchIssues = {
+  msgId?: string;
+  msgType: "Search.Issues";
+  workspaceId: string;
+  term: string;
+};
+
 export type SearchOk<Item> = {
   msgId: string;
   msgType: "Search.Ok";
@@ -473,6 +481,21 @@ export type EventRoom = {
   tags?: Tag[];
   status: RoomStatus; // deprecated
   remove?: boolean;
+};
+
+export type IssueLabel = {
+  id: string;
+  title: string;
+};
+
+export type EventIssue = {
+  msgId?: string;
+  msgType: "Event.Issue";
+  type: "gitlab";
+  title: string;
+  id: string;
+  state: string;
+  labels?: IssueLabel[];
 };
 
 // END events

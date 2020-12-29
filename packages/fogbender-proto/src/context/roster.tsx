@@ -350,8 +350,8 @@ export const useRoster = ({
     if (userId && roomId) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
-        workspaceId: workspaceId,
-        helpdeskId: helpdeskId,
+        workspaceId,
+        helpdeskId,
         mentionRoomId: roomId,
         term: rosterFilter,
         type: "dialog",
@@ -364,7 +364,7 @@ export const useRoster = ({
     } else if (userId && workspaceId && rosterFilter) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
-        workspaceId: workspaceId,
+        workspaceId,
         term: rosterFilter,
       }).then(x => {
         if (x.msgType !== "Search.Ok") {
