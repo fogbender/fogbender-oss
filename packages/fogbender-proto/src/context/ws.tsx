@@ -795,6 +795,8 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
         }
         setIssues(x.items);
       });
+    } else {
+      setIssues([]);
     }
   }, [fogSessionId, token, workspaceId, serverCall, issuesFilter]);
 

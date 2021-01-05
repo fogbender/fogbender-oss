@@ -493,6 +493,7 @@ export type EventIssue = {
   msgType: "Event.Issue";
   type: "gitlab";
   title: string;
+  integrationId: string;
   id: string;
   state: string;
   labels?: IssueLabel[];
