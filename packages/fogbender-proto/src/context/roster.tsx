@@ -8,6 +8,7 @@ import {
   EventRoom,
   EventSeen,
   EventTag,
+  IntegrationCreateIssue,
   RoomCreate,
   RoomMember,
   RoomUpdate,
@@ -330,6 +331,19 @@ export const useRoster = ({
     [serverCall]
   );
 
+  const createIssue = React.useCallback(
+    (params: Pick<IntegrationCreateIssue, "integrationId" | "title">) =>
+      serverCall<IntegrationCreateIssue>({
+        msgType: "Integration.CreateIssue",
+        integrationId: params.integrationId,
+        title: params.title,
+      }).then(x => {
+        console.assert(x.msgType === "Integration.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
   const customersRef = React.useRef<EventCustomer[]>([]);
   const customers = customersRef.current;
 
@@ -432,6 +446,7 @@ export const useRoster = ({
     setRosterFilter,
     createRoom,
     updateRoom,
+    createIssue,
     customers,
     badges,
   };

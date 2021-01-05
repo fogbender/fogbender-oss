@@ -43,6 +43,7 @@ export type APISchema = {
   RoomInProgressRPC: RPC<RoomInProgress, RoomOk>;
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
+  IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
   StreamSubRPC: RPC<
     StreamSub,
     StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
@@ -143,6 +144,19 @@ export type RoomOk = {
   msgId: string;
   msgType: "Room.Ok";
   roomId: string;
+};
+
+export type IntegrationCreateIssue = {
+  msgId?: string;
+  msgType: "Integration.CreateIssue";
+  integrationId: string;
+  title: string;
+};
+
+export type IntegrationOk = {
+  msgId: string;
+  msgType: "Integration.Ok";
+  issueId?: string;
 };
 
 export type StreamSub = {
