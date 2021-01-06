@@ -6,6 +6,7 @@ import {
   EventBadge,
   EventCustomer,
   EventRoom,
+  EventSeen,
   EventTag,
   RoomCreate,
   RoomMember,
@@ -22,6 +23,7 @@ import {
   extractEventBadge,
   extractEventCustomer,
   extractEventRoom,
+  extractEventSeen,
   extractEventTag,
 } from "../utils/castTypes";
 
@@ -55,6 +57,7 @@ function useImmer<T>(initialValue: T) {
 const rosterAtom = atom<Room[]>([]);
 const rosterLoadedAtom = atom(false);
 const oldestRoomTsAtom = atom(Infinity);
+const seenRosterAtom = atom<{ [key: string]: EventSeen }>({});
 
 export const useRoster = ({
   workspaceId,
@@ -72,6 +75,7 @@ export const useRoster = ({
   const [roster, setRoster] = useImmerAtom(rosterAtom);
   const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
   const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
+  const [seenRoster, setSeenRoster] = useImmerAtom(seenRosterAtom);
 
   React.useEffect(() => {
     // Clear roster on user logout
@@ -242,11 +246,42 @@ export const useRoster = ({
   }, [userId, rosterLoaded, serverCall]);
 
   React.useEffect(() => {
+    if (token && userId) {
+      // TODO maybe there's a better way to tell users and agents apart?
+      const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          console.log("seenRoster");
+          console.log(x);
+          if (x.msgType === "Stream.GetOk") {
+            const seen = extractEventSeen(x.items);
+            seen.forEach(x => setSeenRoster(r => ({ ...r, [x.roomId]: x })));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [token, userId, serverCall]);
+
+  React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Badge") {
       updateBadge(lastIncomingMessage);
       updateRosterWithBadge(lastIncomingMessage);
+    } else if (lastIncomingMessage?.msgType === "Event.Seen") {
+      setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
     }
   }, [lastIncomingMessage, updateRoster, updateRosterWithBadge]);
 
@@ -278,6 +313,7 @@ export const useRoster = ({
         linkEndMessageId: params.linkEndMessageId,
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
+        setSeenRoster(roster => ({ ...roster, [Date.now() * 1000]: x }));
         return x;
       }),
     [serverCall]
@@ -397,6 +433,7 @@ export const useRoster = ({
 
   return {
     roster,
+    seenRoster,
     roomById,
     filteredRoster,
     filteredRooms,
