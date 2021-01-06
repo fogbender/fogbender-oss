@@ -263,8 +263,6 @@ export const useRoster = ({
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
-          console.log("seenRoster");
-          console.log(x);
           if (x.msgType === "Stream.GetOk") {
             const seen = extractEventSeen(x.items);
             seen.forEach(x => setSeenRoster(r => ({ ...r, [x.roomId]: x })));
