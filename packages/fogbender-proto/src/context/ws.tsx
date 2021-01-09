@@ -783,18 +783,27 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
   const [issuesFilter, setIssuesFilter] = React.useState<string>();
   const [issues, setIssues] = React.useState([] as EventIssue[]);
 
+  const searchIssues: (workspaceId: string, issuesFilter: string) => void = React.useCallback(
+    throttle(
+      (workspaceId: string, issuesFilter: string) =>
+        serverCall({
+          msgType: "Search.Issues",
+          workspaceId,
+          term: issuesFilter,
+        }).then(x => {
+          if (x.msgType !== "Search.Ok") {
+            throw x;
+          }
+          setIssues(x.items);
+        }),
+      2000
+    ),
+    [serverCall]
+  );
+
   React.useEffect(() => {
     if (token && issuesFilter && workspaceId) {
-      serverCall({
-        msgType: "Search.Issues",
-        workspaceId,
-        term: issuesFilter,
-      }).then(x => {
-        if (x.msgType !== "Search.Ok") {
-          throw x;
-        }
-        setIssues(x.items);
-      });
+      searchIssues(workspaceId, issuesFilter);
     } else {
       setIssues([]);
     }
