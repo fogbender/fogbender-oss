@@ -217,6 +217,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
       authenticated.current = false;
       wrongToken.current = false;
       setHelpdesk(undefined);
+      getWebSocket()?.close();
     };
   }, [token]);
 
