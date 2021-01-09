@@ -93,6 +93,9 @@ export const useRoster = ({
   }, [token]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
+  const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
+    rawRoster,
+  ]);
 
   const [badges, setBadges] = useImmerAtom(badgesAtom);
 
@@ -440,6 +443,7 @@ export const useRoster = ({
     roster,
     seenRoster,
     roomById,
+    roomByName,
     filteredRoster,
     filteredRooms,
     filteredDialogs,
