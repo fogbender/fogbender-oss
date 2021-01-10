@@ -151,6 +151,9 @@ export type IntegrationCreateIssue = {
   msgType: "Integration.CreateIssue";
   integrationId: string;
   title: string;
+  linkRoomId: string;
+  linkStartMessageId: string;
+  linkEndMessageId: string;
 };
 
 export type IntegrationOk = {
