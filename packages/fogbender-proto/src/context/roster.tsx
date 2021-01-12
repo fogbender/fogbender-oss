@@ -9,6 +9,7 @@ import {
   EventSeen,
   EventTag,
   IntegrationCreateIssue,
+  IntegrationForwardToIssue,
   RoomCreate,
   RoomMember,
   RoomUpdate,
@@ -355,6 +356,27 @@ export const useRoster = ({
     [serverCall]
   );
 
+  const forwardToIssue = React.useCallback(
+    (
+      params: Pick<
+        IntegrationForwardToIssue,
+        "integrationId" | "gid" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+      >
+    ) =>
+      serverCall<IntegrationForwardToIssue>({
+        msgType: "Integration.ForwardToIssue",
+        integrationId: params.integrationId,
+        gid: params.gid,
+        linkRoomId: params.linkRoomId,
+        linkStartMessageId: params.linkStartMessageId,
+        linkEndMessageId: params.linkEndMessageId,
+      }).then(x => {
+        console.assert(x.msgType === "Integration.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
   const customersRef = React.useRef<EventCustomer[]>([]);
   const customers = customersRef.current;
 
@@ -459,6 +481,7 @@ export const useRoster = ({
     createRoom,
     updateRoom,
     createIssue,
+    forwardToIssue,
     customers,
     badges,
   };

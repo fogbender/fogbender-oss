@@ -44,6 +44,7 @@ export type APISchema = {
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
+  IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
   StreamSubRPC: RPC<
     StreamSub,
     StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
@@ -151,6 +152,16 @@ export type IntegrationCreateIssue = {
   msgType: "Integration.CreateIssue";
   integrationId: string;
   title: string;
+  linkRoomId: string;
+  linkStartMessageId: string;
+  linkEndMessageId: string;
+};
+
+export type IntegrationForwardToIssue = {
+  msgId?: string;
+  msgType: "Integration.ForwardToIssue";
+  integrationId: string;
+  gid: string;
   linkRoomId: string;
   linkStartMessageId: string;
   linkEndMessageId: string;
@@ -512,6 +523,7 @@ export type EventIssue = {
   title: string;
   integrationId: string;
   id: string;
+  gid: string;
   state: string;
   labels?: IssueLabel[];
 };
