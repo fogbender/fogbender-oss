@@ -485,7 +485,7 @@ export const useRoomHistory = ({
   );
 
   const onSeen = React.useCallback(
-    (messageId: string) => {
+    (messageId?: string) => {
       if (
         messageId &&
         !isIdle &&
@@ -499,6 +499,14 @@ export const useRoomHistory = ({
           msgType: "Message.Seen",
           roomId,
           messageId,
+        }).then(x => {
+          console.assert(x.msgType === "Message.Ok");
+        });
+      } else if (!messageId) {
+        serverCall<MessageSeen>({
+          msgType: "Message.Seen",
+          roomId,
+          messageId: undefined,
         }).then(x => {
           console.assert(x.msgType === "Message.Ok");
         });
