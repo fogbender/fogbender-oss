@@ -66,6 +66,7 @@ export type APISchema = {
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
+  MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -247,6 +248,12 @@ export type MessageSeen = {
   msgType: "Message.Seen";
   roomId: string;
   messageId?: string;
+};
+
+export type MessageUnseen = {
+  msgId?: string;
+  msgType: "Message.Unseen";
+  roomId: string;
 };
 
 export type MessageOk = {

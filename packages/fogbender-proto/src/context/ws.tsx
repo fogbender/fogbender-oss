@@ -8,6 +8,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageSeen,
+  MessageUnseen,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -485,7 +486,7 @@ export const useRoomHistory = ({
   );
 
   const onSeen = React.useCallback(
-    (messageId: string) => {
+    (messageId?: string) => {
       if (
         messageId &&
         !isIdle &&
@@ -502,10 +503,28 @@ export const useRoomHistory = ({
         }).then(x => {
           console.assert(x.msgType === "Message.Ok");
         });
+      } else if (!messageId) {
+        serverCall<MessageSeen>({
+          msgType: "Message.Seen",
+          roomId,
+          messageId: undefined,
+        }).then(x => {
+          console.assert(x.msgType === "Message.Ok");
+        });
       }
     },
     [isIdle, roomId, serverCall, seenUpToMessageId]
   );
+
+  const onUnseen = React.useCallback(() => {
+    serverCall<MessageUnseen>({
+      msgType: "Message.Unseen",
+      roomId,
+    }).then(x => {
+      console.assert(x.msgType === "Message.Ok");
+      setSeenUpToMessageId(undefined);
+    });
+  }, [roomId, serverCall]);
 
   React.useEffect(() => {
     if (
@@ -643,6 +662,7 @@ export const useRoomHistory = ({
     serverCall,
     messagesByTarget,
     onSeen,
+    onUnseen,
     seenUpToMessageId,
     messageCreate,
     messageCreateMany,
