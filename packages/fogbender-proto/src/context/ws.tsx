@@ -8,6 +8,7 @@ import {
   MessageCreate,
   MessageLink,
   MessageSeen,
+  MessageUnseen,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -515,6 +516,16 @@ export const useRoomHistory = ({
     [isIdle, roomId, serverCall, seenUpToMessageId]
   );
 
+  const onUnseen = React.useCallback(() => {
+    serverCall<MessageUnseen>({
+      msgType: "Message.Unseen",
+      roomId,
+    }).then(x => {
+      console.assert(x.msgType === "Message.Ok");
+      setSeenUpToMessageId(undefined);
+    });
+  }, [roomId, serverCall]);
+
   React.useEffect(() => {
     if (
       lastIncomingMessage?.msgType === "Event.Message" &&
@@ -651,6 +662,7 @@ export const useRoomHistory = ({
     serverCall,
     messagesByTarget,
     onSeen,
+    onUnseen,
     seenUpToMessageId,
     messageCreate,
     messageCreateMany,
