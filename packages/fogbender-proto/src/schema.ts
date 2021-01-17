@@ -278,6 +278,7 @@ export type SearchRoster = {
   msgType: "Search.Roster";
   workspaceId?: string;
   helpdeskId?: string;
+  mentionRoomId?: string;
   type?: "dialog";
   term?: string;
   tag_ids?: string[];

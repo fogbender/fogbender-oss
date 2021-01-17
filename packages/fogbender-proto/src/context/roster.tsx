@@ -66,10 +66,12 @@ export const useRoster = ({
   workspaceId,
   helpdeskId,
   userId,
+  roomId, // for mentions
 }: {
   workspaceId?: string;
   helpdeskId?: string;
   userId?: string;
+  roomId?: string;
 }) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
@@ -345,12 +347,25 @@ export const useRoster = ({
   }, []);
 
   React.useEffect(() => {
-    if (userId && workspaceId && rosterFilter) {
+    if (userId && roomId) {
+      serverCall<SearchRoster>({
+        msgType: "Search.Roster",
+        workspaceId: workspaceId,
+        helpdeskId: helpdeskId,
+        mentionRoomId: roomId,
+        term: rosterFilter,
+        type: "dialog",
+      }).then(x => {
+        if (x.msgType !== "Search.Ok") {
+          throw x;
+        }
+        setFilteredRoster(filterNotMonolog(x.items.map(y => eventRoomToRoom(y, userId))));
+      });
+    } else if (userId && workspaceId && rosterFilter) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
         workspaceId: workspaceId,
         term: rosterFilter,
-        type: "dialog",
       }).then(x => {
         if (x.msgType !== "Search.Ok") {
           throw x;
@@ -362,7 +377,6 @@ export const useRoster = ({
         msgType: "Search.Roster",
         helpdeskId,
         term: rosterFilter,
-        type: "dialog",
       }).then(x => {
         if (x.msgType !== "Search.Ok") {
           throw x;
