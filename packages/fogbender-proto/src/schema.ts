@@ -188,7 +188,6 @@ export type StreamGet = {
   endId?: string;
   limit?: number;
   aroundId?: string;
-  onlyForwards?: boolean;
   prev?: string;
   next?: string;
 };

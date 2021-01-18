@@ -259,13 +259,11 @@ export const useRoomHistory = ({
   roomId,
   aroundId,
   isIdle,
-  onlyForwards,
 }: {
   userId: string | undefined;
   roomId: string;
   aroundId: string | undefined;
   isIdle: boolean;
-  onlyForwards?: boolean;
 }) => {
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
@@ -338,7 +336,6 @@ export const useRoomHistory = ({
     serverCall<StreamGet>({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
-      onlyForwards,
     })
       .then(rejectIfUnmounted)
       .then(async x => {
@@ -353,7 +350,6 @@ export const useRoomHistory = ({
       .catch(() => {});
   }, [
     roomId,
-    onlyForwards,
     subscribed,
     subscribing,
     processAndStoreMessages,
@@ -372,7 +368,6 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
-        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -388,7 +383,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, messages, onlyForwards, serverCall, processAndStoreMessages]
+    [roomId, messages, serverCall, processAndStoreMessages]
   );
 
   const [fetchingNewer, setFetchingNewer] = React.useState(false);
@@ -400,7 +395,6 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
-        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -412,7 +406,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, onlyForwards, serverCall, processAndStoreMessages]
+    [roomId, serverCall, processAndStoreMessages]
   );
 
   const [isAroundFetched, setIsAroundFetched] = React.useState(false);
@@ -426,7 +420,6 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
-        onlyForwards,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -440,7 +433,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     },
-    [roomId, onlyForwards, serverCall, processAndStoreMessages, setHistoryMode]
+    [roomId, serverCall, processAndStoreMessages, setHistoryMode]
   );
 
   const resetHistoryToLastPage = React.useCallback(() => {
@@ -534,12 +527,7 @@ export const useRoomHistory = ({
       if (lastIncomingMessage.fromId === userId) {
         onSeen(lastIncomingMessage.id);
       }
-      if (
-        !onlyForwards ||
-        (onlyForwards && lastIncomingMessage.links?.find(x => x.linkType === "forward"))
-      ) {
-        processAndStoreMessages([lastIncomingMessage], "event");
-      }
+      processAndStoreMessages([lastIncomingMessage], "event");
     } else if (
       lastIncomingMessage?.msgType === "Event.Seen" &&
       lastIncomingMessage?.roomId === roomId
@@ -618,16 +606,6 @@ export const useRoomHistory = ({
         .catch(() => {}),
     [roomId, serverCall]
   );
-
-  React.useEffect(() => {
-    clearLatestHistory();
-    clearAroundHistory();
-    setSubscribed(false);
-    setSubscribing(false);
-    setIsAroundFetched(false);
-    setOlderHistoryComplete(false);
-    setNewerHistoryComplete(false);
-  }, [onlyForwards]);
 
   React.useEffect(() => {
     return () => {
