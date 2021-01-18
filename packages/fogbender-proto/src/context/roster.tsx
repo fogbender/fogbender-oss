@@ -58,6 +58,9 @@ const rosterAtom = atom<Room[]>([]);
 const rosterLoadedAtom = atom(false);
 const oldestRoomTsAtom = atom(Infinity);
 const seenRosterAtom = atom<{ [key: string]: EventSeen }>({});
+const badgesAtom = atom<{ [key: string]: EventBadge }>({});
+const badgesLoadedAtom = atom(false);
+const badgesPrevCursorAtom = atom<string | undefined>(undefined);
 
 export const useRoster = ({
   workspaceId,
@@ -88,7 +91,7 @@ export const useRoster = ({
 
   const roomById = React.useCallback((id: string) => roster.find(r => r.id === id), [roster]);
 
-  const [badges, setBadges] = useImmer<{ [roomId: string]: EventBadge }>({});
+  const [badges, setBadges] = useImmerAtom(badgesAtom);
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -215,33 +218,35 @@ export const useRoster = ({
     }
   }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
 
-  const [badgesLoaded, setBadgesLoaded] = React.useState(false);
-  const [badgesLoading, setBadgesLoading] = React.useState(false);
+  const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
+  const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
 
   React.useEffect(() => {
-    if (userId && !badgesLoaded && !badgesLoading) {
-      setBadgesLoading(true);
+    if (userId && !badgesLoaded) {
       // TODO maybe there's a better way to tell users and agents apart?
       const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
+        prev: badgesPrevCursor,
+        limit: 100,
       })
         .then(rejectIfUnmounted)
         .then(x => {
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
-            setBadgesLoaded(true);
-            setBadgesLoading(false);
-            extractEventBadge(x.items).forEach(b => {
+            const items = extractEventBadge(x.items);
+            items.forEach(b => {
               updateBadge(b);
             });
             updateRosterWithBadges();
+            setBadgesPrevCursor(x.prev || undefined);
+            if (items.length === 0) {
+              setBadgesLoaded(true);
+            }
           }
         })
-        .catch(() => {
-          setBadgesLoading(false);
-        });
+        .catch(() => {});
     }
   }, [fogSessionId, userId, badgesLoaded, updateRosterWithBadges, serverCall]);
 
