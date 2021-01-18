@@ -189,6 +189,8 @@ export type StreamGet = {
   limit?: number;
   aroundId?: string;
   onlyForwards?: boolean;
+  prev?: string;
+  next?: string;
 };
 
 export type StreamGetOk<Item> = {
@@ -196,6 +198,8 @@ export type StreamGetOk<Item> = {
   msgType: "Stream.GetOk";
   topic: string;
   items: Item[];
+  prev?: string | null;
+  next?: string | null;
 };
 
 export type MessageCreate = {
