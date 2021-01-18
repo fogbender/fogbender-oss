@@ -401,16 +401,8 @@ export type EventBadge = {
   msgType: "Event.Badge";
   roomId: string;
   count: number;
-  firstUnreadMessageId: string;
-  lastUnreadMessageId: string;
-  firstUnreadMessageText: string;
-  lastUnreadMessageText: string;
-  firstUnreadMessageFromId: string;
-  lastUnreadMessageFromId: string;
-  firstUnreadMessageFromType: string;
-  lastUnreadMessageFromType: string;
-  firstUnreadMessageFromName: string;
-  lastUnreadMessageFromName: string;
+  firstUnreadMessage?: EventMessage | null;
+  lastRoomMessage?: EventMessage | null;
 };
 
 export type EventCustomer = {
@@ -475,11 +467,6 @@ export type EventRoom = {
   type: "dialog" | "public" | "private";
   members?: RoomMember[];
   tags?: Tag[];
-  latestMessage?: {
-    text: string;
-    author: string;
-    created: number;
-  };
   status: RoomStatus; // deprecated
   remove?: boolean;
 };
