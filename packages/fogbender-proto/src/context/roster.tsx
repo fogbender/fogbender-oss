@@ -196,6 +196,9 @@ export const useRoster = ({
   );
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (userId && !badgesLoaded) {
       // TODO maybe there's a better way to tell users and agents apart?
       const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
