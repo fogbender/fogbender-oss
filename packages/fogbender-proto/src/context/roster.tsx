@@ -97,9 +97,23 @@ export const useRoster = ({
     return rawRoster
       .concat()
       .sort((a, b) => {
-        const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0;
-        const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0;
-        return aTs - bTs;
+        const badgeA = badges[a.id]?.count > 0;
+        const badgeB = badges[b.id]?.count > 0;
+
+        if (badgeA && badgeB) {
+          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || 0; // shouldn't happen
+          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || 0; // "         "
+          return aTs - bTs;
+        } else if (badgeA && !badgeB) {
+          return 1;
+        } else if (!badgeA && badgeB) {
+          return -1;
+        } else {
+          const aTs = a.createdTs || 0;
+          const bTs = b.createdTs || 0;
+
+          return aTs - bTs;
+        }
       })
       .reverse();
   }, [rawRoster, badges]);
