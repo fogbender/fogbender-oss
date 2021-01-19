@@ -554,6 +554,7 @@ export declare type File = {
     }
   | {
       fileUrl: string;
+      downloadUrl: string;
     }
 );
 
