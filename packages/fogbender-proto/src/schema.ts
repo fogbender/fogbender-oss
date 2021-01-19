@@ -189,6 +189,8 @@ export type StreamGet = {
   limit?: number;
   aroundId?: string;
   onlyForwards?: boolean;
+  prev?: string;
+  next?: string;
 };
 
 export type StreamGetOk<Item> = {
@@ -196,6 +198,8 @@ export type StreamGetOk<Item> = {
   msgType: "Stream.GetOk";
   topic: string;
   items: Item[];
+  prev?: string | null;
+  next?: string | null;
 };
 
 export type MessageCreate = {
@@ -401,16 +405,8 @@ export type EventBadge = {
   msgType: "Event.Badge";
   roomId: string;
   count: number;
-  firstUnreadMessageId: string;
-  lastUnreadMessageId: string;
-  firstUnreadMessageText: string;
-  lastUnreadMessageText: string;
-  firstUnreadMessageFromId: string;
-  lastUnreadMessageFromId: string;
-  firstUnreadMessageFromType: string;
-  lastUnreadMessageFromType: string;
-  firstUnreadMessageFromName: string;
-  lastUnreadMessageFromName: string;
+  firstUnreadMessage?: EventMessage | null;
+  lastRoomMessage?: EventMessage | null;
 };
 
 export type EventCustomer = {
