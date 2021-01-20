@@ -188,7 +188,6 @@ export type StreamGet = {
   endId?: string;
   limit?: number;
   aroundId?: string;
-  onlyForwards?: boolean;
   prev?: string;
   next?: string;
 };
@@ -281,8 +280,8 @@ export type SearchRoster = {
   mentionRoomId?: string;
   type?: "dialog";
   term?: string;
-  tag_ids?: string[];
-  tag_names?: string[];
+  tagIds?: string[];
+  tagNames?: string[];
 };
 
 export type SearchMembers = {
