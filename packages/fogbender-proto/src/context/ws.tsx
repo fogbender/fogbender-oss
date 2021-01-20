@@ -1,6 +1,7 @@
 import {
   AnyToken,
   EventAgent,
+  EventIssue,
   EventMessage,
   EventNotificationMessage,
   EventTyping,
@@ -775,4 +776,38 @@ export const useNotifications = ({
   }, [setNotification, lastIncomingMessage]);
 
   return { agents, notification, lastIncomingMessage };
+};
+
+export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
+  const { fogSessionId, token, serverCall } = useWs();
+  const [issuesFilter, setIssuesFilter] = React.useState<string>();
+  const [issues, setIssues] = React.useState([] as EventIssue[]);
+
+  const searchIssues: (workspaceId: string, issuesFilter: string) => void = React.useCallback(
+    throttle(
+      (workspaceId: string, issuesFilter: string) =>
+        serverCall({
+          msgType: "Search.Issues",
+          workspaceId,
+          term: issuesFilter,
+        }).then(x => {
+          if (x.msgType !== "Search.Ok") {
+            throw x;
+          }
+          setIssues(x.items);
+        }),
+      2000
+    ),
+    [serverCall]
+  );
+
+  React.useEffect(() => {
+    if (token && issuesFilter && workspaceId) {
+      searchIssues(workspaceId, issuesFilter);
+    } else {
+      setIssues([]);
+    }
+  }, [fogSessionId, token, workspaceId, serverCall, issuesFilter]);
+
+  return { issues, setIssuesFilter };
 };

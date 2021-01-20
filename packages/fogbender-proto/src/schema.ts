@@ -43,6 +43,8 @@ export type APISchema = {
   RoomInProgressRPC: RPC<RoomInProgress, RoomOk>;
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
+  IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
+  IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
   StreamSubRPC: RPC<
     StreamSub,
     StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
@@ -74,6 +76,7 @@ export type APISchema = {
   TypingRPC: RPC<TypingSet, undefined>;
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
+  SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -142,6 +145,32 @@ export type RoomOk = {
   msgId: string;
   msgType: "Room.Ok";
   roomId: string;
+};
+
+export type IntegrationCreateIssue = {
+  msgId?: string;
+  msgType: "Integration.CreateIssue";
+  integrationId: string;
+  title: string;
+  linkRoomId: string;
+  linkStartMessageId: string;
+  linkEndMessageId: string;
+};
+
+export type IntegrationForwardToIssue = {
+  msgId?: string;
+  msgType: "Integration.ForwardToIssue";
+  integrationId: string;
+  gid: string;
+  linkRoomId: string;
+  linkStartMessageId: string;
+  linkEndMessageId: string;
+};
+
+export type IntegrationOk = {
+  msgId: string;
+  msgType: "Integration.Ok";
+  issueId?: string;
 };
 
 export type StreamSub = {
@@ -290,6 +319,13 @@ export type SearchMembers = {
   workspaceId?: string;
   helpdeskId?: string;
   roomId: string;
+};
+
+export type SearchIssues = {
+  msgId?: string;
+  msgType: "Search.Issues";
+  workspaceId: string;
+  term: string;
 };
 
 export type SearchOk<Item> = {
@@ -473,6 +509,23 @@ export type EventRoom = {
   tags?: Tag[];
   status: RoomStatus; // deprecated
   remove?: boolean;
+};
+
+export type IssueLabel = {
+  id: string;
+  title: string;
+};
+
+export type EventIssue = {
+  msgId?: string;
+  msgType: "Event.Issue";
+  type: "gitlab";
+  title: string;
+  integrationId: string;
+  id: string;
+  gid: string;
+  state: string;
+  labels?: IssueLabel[];
 };
 
 // END events

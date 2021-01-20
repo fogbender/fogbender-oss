@@ -8,6 +8,8 @@ import {
   EventRoom,
   EventSeen,
   EventTag,
+  IntegrationCreateIssue,
+  IntegrationForwardToIssue,
   RoomCreate,
   RoomMember,
   RoomUpdate,
@@ -92,6 +94,9 @@ export const useRoster = ({
   }, [token]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
+  const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
+    rawRoster,
+  ]);
 
   const [badges, setBadges] = useImmerAtom(badgesAtom);
 
@@ -330,6 +335,48 @@ export const useRoster = ({
     [serverCall]
   );
 
+  const createIssue = React.useCallback(
+    (
+      params: Pick<
+        IntegrationCreateIssue,
+        "integrationId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+      >
+    ) =>
+      serverCall<IntegrationCreateIssue>({
+        msgType: "Integration.CreateIssue",
+        integrationId: params.integrationId,
+        title: params.title,
+        linkRoomId: params.linkRoomId,
+        linkStartMessageId: params.linkStartMessageId,
+        linkEndMessageId: params.linkEndMessageId,
+      }).then(x => {
+        console.assert(x.msgType === "Integration.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
+  const forwardToIssue = React.useCallback(
+    (
+      params: Pick<
+        IntegrationForwardToIssue,
+        "integrationId" | "gid" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+      >
+    ) =>
+      serverCall<IntegrationForwardToIssue>({
+        msgType: "Integration.ForwardToIssue",
+        integrationId: params.integrationId,
+        gid: params.gid,
+        linkRoomId: params.linkRoomId,
+        linkStartMessageId: params.linkStartMessageId,
+        linkEndMessageId: params.linkEndMessageId,
+      }).then(x => {
+        console.assert(x.msgType === "Integration.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
   const customersRef = React.useRef<EventCustomer[]>([]);
   const customers = customersRef.current;
 
@@ -350,8 +397,8 @@ export const useRoster = ({
     if (userId && roomId) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
-        workspaceId: workspaceId,
-        helpdeskId: helpdeskId,
+        workspaceId,
+        helpdeskId,
         mentionRoomId: roomId,
         term: rosterFilter,
         type: "dialog",
@@ -364,7 +411,7 @@ export const useRoster = ({
     } else if (userId && workspaceId && rosterFilter) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
-        workspaceId: workspaceId,
+        workspaceId,
         term: rosterFilter,
       }).then(x => {
         if (x.msgType !== "Search.Ok") {
@@ -426,12 +473,15 @@ export const useRoster = ({
     roster,
     seenRoster,
     roomById,
+    roomByName,
     filteredRoster,
     filteredRooms,
     filteredDialogs,
     setRosterFilter,
     createRoom,
     updateRoom,
+    createIssue,
+    forwardToIssue,
     customers,
     badges,
   };
