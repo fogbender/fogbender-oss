@@ -83,6 +83,9 @@ export const useRoster = ({
   const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
   const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
   const [seenRoster, setSeenRoster] = useImmerAtom(seenRosterAtom);
+  const [badges, setBadges] = useImmerAtom(badgesAtom);
+  const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
+  const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
 
   React.useEffect(() => {
     // Clear roster on user logout
@@ -90,6 +93,10 @@ export const useRoster = ({
       setRawRoster(() => []);
       setRosterLoaded(false);
       setOldestRoomTs(Infinity);
+      setSeenRoster(() => ({}));
+      setBadges(() => ({}));
+      setBadgesLoaded(false);
+      setBadgesPrevCursor(undefined);
     }
   }, [token]);
 
@@ -97,8 +104,6 @@ export const useRoster = ({
   const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
     rawRoster,
   ]);
-
-  const [badges, setBadges] = useImmerAtom(badgesAtom);
 
   const roster = React.useMemo(() => {
     return rawRoster
@@ -198,9 +203,6 @@ export const useRoster = ({
       });
     }
   }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
-
-  const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
-  const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
