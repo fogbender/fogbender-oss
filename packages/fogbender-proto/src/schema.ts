@@ -542,6 +542,7 @@ export declare type File = {
   id: string;
   filename: string;
   contentType: string;
+  type?: "attachment:image" | "attachment:other";
   thumbnail?: {
     url: string;
     height: number;
@@ -553,6 +554,7 @@ export declare type File = {
     }
   | {
       fileUrl: string;
+      downloadUrl: string;
     }
 );
 
