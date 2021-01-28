@@ -548,15 +548,9 @@ export declare type File = {
     height: number;
     width: number;
   };
-} & (
-  | {
-      fileBase64: string;
-    }
-  | {
-      fileUrl: string;
-      downloadUrl: string;
-    }
-);
+  fileUrl: string;
+  downloadUrl: string;
+};
 
 export type Customer = {
   id: string;
