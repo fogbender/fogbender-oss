@@ -230,6 +230,12 @@ export type StreamGetOk<Item> = {
   next?: string | null;
 };
 
+export type Mention = {
+  msgType: "Message.Mention";
+  id: string;
+  text: string;
+};
+
 export type MessageCreate = {
   msgId?: string;
   msgType: "Message.Create";
@@ -241,6 +247,7 @@ export type MessageCreate = {
   linkStartMessageId?: string;
   linkEndMessageId?: string;
   linkType?: "forward" | "reply";
+  mentions?: Mention[];
 };
 
 export type MessageCreateMany = {
@@ -441,8 +448,10 @@ export type EventBadge = {
   msgType: "Event.Badge";
   roomId: string;
   count: number;
+  mentionsCount: number;
   firstUnreadMessage?: EventMessage | null;
   lastRoomMessage?: EventMessage | null;
+  nextMentionMessage?: EventMessage | null;
 };
 
 export type EventCustomer = {
