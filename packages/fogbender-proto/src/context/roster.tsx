@@ -394,7 +394,7 @@ export const useRoster = ({
   }, []);
 
   React.useEffect(() => {
-    if (userId && roomId) {
+    if (userId && roomId && rosterFilter !== undefined) {
       serverCall<SearchRoster>({
         msgType: "Search.Roster",
         workspaceId,
