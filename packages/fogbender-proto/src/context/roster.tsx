@@ -136,7 +136,7 @@ export const useRoster = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, workspaceId, userId, serverCall]);
+  }, [fogSessionId, userId, serverCall]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
