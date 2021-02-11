@@ -266,7 +266,7 @@ export const useRoomHistory = ({
   aroundId: string | undefined;
   isIdle: boolean;
 }) => {
-  const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -324,6 +324,9 @@ export const useRoomHistory = ({
   }, [fogSessionId]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (subscribed || subscribing) {
       return;
     }
@@ -350,6 +353,7 @@ export const useRoomHistory = ({
       })
       .catch(() => {});
   }, [
+    fogSessionId,
     roomId,
     subscribed,
     subscribing,
@@ -521,6 +525,9 @@ export const useRoomHistory = ({
   }, [roomId, serverCall]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (
       lastIncomingMessage?.msgType === "Event.Message" &&
       lastIncomingMessage?.roomId === roomId
@@ -535,10 +542,10 @@ export const useRoomHistory = ({
     ) {
       setSeenUpToMessageId(lastIncomingMessage.messageId);
     }
-  }, [onSeen, userId, roomId, lastIncomingMessage, processAndStoreMessages]);
+  }, [fogSessionId, onSeen, userId, roomId, lastIncomingMessage, processAndStoreMessages]);
 
   React.useEffect(() => {
-    if (token && userId) {
+    if (fogSessionId && userId) {
       // TODO maybe there's a better way to tell users and agents apart?
       const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
       serverCall({
@@ -560,7 +567,7 @@ export const useRoomHistory = ({
         })
         .catch(() => {});
     }
-  }, [roomId, token, userId, serverCall]);
+  }, [fogSessionId, roomId, userId, serverCall]);
 
   const messageCreate = React.useCallback(
     async (args: MessageCreate) =>
@@ -642,7 +649,7 @@ export const useRoomTyping = ({
   userId: string | undefined;
   roomId: string;
 }) => {
-  const { serverCall, lastIncomingMessage } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -663,6 +670,9 @@ export const useRoomTyping = ({
   );
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     serverCall({
       msgType: "Stream.Sub",
       topic: `room/${roomId}/typing`,
@@ -686,13 +696,16 @@ export const useRoomTyping = ({
         console.assert(x.msgType === "Stream.UnSubOk");
       });
     };
-  }, [roomId, serverCall, processTypingEvent]);
+  }, [fogSessionId, roomId, serverCall, processTypingEvent]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (lastIncomingMessage?.msgType === "Event.Typing") {
       processTypingEvent(lastIncomingMessage);
     }
-  }, [lastIncomingMessage, processTypingEvent]);
+  }, [fogSessionId, lastIncomingMessage, processTypingEvent]);
 
   const updateTyping: () => void = React.useCallback(
     throttle(
@@ -721,7 +734,7 @@ export const useNotifications = ({
   workspaceId: string;
   userId: string | undefined;
 }) => {
-  const { fogSessionId, token, serverCall, lastIncomingMessage } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
   const [agents, setAgents] = useImmer<EventAgent[]>([]);
@@ -746,7 +759,7 @@ export const useNotifications = ({
 
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
-    if (token && userId) {
+    if (fogSessionId && userId) {
       serverCall({
         msgType: "Stream.Sub",
         topic: userId.startsWith("a")
@@ -756,13 +769,16 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, updateAgent, token, workspaceId, vendorId, userId, serverCall]);
+  }, [fogSessionId, updateAgent, workspaceId, vendorId, userId, serverCall]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (lastIncomingMessage?.msgType === "Event.Notification.Message") {
       setNotification(lastIncomingMessage);
     }
-  }, [setNotification, lastIncomingMessage]);
+  }, [fogSessionId, setNotification, lastIncomingMessage]);
 
   return { agents, notification, lastIncomingMessage };
 };
