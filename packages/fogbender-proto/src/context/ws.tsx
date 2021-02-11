@@ -542,13 +542,6 @@ export const useRoomHistory = ({
       // TODO maybe there's a better way to tell users and agents apart?
       const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
       serverCall({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-
-      serverCall({
         msgType: "Stream.Get",
         topic,
       })
@@ -751,13 +744,6 @@ export const useNotifications = ({
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
     if (token && userId) {
-      serverCall({
-        msgType: "Stream.Sub",
-        topic: userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-
       serverCall({
         msgType: "Stream.Sub",
         topic: userId.startsWith("a")
