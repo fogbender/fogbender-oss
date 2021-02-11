@@ -76,8 +76,12 @@ export const useRoster = ({
   roomId?: string;
 }) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
-
+  const rejectIfUnmounted = useRejectIfUnmounted();
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
+
+  /*
+    Shared state, should be same for every hook
+  */
 
   const [rawRoster, setRawRoster] = useImmerAtom(rosterAtom);
   const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
@@ -105,47 +109,61 @@ export const useRoster = ({
     rawRoster,
   ]);
 
-  const roster = React.useMemo(() => {
-    return rawRoster
-      .concat()
-      .sort((a, b) => {
-        const badgeA = badges[a.id]?.count > 0;
-        const badgeB = badges[b.id]?.count > 0;
+  const updateBadge = React.useCallback(
+    (b: EventBadge) => {
+      setBadges(x => {
+        x[b.roomId] = b;
+      });
+    },
+    [setBadges]
+  );
 
-        if (badgeA && !badgeB) {
-          return 1;
-        } else if (!badgeA && badgeB) {
-          return -1;
-        } else {
-          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0; // shouldn't happen
-          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0; // "         "
-          return aTs - bTs;
-        }
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    // TODO maybe there's a better way to tell users and agents apart?
+    if (userId) {
+      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [fogSessionId, workspaceId, userId, serverCall]);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    if (userId && !badgesLoaded) {
+      // TODO maybe there's a better way to tell users and agents apart?
+      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
+      serverCall<StreamGet>({
+        msgType: "Stream.Get",
+        topic,
+        prev: badgesPrevCursor,
+        limit: 100,
       })
-      .reverse();
-  }, [rawRoster, badges]);
-
-  const rejectIfUnmounted = useRejectIfUnmounted();
-
-  const [rosterFilter, setRosterFilter] = React.useState<string>();
-  const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
-  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
-    filteredRoster,
-  ]);
-  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
-    filteredRoster,
-  ]);
-
-  const filterNotMonolog = (rooms: Room[]) =>
-    rooms
-      .filter(x => x.counterpart?.id !== userId)
-      .filter(
-        x =>
-          x.type !== "dialog" ||
-          !x.members ||
-          x.members.length === 0 ||
-          !x.members.every(y => y.id === userId)
-      );
+        .then(rejectIfUnmounted)
+        .then(x => {
+          console.assert(x.msgType === "Stream.GetOk");
+          if (x.msgType === "Stream.GetOk") {
+            const items = extractEventBadge(x.items);
+            items.forEach(b => {
+              updateBadge(b);
+            });
+            setBadgesPrevCursor(x.prev || undefined);
+            if (items.length === 0) {
+              setBadgesLoaded(true);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+  }, [fogSessionId, userId, badgesLoaded, updateBadge, serverCall]);
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[]) => {
@@ -208,46 +226,6 @@ export const useRoster = ({
     }
   }, [fogSessionId, oldestRoomTs, rosterLoaded, serverCall, workspaceId, helpdeskId, updateRoster]);
 
-  const updateBadge = React.useCallback(
-    (b: EventBadge) => {
-      setBadges(x => {
-        x[b.roomId] = b;
-      });
-    },
-    [setBadges]
-  );
-
-  React.useEffect(() => {
-    if (!fogSessionId) {
-      return;
-    }
-    if (userId && !badgesLoaded) {
-      // TODO maybe there's a better way to tell users and agents apart?
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
-      serverCall<StreamGet>({
-        msgType: "Stream.Get",
-        topic,
-        prev: badgesPrevCursor,
-        limit: 100,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
-          if (x.msgType === "Stream.GetOk") {
-            const items = extractEventBadge(x.items);
-            items.forEach(b => {
-              updateBadge(b);
-            });
-            setBadgesPrevCursor(x.prev || undefined);
-            if (items.length === 0) {
-              setBadgesLoaded(true);
-            }
-          }
-        })
-        .catch(() => {});
-    }
-  }, [fogSessionId, userId, badgesLoaded, updateBadge, serverCall]);
-
   React.useEffect(() => {
     if (!fogSessionId) {
       return;
@@ -278,6 +256,46 @@ export const useRoster = ({
     }
   }, [fogSessionId, userId, serverCall]);
 
+  const customersRef = React.useRef<EventCustomer[]>([]);
+  const customers = customersRef.current;
+
+  const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
+    let newCustomers = customersRef.current;
+    if (customersIn) {
+      customersIn.forEach(customer => {
+        newCustomers = newCustomers.filter(x => customer.id !== x.id);
+        newCustomers.push(customer);
+      });
+      newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
+      customersRef.current = newCustomers;
+      forceUpdate();
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    if (!workspaceId) {
+      return;
+    }
+    serverCall({
+      msgType: "Stream.Get",
+      topic: `workspace/${workspaceId}/customers`,
+    }).then(x => {
+      console.assert(x.msgType === "Stream.GetOk");
+      if (x.msgType === "Stream.GetOk") {
+        updateCustomers(extractEventCustomer(x.items));
+      }
+    });
+    serverCall({
+      msgType: "Stream.Sub",
+      topic: `workspace/${workspaceId}/customers`,
+    }).then(x => {
+      console.assert(x.msgType === "Stream.SubOk");
+    });
+  }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
+
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage]);
@@ -287,6 +305,10 @@ export const useRoster = ({
       setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
     }
   }, [lastIncomingMessage, updateRoster, updateBadge]);
+
+  /*
+    API calls work independently for each hook
+  */
 
   const createRoom = React.useCallback(
     (
@@ -386,21 +408,49 @@ export const useRoster = ({
     [serverCall]
   );
 
-  const customersRef = React.useRef<EventCustomer[]>([]);
-  const customers = customersRef.current;
+  /*
+    Search roster -- works independently for each hook
+  */
 
-  const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
-    let newCustomers = customersRef.current;
-    if (customersIn) {
-      customersIn.forEach(customer => {
-        newCustomers = newCustomers.filter(x => customer.id !== x.id);
-        newCustomers.push(customer);
-      });
-      newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
-      customersRef.current = newCustomers;
-      forceUpdate();
-    }
-  }, []);
+  const [rosterFilter, setRosterFilter] = React.useState<string>();
+  const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
+  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
+    filteredRoster,
+  ]);
+  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
+    filteredRoster,
+  ]);
+
+  const roster = React.useMemo(() => {
+    return rawRoster
+      .concat()
+      .sort((a, b) => {
+        const badgeA = badges[a.id]?.count > 0;
+        const badgeB = badges[b.id]?.count > 0;
+
+        if (badgeA && !badgeB) {
+          return 1;
+        } else if (!badgeA && badgeB) {
+          return -1;
+        } else {
+          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0; // shouldn't happen
+          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0; // "         "
+          return aTs - bTs;
+        }
+      })
+      .reverse();
+  }, [rawRoster, badges]);
+
+  const filterNotMonolog = (rooms: Room[]) =>
+    rooms
+      .filter(x => x.counterpart?.id !== userId)
+      .filter(
+        x =>
+          x.type !== "dialog" ||
+          !x.members ||
+          x.members.length === 0 ||
+          !x.members.every(y => y.id === userId)
+      );
 
   React.useEffect(() => {
     if (userId && roomId && rosterFilter !== undefined) {
@@ -443,46 +493,6 @@ export const useRoster = ({
       setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y, userId))));
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
-
-  React.useEffect(() => {
-    if (!fogSessionId) {
-      return;
-    }
-    if (!workspaceId) {
-      return;
-    }
-    serverCall({
-      msgType: "Stream.Get",
-      topic: `workspace/${workspaceId}/customers`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.GetOk");
-      if (x.msgType === "Stream.GetOk") {
-        updateCustomers(extractEventCustomer(x.items));
-      }
-    });
-    serverCall({
-      msgType: "Stream.Sub",
-      topic: `workspace/${workspaceId}/customers`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-    });
-  }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
-
-  React.useEffect(() => {
-    if (!fogSessionId) {
-      return;
-    }
-    // TODO maybe there's a better way to tell users and agents apart?
-    if (userId) {
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
-      serverCall({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-    }
-  }, [fogSessionId, workspaceId, userId, serverCall]);
 
   return {
     roster,
