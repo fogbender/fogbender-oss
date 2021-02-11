@@ -607,12 +607,6 @@ export const useRoomHistory = ({
       clearAroundHistory();
       serverCall({
         msgType: "Stream.UnSub",
-        topic: `room/${roomId}/typing`,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.UnSubOk");
-      });
-      serverCall({
-        msgType: "Stream.UnSub",
         topic: `room/${roomId}/messages`,
       }).then(x => {
         console.assert(x.msgType === "Stream.UnSubOk");
@@ -683,6 +677,15 @@ export const useRoomTyping = ({
         }
       })
       .catch(() => {});
+
+    return () => {
+      serverCall({
+        msgType: "Stream.UnSub",
+        topic: `room/${roomId}/typing`,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.UnSubOk");
+      });
+    };
   }, [roomId, serverCall, processTypingEvent]);
 
   React.useEffect(() => {
