@@ -166,25 +166,29 @@ export const useRoster = ({
   );
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (!workspaceId && !helpdeskId) {
       return;
     }
-    if (fogSessionId) {
-      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall<StreamSub>({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-    }
+    const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
+    serverCall<StreamSub>({
+      msgType: "Stream.Sub",
+      topic,
+    }).then(x => {
+      console.assert(x.msgType === "Stream.SubOk");
+    });
   }, [fogSessionId, workspaceId, helpdeskId]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (!workspaceId && !helpdeskId) {
       return;
     }
-    if (fogSessionId && !rosterLoaded) {
+    if (!rosterLoaded) {
       const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
       serverCall<StreamGet>({
         msgType: "Stream.Get",
@@ -202,7 +206,7 @@ export const useRoster = ({
         }
       });
     }
-  }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
+  }, [fogSessionId, oldestRoomTs, rosterLoaded, serverCall, workspaceId, helpdeskId, updateRoster]);
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
@@ -245,7 +249,10 @@ export const useRoster = ({
   }, [fogSessionId, userId, badgesLoaded, updateBadge, serverCall]);
 
   React.useEffect(() => {
-    if (token && userId) {
+    if (!fogSessionId) {
+      return;
+    }
+    if (userId) {
       // TODO maybe there's a better way to tell users and agents apart?
       const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
       serverCall({
@@ -269,7 +276,7 @@ export const useRoster = ({
         })
         .catch(() => {});
     }
-  }, [token, userId, serverCall]);
+  }, [fogSessionId, userId, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
@@ -438,6 +445,9 @@ export const useRoster = ({
   }, [userId, roster, customers, rosterFilter, serverCall]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     if (!workspaceId) {
       return;
     }
@@ -456,9 +466,12 @@ export const useRoster = ({
     }).then(x => {
       console.assert(x.msgType === "Stream.SubOk");
     });
-  }, [workspaceId, updateCustomers, serverCall]);
+  }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
 
   React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
     // TODO maybe there's a better way to tell users and agents apart?
     if (userId) {
       const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
