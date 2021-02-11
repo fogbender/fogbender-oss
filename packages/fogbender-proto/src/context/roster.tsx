@@ -63,6 +63,8 @@ const seenRosterAtom = atom<{ [key: string]: EventSeen }>({});
 const badgesAtom = atom<{ [key: string]: EventBadge }>({});
 const badgesLoadedAtom = atom(false);
 const badgesPrevCursorAtom = atom<string | undefined>(undefined);
+const customersAtom = atom<EventCustomer[]>([]);
+const customersLoadedAtom = atom(false);
 
 export const useRoster = ({
   workspaceId,
@@ -75,9 +77,8 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
-  const rejectIfUnmounted = useRejectIfUnmounted();
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
 
   /*
     Shared state, should be same for every hook
@@ -90,6 +91,8 @@ export const useRoster = ({
   const [badges, setBadges] = useImmerAtom(badgesAtom);
   const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
   const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
+  const [customers, setCustomers] = useAtom(customersAtom);
+  const [customersLoaded, setCustomersLoaded] = useAtom(customersLoadedAtom);
 
   React.useEffect(() => {
     // Clear roster on user logout
@@ -101,6 +104,7 @@ export const useRoster = ({
       setBadges(() => ({}));
       setBadgesLoaded(false);
       setBadgesPrevCursor(undefined);
+      setCustomers([]);
     }
   }, [token]);
 
@@ -256,27 +260,26 @@ export const useRoster = ({
     }
   }, [fogSessionId, userId, serverCall]);
 
-  const customersRef = React.useRef<EventCustomer[]>([]);
-  const customers = customersRef.current;
-
-  const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
-    let newCustomers = customersRef.current;
-    if (customersIn) {
-      customersIn.forEach(customer => {
-        newCustomers = newCustomers.filter(x => customer.id !== x.id);
-        newCustomers.push(customer);
-      });
-      newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
-      customersRef.current = newCustomers;
-      forceUpdate();
-    }
-  }, []);
+  const updateCustomers = React.useCallback(
+    (customersIn: EventCustomer[]) => {
+      let newCustomers = customers;
+      if (customersIn) {
+        customersIn.forEach(customer => {
+          newCustomers = newCustomers.filter(x => customer.id !== x.id);
+          newCustomers.push(customer);
+        });
+        newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
+        setCustomers(newCustomers);
+      }
+    },
+    [customers]
+  );
 
   React.useEffect(() => {
     if (!fogSessionId) {
       return;
     }
-    if (!workspaceId) {
+    if (!workspaceId || customersLoaded) {
       return;
     }
     serverCall({
@@ -294,6 +297,7 @@ export const useRoster = ({
     }).then(x => {
       console.assert(x.msgType === "Stream.SubOk");
     });
+    setCustomersLoaded(true);
   }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
 
   React.useEffect(() => {
@@ -301,6 +305,8 @@ export const useRoster = ({
       updateRoster([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Badge") {
       updateBadge(lastIncomingMessage);
+    } else if (lastIncomingMessage?.msgType === "Event.Customer") {
+      updateCustomers([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Seen") {
       setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
     }
