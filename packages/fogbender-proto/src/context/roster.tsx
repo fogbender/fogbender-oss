@@ -102,7 +102,7 @@ export const useRoster = ({
 
   const [rosterHookId] = React.useState(() => Math.random().toString(36).substring(7));
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (mainRosterHookId === undefined) {
       setMainRosterHookId(rosterHookId);
     }
