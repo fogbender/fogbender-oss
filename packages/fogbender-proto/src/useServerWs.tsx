@@ -82,6 +82,10 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
     }
   }, [lastMessage]);
 
+  React.useEffect(() => {
+    setLastIncomingMessage(undefined);
+  }, [token]);
+
   const sendMessage = React.useCallback(
     (message: FogSchema["outbound"]) => {
       const socketIsOpen = ready.current === ReadyState.OPEN;
