@@ -125,9 +125,10 @@ export const useRoster = ({
   const [customers, setCustomers] = useAtom(customersAtom);
   const [customersLoaded, setCustomersLoaded] = useAtom(customersLoadedAtom);
 
-  React.useEffect(() => {
-    // Clear roster on user logout
-    if (token === undefined && isMainHook) {
+  React.useLayoutEffect(() => {
+    // Clear roster when user's token is changed
+    if (isMainHook) {
+      console.log("clear roster");
       setRawRoster(() => []);
       setRosterLoaded(false);
       setOldestRoomTs(Infinity);
@@ -137,7 +138,7 @@ export const useRoster = ({
       setBadgesPrevCursor(undefined);
       setCustomers([]);
     }
-  }, [isMainHook, token]);
+  }, [token, isMainHook]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
   const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
