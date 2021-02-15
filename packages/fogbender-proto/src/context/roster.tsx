@@ -198,7 +198,7 @@ export const useRoster = ({
         })
         .catch(() => {});
     }
-  }, [fogSessionId, isMainHook, userId, badgesLoaded, updateBadge, serverCall]);
+  }, [fogSessionId, isMainHook, userId, badgesPrevCursor, badgesLoaded, updateBadge, serverCall]);
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[]) => {
