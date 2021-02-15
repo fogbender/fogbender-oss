@@ -161,7 +161,7 @@ export type IntegrationForwardToIssue = {
   msgId?: string;
   msgType: "Integration.ForwardToIssue";
   integrationId: string;
-  gid: string;
+  issueId: string;
   linkRoomId: string;
   linkStartMessageId: string;
   linkEndMessageId: string;
@@ -532,7 +532,7 @@ export type EventIssue = {
   title: string;
   integrationId: string;
   id: string;
-  gid: string;
+  issueId: string;
   state: string;
   labels?: IssueLabel[];
 };
