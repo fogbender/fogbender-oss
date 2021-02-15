@@ -100,7 +100,7 @@ export const useRoster = ({
 
   const [mainRosterHookId, setMainRosterHookId] = useAtom(mainRosterHookIdAtom);
 
-  const rosterHookId = React.useMemo(() => Math.random().toString(36).substring(7), []);
+  const [rosterHookId] = React.useState(() => Math.random().toString(36).substring(7));
 
   React.useEffect(() => {
     if (mainRosterHookId === undefined) {
