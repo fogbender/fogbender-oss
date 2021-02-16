@@ -151,8 +151,8 @@ export const useSharedRoster = ({
         setRawRoster(roster => {
           let newRoster = roster;
           roomsIn.forEach(room => {
+            newRoster = newRoster.filter(x => room.id !== x.id);
             if (!room.remove) {
-              newRoster = newRoster.filter(x => room.id !== x.id);
               newRoster.push(eventRoomToRoom(room, userId));
             }
           });
