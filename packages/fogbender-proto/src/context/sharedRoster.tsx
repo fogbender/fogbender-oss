@@ -135,10 +135,10 @@ export const useSharedRoster = ({
             items.forEach(b => {
               updateBadge(b);
             });
-            setBadgesPrevCursor(x.prev || undefined);
             if (items.length === 0) {
               setBadgesLoaded(true);
             }
+            setBadgesPrevCursor(x.prev || undefined);
           }
         })
         .catch(() => {});
