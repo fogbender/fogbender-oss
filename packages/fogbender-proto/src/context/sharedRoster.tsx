@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
-import { useImmerAtom } from "jotai/immer";
 import React from "react";
+import { useImmer } from "use-immer";
 
 import {
   EventBadge,
@@ -46,15 +46,6 @@ export const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
 };
 
 const mainRosterHookIdAtom = atom<string | undefined>(undefined);
-const rosterAtom = atom<Room[]>([]);
-const rosterLoadedAtom = atom(false);
-const oldestRoomTsAtom = atom(Infinity);
-const seenRosterAtom = atom<{ [key: string]: EventSeen }>({});
-const badgesAtom = atom<{ [key: string]: EventBadge }>({});
-const badgesLoadedAtom = atom(false);
-const badgesPrevCursorAtom = atom<string | undefined>(undefined);
-const customersAtom = atom<EventCustomer[]>([]);
-const customersLoadedAtom = atom(false);
 
 export const useSharedRoster = ({
   workspaceId,
@@ -102,15 +93,15 @@ export const useSharedRoster = ({
 
   const isMainHook = rosterHookId === mainRosterHookId;
 
-  const [rawRoster, setRawRoster] = useImmerAtom(rosterAtom);
-  const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
-  const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
-  const [seenRoster, setSeenRoster] = useImmerAtom(seenRosterAtom);
-  const [badges, setBadges] = useImmerAtom(badgesAtom);
-  const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
-  const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
-  const [customers, setCustomers] = useAtom(customersAtom);
-  const [customersLoaded, setCustomersLoaded] = useAtom(customersLoadedAtom);
+  const [rawRoster, setRawRoster] = useImmer<Room[]>([]);
+  const [rosterLoaded, setRosterLoaded] = React.useState(false);
+  const [oldestRoomTs, setOldestRoomTs] = React.useState(Infinity);
+  const [seenRoster, setSeenRoster] = useImmer<{ [key: string]: EventSeen }>({});
+  const [badges, setBadges] = useImmer<{ [key: string]: EventBadge }>({});
+  const [badgesLoaded, setBadgesLoaded] = React.useState(false);
+  const [badgesPrevCursor, setBadgesPrevCursor] = React.useState<string>();
+  const [customers, setCustomers] = React.useState<EventCustomer[]>([]);
+  const [customersLoaded, setCustomersLoaded] = React.useState(false);
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token is changed
