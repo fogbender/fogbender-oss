@@ -2,6 +2,7 @@ import React from "react";
 import { useImmer } from "use-immer";
 
 import {
+  AnyToken,
   EventBadge,
   EventCustomer,
   EventRoom,
@@ -18,8 +19,7 @@ import {
   extractEventSeen,
 } from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-
-import { useWs } from "./ws";
+import { useServerWs } from "../useServerWs";
 
 export type Room = EventRoom & {
   orderWeight?: string;
@@ -45,15 +45,21 @@ export const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
 };
 
 export const useSharedRoster = ({
+  ws,
+  token,
+  fogSessionId,
   workspaceId,
   helpdeskId,
   userId,
 }: {
+  ws: ReturnType<typeof useServerWs>;
+  token: AnyToken | undefined;
+  fogSessionId: string | undefined;
   workspaceId?: string;
   helpdeskId?: string;
   userId?: string;
 }) => {
-  const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const { serverCall, lastIncomingMessage } = ws;
   const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [rawRoster, setRawRoster] = useImmer<Room[]>([]);

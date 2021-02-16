@@ -35,7 +35,9 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const { serverCall } = useWs();
+  const ws = useWs();
+  const { fogSessionId, token, serverCall } = ws;
+
   const {
     roster,
     roomById,
@@ -44,7 +46,7 @@ export const useRoster = ({
     customers,
     seenRoster,
     setSeenRoster,
-  } = useSharedRoster({ workspaceId, helpdeskId, userId });
+  } = useSharedRoster({ ws, token, fogSessionId, workspaceId, helpdeskId, userId });
 
   /*
     API calls work independently for each hook
