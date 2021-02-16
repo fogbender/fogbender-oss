@@ -1,4 +1,3 @@
-import { atom, useAtom } from "jotai";
 import React from "react";
 import { useImmer } from "use-immer";
 
@@ -45,8 +44,6 @@ export const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
   }
 };
 
-const mainRosterHookIdAtom = atom<string | undefined>(undefined);
-
 export const useSharedRoster = ({
   workspaceId,
   helpdeskId,
@@ -58,40 +55,6 @@ export const useSharedRoster = ({
 }) => {
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
-
-  /*
-    Shared state, should be same for every hook
-
-    Because retrieving and updating this shared state involves many conditional async requests,
-    it's quite hard to move it to jotai's get/set atoms.
-
-    But repeating them for every hook's instance is a great waste of cpu time on both ends.
-
-    To cut around this, every hook generates it's own id, and one of the hooks is assigned as main
-    (i.e. its id is stored in jotai's state). Then, only main instance operates on shared state.
-
-    If main hook is unmounted, then next one is assigned as main.
-
-    A better idea might be to split one useRoster to useGlobalRoster and useSearchRoster,
-    and allow calling useGlobalRoster only once.
-  */
-
-  const [mainRosterHookId, setMainRosterHookId] = useAtom(mainRosterHookIdAtom);
-
-  const [rosterHookId] = React.useState(() => Math.random().toString(36).substring(7));
-
-  React.useLayoutEffect(() => {
-    if (mainRosterHookId === undefined) {
-      setMainRosterHookId(rosterHookId);
-    }
-    return () => {
-      if (mainRosterHookId === rosterHookId) {
-        setMainRosterHookId(undefined);
-      }
-    };
-  }, [rosterHookId, mainRosterHookId]);
-
-  const isMainHook = rosterHookId === mainRosterHookId;
 
   const [rawRoster, setRawRoster] = useImmer<Room[]>([]);
   const [rosterLoaded, setRosterLoaded] = React.useState(false);
@@ -105,18 +68,16 @@ export const useSharedRoster = ({
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token is changed
-    if (isMainHook) {
-      console.log("clear roster");
-      setRawRoster(() => []);
-      setRosterLoaded(false);
-      setOldestRoomTs(Infinity);
-      setSeenRoster(() => ({}));
-      setBadges(() => ({}));
-      setBadgesLoaded(false);
-      setBadgesPrevCursor(undefined);
-      setCustomers([]);
-    }
-  }, [token, isMainHook]);
+    console.log("clear roster");
+    setRawRoster(() => []);
+    setRosterLoaded(false);
+    setOldestRoomTs(Infinity);
+    setSeenRoster(() => ({}));
+    setBadges(() => ({}));
+    setBadgesLoaded(false);
+    setBadgesPrevCursor(undefined);
+    setCustomers([]);
+  }, [token]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
   const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
@@ -133,7 +94,7 @@ export const useSharedRoster = ({
   );
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     // TODO maybe there's a better way to tell users and agents apart?
@@ -146,10 +107,10 @@ export const useSharedRoster = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, isMainHook, userId, serverCall]);
+  }, [fogSessionId, userId, serverCall]);
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     if (userId && !badgesLoaded) {
@@ -177,7 +138,7 @@ export const useSharedRoster = ({
         })
         .catch(() => {});
     }
-  }, [fogSessionId, isMainHook, userId, badgesPrevCursor, badgesLoaded, updateBadge, serverCall]);
+  }, [fogSessionId, userId, badgesPrevCursor, badgesLoaded, updateBadge, serverCall]);
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[]) => {
@@ -198,7 +159,7 @@ export const useSharedRoster = ({
   );
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     if (!workspaceId && !helpdeskId) {
@@ -211,10 +172,10 @@ export const useSharedRoster = ({
     }).then(x => {
       console.assert(x.msgType === "Stream.SubOk");
     });
-  }, [fogSessionId, isMainHook, workspaceId, helpdeskId]);
+  }, [fogSessionId, workspaceId, helpdeskId]);
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     if (!workspaceId && !helpdeskId) {
@@ -238,19 +199,10 @@ export const useSharedRoster = ({
         }
       });
     }
-  }, [
-    fogSessionId,
-    isMainHook,
-    oldestRoomTs,
-    rosterLoaded,
-    serverCall,
-    workspaceId,
-    helpdeskId,
-    updateRoster,
-  ]);
+  }, [fogSessionId, oldestRoomTs, rosterLoaded, serverCall, workspaceId, helpdeskId, updateRoster]);
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     if (userId) {
@@ -277,7 +229,7 @@ export const useSharedRoster = ({
         })
         .catch(() => {});
     }
-  }, [fogSessionId, isMainHook, userId, serverCall]);
+  }, [fogSessionId, userId, serverCall]);
 
   const updateCustomers = React.useCallback(
     (customersIn: EventCustomer[]) => {
@@ -295,7 +247,7 @@ export const useSharedRoster = ({
   );
 
   React.useEffect(() => {
-    if (!fogSessionId || !isMainHook) {
+    if (!fogSessionId) {
       return;
     }
     if (!workspaceId || customersLoaded) {
@@ -317,12 +269,9 @@ export const useSharedRoster = ({
       console.assert(x.msgType === "Stream.SubOk");
     });
     setCustomersLoaded(true);
-  }, [fogSessionId, isMainHook, workspaceId, updateCustomers, serverCall]);
+  }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
 
   React.useEffect(() => {
-    if (!isMainHook) {
-      return;
-    }
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Badge") {
@@ -332,7 +281,7 @@ export const useSharedRoster = ({
     } else if (lastIncomingMessage?.msgType === "Event.Seen") {
       setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
     }
-  }, [isMainHook, lastIncomingMessage, updateRoster, updateBadge]);
+  }, [lastIncomingMessage, updateRoster, updateBadge]);
 
   const roster = React.useMemo(() => {
     return rawRoster
