@@ -63,7 +63,11 @@ function useProviderValue(token: AnyToken | undefined, client?: Client) {
     ...client,
     setSession(sessionId, userId, helpdeskId) {
       setFogSessionId(sessionId);
-      setUserId(userId);
+      if (userId) {
+        setUserId(userId);
+      } else if (token && "agentId" in token) {
+        setUserId(token.agentId);
+      }
       setHelpdeskId(helpdeskId);
       client?.setSession?.(sessionId, userId, helpdeskId);
     },
