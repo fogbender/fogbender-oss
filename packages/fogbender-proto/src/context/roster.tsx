@@ -67,16 +67,14 @@ const badgesPrevCursorAtom = atom<string | undefined>(undefined);
 const customersAtom = atom<EventCustomer[]>([]);
 const customersLoadedAtom = atom(false);
 
-export const useRoster = ({
+export const useSharedRoster = ({
   workspaceId,
   helpdeskId,
   userId,
-  roomId, // for mentions
 }: {
   workspaceId?: string;
   helpdeskId?: string;
   userId?: string;
-  roomId?: string;
 }) => {
   const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
@@ -356,6 +354,58 @@ export const useRoster = ({
     }
   }, [isMainHook, lastIncomingMessage, updateRoster, updateBadge]);
 
+  const roster = React.useMemo(() => {
+    return rawRoster
+      .concat()
+      .sort((a, b) => {
+        const badgeA = badges[a.id]?.count > 0;
+        const badgeB = badges[b.id]?.count > 0;
+
+        if (badgeA && !badgeB) {
+          return 1;
+        } else if (!badgeA && badgeB) {
+          return -1;
+        } else {
+          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0; // shouldn't happen
+          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0; // "         "
+          return aTs - bTs;
+        }
+      })
+      .reverse();
+  }, [rawRoster, badges]);
+
+  return {
+    roster,
+    roomById,
+    roomByName,
+    badges,
+    customers,
+    seenRoster,
+    setSeenRoster,
+  };
+};
+
+export const useRoster = ({
+  workspaceId,
+  helpdeskId,
+  userId,
+  roomId, // for mentions
+}: {
+  workspaceId?: string;
+  helpdeskId?: string;
+  userId?: string;
+  roomId?: string;
+}) => {
+  const { serverCall } = useWs();
+  const {
+    roster,
+    roomById,
+    roomByName,
+    badges,
+    customers,
+    seenRoster,
+    setSeenRoster,
+  } = useSharedRoster({ workspaceId, helpdeskId, userId });
   /*
     API calls work independently for each hook
   */
@@ -470,26 +520,6 @@ export const useRoster = ({
   const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
     filteredRoster,
   ]);
-
-  const roster = React.useMemo(() => {
-    return rawRoster
-      .concat()
-      .sort((a, b) => {
-        const badgeA = badges[a.id]?.count > 0;
-        const badgeB = badges[b.id]?.count > 0;
-
-        if (badgeA && !badgeB) {
-          return 1;
-        } else if (!badgeA && badgeB) {
-          return -1;
-        } else {
-          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0; // shouldn't happen
-          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0; // "         "
-          return aTs - bTs;
-        }
-      })
-      .reverse();
-  }, [rawRoster, badges]);
 
   const filterNotMonolog = (rooms: Room[]) =>
     rooms
