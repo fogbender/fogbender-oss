@@ -12,7 +12,7 @@ import {
   SearchRoster,
 } from "../schema";
 
-import { eventRoomToRoom, Room, useSharedRoster } from "./sharedRoster";
+import { eventRoomToRoom, Room } from "./sharedRoster";
 import { useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
@@ -35,9 +35,7 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const ws = useWs();
-  const { fogSessionId, token, serverCall } = ws;
-
+  const { sharedRoster, serverCall } = useWs();
   const {
     roster,
     roomById,
@@ -46,7 +44,7 @@ export const useRoster = ({
     customers,
     seenRoster,
     setSeenRoster,
-  } = useSharedRoster({ ws, token, fogSessionId, workspaceId, helpdeskId, userId });
+  } = sharedRoster;
 
   /*
     API calls work independently for each hook

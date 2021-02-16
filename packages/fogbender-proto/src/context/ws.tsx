@@ -19,6 +19,7 @@ import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
+import { useSharedRoster } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { Client } from "../client";
@@ -55,7 +56,7 @@ export type WsContext = ReturnType<typeof useProviderValue>;
 const WsContext = React.createContext<WsContext | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(token: AnyToken | undefined, client?: Client) {
+function useProviderValue(token: AnyToken | undefined, workspaceId?: string, client?: Client) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
@@ -72,16 +73,25 @@ function useProviderValue(token: AnyToken | undefined, client?: Client) {
       client?.setSession?.(sessionId, userId, helpdeskId);
     },
   }));
-  const value = useServerWs(providerClient, token);
-  return { ...value, token, fogSessionId, userId, helpdeskId };
+  const ws = useServerWs(providerClient, token);
+  const sharedRoster = useSharedRoster({
+    ws,
+    token,
+    fogSessionId,
+    workspaceId,
+    helpdeskId,
+    userId,
+  });
+  return { ...ws, sharedRoster, token, fogSessionId, userId, helpdeskId };
 }
 
 export const WsProvider: React.FC<{
   token: AnyToken | undefined;
+  workspaceId?: string | undefined;
   client?: Client;
   children?: React.ReactNode;
-}> = ({ token, client, ...props }) => {
-  const value = useProviderValue(token, client);
+}> = ({ token, workspaceId, client, ...props }) => {
+  const value = useProviderValue(token, workspaceId, client);
   return <WsContext.Provider value={value} {...props} />;
 };
 

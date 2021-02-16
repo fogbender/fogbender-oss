@@ -74,7 +74,6 @@ export const useSharedRoster = ({
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token is changed
-    console.log("clear roster");
     setRawRoster(() => []);
     setRosterLoaded(false);
     setOldestRoomTs(Infinity);
