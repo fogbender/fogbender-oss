@@ -23,7 +23,6 @@ export const Example = () => {
     customerName: "Org Name",
     userId: "example_PLEASE_CHANGE",
     userEmail: "user@example.com",
-    // The server will only accept signatures generated with HMAC-SHA-256
     userHMAC: "04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3",
     userName: "User Name",
     userAvatarUrl:
