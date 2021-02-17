@@ -472,7 +472,7 @@ export const useRoomHistory = ({
     if (!fogSessionId || !subscribed) {
       return;
     }
-    if (aroundId && messages.find(x => x.id === aroundId)) {
+    if (aroundId && !fetchingOlder && !fetchingNewer && messages.find(x => x.id === aroundId)) {
       setIsAroundFetched(true);
       setIsAroundFetching(false);
     } else if (aroundId && !isAroundFetching && !isAroundFetched) {
@@ -488,6 +488,8 @@ export const useRoomHistory = ({
     messages,
     isAroundFetching,
     isAroundFetched,
+    fetchingOlder,
+    fetchingNewer,
     fetchPageAroundId,
     clearAroundHistory,
     setNewerHistoryComplete,
