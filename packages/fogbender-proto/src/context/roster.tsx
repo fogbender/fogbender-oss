@@ -131,13 +131,13 @@ export const useRoster = ({
     (
       params: Pick<
         IntegrationForwardToIssue,
-        "integrationId" | "gid" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+        "integrationId" | "issueId" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
       >
     ) =>
       serverCall<IntegrationForwardToIssue>({
         msgType: "Integration.ForwardToIssue",
         integrationId: params.integrationId,
-        gid: params.gid,
+        issueId: params.issueId,
         linkRoomId: params.linkRoomId,
         linkStartMessageId: params.linkStartMessageId,
         linkEndMessageId: params.linkEndMessageId,
