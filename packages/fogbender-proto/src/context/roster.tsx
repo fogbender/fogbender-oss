@@ -1,68 +1,28 @@
-import { atom, useAtom } from "jotai";
+import { atom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
 import {
-  EventBadge,
-  EventCustomer,
   EventRoom,
-  EventSeen,
   EventTag,
   IntegrationCreateIssue,
   IntegrationForwardToIssue,
   RoomCreate,
-  RoomMember,
   RoomUpdate,
   SearchRoster,
-  StreamGet,
-  StreamSub,
 } from "../schema";
 
+import { eventRoomToRoom, Room } from "./sharedRoster";
 import { useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import {
-  extractEventBadge,
-  extractEventCustomer,
-  extractEventRoom,
-  extractEventSeen,
-  extractEventTag,
-} from "../utils/castTypes";
+import { extractEventTag } from "../utils/castTypes";
 
-export type Room = EventRoom & {
-  orderWeight?: string;
-  counterpart?: RoomMember; // when type === "dialog"
-};
-
-const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
-  if (e.created) {
-    const counterpart = e.type === "dialog" && e.members?.find(m => m.id !== ourUserId);
-    return counterpart ? { ...e, counterpart } : e;
-  } else {
-    const type: "agent" | "user" = e.agentId ? "agent" : "user";
-    const counterpart = {
-      id: e.agentId || e.userId,
-      type,
-      imageUrl: e.imageUrl,
-      name: e.name,
-      email: e.email,
-    };
-
-    return { ...e, counterpart };
-  }
-};
+export type { Room } from "./sharedRoster";
 
 function useImmer<T>(initialValue: T) {
   return useImmerAtom(React.useRef(atom(initialValue)).current);
 }
-
-const rosterAtom = atom<Room[]>([]);
-const rosterLoadedAtom = atom(false);
-const oldestRoomTsAtom = atom(Infinity);
-const seenRosterAtom = atom<{ [key: string]: EventSeen }>({});
-const badgesAtom = atom<{ [key: string]: EventBadge }>({});
-const badgesLoadedAtom = atom(false);
-const badgesPrevCursorAtom = atom<string | undefined>(undefined);
 
 export const useRoster = ({
   workspaceId,
@@ -75,209 +35,20 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  const { sharedRoster, serverCall } = useWs();
+  const {
+    roster,
+    roomById,
+    roomByName,
+    badges,
+    customers,
+    seenRoster,
+    setSeenRoster,
+  } = sharedRoster;
 
-  const { token, fogSessionId, serverCall, lastIncomingMessage } = useWs();
-
-  const [rawRoster, setRawRoster] = useImmerAtom(rosterAtom);
-  const [rosterLoaded, setRosterLoaded] = useAtom(rosterLoadedAtom);
-  const [oldestRoomTs, setOldestRoomTs] = useAtom(oldestRoomTsAtom);
-  const [seenRoster, setSeenRoster] = useImmerAtom(seenRosterAtom);
-
-  React.useEffect(() => {
-    // Clear roster on user logout
-    if (token === undefined) {
-      setRawRoster(() => []);
-      setRosterLoaded(false);
-      setOldestRoomTs(Infinity);
-    }
-  }, [token]);
-
-  const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
-  const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
-    rawRoster,
-  ]);
-
-  const [badges, setBadges] = useImmerAtom(badgesAtom);
-
-  const roster = React.useMemo(() => {
-    return rawRoster
-      .concat()
-      .sort((a, b) => {
-        const badgeA = badges[a.id]?.count > 0;
-        const badgeB = badges[b.id]?.count > 0;
-
-        if (badgeA && !badgeB) {
-          return 1;
-        } else if (!badgeA && badgeB) {
-          return -1;
-        } else {
-          const aTs = badges[a.id]?.lastRoomMessage?.createdTs || a.createdTs || 0; // shouldn't happen
-          const bTs = badges[b.id]?.lastRoomMessage?.createdTs || b.createdTs || 0; // "         "
-          return aTs - bTs;
-        }
-      })
-      .reverse();
-  }, [rawRoster, badges]);
-
-  const rejectIfUnmounted = useRejectIfUnmounted();
-
-  const [rosterFilter, setRosterFilter] = React.useState<string>();
-  const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
-  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
-    filteredRoster,
-  ]);
-  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
-    filteredRoster,
-  ]);
-
-  const filterNotMonolog = (rooms: Room[]) =>
-    rooms
-      .filter(x => x.counterpart?.id !== userId)
-      .filter(
-        x =>
-          x.type !== "dialog" ||
-          !x.members ||
-          x.members.length === 0 ||
-          !x.members.every(y => y.id === userId)
-      );
-
-  const updateRoster = React.useCallback(
-    (roomsIn: EventRoom[]) => {
-      if (userId) {
-        setRawRoster(roster => {
-          let newRoster = roster;
-          roomsIn.forEach(room => {
-            if (!room.remove) {
-              newRoster = newRoster.filter(x => room.id !== x.id);
-              newRoster.push(eventRoomToRoom(room, userId));
-            }
-          });
-          return newRoster;
-        });
-      }
-    },
-    [userId]
-  );
-
-  React.useEffect(() => {
-    if (!workspaceId && !helpdeskId) {
-      return;
-    }
-    if (fogSessionId) {
-      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall<StreamSub>({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-    }
-  }, [fogSessionId, workspaceId, helpdeskId]);
-
-  React.useEffect(() => {
-    if (!workspaceId && !helpdeskId) {
-      return;
-    }
-    if (fogSessionId && !rosterLoaded) {
-      const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
-      serverCall<StreamGet>({
-        msgType: "Stream.Get",
-        topic,
-        before: oldestRoomTs,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.GetOk");
-        if (x.msgType === "Stream.GetOk") {
-          const items = extractEventRoom(x.items);
-          updateRoster(items);
-          setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
-          if (items.length === 0) {
-            setRosterLoaded(true);
-          }
-        }
-      });
-    }
-  }, [oldestRoomTs, rosterLoaded, fogSessionId, serverCall, workspaceId, helpdeskId, updateRoster]);
-
-  const [badgesLoaded, setBadgesLoaded] = useAtom(badgesLoadedAtom);
-  const [badgesPrevCursor, setBadgesPrevCursor] = useAtom(badgesPrevCursorAtom);
-
-  const updateBadge = React.useCallback(
-    (b: EventBadge) => {
-      setBadges(x => {
-        x[b.roomId] = b;
-      });
-    },
-    [setBadges]
-  );
-
-  React.useEffect(() => {
-    if (!fogSessionId) {
-      return;
-    }
-    if (userId && !badgesLoaded) {
-      // TODO maybe there's a better way to tell users and agents apart?
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
-      serverCall<StreamGet>({
-        msgType: "Stream.Get",
-        topic,
-        prev: badgesPrevCursor,
-        limit: 100,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
-          if (x.msgType === "Stream.GetOk") {
-            const items = extractEventBadge(x.items);
-            items.forEach(b => {
-              updateBadge(b);
-            });
-            setBadgesPrevCursor(x.prev || undefined);
-            if (items.length === 0) {
-              setBadgesLoaded(true);
-            }
-          }
-        })
-        .catch(() => {});
-    }
-  }, [fogSessionId, userId, badgesLoaded, updateBadge, serverCall]);
-
-  React.useEffect(() => {
-    if (token && userId) {
-      // TODO maybe there's a better way to tell users and agents apart?
-      const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
-      serverCall({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-
-      serverCall({
-        msgType: "Stream.Get",
-        topic,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
-          if (x.msgType === "Stream.GetOk") {
-            const seen = extractEventSeen(x.items);
-            seen.forEach(x => setSeenRoster(r => ({ ...r, [x.roomId]: x })));
-          }
-        })
-        .catch(() => {});
-    }
-  }, [token, userId, serverCall]);
-
-  React.useEffect(() => {
-    if (lastIncomingMessage?.msgType === "Event.Room") {
-      updateRoster([lastIncomingMessage]);
-    } else if (lastIncomingMessage?.msgType === "Event.Badge") {
-      updateBadge(lastIncomingMessage);
-    } else if (lastIncomingMessage?.msgType === "Event.Seen") {
-      setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
-    }
-  }, [lastIncomingMessage, updateRoster, updateBadge]);
+  /*
+    API calls work independently for each hook
+  */
 
   const createRoom = React.useCallback(
     (
@@ -377,21 +148,29 @@ export const useRoster = ({
     [serverCall]
   );
 
-  const customersRef = React.useRef<EventCustomer[]>([]);
-  const customers = customersRef.current;
+  /*
+    Search roster -- works independently for each hook
+  */
 
-  const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
-    let newCustomers = customersRef.current;
-    if (customersIn) {
-      customersIn.forEach(customer => {
-        newCustomers = newCustomers.filter(x => customer.id !== x.id);
-        newCustomers.push(customer);
-      });
-      newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
-      customersRef.current = newCustomers;
-      forceUpdate();
-    }
-  }, []);
+  const [rosterFilter, setRosterFilter] = React.useState<string>();
+  const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
+  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
+    filteredRoster,
+  ]);
+  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
+    filteredRoster,
+  ]);
+
+  const filterNotMonolog = (rooms: Room[]) =>
+    rooms
+      .filter(x => x.counterpart?.id !== userId)
+      .filter(
+        x =>
+          x.type !== "dialog" ||
+          !x.members ||
+          x.members.length === 0 ||
+          !x.members.every(y => y.id === userId)
+      );
 
   React.useEffect(() => {
     if (userId && roomId && rosterFilter !== undefined) {
@@ -434,40 +213,6 @@ export const useRoster = ({
       setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y, userId))));
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
-
-  React.useEffect(() => {
-    if (!workspaceId) {
-      return;
-    }
-    serverCall({
-      msgType: "Stream.Get",
-      topic: `workspace/${workspaceId}/customers`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.GetOk");
-      if (x.msgType === "Stream.GetOk") {
-        updateCustomers(extractEventCustomer(x.items));
-      }
-    });
-    serverCall({
-      msgType: "Stream.Sub",
-      topic: `workspace/${workspaceId}/customers`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-    });
-  }, [workspaceId, updateCustomers, serverCall]);
-
-  React.useEffect(() => {
-    // TODO maybe there's a better way to tell users and agents apart?
-    if (userId) {
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
-      serverCall({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-    }
-  }, [fogSessionId, workspaceId, userId, serverCall]);
 
   return {
     roster,
