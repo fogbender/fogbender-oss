@@ -7,9 +7,11 @@ import {
   EventTyping,
   File,
   MessageCreate,
+  MessageUpdate,
   MessageLink,
   MessageSeen,
   MessageUnseen,
+  MentionIn,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -38,6 +40,8 @@ export type Message = {
   createdTs: number;
   updatedTs: number;
   parsed: string;
+  rawText: string;
+  mentions?: MentionIn[];
   files: File[];
   roomId: string;
   isPinned?: boolean;
@@ -123,6 +127,8 @@ const useHistoryStore = () => {
       createdTs: message.createdTs || Date.now() * 1000,
       updatedTs: message.updatedTs || Date.now() * 1000,
       parsed: message.text,
+      rawText: message.rawText,
+      mentions: message.mentions,
       files: message.files,
       roomId: message.roomId,
       links: message.links,
@@ -228,6 +234,7 @@ const useHistoryStore = () => {
         fromAvatarUrl,
         fromType,
         text,
+        rawText,
         files,
         createdTs,
         updatedTs,
@@ -246,6 +253,7 @@ const useHistoryStore = () => {
         createdTs: createdTs || Date.now(),
         updatedTs: updatedTs || Date.now(),
         parsed: text,
+        rawText,
         files,
         roomId,
       });
@@ -624,6 +632,19 @@ export const useRoomHistory = ({
     [roomId, serverCall]
   );
 
+  const messageUpdate = React.useCallback(
+    async (args: MessageUpdate) =>
+      await serverCall(args)
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Message.Ok") {
+            throw x;
+          }
+        })
+        .catch(() => {}),
+    [roomId, serverCall]
+  );
+
   React.useEffect(() => {
     return () => {
       clearLatestHistory();
@@ -655,6 +676,7 @@ export const useRoomHistory = ({
     seenUpToMessageId,
     messageCreate,
     messageCreateMany,
+    messageUpdate,
   };
 };
 

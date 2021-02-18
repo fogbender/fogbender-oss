@@ -236,6 +236,13 @@ export type Mention = {
   text: string;
 };
 
+export type MentionIn = {
+  id: string;
+  name: string;
+  text: string;
+  type: "Agent" | "User";
+};
+
 export type MessageCreate = {
   msgId?: string;
   msgType: "Message.Create";
@@ -276,6 +283,7 @@ export type MessageUpdate = {
   msgType: "Message.Update";
   messageId: string;
   text?: string;
+  mentions?: Mention[];
   linkRoomId?: string | null;
   linkStartMessageId?: string | null;
   linkEndMessageId?: string | null;
@@ -412,6 +420,8 @@ export type EventMessage = {
   roomId: string;
   id: string;
   text: string;
+  rawText: string;
+  mentions?: MentionIn[];
   files: File[];
   updatedTs: number;
   createdTs: number;
