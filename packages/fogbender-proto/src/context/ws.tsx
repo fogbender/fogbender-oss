@@ -38,6 +38,7 @@ export type Message = {
   createdTs: number;
   updatedTs: number;
   parsed: string;
+  rawText: string;
   files: File[];
   roomId: string;
   isPinned?: boolean;
@@ -123,6 +124,7 @@ const useHistoryStore = () => {
       createdTs: message.createdTs || Date.now() * 1000,
       updatedTs: message.updatedTs || Date.now() * 1000,
       parsed: message.text,
+      rawText: message.rawText,
       files: message.files,
       roomId: message.roomId,
       links: message.links,
@@ -228,6 +230,7 @@ const useHistoryStore = () => {
         fromAvatarUrl,
         fromType,
         text,
+        rawText,
         files,
         createdTs,
         updatedTs,
@@ -246,6 +249,7 @@ const useHistoryStore = () => {
         createdTs: createdTs || Date.now(),
         updatedTs: updatedTs || Date.now(),
         parsed: text,
+        rawText,
         files,
         roomId,
       });

@@ -412,6 +412,7 @@ export type EventMessage = {
   roomId: string;
   id: string;
   text: string;
+  rawText: string;
   files: File[];
   updatedTs: number;
   createdTs: number;
