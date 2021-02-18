@@ -10,6 +10,7 @@ import {
   MessageLink,
   MessageSeen,
   MessageUnseen,
+  MentionIn,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -39,6 +40,7 @@ export type Message = {
   updatedTs: number;
   parsed: string;
   rawText: string;
+  mentions?: MentionIn[];
   files: File[];
   roomId: string;
   isPinned?: boolean;
@@ -125,6 +127,7 @@ const useHistoryStore = () => {
       updatedTs: message.updatedTs || Date.now() * 1000,
       parsed: message.text,
       rawText: message.rawText,
+      mentions: message.mentions,
       files: message.files,
       roomId: message.roomId,
       links: message.links,
