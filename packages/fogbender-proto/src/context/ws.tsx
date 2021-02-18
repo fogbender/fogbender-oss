@@ -7,6 +7,7 @@ import {
   EventTyping,
   File,
   MessageCreate,
+  MessageUpdate,
   MessageLink,
   MessageSeen,
   MessageUnseen,
@@ -631,6 +632,19 @@ export const useRoomHistory = ({
     [roomId, serverCall]
   );
 
+  const messageUpdate = React.useCallback(
+    async (args: MessageUpdate) =>
+      await serverCall(args)
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Message.Ok") {
+            throw x;
+          }
+        })
+        .catch(() => {}),
+    [roomId, serverCall]
+  );
+
   React.useEffect(() => {
     return () => {
       clearLatestHistory();
@@ -662,6 +676,7 @@ export const useRoomHistory = ({
     seenUpToMessageId,
     messageCreate,
     messageCreateMany,
+    messageUpdate,
   };
 };
 
