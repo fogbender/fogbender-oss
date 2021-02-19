@@ -763,15 +763,7 @@ function useImmer<T>(initialValue: T) {
   return useImmerAtom(React.useRef(atom(initialValue)).current);
 }
 
-export const useNotifications = ({
-  vendorId,
-  workspaceId,
-  userId,
-}: {
-  vendorId: string;
-  workspaceId: string;
-  userId: string | undefined;
-}) => {
+export const useNotifications = ({ userId }: { userId: string | undefined }) => {
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
@@ -807,7 +799,7 @@ export const useNotifications = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, updateAgent, workspaceId, vendorId, userId, serverCall]);
+  }, [fogSessionId, updateAgent, userId, serverCall]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
