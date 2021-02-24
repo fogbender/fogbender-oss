@@ -1,4 +1,5 @@
 import * as React from "react";
+import classNames from "classnames";
 
 // make sure to keep in sync with fogbender-ptoto schema
 export type Token = {
@@ -14,9 +15,33 @@ export type Token = {
   userEmail?: string;
 };
 
-export type Fogbender = (opts: { rootEl?: HTMLElement; url?: string; token?: Token }) => void;
+export type Fogbender = (opts: {
+  rootEl?: HTMLElement;
+  url?: string;
+  token?: Token;
+  headless?: boolean;
+  onBadges?: (badges: Badge[]) => void;
+}) => void;
 
-export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, token: Token) {
+type Badge = {
+  count: number;
+  mentionsCount: number;
+  roomId: string;
+};
+
+const handlers = {
+  onBadges: (badges: Badge[]) => {
+    if (badges) {
+    }
+  },
+};
+
+export function useFogbender(
+  clientUrl: string,
+  ref: HTMLDivElement | null,
+  token: Token,
+  headless = false
+) {
   const onLoad = () => {
     setLoaded(true);
   };
@@ -40,6 +65,8 @@ export function useFogbender(clientUrl: string, ref: HTMLDivElement | null, toke
           rootEl: ref || undefined,
           url: clientUrl,
           token,
+          headless,
+          onBadges: badges => handlers.onBadges(badges),
         });
       }
     }
@@ -53,4 +80,36 @@ export const FogbenderWidget: React.FC<{
   const divRef = React.useRef<HTMLDivElement>(null);
   useFogbender(clientUrl, divRef.current, token);
   return <div ref={divRef} />;
+};
+
+export const FogbenderHeadless: React.FC<{
+  clientUrl: string;
+  token: Token;
+}> = ({ clientUrl, token }) => {
+  const divRef = React.useRef<HTMLDivElement>(null);
+  useFogbender(clientUrl, divRef.current, token, true);
+  return <div ref={divRef} />;
+};
+
+export const FogbenderBadge: React.FC<{ className?: string }> = ({ className }) => {
+  const [howManyRoomsWithUnreads, setHowManyRoomsWithUnreads] = React.useState<number>();
+  React.useEffect(() => {
+    handlers.onBadges = badges => {
+      const roomsWithUnreads = Object.values(badges).reduce((acc, b) => acc + b.count, 0);
+      setHowManyRoomsWithUnreads(roomsWithUnreads);
+    };
+  }, []);
+
+  return (
+    <span
+      className={classNames(
+        "px-2 rounded-full text-xs font-extrabold",
+        "bg-green-300 text-green-600",
+        !howManyRoomsWithUnreads && "hidden",
+        className !== undefined && className
+      )}
+    >
+      {howManyRoomsWithUnreads}
+    </span>
+  );
 };
