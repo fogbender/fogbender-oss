@@ -30,10 +30,7 @@ type Badge = {
 };
 
 const handlers = {
-  onBadges: (badges: Badge[]) => {
-    if (badges) {
-    }
-  },
+  onBadges: (_badges: Badge[]) => {},
 };
 
 export function useFogbender(
