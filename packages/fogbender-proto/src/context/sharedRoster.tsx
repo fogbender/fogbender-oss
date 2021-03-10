@@ -71,6 +71,7 @@ export const useSharedRoster = ({
   const [badgesPrevCursor, setBadgesPrevCursor] = React.useState<string>();
   const [customers, setCustomers] = React.useState<EventCustomer[]>([]);
   const [customersLoaded, setCustomersLoaded] = React.useState(false);
+  const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token is changed
@@ -236,20 +237,33 @@ export const useSharedRoster = ({
     }
   }, [fogSessionId, userId, serverCall]);
 
-  const updateCustomers = React.useCallback(
-    (customersIn: EventCustomer[]) => {
+  const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
+    setCustomers(customers => {
       let newCustomers = customers;
-      if (customersIn) {
-        customersIn.forEach(customer => {
-          newCustomers = newCustomers.filter(x => customer.id !== x.id);
-          newCustomers.push(customer);
-        });
-        newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
-        setCustomers(newCustomers);
-      }
-    },
-    [customers]
-  );
+      customersIn.forEach(customer => {
+        newCustomers = newCustomers.filter(x => customer.id !== x.id);
+        newCustomers.push(customer);
+      });
+      newCustomers.sort((a, b) => b.updatedTs - a.updatedTs);
+      setCustomers(newCustomers);
+      return newCustomers;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    if (!workspaceId) {
+      return;
+    }
+    serverCall({
+      msgType: "Stream.Sub",
+      topic: `workspace/${workspaceId}/customers`,
+    }).then(x => {
+      console.assert(x.msgType === "Stream.SubOk");
+    });
+  }, [fogSessionId, workspaceId]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -258,23 +272,22 @@ export const useSharedRoster = ({
     if (!workspaceId || customersLoaded) {
       return;
     }
-    serverCall({
+    serverCall<StreamGet>({
       msgType: "Stream.Get",
       topic: `workspace/${workspaceId}/customers`,
+      before: oldestCustomerTs,
     }).then(x => {
       console.assert(x.msgType === "Stream.GetOk");
       if (x.msgType === "Stream.GetOk") {
-        updateCustomers(extractEventCustomer(x.items));
+        const items = extractEventCustomer(x.items);
+        updateCustomers(items);
+        setOldestCustomerTs(Math.min(...items.map(x => x.createdTs), oldestCustomerTs || Infinity));
+        if (items.length === 0) {
+          setCustomersLoaded(true);
+        }
       }
     });
-    serverCall({
-      msgType: "Stream.Sub",
-      topic: `workspace/${workspaceId}/customers`,
-    }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-    });
-    setCustomersLoaded(true);
-  }, [fogSessionId, workspaceId, updateCustomers, serverCall]);
+  }, [fogSessionId, workspaceId, customersLoaded, oldestCustomerTs, updateCustomers, serverCall]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
