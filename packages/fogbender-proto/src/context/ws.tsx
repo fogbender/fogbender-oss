@@ -319,6 +319,7 @@ export const useRoomHistory = ({
               topic: `room/${linkRoomId}/messages`,
               startId: linkStartMessageId,
               endId: linkEndMessageId,
+              limit: 25,
             })
               .then(rejectIfUnmounted)
               .then(x => {
