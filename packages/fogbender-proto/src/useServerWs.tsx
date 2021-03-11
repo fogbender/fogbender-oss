@@ -30,7 +30,11 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
   }
 };
 
-export function useServerWs(client: Client, token: AnyToken | undefined) {
+export function useServerWs(
+  client: Client,
+  token: AnyToken | undefined,
+  isIdle: boolean | undefined
+) {
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
@@ -227,6 +231,14 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
 
   const failedPingCount = React.useRef(0);
 
+  const lastActiveTs = React.useRef(Date.now());
+
+  React.useEffect(() => {
+    if (isIdle === false) {
+      lastActiveTs.current = Date.now();
+    }
+  }, [isIdle]);
+
   const isConnected = readyState === ReadyState.OPEN;
   React.useEffect(() => {
     if (!isConnected || wrongToken.current) {
@@ -240,6 +252,7 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
       failedPingCount.current = failedPingCount.current + 1;
       serverCall({
         msgType: "Ping.Ping",
+        lastActiveTs: lastActiveTs.current,
       }).then(
         r => {
           failedPingCount.current = 0;
