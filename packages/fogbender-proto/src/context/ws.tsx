@@ -60,7 +60,12 @@ export type WsContext = ReturnType<typeof useProviderValue>;
 const WsContext = React.createContext<WsContext | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(token: AnyToken | undefined, workspaceId?: string, client?: Client) {
+function useProviderValue(
+  token: AnyToken | undefined,
+  workspaceId?: string,
+  client?: Client,
+  isIdle?: boolean
+) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
@@ -77,7 +82,7 @@ function useProviderValue(token: AnyToken | undefined, workspaceId?: string, cli
       client?.setSession?.(sessionId, userId, helpdeskId);
     },
   }));
-  const ws = useServerWs(providerClient, token);
+  const ws = useServerWs(providerClient, token, isIdle);
   const sharedRoster = useSharedRoster({
     ws,
     token,
@@ -93,9 +98,10 @@ export const WsProvider: React.FC<{
   token: AnyToken | undefined;
   workspaceId?: string | undefined;
   client?: Client;
+  isIdle?: boolean;
   children?: React.ReactNode;
-}> = ({ token, workspaceId, client, ...props }) => {
-  const value = useProviderValue(token, workspaceId, client);
+}> = ({ token, workspaceId, client, isIdle, ...props }) => {
+  const value = useProviderValue(token, workspaceId, client, isIdle);
   return <WsContext.Provider value={value} {...props} />;
 };
 

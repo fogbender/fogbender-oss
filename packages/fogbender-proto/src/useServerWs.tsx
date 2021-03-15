@@ -3,7 +3,7 @@ import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import { AnyToken, Helpdesk, FogSchema, ServerCalls, ServerEvents } from "./schema";
+import { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
 type Requests = {
@@ -30,7 +30,11 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
   }
 };
 
-export function useServerWs(client: Client, token: AnyToken | undefined) {
+export function useServerWs(
+  client: Client,
+  token: AnyToken | undefined,
+  isIdle?: boolean | undefined
+) {
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
@@ -227,6 +231,19 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
 
   const failedPingCount = React.useRef(0);
 
+  const lastActiveTs = React.useRef<number | undefined>();
+  // Update lastActiveTs every time something happens and it's active mode now
+  if (isIdle === false) {
+    lastActiveTs.current = Date.now() * 1000;
+  }
+  // Update lastActiveTs on transition to isIdle
+  // but only if there was active mode previously
+  React.useEffect(() => {
+    if (lastActiveTs.current !== undefined && isIdle === true) {
+      lastActiveTs.current = Date.now() * 1000;
+    }
+  }, [isIdle]);
+
   const isConnected = readyState === ReadyState.OPEN;
   React.useEffect(() => {
     if (!isConnected || wrongToken.current) {
@@ -238,8 +255,9 @@ export function useServerWs(client: Client, token: AnyToken | undefined) {
         getWebSocket()?.close();
       }
       failedPingCount.current = failedPingCount.current + 1;
-      serverCall({
+      serverCall<PingPing>({
         msgType: "Ping.Ping",
+        lastActiveTs: lastActiveTs.current,
       }).then(
         r => {
           failedPingCount.current = 0;
