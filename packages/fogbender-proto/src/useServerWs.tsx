@@ -231,11 +231,16 @@ export function useServerWs(
 
   const failedPingCount = React.useRef(0);
 
-  const lastActiveTs = React.useRef(Date.now());
-
+  const lastActiveTs = React.useRef<number | undefined>();
+  // Update lastActiveTs every time something happens and it's active mode now
+  if (isIdle === false) {
+    lastActiveTs.current = Date.now() * 1000;
+  }
+  // Update lastActiveTs on transition to isIdle
+  // but only if there was active mode previously
   React.useEffect(() => {
-    if (isIdle === false) {
-      lastActiveTs.current = Date.now();
+    if (lastActiveTs.current !== undefined && isIdle === true) {
+      lastActiveTs.current = Date.now() * 1000;
     }
   }, [isIdle]);
 
