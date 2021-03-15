@@ -3,7 +3,7 @@ import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import { AnyToken, Helpdesk, FogSchema, ServerCalls, ServerEvents } from "./schema";
+import { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
 import { Client } from "./client";
 
 type Requests = {
@@ -33,7 +33,7 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
 export function useServerWs(
   client: Client,
   token: AnyToken | undefined,
-  isIdle: boolean | undefined
+  isIdle?: boolean | undefined
 ) {
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
@@ -250,7 +250,7 @@ export function useServerWs(
         getWebSocket()?.close();
       }
       failedPingCount.current = failedPingCount.current + 1;
-      serverCall({
+      serverCall<PingPing>({
         msgType: "Ping.Ping",
         lastActiveTs: lastActiveTs.current,
       }).then(
