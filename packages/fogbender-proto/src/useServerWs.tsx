@@ -176,7 +176,7 @@ export function useServerWs(
         );
       } else if ("agentId" in token) {
         authenticating.current = true;
-        fetch(`${getServerApiUrl()}/token`, {
+        fetch(`${getServerApiUrl(env)}/token`, {
           method: "post",
           credentials: "include",
         })
