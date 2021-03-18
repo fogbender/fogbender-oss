@@ -75,13 +75,16 @@ function useProviderValue(
       setFogSessionId(sessionId);
       if (userId) {
         setUserId(userId);
-      } else if (token && "agentId" in token) {
-        setUserId(token.agentId);
       }
       setHelpdeskId(helpdeskId);
       client?.setSession?.(sessionId, userId, helpdeskId);
     },
   }));
+  React.useEffect(() => {
+    if (fogSessionId && !userId && token && "agentId" in token) {
+      setUserId(token.agentId);
+    }
+  }, [token, userId, fogSessionId]);
   const ws = useServerWs(providerClient, token, isIdle);
   const sharedRoster = useSharedRoster({
     ws,
