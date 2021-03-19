@@ -96,29 +96,42 @@ export function useServerWs(
     setLastIncomingMessage(undefined);
   }, [token]);
 
+  const isAuthMessage = React.useCallback(
+    (message: FogSchema["outbound"]) =>
+      message.msgType === "Auth.Agent" || message.msgType === "Auth.User",
+    []
+  );
+
+  const flushQueue = React.useCallback(() => {
+    queue.current.forEach(m => {
+      const data = "binaryData" in m ? serialize(m) : JSON.stringify(m);
+      sendMessageOrig(data);
+    });
+    queue.current = [];
+  }, [sendMessageOrig]);
+
   const sendMessage = React.useCallback(
     (message: FogSchema["outbound"]) => {
-      const socketIsOpen = ready.current === ReadyState.OPEN;
-      const isAuthMessage = message.msgType === "Auth.Agent" || message.msgType === "Auth.User";
-      if (socketIsOpen && (authenticated.current || isAuthMessage)) {
-        const buffer = queue.current;
-        queue.current = [];
-        if (isAuthMessage) {
-          buffer.unshift(message);
-        } else {
-          buffer.push(message);
-        }
-
-        buffer.forEach(m => {
-          const data = "binaryData" in m ? serialize(m) : JSON.stringify(m);
-          sendMessageOrig(data);
-        });
+      const socketIsOpen = ready.current === ReadyState.OPEN && !waitForCloseRef.current;
+      if (isAuthMessage(message)) {
+        queue.current = queue.current.filter(x => !isAuthMessage(x));
+        queue.current.unshift(message);
       } else {
         queue.current.push(message);
       }
+      if (socketIsOpen && (authenticated.current || isAuthMessage)) {
+        flushQueue();
+      }
     },
-    [sendMessageOrig]
+    [flushQueue]
   );
+
+  React.useEffect(() => {
+    if (readyState === ReadyState.OPEN) {
+      waitForCloseRef.current = false;
+      flushQueue();
+    }
+  }, [readyState, flushQueue]);
 
   const serverCall = React.useCallback(
     ((origMessage: ServerCalls["orig"]) => {
