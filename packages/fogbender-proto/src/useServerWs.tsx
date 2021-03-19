@@ -42,6 +42,7 @@ export function useServerWs(
   const inFlight = React.useRef(new Map<string, Requests>());
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
+  const waitForCloseRef = React.useRef(false);
   const authenticated = React.useRef(false);
   const wrongToken = React.useRef(false);
   const env = client.getEnv?.();
@@ -235,9 +236,13 @@ export function useServerWs(
   React.useEffect(() => {
     return () => {
       authenticated.current = false;
+      authenticating.current = false;
       wrongToken.current = false;
       setHelpdesk(undefined);
-      getWebSocket()?.close();
+      if (token) {
+        waitForCloseRef.current = true;
+        getWebSocket()?.close();
+      }
     };
   }, [token]);
 
