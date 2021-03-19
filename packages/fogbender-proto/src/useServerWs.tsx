@@ -48,6 +48,11 @@ export function useServerWs(
   const onError = client.onError || defaultOnError;
   const socketUrl = getServerWsUrl(env);
 
+  // We'll check that later when processing async requests,
+  // to stop when token was changed in flight
+  const currentToken = React.useRef<AnyToken | undefined>();
+  currentToken.current = token;
+
   const opts = React.useMemo((): Options => {
     return {
       shouldReconnect: () => true,
@@ -182,6 +187,13 @@ export function useServerWs(
         })
           .then(res => res.json())
           .then(res => {
+            if (
+              !currentToken.current ||
+              ("agentId" in currentToken.current && currentToken.current.agentId !== token.agentId)
+            ) {
+              // Token was changed while waiting for server response
+              return;
+            }
             if (!res || !res.token) {
               throw new Error("Error getting agent api token");
             }
