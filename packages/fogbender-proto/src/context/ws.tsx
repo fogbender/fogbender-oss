@@ -81,7 +81,7 @@ function useProviderValue(
     },
   }));
   React.useEffect(() => {
-    if (fogSessionId && !userId && token && "agentId" in token) {
+    if (fogSessionId && token && "agentId" in token) {
       setUserId(token.agentId);
     }
   }, [token, userId, fogSessionId]);
