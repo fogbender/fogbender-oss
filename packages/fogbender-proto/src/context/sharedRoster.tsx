@@ -74,7 +74,7 @@ export const useSharedRoster = ({
   const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
 
   React.useLayoutEffect(() => {
-    // Clear roster when user's token is changed
+    // Clear roster when user's token or workspace is changed
     setRawRoster(() => []);
     setRosterLoaded(false);
     setOldestRoomTs(Infinity);
@@ -83,7 +83,9 @@ export const useSharedRoster = ({
     setBadgesLoaded(false);
     setBadgesPrevCursor(undefined);
     setCustomers([]);
-  }, [token]);
+    setCustomersLoaded(false);
+    setOldestCustomerTs(Infinity);
+  }, [token, workspaceId]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
   const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
