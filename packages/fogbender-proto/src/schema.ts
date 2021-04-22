@@ -386,7 +386,7 @@ export type EchoOk = {
 export type PingPing = {
   msgId?: string;
   msgType: "Ping.Ping";
-  lastActiveTs?: number;
+  lastActivityTs?: number;
 };
 
 export type PingPong = {
