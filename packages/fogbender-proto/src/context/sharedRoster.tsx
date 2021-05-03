@@ -306,6 +306,7 @@ export const useSharedRoster = ({
   const roster = React.useMemo(() => {
     return rawRoster
       .concat()
+      .filter(x => x.workspaceId === workspaceId)
       .sort((a, b) => {
         const badgeA = badges[a.id]?.count > 0;
         const badgeB = badges[b.id]?.count > 0;
@@ -321,7 +322,7 @@ export const useSharedRoster = ({
         }
       })
       .reverse();
-  }, [rawRoster, badges]);
+  }, [rawRoster, badges, workspaceId]);
 
   return {
     roster,
