@@ -214,6 +214,25 @@ export const useRoster = ({
     }
   }, [userId, roster, customers, rosterFilter, serverCall]);
 
+  const roomsByTags = React.useCallback(
+    (tagIds: string[]) =>
+      serverCall<SearchRoster>({
+        msgType: "Search.Roster",
+        workspaceId,
+        helpdeskId,
+        mentionRoomId: roomId,
+        tagIds,
+      }).then(x => {
+        console.assert(x.msgType === "Search.Ok");
+        if (x.msgType === "Search.Ok") {
+          return x.items;
+        } else {
+          return [];
+        }
+      }),
+    [serverCall]
+  );
+
   return {
     roster,
     seenRoster,
@@ -229,6 +248,7 @@ export const useRoster = ({
     forwardToIssue,
     customers,
     badges,
+    roomsByTags,
   };
 };
 
