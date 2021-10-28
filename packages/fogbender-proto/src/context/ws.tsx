@@ -11,6 +11,7 @@ import {
   MessageLink,
   MessageSeen,
   MessageUnseen,
+  MessageGetSources,
   MentionIn,
   StreamGet,
   StreamSub,
@@ -323,18 +324,16 @@ export const useRoomHistory = ({
         const { id, linkRoomId, linkStartMessageId, linkEndMessageId, linkType } = message;
         if (linkRoomId && linkStartMessageId && linkEndMessageId && linkType) {
           resolveLinkTargets.push(
-            serverCall<StreamGet>({
-              msgType: "Stream.Get",
-              topic: `room/${linkRoomId}/messages`,
-              startId: linkStartMessageId,
-              endId: linkEndMessageId,
-              limit: 25,
+            serverCall<MessageGetSources>({
+              msgType: "Message.GetSources",
+              roomId,
+              messageId: id,
             })
               .then(rejectIfUnmounted)
               .then(x => {
-                console.assert(x.msgType === "Stream.GetOk");
-                if (x.msgType === "Stream.GetOk") {
-                  expandLink(id, extractEventMessage(x.items));
+                console.assert(x.msgType === "Message.Ok");
+                if (x.msgType === "Message.Ok") {
+                  expandLink(id, extractEventMessage(x.items || []));
                 }
               })
               .catch(() => {})
