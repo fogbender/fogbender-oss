@@ -88,9 +88,10 @@ export const useSharedRoster = ({
   }, [token, workspaceId]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
-  const roomByName = React.useCallback((name: string) => rawRoster.find(r => r.name === name), [
-    rawRoster,
-  ]);
+  const roomByName = React.useCallback(
+    (name: string) => rawRoster.find(r => r.name === name),
+    [rawRoster]
+  );
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {

@@ -63,11 +63,12 @@ export function useServerWs(
   }, []);
 
   const connect = !(token === undefined || wrongToken.current);
-  const { sendMessage: sendMessageOrig, lastMessage, readyState, getWebSocket } = useWebSocket(
-    socketUrl,
-    opts,
-    connect
-  );
+  const {
+    sendMessage: sendMessageOrig,
+    lastMessage,
+    readyState,
+    getWebSocket,
+  } = useWebSocket(socketUrl, opts, connect);
   ready.current = readyState;
 
   React.useEffect(() => {

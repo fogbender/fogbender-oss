@@ -36,15 +36,8 @@ export const useRoster = ({
   roomId?: string;
 }) => {
   const { sharedRoster, serverCall } = useWs();
-  const {
-    roster,
-    roomById,
-    roomByName,
-    badges,
-    customers,
-    seenRoster,
-    setSeenRoster,
-  } = sharedRoster;
+  const { roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster } =
+    sharedRoster;
 
   /*
     API calls work independently for each hook
@@ -154,12 +147,14 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
   const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
-  const filteredRooms = React.useMemo(() => filteredRoster.filter(x => x.type !== "dialog"), [
-    filteredRoster,
-  ]);
-  const filteredDialogs = React.useMemo(() => filteredRoster.filter(x => x.type === "dialog"), [
-    filteredRoster,
-  ]);
+  const filteredRooms = React.useMemo(
+    () => filteredRoster.filter(x => x.type !== "dialog"),
+    [filteredRoster]
+  );
+  const filteredDialogs = React.useMemo(
+    () => filteredRoster.filter(x => x.type === "dialog"),
+    [filteredRoster]
+  );
 
   const filterNotMonolog = (rooms: Room[]) =>
     rooms
