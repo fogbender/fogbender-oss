@@ -1,3 +1,5 @@
+import { Client } from "./client";
+
 const config = {
   prod: {
     serverApiUrl: "https://api.fogbender.com/api",
@@ -17,20 +19,21 @@ export const defaultEnv =
 
 export type Env = typeof defaultEnv;
 
-export function getConfig(env: Env = defaultEnv) {
+export function getConfig(env: Env = defaultEnv, client?: Client) {
   const envCfg = config[env];
   return {
     ...envCfg,
+    serverApiUrl: client?.getServerApiUrl?.() || envCfg.serverApiUrl,
     /* overwrite: "some value" */
   };
 }
 
-export function getServerApiUrl(env?: Env) {
-  return getConfig(env).serverApiUrl;
+export function getServerApiUrl(env?: Env, client?: Client) {
+  return getConfig(env, client).serverApiUrl;
 }
 
-export function getServerWsUrl(env?: Env) {
-  const { serverApiUrl } = getConfig(env);
+export function getServerWsUrl(env?: Env, client?: Client) {
+  const serverApiUrl = getServerApiUrl(env, client);
   const wsPath = serverApiUrl.replace("https://", "wss://").replace("http://", "ws://");
   return `${wsPath}/ws/v2`;
 }

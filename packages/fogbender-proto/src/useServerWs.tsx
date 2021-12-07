@@ -47,7 +47,7 @@ export function useServerWs(
   const wrongToken = React.useRef(false);
   const env = client.getEnv?.();
   const onError = client.onError || defaultOnError;
-  const socketUrl = getServerWsUrl(env);
+  const socketUrl = getServerWsUrl(env, client);
 
   // We'll check that later when processing async requests,
   // to stop when token was changed in flight
@@ -196,7 +196,7 @@ export function useServerWs(
         );
       } else if ("agentId" in token) {
         authenticating.current = true;
-        fetch(`${getServerApiUrl(env)}/token`, {
+        fetch(`${getServerApiUrl(env, client)}/token`, {
           method: "post",
           credentials: "include",
         })
