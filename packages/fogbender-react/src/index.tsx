@@ -15,6 +15,12 @@ export type Token = {
   userEmail?: string;
 };
 
+export type Badge = {
+  count: number;
+  mentionsCount: number;
+  roomId: string;
+};
+
 export type Fogbender = (opts: {
   rootEl?: HTMLElement;
   url?: string;
@@ -23,12 +29,6 @@ export type Fogbender = (opts: {
   onBadges?: (badges: Badge[]) => void;
   showFloatingWidget?: boolean;
 }) => void;
-
-type Badge = {
-  count: number;
-  mentionsCount: number;
-  roomId: string;
-};
 
 const handlers = {
   onBadges: (_badges: Badge[]) => {},
