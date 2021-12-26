@@ -21,6 +21,7 @@ export type Fogbender = (opts: {
   token?: Token;
   headless?: boolean;
   onBadges?: (badges: Badge[]) => void;
+  showFloatingWidget?: boolean;
 }) => void;
 
 type Badge = {
