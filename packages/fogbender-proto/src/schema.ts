@@ -147,6 +147,20 @@ export type RoomOk = {
   roomId: string;
 };
 
+export type Integration = {
+  id: string;
+  workspace_id: string;
+  type: string;
+  base_url: string;
+  project_url: string;
+  project_id: string;
+  project_name: string;
+  project_path: string;
+  repository_name: string;
+  inserted_at: string;
+  meta_tag: string;
+};
+
 export type IntegrationCreateIssue = {
   msgId?: string;
   msgType: "Integration.CreateIssue";
@@ -537,6 +551,7 @@ export type EventIssue = {
   id: string;
   issueId: string;
   state: string;
+  meta_tag: string;
   labels?: IssueLabel[];
 };
 
