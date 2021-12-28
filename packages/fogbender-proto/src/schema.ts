@@ -69,7 +69,6 @@ export type APISchema = {
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
   MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
-  MessageGetSourcesRPC: RPC<MessageGetSources, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -304,13 +303,6 @@ export type MessageUnseen = {
   roomId: string;
 };
 
-export type MessageGetSources = {
-  msgId?: string;
-  msgType: "Message.GetSources";
-  roomId: string;
-  messageId: string;
-};
-
 export type MessageOk = {
   msgId: string;
   msgType: "Message.Ok";
@@ -440,6 +432,8 @@ export type EventMessage = {
   linkStartMessageId?: string;
   linkEndMessageId?: string;
   linkType?: "forward" | "reply";
+  targets?: EventMessage[];
+  sources?: EventMessage[];
   deletedTs?: number;
   deletedByName?: string;
 };

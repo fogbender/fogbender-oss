@@ -11,7 +11,6 @@ import {
   MessageLink,
   MessageSeen,
   MessageUnseen,
-  MessageGetSources,
   MentionIn,
   StreamGet,
   StreamSub,
@@ -52,9 +51,37 @@ export type Message = {
   linkStartMessageId?: string;
   linkEndMessageId?: string;
   linkType?: "forward" | "reply";
+  targets?: Message[];
+  sources?: Message[];
   deletedTs?: number;
   deletedByName?: string;
 };
+
+const convertEventMessageToMessage = (message: EventMessage): Message => ({
+  id: message.id,
+  author: {
+    id: message.fromId,
+    name: message.fromName,
+    type: message.fromType,
+    avatarUrl: message.fromAvatarUrl,
+  },
+  createdTs: message.createdTs || Date.now() * 1000,
+  updatedTs: message.updatedTs || Date.now() * 1000,
+  parsed: message.text,
+  rawText: message.rawText,
+  mentions: message.mentions,
+  files: message.files,
+  roomId: message.roomId,
+  links: message.links,
+  linkRoomId: message.linkRoomId,
+  linkStartMessageId: message.linkStartMessageId,
+  linkEndMessageId: message.linkEndMessageId,
+  linkType: message.linkType,
+  targets: message.targets?.map(convertEventMessageToMessage),
+  sources: message.sources?.map(convertEventMessageToMessage),
+  deletedTs: message.deletedTs,
+  deletedByName: message.deletedByName,
+});
 
 export type WsContext = ReturnType<typeof useProviderValue>;
 
@@ -124,33 +151,6 @@ const useHistoryStore = () => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const messagesByTargetRef = React.useRef<{ [targetMessageId: string]: Message[] }>({});
-
-  const convertEventMessageToMessage = React.useCallback(
-    (message: EventMessage): Message => ({
-      id: message.id,
-      author: {
-        id: message.fromId,
-        name: message.fromName,
-        type: message.fromType,
-        avatarUrl: message.fromAvatarUrl,
-      },
-      createdTs: message.createdTs || Date.now() * 1000,
-      updatedTs: message.updatedTs || Date.now() * 1000,
-      parsed: message.text,
-      rawText: message.rawText,
-      mentions: message.mentions,
-      files: message.files,
-      roomId: message.roomId,
-      links: message.links,
-      linkRoomId: message.linkRoomId,
-      linkStartMessageId: message.linkStartMessageId,
-      linkEndMessageId: message.linkEndMessageId,
-      linkType: message.linkType,
-      deletedTs: message.deletedTs,
-      deletedByName: message.deletedByName,
-    }),
-    []
-  );
 
   const latestMessages = React.useRef<Message[]>([]);
   const aroundMessages = React.useRef<Message[]>([]);
@@ -318,30 +318,12 @@ export const useRoomHistory = ({
 
   const processAndStoreMessages = React.useCallback(
     async (messagesIn: EventMessage[], from: "event" | "page") => {
-      const resolveLinkTargets: Promise<void>[] = [];
-
-      messagesIn.forEach(message => {
-        const { id, linkRoomId, linkStartMessageId, linkEndMessageId, linkType } = message;
-        if (linkRoomId && linkStartMessageId && linkEndMessageId && linkType) {
-          resolveLinkTargets.push(
-            serverCall<MessageGetSources>({
-              msgType: "Message.GetSources",
-              roomId,
-              messageId: id,
-            })
-              .then(rejectIfUnmounted)
-              .then(x => {
-                console.assert(x.msgType === "Message.Ok");
-                if (x.msgType === "Message.Ok") {
-                  expandLink(id, extractEventMessage(x.items || []));
-                }
-              })
-              .catch(() => {})
-          );
+      messagesIn.forEach(({ id, sources }) => {
+        if (sources?.length) {
+          expandLink(id, extractEventMessage(sources));
         }
       });
-
-      return Promise.all(resolveLinkTargets).then(() => addMessages(messagesIn, from));
+      addMessages(messagesIn, from);
     },
     [addMessages, expandLink, serverCall]
   );
