@@ -1,3 +1,5 @@
+import { createFloatingWidget } from "./floatingWidget";
+
 // make sure to keep in sync with fogbender-ptoto schema
 export type Token = {
   widgetId: string;
@@ -26,3 +28,17 @@ export type Fogbender = (opts: {
   onBadges?: (badges: Badge[]) => void;
   showFloatingWidget?: boolean;
 }) => void;
+
+export interface NewFogbenderType {
+  createFloatingWidget(rootEl: HTMLElement, url: string, token: Token): Promise<NewFogbenderType>;
+}
+
+export const createNewFogbender = (): NewFogbenderType => {
+  const fogbender: NewFogbenderType = {
+    async createFloatingWidget(rootEl, url, token) {
+      createFloatingWidget(rootEl, url, token);
+      return fogbender;
+    },
+  };
+  return fogbender;
+};
