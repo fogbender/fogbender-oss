@@ -397,16 +397,6 @@ export type PingPong = {
 
 // BEGIN events
 
-export type MessageLink = {
-  sourceMessageId: string;
-  targetMessageId: string;
-  targetRoomId: string;
-  linkType: "forward" | "reply";
-  targetFromId: string;
-  targetFromName: string;
-  targetInsertedTs: number;
-};
-
 export type EventMessage = {
   msgId?: string;
   msgType: "Event.Message";
@@ -427,7 +417,6 @@ export type EventMessage = {
   files: File[];
   updatedTs: number;
   createdTs: number;
-  links?: MessageLink[];
   linkRoomId?: string;
   linkStartMessageId?: string;
   linkEndMessageId?: string;

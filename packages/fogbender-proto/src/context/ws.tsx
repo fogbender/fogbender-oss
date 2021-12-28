@@ -8,7 +8,6 @@ import {
   File,
   MessageCreate,
   MessageUpdate,
-  MessageLink,
   MessageSeen,
   MessageUnseen,
   MentionIn,
@@ -46,7 +45,6 @@ export type Message = {
   roomId: string;
   isPinned?: boolean;
   tags?: string[];
-  links?: MessageLink[];
   linkRoomId?: string;
   linkStartMessageId?: string;
   linkEndMessageId?: string;
@@ -72,7 +70,6 @@ const convertEventMessageToMessage = (message: EventMessage): Message => ({
   mentions: message.mentions,
   files: message.files,
   roomId: message.roomId,
-  links: message.links,
   linkRoomId: message.linkRoomId,
   linkStartMessageId: message.linkStartMessageId,
   linkEndMessageId: message.linkEndMessageId,
