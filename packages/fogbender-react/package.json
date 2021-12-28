@@ -22,6 +22,9 @@
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
+  "dependencies": {
+    "fogbender": "*"
+  },
   "peerDependencies": {
     "react": ">=16.0.0"
   },
