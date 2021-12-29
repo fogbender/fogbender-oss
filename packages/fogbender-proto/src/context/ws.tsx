@@ -265,10 +265,6 @@ const useHistoryStore = () => {
         roomId,
       });
     });
-
-    if (messagesByTarget[targetMessageId]) {
-      messagesByTarget[targetMessageId].sort((x, y) => x.createdTs - y.createdTs);
-    }
   }, []);
 
   return {
