@@ -38,3 +38,16 @@ export interface NewFogbenderType {
   }): Promise<NewFogbenderType>;
   createFloatingWidget(rootEl: HTMLElement): Promise<NewFogbenderType>;
 }
+export type FogbenderLoader = {
+  startLoader: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;
+  _once: boolean;
+  _checkOnce: () => boolean;
+  _queue: {
+    methodName: keyof NewFogbenderType;
+    args: any[];
+    resolve: (value: any) => any;
+    reject: (value: any) => any;
+  }[];
+  _fogbender?: NewFogbenderType;
+  _setFogbender: (fogbender: NewFogbenderType) => void;
+};
