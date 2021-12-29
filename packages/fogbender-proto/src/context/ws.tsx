@@ -232,6 +232,8 @@ const useHistoryStore = () => {
   const expandLink = React.useCallback((targetMessageId: string, messages: EventMessage[]) => {
     const messagesByTarget = messagesByTargetRef.current;
 
+    messagesByTarget[targetMessageId] = [];
+
     messages.forEach(message => {
       const {
         id,
@@ -246,10 +248,6 @@ const useHistoryStore = () => {
         createdTs,
         updatedTs,
       } = message;
-
-      if (!messagesByTarget[targetMessageId]) {
-        messagesByTarget[targetMessageId] = [];
-      }
 
       messagesByTarget[targetMessageId].push({
         id,
