@@ -251,9 +251,6 @@ const useHistoryStore = () => {
         messagesByTarget[targetMessageId] = [];
       }
 
-      messagesByTarget[targetMessageId] = messagesByTarget[targetMessageId].filter(
-        x => id !== x.id
-      );
       messagesByTarget[targetMessageId].push({
         id,
         author: { id: fromId, name: fromName, type: fromType, avatarUrl: fromAvatarUrl },
