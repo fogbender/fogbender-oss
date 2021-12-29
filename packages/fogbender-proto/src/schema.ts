@@ -69,7 +69,6 @@ export type APISchema = {
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
   MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
-  MessageGetSourcesRPC: RPC<MessageGetSources, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -304,13 +303,6 @@ export type MessageUnseen = {
   roomId: string;
 };
 
-export type MessageGetSources = {
-  msgId?: string;
-  msgType: "Message.GetSources";
-  roomId: string;
-  messageId: string;
-};
-
 export type MessageOk = {
   msgId: string;
   msgType: "Message.Ok";
@@ -405,16 +397,6 @@ export type PingPong = {
 
 // BEGIN events
 
-export type MessageLink = {
-  sourceMessageId: string;
-  targetMessageId: string;
-  targetRoomId: string;
-  linkType: "forward" | "reply";
-  targetFromId: string;
-  targetFromName: string;
-  targetInsertedTs: number;
-};
-
 export type EventMessage = {
   msgId?: string;
   msgType: "Event.Message";
@@ -435,11 +417,12 @@ export type EventMessage = {
   files: File[];
   updatedTs: number;
   createdTs: number;
-  links?: MessageLink[];
   linkRoomId?: string;
   linkStartMessageId?: string;
   linkEndMessageId?: string;
   linkType?: "forward" | "reply";
+  targets?: EventMessage[];
+  sources?: EventMessage[];
   deletedTs?: number;
   deletedByName?: string;
 };
