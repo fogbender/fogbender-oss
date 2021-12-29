@@ -28,5 +28,13 @@ export type Fogbender = (opts: {
 }) => void;
 
 export interface NewFogbenderType {
-  createFloatingWidget(rootEl: HTMLElement, url: string, token: Token): Promise<NewFogbenderType>;
+  releaseInfo(info: string): Promise<NewFogbenderType>;
+  setClientUrl(url: string | undefined): Promise<NewFogbenderType>;
+  setToken(token: Token | undefined): Promise<NewFogbenderType>;
+  renderIframe(opts: {
+    rootEl: HTMLElement;
+    headless: boolean;
+    onBadges?: (badges: Badge[]) => void;
+  }): Promise<NewFogbenderType>;
+  createFloatingWidget(rootEl: HTMLElement): Promise<NewFogbenderType>;
 }
