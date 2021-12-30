@@ -600,10 +600,22 @@ export type RoomMember = {
   email: string;
 };
 
+export const MetaTypes = ["issue_tracker", "issue"];
+export type MetaType = typeof MetaTypes[number];
+
+export const KnownIntegrations = ["gitlab", "github", "linear"];
+export type KnownIntegration = typeof KnownIntegrations[number];
+
 export type Tag = {
   id: string;
   name: string;
   workspaceId?: string;
+  title?: string;
+  meta_type?: MetaType;
+  meta_entity_type?: KnownIntegration;
+  meta_entity_url?: string;
+  meta_entity_name?: string;
+  meta_entity_id?: string;
 };
 
 export type Helpdesk = {
