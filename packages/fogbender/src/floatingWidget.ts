@@ -21,7 +21,7 @@ export function createFloatingWidget(rootEl: HTMLElement, url: string, token: To
   badgesCounter.style.display = "none";
   badgesCounter.style.position = "absolute";
   badgesCounter.style.top = "20px";
-  badgesCounter.style.right = "25px";
+  badgesCounter.style.left = "78px";
   badgesCounter.style.padding = "0px 5px";
   badgesCounter.style.borderRadius = "9999px";
   badgesCounter.style.background = "#FA3541";
