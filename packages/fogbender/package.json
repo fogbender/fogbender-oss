@@ -4,15 +4,20 @@
   "description": "Made with create-react-library",
   "author": "JLarky",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "private": false,
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "source": "src/index.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle --no-compress --format modern,cjs",
-    "start": "microbundle watch --no-compress --format modern,cjs",
+    "build": "tsup",
+    "build-faster": "tsup --clean false",
+    "start": "tsup --watch",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
@@ -37,9 +42,9 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
-    "microbundle": "^0.14.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
+    "tsup": "^5.11.9",
     "typescript": "^4.0.5"
   },
   "files": [
