@@ -55,6 +55,7 @@
     "dist"
   ],
   "dependencies": {
-    "solid-js": "^1.2.6"
+    "solid-js": "^1.2.6",
+    "twind": "^0.16.16"
   }
 }
