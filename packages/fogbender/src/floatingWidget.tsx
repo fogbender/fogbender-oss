@@ -2,6 +2,7 @@ import { Badge, Token } from ".";
 
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
+import { domSheet } from "twind/sheets";
 import { tw, setup, cssomSheet } from "twind";
 
 function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent<T>) => void) {
@@ -35,12 +36,28 @@ export function createFloatingWidget(rootEl: HTMLElement, url: string, token: To
   const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
   container.shadowRoot?.appendChild(button);
-  const sheet = cssomSheet({ target: new CSSStyleSheet() });
+  const fastCss = (() => {
+    try {
+      return !!new CSSStyleSheet();
+    } catch (e) {
+      return false;
+    }
+  })();
+  const sheet = (() => {
+    if (fastCss) {
+      const target = new CSSStyleSheet();
+      // @ts-ignore
+      container.shadowRoot.adoptedStyleSheets = [target];
+      return cssomSheet({ target });
+    } else {
+      const target = document.createElement("style");
+      container.shadowRoot?.appendChild(target);
+      return domSheet({ target });
+    }
+  })();
   setup({
     sheet,
   });
-  // @ts-ignore
-  container.shadowRoot.adoptedStyleSheets = [sheet.target];
   body.appendChild(container);
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
