@@ -2,6 +2,7 @@ import { Badge, Token } from ".";
 
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
+import { tw, setup, cssomSheet } from "twind";
 
 function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent<T>) => void) {
   element.addEventListener(event, ((e: CustomEvent<T>) => {
@@ -32,9 +33,15 @@ export function createFloatingWidget(rootEl: HTMLElement, url: string, token: To
     chatWindow?.focus();
   };
   const body = document.getElementsByTagName("body")[0];
-  container.appendChild(button);
+  container.attachShadow({ mode: "open" });
+  container.shadowRoot?.appendChild(button);
+  const sheet = cssomSheet({ target: new CSSStyleSheet() });
+  setup({
+    sheet,
+  });
+  // @ts-ignore
+  container.shadowRoot.adoptedStyleSheets = [sheet.target];
   body.appendChild(container);
-
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
@@ -45,17 +52,15 @@ export function createFloatingWidget(rootEl: HTMLElement, url: string, token: To
 
     return (
       <div
+        className={tw`absolute text-white rounded-full`}
         style={{
           display: unreadCount() > 0 ? "block" : "none",
         }}
         ref={badgesCounter => {
-          badgesCounter.style.position = "absolute";
           badgesCounter.style.top = "20px";
           badgesCounter.style.left = "78px";
           badgesCounter.style.padding = "0px 5px";
-          badgesCounter.style.borderRadius = "9999px";
           badgesCounter.style.background = "#FA3541";
-          badgesCounter.style.color = "#FFF";
           badgesCounter.style.fontSize = "12px";
           badgesCounter.innerHTML = "!";
         }}
