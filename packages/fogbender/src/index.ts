@@ -1,4 +1,4 @@
-import { renderIframe } from "./createIframe";
+import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader } from "./types";
 export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader };
@@ -9,7 +9,7 @@ export const createNewFogbender = (): NewFogbenderType => {
     token: undefined as Token | undefined,
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
-    events: new XMLHttpRequest() as unknown as Element,
+    events: createEvents(),
   };
   const fogbender: NewFogbenderType & { _privateData: any } = {
     _privateData: state,

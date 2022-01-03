@@ -4,6 +4,7 @@ import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
 import { domSheet } from "twind/sheets";
 import { tw, setup, cssomSheet } from "twind";
+import { Events } from "./createIframe";
 
 function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent<T>) => void) {
   element.addEventListener(event, ((e: CustomEvent<T>) => {
@@ -11,7 +12,7 @@ function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent
   }) as any);
 }
 
-export function createFloatingWidget({ events }: { events: Element }, url: string, token: Token) {
+export function createFloatingWidget({ events }: { events: Events }, url: string, token: Token) {
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.bottom = "0";

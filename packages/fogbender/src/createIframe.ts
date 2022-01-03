@@ -2,8 +2,16 @@
 import { ResizeSensor } from "css-element-queries/";
 import { Badge, Token } from ".";
 
+export type Events = Element & { badges: { [roomId: string]: Badge } };
+
+export function createEvents() {
+  const events = new XMLHttpRequest() as unknown as Events;
+  events.badges = {};
+  return events;
+}
+
 export function renderIframe(
-  { events }: { events: Element },
+  { events }: { events: Events },
   {
     rootEl,
     url,
@@ -46,8 +54,10 @@ export function renderIframe(
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
-      onBadges !== undefined && onBadges(JSON.parse(e.data.badges));
-      emit("fogbender.badges", { badges: JSON.parse(e.data.badges) });
+      const badges = JSON.parse(e.data.badges);
+      onBadges !== undefined && onBadges(badges);
+      emit("fogbender.badges", { badges });
+      events.badges = badges;
     } else if (
       e.data?.type === "NOTIFICATION" &&
       e.data.notification !== undefined &&
