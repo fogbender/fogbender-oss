@@ -11,7 +11,7 @@ function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent
   }) as any);
 }
 
-export function createFloatingWidget(rootEl: HTMLElement, url: string, token: Token) {
+export function createFloatingWidget({ events }: { events: Element }, url: string, token: Token) {
   const container = document.createElement("div");
   container.style.position = "fixed";
   container.style.bottom = "0";
@@ -62,7 +62,7 @@ export function createFloatingWidget(rootEl: HTMLElement, url: string, token: To
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
-    on<{ badges: { [roomId: string]: Badge } }>(rootEl, "fogbender.badges", e => {
+    on<{ badges: { [roomId: string]: Badge } }>(events, "fogbender.badges", e => {
       const unreadCount = Object.values(e.detail.badges).reduce((acc, b) => acc + b.count, 0);
       setUnreadCount(unreadCount);
     });

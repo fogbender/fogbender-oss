@@ -9,6 +9,7 @@ export const createNewFogbender = (): NewFogbenderType => {
     token: undefined as Token | undefined,
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
+    events: new XMLHttpRequest() as unknown as Element,
   };
   const fogbender: NewFogbenderType & { _privateData: any } = {
     _privateData: state,
@@ -24,14 +25,14 @@ export const createNewFogbender = (): NewFogbenderType => {
       state.token = _token;
       return fogbender;
     },
-    async createFloatingWidget(rootEl) {
+    async createFloatingWidget() {
       if (!state.url) {
         throw new Error("Fogbender: no url given");
       }
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      createFloatingWidget(rootEl, state.url, state.token);
+      createFloatingWidget(state, state.url, state.token);
       return fogbender;
     },
     async renderIframe(opts) {
@@ -41,7 +42,7 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      state.iframe = renderIframe({ ...opts, token: state.token, url: state.url });
+      state.iframe = renderIframe(state, { ...opts, token: state.token, url: state.url });
       return fogbender;
     },
   };

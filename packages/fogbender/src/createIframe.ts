@@ -2,19 +2,22 @@
 import { ResizeSensor } from "css-element-queries/";
 import { Badge, Token } from ".";
 
-export function renderIframe({
-  rootEl,
-  url,
-  token,
-  headless,
-  onBadges,
-}: {
-  rootEl: HTMLElement;
-  url: string;
-  token: Token;
-  headless: boolean;
-  onBadges?: (badges: Badge[]) => void;
-}) {
+export function renderIframe(
+  { events }: { events: Element },
+  {
+    rootEl,
+    url,
+    token,
+    headless,
+    onBadges,
+  }: {
+    rootEl: HTMLElement;
+    url: string;
+    token: Token;
+    headless: boolean;
+    onBadges?: (badges: Badge[]) => void;
+  }
+) {
   const iFrame = document.createElement("iframe");
 
   iFrame.src = url;
@@ -28,7 +31,7 @@ export function renderIframe({
       cancelable: true,
       composed: false,
     });
-    rootEl?.dispatchEvent(myEvent);
+    events.dispatchEvent(myEvent);
   }
 
   window.addEventListener("message", e => {
