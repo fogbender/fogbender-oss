@@ -6,12 +6,6 @@ import { domSheet } from "twind/sheets";
 import { tw, setup, cssomSheet } from "twind";
 import { Events } from "./createIframe";
 
-function on<T>(element: HTMLElement, event: string, callback: (data: CustomEvent<T>) => void) {
-  element.addEventListener(event, ((e: CustomEvent<T>) => {
-    callback(e);
-  }) as any);
-}
-
 export function createFloatingWidget({ events }: { events: Events }, url: string, token: Token) {
   const container = document.createElement("div");
   container.style.position = "fixed";
@@ -63,7 +57,7 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
-    on<{ badges: { [roomId: string]: Badge } }>(events, "fogbender.badges", e => {
+    events.on<{ badges: { [roomId: string]: Badge } }>("fogbender.badges", e => {
       const unreadCount = Object.values(e.detail.badges).reduce((acc, b) => acc + b.count, 0);
       setUnreadCount(unreadCount);
     });

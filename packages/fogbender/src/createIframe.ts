@@ -2,11 +2,31 @@
 import { ResizeSensor } from "css-element-queries/";
 import { Badge, Token } from ".";
 
-export type Events = Element & { badges: { [roomId: string]: Badge } };
+export type Events = Element & {
+  emit: (event: string, data: any) => void;
+  on: <T>(event: string, callback: (data: CustomEvent<T>) => void) => void;
+  badges: { [roomId: string]: Badge };
+  configured: boolean;
+};
 
 export function createEvents() {
   const events = new XMLHttpRequest() as unknown as Events;
   events.badges = {};
+  events.configured = false;
+  events.emit = (event: string, data: any) => {
+    const myEvent = new CustomEvent(event, {
+      detail: data,
+      bubbles: false,
+      cancelable: true,
+      composed: false,
+    });
+    events.dispatchEvent(myEvent);
+  };
+  events.on = <T>(event: string, callback: (data: CustomEvent<T>) => void) => {
+    events.addEventListener(event, ((e: CustomEvent<T>) => {
+      callback(e);
+    }) as any);
+  };
   return events;
 }
 
@@ -32,16 +52,6 @@ export function renderIframe(
   iFrame.style.display = "block";
   iFrame.style.width = "100%";
 
-  function emit(event: string, data: any) {
-    const myEvent = new CustomEvent(event, {
-      detail: data,
-      bubbles: false,
-      cancelable: true,
-      composed: false,
-    });
-    events.dispatchEvent(myEvent);
-  }
-
   window.addEventListener("message", e => {
     if (e.origin !== url) {
       return;
@@ -56,7 +66,7 @@ export function renderIframe(
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
       const badges = JSON.parse(e.data.badges);
       onBadges !== undefined && onBadges(badges);
-      emit("fogbender.badges", { badges });
+      events.emit("fogbender.badges", { badges });
       events.badges = badges;
     } else if (
       e.data?.type === "NOTIFICATION" &&
