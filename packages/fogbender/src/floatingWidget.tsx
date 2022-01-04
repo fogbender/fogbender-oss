@@ -2,9 +2,9 @@ import { Token } from ".";
 
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
-import { domSheet } from "twind/sheets";
-import { tw, setup, cssomSheet } from "twind";
+import { tw, setup } from "twind";
 import { Events } from "./createIframe";
+import { getSheet } from "./twind";
 
 export function createFloatingWidget({ events }: { events: Events }, url: string, token: Token) {
   const container = document.createElement("div");
@@ -31,25 +31,8 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
   container.shadowRoot?.appendChild(button);
-  const fastCss = (() => {
-    try {
-      return !!new CSSStyleSheet();
-    } catch (e) {
-      return false;
-    }
-  })();
-  const sheet = (() => {
-    if (fastCss) {
-      const target = new CSSStyleSheet();
-      // @ts-ignore
-      container.shadowRoot.adoptedStyleSheets = [target];
-      return cssomSheet({ target });
-    } else {
-      const target = document.createElement("style");
-      container.shadowRoot?.appendChild(target);
-      return domSheet({ target });
-    }
-  })();
+  const { attach, sheet } = getSheet();
+  attach(container.shadowRoot);
   setup({
     sheet,
   });
