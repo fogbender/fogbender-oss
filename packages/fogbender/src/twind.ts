@@ -1,7 +1,7 @@
 import { domSheet } from "twind/sheets";
-import { cssomSheet } from "twind";
+import { cssomSheet, setup } from "twind";
 
-const sheet = () => {
+const createSheet = () => {
   let attach = (_root: ShadowRoot | null) => {};
   const fastCss = (() => {
     try {
@@ -30,8 +30,19 @@ const sheet = () => {
   }
 };
 
-let signletonHolder: ReturnType<typeof sheet> | undefined;
+let signletonHolder: ReturnType<typeof createSheet> | undefined;
 
 export function getSheet() {
-  return signletonHolder || (signletonHolder = sheet());
+  const { sheet } = signletonHolder || (signletonHolder = createSheet());
+  setup({
+    sheet,
+    theme: {
+      extend: {
+        colors: {
+          "brand-red-500": "#FA3541",
+        },
+      },
+    },
+  });
+  return signletonHolder;
 }

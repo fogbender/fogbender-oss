@@ -31,11 +31,8 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
   container.shadowRoot?.appendChild(button);
-  const { attach, sheet } = getSheet();
+  const { attach } = getSheet();
   attach(container.shadowRoot);
-  setup({
-    sheet,
-  });
   body.appendChild(container);
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
@@ -46,7 +43,7 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
 
     return (
       <div
-        className={tw`absolute text-white rounded-full`}
+        className={tw`absolute text-white rounded-full bg-brand-red-500`}
         style={{
           display: unreadCount() > 0 ? "block" : "none",
         }}
@@ -54,7 +51,6 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
           badgesCounter.style.top = "20px";
           badgesCounter.style.left = "78px";
           badgesCounter.style.padding = "0px 5px";
-          badgesCounter.style.background = "#FA3541";
           badgesCounter.style.fontSize = "12px";
           badgesCounter.innerHTML = "!";
         }}
