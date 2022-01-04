@@ -1,4 +1,4 @@
-import { Badge, Token } from ".";
+import { Token } from ".";
 
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
@@ -57,9 +57,8 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
-    events.on("fogbender.badges", e => {
-      const unreadCount = Object.values(e.detail.badges).reduce((acc, b) => acc + b.count, 0);
-      setUnreadCount(unreadCount);
+    events.on("fogbender.unreadCount", e => {
+      setUnreadCount(e.detail.unreadCount);
     });
 
     return (

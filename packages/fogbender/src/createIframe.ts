@@ -5,6 +5,7 @@ import { Badge, Token } from ".";
 type FogbenderEventMap = {
   "configured": boolean;
   "fogbender.badges": { badges: { [roomId: string]: Badge } };
+  "fogbender.unreadCount": { unreadCount: number };
 };
 
 export type Events = Element & {
@@ -15,6 +16,7 @@ export type Events = Element & {
   ): () => void;
   badges: { [roomId: string]: Badge };
   configured: boolean;
+  unreadCount: number;
 };
 
 export function createEvents() {
@@ -46,13 +48,11 @@ export function renderIframe(
     url,
     token,
     headless,
-    onBadges,
   }: {
     rootEl: HTMLElement;
     url: string;
     token: Token;
     headless: boolean;
-    onBadges?: (badges: Badge[]) => void;
   }
 ) {
   const iFrame = document.createElement("iframe");
@@ -73,10 +73,12 @@ export function renderIframe(
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
-      const badges = JSON.parse(e.data.badges);
-      onBadges !== undefined && onBadges(badges);
-      events.emit("fogbender.badges", { badges });
+      const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
       events.badges = badges;
+      events.emit("fogbender.badges", { badges });
+      const unreadCount = Object.values(badges).reduce((acc, b) => acc + b.count, 0);
+      events.unreadCount = unreadCount;
+      events.emit("fogbender.unreadCount", { unreadCount });
     } else if (
       e.data?.type === "NOTIFICATION" &&
       e.data.notification !== undefined &&
