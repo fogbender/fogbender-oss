@@ -36,11 +36,7 @@ export const createNewFogbender = (): NewFogbenderType => {
       const snapshot = {
         getValue: () => state.events.configured,
         subscribe: (cb: (s: Snapshot<boolean>) => void) => {
-          const listener = () => cb(snapshot);
-          state.events.addEventListener("configured", listener);
-          return () => {
-            state.events.removeEventListener("configured", listener);
-          };
+          return state.events.on("configured", () => cb(snapshot));
         },
       };
       return snapshot;

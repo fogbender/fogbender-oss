@@ -57,7 +57,7 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
-    events.on<{ badges: { [roomId: string]: Badge } }>("fogbender.badges", e => {
+    events.on("fogbender.badges", e => {
       const unreadCount = Object.values(e.detail.badges).reduce((acc, b) => acc + b.count, 0);
       setUnreadCount(unreadCount);
     });

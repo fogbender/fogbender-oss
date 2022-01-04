@@ -2,9 +2,17 @@
 import { ResizeSensor } from "css-element-queries/";
 import { Badge, Token } from ".";
 
+type FogbenderEventMap = {
+  "configured": boolean;
+  "fogbender.badges": { badges: { [roomId: string]: Badge } };
+};
+
 export type Events = Element & {
-  emit: (event: string, data: any) => void;
-  on: <T>(event: string, callback: (data: CustomEvent<T>) => void) => void;
+  emit<K extends keyof FogbenderEventMap>(event: K, data: FogbenderEventMap[K]): void;
+  on<K extends keyof FogbenderEventMap>(
+    event: K,
+    listener: (ev: CustomEvent<FogbenderEventMap[K]>) => void
+  ): () => void;
   badges: { [roomId: string]: Badge };
   configured: boolean;
 };
@@ -13,7 +21,7 @@ export function createEvents() {
   const events = new XMLHttpRequest() as unknown as Events;
   events.badges = {};
   events.configured = false;
-  events.emit = (event: string, data: any) => {
+  events.emit = <T>(event: string, data: T) => {
     const myEvent = new CustomEvent(event, {
       detail: data,
       bubbles: false,
@@ -23,9 +31,10 @@ export function createEvents() {
     events.dispatchEvent(myEvent);
   };
   events.on = <T>(event: string, callback: (data: CustomEvent<T>) => void) => {
-    events.addEventListener(event, ((e: CustomEvent<T>) => {
-      callback(e);
-    }) as any);
+    events.addEventListener(event, callback);
+    return () => {
+      events.removeEventListener(event, callback);
+    };
   };
   return events;
 }
