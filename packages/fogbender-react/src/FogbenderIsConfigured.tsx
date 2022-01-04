@@ -1,4 +1,5 @@
 import React from "react";
+import { Snapshot } from "fogbender";
 import { useFogbender } from "./FogbenderProvider";
 
 export const FogbenderIsConfigured: React.FC = ({ children }) => {
@@ -11,16 +12,23 @@ export const FogbenderIsConfigured: React.FC = ({ children }) => {
 };
 
 export function useIsConfigured() {
-  const [isConfigured, setIsConfigured] = React.useState(false);
+  const fogbender = useFogbender();
+  return useFromSnapshot(async () => {
+    return fogbender.isClientConfigured();
+  }, false);
+}
+
+export function useFromSnapshot<T>(snapshotGen: () => Promise<Snapshot<T>>, initialValue: T) {
+  const [value, setValue] = React.useState(initialValue);
   const fogbender = useFogbender();
   React.useEffect(() => {
     const unsub = [] as (() => void)[];
     const run = async () => {
-      const snapshot = await fogbender.isClientConfigured();
-      setIsConfigured(snapshot.getValue());
+      const snapshot = await snapshotGen();
+      setValue(snapshot.getValue());
       unsub.push(
         snapshot.subscribe(s => {
-          setIsConfigured(s.getValue());
+          setValue(s.getValue());
         })
       );
     };
@@ -29,5 +37,5 @@ export function useIsConfigured() {
       unsub.forEach(u => u());
     };
   }, [fogbender]);
-  return isConfigured;
+  return value;
 }
