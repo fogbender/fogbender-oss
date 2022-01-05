@@ -17,11 +17,14 @@
   "scripts": {
     "build": "tsup",
     "build-faster": "tsup --clean false",
-    "start": "tsup --watch",
+    "start": "run-p start:tsup start:tsc",
+    "start:tsup": "tsup --watch",
+    "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
     "prepare": "run-s build",
-    "test": "run-s test:unit test:lint test:build",
+    "test": "run-s test:build test:tsc test:lint",
     "test:build": "run-s build",
     "test:lint": "eslint .",
+    "test:tsc": "tsc --noEmit",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
