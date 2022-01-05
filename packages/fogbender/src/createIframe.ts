@@ -76,7 +76,21 @@ export function renderIframe(
       const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
       events.badges = badges;
       events.emit("fogbender.badges", { badges });
-      const unreadCount = Object.values(badges).reduce((acc, b) => acc + b.count, 0);
+      const unreadCount = (() => {
+        let isMentionOrDialog = false;
+        let count = 0;
+        Object.keys(badges).find(roomId => {
+          const badge = badges[roomId];
+          if (badge.mentionsCount) {
+            isMentionOrDialog = true;
+          }
+          // FIXME: find is this is a dialog
+          count += badge.count;
+          // stop once first mention or dialog is found
+          return isMentionOrDialog;
+        });
+        return isMentionOrDialog ? -1 : count;
+      })();
       events.unreadCount = unreadCount;
       events.emit("fogbender.unreadCount", { unreadCount });
     } else if (

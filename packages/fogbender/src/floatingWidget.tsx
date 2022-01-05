@@ -24,7 +24,7 @@ export function createFloatingWidget({ events }: { events: Events }, openWindow:
   attach(container.shadowRoot);
   body.appendChild(container);
   const cleanup = render(() => {
-    const [unreadCount, setUnreadCount] = createSignal(0);
+    const [unreadCounter, setUnreadCount] = createSignal(0);
 
     events.on("fogbender.unreadCount", e => {
       setUnreadCount(e.detail.unreadCount);
@@ -34,14 +34,14 @@ export function createFloatingWidget({ events }: { events: Events }, openWindow:
       <div
         className={tw`absolute text-white rounded-full bg-brand-red-500`}
         style={{
-          display: unreadCount() > 0 ? "block" : "none",
+          display: unreadCounter() === 0 ? "none" : "block",
           top: "20px",
           left: "78px",
           padding: "0px 5px",
           fontSize: "12px",
         }}
       >
-        {unreadCount()}
+        {unreadCounter() === -1 ? "@" : unreadCounter()}
       </div>
     );
   }, button);
