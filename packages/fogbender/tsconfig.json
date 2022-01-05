@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "solid-js"],
     "outDir": "dist",
     "module": "esnext",
     "lib": ["dom", "esnext"],
