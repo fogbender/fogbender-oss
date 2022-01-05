@@ -72,6 +72,10 @@ export const createNewFogbender = (): NewFogbenderType => {
       const cleanup = renderIframe(state, { ...opts, token: state.token, url: state.url });
       return cleanup;
     },
+    async renderUnreadBadge(opts) {
+      const cleanup = renderUnreadBadge(state, openWindow, opts);
+      return cleanup;
+    },
   };
   return fogbender;
 };

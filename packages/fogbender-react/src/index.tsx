@@ -72,6 +72,23 @@ const useCreateFloatingWidget = () => {
   });
 };
 
+export const FogbenderUnreadBadge: React.FC = React.memo(() => {
+  const divRef = React.useRef<HTMLDivElement>(null);
+  useRenderUnreadBadge(divRef);
+  return <div ref={divRef} />;
+});
+
+const useRenderUnreadBadge = (divRef: React.RefObject<HTMLDivElement | null>) => {
+  const fogbender = useFogbender();
+  useRenderComponent(() => {
+    if (divRef.current) {
+      return fogbender.renderUnreadBadge({ el: divRef.current });
+    } else {
+      return noopCleanup();
+    }
+  });
+};
+
 export const FogbenderConfig: React.FC<{
   clientUrl: string | undefined;
   token: Token | undefined;
