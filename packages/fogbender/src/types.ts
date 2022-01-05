@@ -41,8 +41,8 @@ export interface NewFogbenderType {
     rootEl: HTMLElement;
     headless: boolean;
     onBadges?: (badges: Badge[]) => void;
-  }): Promise<NewFogbenderType>;
-  createFloatingWidget(): Promise<NewFogbenderType>;
+  }): Promise<() => void>;
+  createFloatingWidget(): Promise<() => void>;
 }
 export type FogbenderLoader = {
   startLoader: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;

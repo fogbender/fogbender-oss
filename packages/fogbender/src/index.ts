@@ -1,5 +1,6 @@
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
+import { renderUnreadBadge } from "./renderUnreadBadge";
 import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot } from "./types";
 export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot };
 
@@ -48,8 +49,8 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      createFloatingWidget(state, state.url, state.token);
-      return fogbender;
+      const cleanup = createFloatingWidget(state, state.url, state.token);
+      return cleanup;
     },
     async renderIframe(opts) {
       if (!state.url) {
@@ -58,8 +59,8 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      state.iframe = renderIframe(state, { ...opts, token: state.token, url: state.url });
-      return fogbender;
+      const cleanup = renderIframe(state, { ...opts, token: state.token, url: state.url });
+      return cleanup;
     },
   };
   return fogbender;

@@ -113,5 +113,8 @@ export function renderIframe(
   new ResizeSensor(rootEl, adaptIFrame);
   new ResizeSensor(document.body, adaptIFrame);
   window.addEventListener("resize", adaptIFrame);
-  return iFrame;
+  return () => {
+    iFrame.src = "about:blank";
+    rootEl.innerHTML = "";
+  };
 }

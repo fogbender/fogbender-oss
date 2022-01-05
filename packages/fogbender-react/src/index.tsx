@@ -2,6 +2,7 @@ import React from "react";
 import { Badge, Fogbender, Token, createNewFogbender, NewFogbenderType } from "fogbender";
 import { FogbenderProvider, useFogbender, FogbenderProviderProps } from "./FogbenderProvider";
 import { FogbenderIsConfigured } from "./FogbenderIsConfigured";
+import { noopCleanup, useRenderComponent } from "./utils";
 
 export {
   Badge,
@@ -50,14 +51,13 @@ export const FogbenderHeadlessWidget: React.FC = () => {
 
 const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headless: boolean) => {
   const fogbender = useFogbender();
-  React.useEffect(() => {
+  useRenderComponent(() => {
     if (divRef.current) {
-      fogbender.renderIframe({ headless, rootEl: divRef.current });
+      return fogbender.renderIframe({ headless, rootEl: divRef.current });
+    } else {
+      return noopCleanup();
     }
-    return () => {
-      // fogbender.destroyIframe()
-    };
-  }, [divRef.current]);
+  });
 };
 
 export const FogbenderFloatingWidget: React.FC = () => {
@@ -67,12 +67,9 @@ export const FogbenderFloatingWidget: React.FC = () => {
 
 const useCreateFloatingWidget = () => {
   const fogbender = useFogbender();
-  React.useEffect(() => {
-    fogbender.createFloatingWidget();
-    return () => {
-      // fogbender.destroyFloatingWidget()
-    };
-  }, []);
+  useRenderComponent(() => {
+    return fogbender.createFloatingWidget();
+  });
 };
 
 export const FogbenderConfig: React.FC<{

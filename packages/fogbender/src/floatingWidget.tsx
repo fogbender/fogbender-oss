@@ -34,7 +34,7 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   const { attach } = getTwind();
   attach(container.shadowRoot);
   body.appendChild(container);
-  render(() => {
+  const cleanup = render(() => {
     const [unreadCount, setUnreadCount] = createSignal(0);
 
     events.on("fogbender.unreadCount", e => {
@@ -59,4 +59,8 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
       </div>
     );
   }, button);
+  return () => {
+    cleanup();
+    body.removeChild(container);
+  };
 }
