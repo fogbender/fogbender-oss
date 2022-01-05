@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { JSX as JSX_ } from "solid-js";
 
 declare global {

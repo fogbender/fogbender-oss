@@ -35,13 +35,10 @@ export function createFloatingWidget({ events }: { events: Events }, openWindow:
         className={tw`absolute text-white rounded-full bg-brand-red-500`}
         style={{
           display: unreadCount() > 0 ? "block" : "none",
-        }}
-        ref={badgesCounter => {
-          badgesCounter.style.top = "20px";
-          badgesCounter.style.left = "78px";
-          badgesCounter.style.padding = "0px 5px";
-          badgesCounter.style.fontSize = "12px";
-          badgesCounter.innerHTML = "!";
+          top: "20px",
+          left: "78px",
+          padding: "0px 5px",
+          fontSize: "12px",
         }}
       >
         {unreadCount()}
