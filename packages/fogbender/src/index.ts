@@ -11,6 +11,16 @@ export const createNewFogbender = (): NewFogbenderType => {
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
     events: createEvents(),
+    chatWindow: null as null | Window,
+  };
+  const openWindow = () => {
+    if (!state.chatWindow || state.chatWindow.closed) {
+      state.chatWindow = window.open(
+        state.url + "?token=" + encodeURIComponent(JSON.stringify(state.token)),
+        "_blank"
+      );
+    }
+    state.chatWindow?.focus();
   };
   const updateConfigured = () => {
     const configured = !!state.url && !!state.token;
@@ -49,7 +59,7 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      const cleanup = createFloatingWidget(state, state.url, state.token);
+      const cleanup = createFloatingWidget(state, openWindow);
       return cleanup;
     },
     async renderIframe(opts) {
