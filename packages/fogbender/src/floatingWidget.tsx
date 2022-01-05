@@ -2,9 +2,9 @@ import { Token } from ".";
 
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
-import { tw, setup } from "twind";
+import { tw } from "twind";
 import { Events } from "./createIframe";
-import { getSheet } from "./twind";
+import { getTwind } from "./twind";
 
 export function createFloatingWidget({ events }: { events: Events }, url: string, token: Token) {
   const container = document.createElement("div");
@@ -31,7 +31,7 @@ export function createFloatingWidget({ events }: { events: Events }, url: string
   const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
   container.shadowRoot?.appendChild(button);
-  const { attach } = getSheet();
+  const { attach } = getTwind();
   attach(container.shadowRoot);
   body.appendChild(container);
   render(() => {

@@ -30,12 +30,11 @@ const createSheet = () => {
   }
 };
 
-let signletonHolder: ReturnType<typeof createSheet> | undefined;
+const createTwind = () => {
+  const sheet = createSheet();
 
-export function getSheet() {
-  const { sheet } = signletonHolder || (signletonHolder = createSheet());
   setup({
-    sheet,
+    sheet: sheet.sheet,
     theme: {
       extend: {
         colors: {
@@ -44,5 +43,28 @@ export function getSheet() {
       },
     },
   });
-  return signletonHolder;
+  return sheet;
+};
+
+let singletonHolder: ReturnType<typeof createTwind> | undefined;
+
+export function getTwind() {
+  return singletonHolder || (singletonHolder = createTwind());
+}
+
+declare global {
+  // eslint-disable-next-line no-unused-vars
+  interface NodeModule {
+    hot?: {
+      data: { singletonHolder?: typeof singletonHolder };
+      dispose: (callback: (data: { singletonHolder?: typeof singletonHolder }) => void) => void;
+    };
+  }
+}
+
+if (module.hot) {
+  singletonHolder = module.hot?.data?.singletonHolder || singletonHolder;
+  module.hot.dispose(data => {
+    data.singletonHolder = singletonHolder;
+  });
 }
