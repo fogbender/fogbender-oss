@@ -1,6 +1,6 @@
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
-import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader } from "./types";
+import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot } from "./types";
 export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader };
 
 export const createNewFogbender = (): NewFogbenderType => {
@@ -11,6 +11,11 @@ export const createNewFogbender = (): NewFogbenderType => {
     iframe: undefined as HTMLIFrameElement | undefined,
     events: createEvents(),
   };
+  const updateConfigured = () => {
+    const configured = !!state.url && !!state.token;
+    state.events.configured = configured;
+    state.events.emit("configured", configured);
+  };
   const fogbender: NewFogbenderType & { _privateData: any } = {
     _privateData: state,
     async releaseInfo(info: string) {
@@ -19,11 +24,26 @@ export const createNewFogbender = (): NewFogbenderType => {
     },
     async setClientUrl(_url: string) {
       state.url = _url;
+      updateConfigured();
       return fogbender;
     },
     async setToken(_token: Token) {
       state.token = _token;
+      updateConfigured();
       return fogbender;
+    },
+    async isClientConfigured() {
+      const snapshot = {
+        getValue: () => state.events.configured,
+        subscribe: (cb: (s: Snapshot<boolean>) => void) => {
+          const listener = () => cb(snapshot);
+          state.events.addEventListener("configured", listener);
+          return () => {
+            state.events.removeEventListener("configured", listener);
+          };
+        },
+      };
+      return snapshot;
     },
     async createFloatingWidget() {
       if (!state.url) {
