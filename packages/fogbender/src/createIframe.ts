@@ -51,7 +51,8 @@ export function renderIframe(
     url: string;
     token: Token;
     headless: boolean;
-  }
+  },
+  openWindow: () => void
 ) {
   const iFrame = document.createElement("iframe");
 
@@ -100,8 +101,12 @@ export function renderIframe(
         const { body, roomId } = JSON.parse(e.data.notification);
         const notification = new Notification(token.customerName, { body });
         notification.onclick = () => {
-          window.parent.focus();
-          iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
+          if (headless) {
+            openWindow();
+          } else {
+            window.parent.focus();
+            iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
+          }
         };
       }
     }

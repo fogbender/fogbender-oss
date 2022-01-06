@@ -69,7 +69,11 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      const cleanup = renderIframe(state, { ...opts, token: state.token, url: state.url });
+      const cleanup = renderIframe(
+        state,
+        { ...opts, token: state.token, url: state.url },
+        openWindow
+      );
       return cleanup;
     },
     async renderUnreadBadge(opts) {
