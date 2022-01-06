@@ -4,19 +4,27 @@
   "description": "Made with create-react-library",
   "author": "JLarky",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "private": false,
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "source": "src/index.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "build": "tsup",
+    "build-faster": "tsup --clean false",
+    "start": "run-p start:tsup start:tsc",
+    "start:tsup": "tsup --watch",
+    "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
     "prepare": "run-s build",
-    "test": "run-s test:unit test:lint test:build",
+    "test": "run-s test:build test:tsc test:lint",
     "test:build": "run-s build",
     "test:lint": "eslint .",
+    "test:tsc": "tsc --noEmit",
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
@@ -37,10 +45,10 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
-    "microbundle-crl": "^0.13.8",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
-    "typescript": "^4.0.5"
+    "tsup": "^5.11.9",
+    "typescript": "^4.5.4"
   },
   "files": [
     "dist"
