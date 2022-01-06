@@ -8,11 +8,11 @@ type FogbenderEventMap = {
   "fogbender.unreadCount": { unreadCount: number };
 };
 
-export type Events = Element & {
+export type Events = {
   emit<K extends keyof FogbenderEventMap>(event: K, data: FogbenderEventMap[K]): void;
   on<K extends keyof FogbenderEventMap>(
     event: K,
-    listener: (ev: CustomEvent<FogbenderEventMap[K]>) => void
+    listener: (ev: FogbenderEventMap[K]) => void
   ): () => void;
   badges: { [roomId: string]: Badge };
   configured: boolean;
@@ -20,22 +20,20 @@ export type Events = Element & {
 };
 
 export function createEvents() {
-  const events = new XMLHttpRequest() as unknown as Events;
+  const listeners = new Map<keyof FogbenderEventMap, Set<(ev: any) => void>>();
+  const events = {} as unknown as Events;
   events.badges = {};
   events.configured = false;
-  events.emit = <T>(event: string, data: T) => {
-    const myEvent = new CustomEvent(event, {
-      detail: data,
-      bubbles: false,
-      cancelable: true,
-      composed: false,
-    });
-    events.dispatchEvent(myEvent);
+  events.emit = <T>(event: keyof FogbenderEventMap, data: T) => {
+    listeners.get(event)?.forEach(listener => listener(data));
   };
-  events.on = <T>(event: string, callback: (data: CustomEvent<T>) => void) => {
-    events.addEventListener(event, callback);
+  events.on = <T>(event: keyof FogbenderEventMap, callback: (data: T) => void) => {
+    if (!listeners.has(event)) {
+      listeners.set(event, new Set());
+    }
+    listeners.get(event)?.add(callback);
     return () => {
-      events.removeEventListener(event, callback);
+      listeners.get(event)?.delete(callback);
     };
   };
   return events;

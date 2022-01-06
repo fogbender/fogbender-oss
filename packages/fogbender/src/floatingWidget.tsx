@@ -27,7 +27,7 @@ export function createFloatingWidget({ events }: { events: Events }, openWindow:
     const [unreadCounter, setUnreadCount] = createSignal(0);
 
     events.on("fogbender.unreadCount", e => {
-      setUnreadCount(e.detail.unreadCount);
+      setUnreadCount(e.unreadCount);
     });
 
     return (

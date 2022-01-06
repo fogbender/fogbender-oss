@@ -22,7 +22,7 @@ export function renderUnreadBadge(
     const [unreadCounter, setUnreadCounter] = createSignal(events.unreadCount);
 
     events.on("fogbender.unreadCount", e => {
-      setUnreadCounter(e.detail.unreadCount);
+      setUnreadCounter(e.unreadCount);
     });
 
     return (
