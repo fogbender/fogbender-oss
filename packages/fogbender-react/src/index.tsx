@@ -96,9 +96,15 @@ export const FogbenderConfig: React.FC<{
   const fogbender = useFogbender();
   React.useEffect(() => {
     fogbender.setClientUrl(clientUrl);
+    return () => {
+      fogbender.setClientUrl(undefined);
+    };
   }, [clientUrl]);
   React.useEffect(() => {
     fogbender.setToken(token);
+    return () => {
+      fogbender.setToken(undefined);
+    };
   }, [token]);
   return null;
 };
