@@ -11,11 +11,13 @@ export type UserToken = {
   userName: string;
   userAvatarUrl?: string;
   userEmail?: string;
+  versions?: { [key: string]: string };
 };
 
 export type AgentToken = {
   agentId: string;
   vendorId: string;
+  versions?: { [key: string]: string };
 };
 
 export type AnyToken = UserToken | AgentToken;

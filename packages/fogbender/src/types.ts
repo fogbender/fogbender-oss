@@ -10,6 +10,7 @@ export type Token = {
   userName: string;
   userAvatarUrl?: string;
   userEmail?: string;
+  versions?: { [key: string]: string };
 };
 
 export type Badge = {
