@@ -32,13 +32,12 @@ export function createFloatingWidget({ events }: { events: Events }, openWindow:
 
     return (
       <div
-        className={tw`absolute text-white rounded-full bg-brand-red-500`}
+        className={tw`absolute text-white rounded-full bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           top: "20px",
           left: "78px",
-          padding: "0px 5px",
-          fontSize: "12px",
+          padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
         }}
       >
         {unreadCounter() === -1 ? "@" : unreadCounter()}
