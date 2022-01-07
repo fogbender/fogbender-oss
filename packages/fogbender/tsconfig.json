@@ -16,7 +16,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
