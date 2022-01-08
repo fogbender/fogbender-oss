@@ -1,7 +1,8 @@
-import { renderIframe } from "./createIframe";
+import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
-import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader } from "./types";
-export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader };
+import { renderUnreadBadge } from "./renderUnreadBadge";
+import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot } from "./types";
+export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot };
 
 export const createNewFogbender = (): NewFogbenderType => {
   const state = {
@@ -9,6 +10,22 @@ export const createNewFogbender = (): NewFogbenderType => {
     token: undefined as Token | undefined,
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
+    events: createEvents(),
+    chatWindow: null as null | Window,
+  };
+  const openWindow = () => {
+    if (!state.chatWindow || state.chatWindow.closed) {
+      state.chatWindow = window.open(
+        state.url + "?token=" + encodeURIComponent(JSON.stringify(state.token)),
+        "_blank"
+      );
+    }
+    state.chatWindow?.focus();
+  };
+  const updateConfigured = () => {
+    const configured = !!state.url && !!state.token;
+    state.events.configured = configured;
+    state.events.emit("configured", configured);
   };
   const fogbender: NewFogbenderType & { _privateData: any } = {
     _privateData: state,
@@ -18,21 +35,32 @@ export const createNewFogbender = (): NewFogbenderType => {
     },
     async setClientUrl(_url: string) {
       state.url = _url;
+      updateConfigured();
       return fogbender;
     },
     async setToken(_token: Token) {
       state.token = _token;
+      updateConfigured();
       return fogbender;
     },
-    async createFloatingWidget(rootEl) {
+    async isClientConfigured() {
+      const snapshot = {
+        getValue: () => state.events.configured,
+        subscribe: (cb: (s: Snapshot<boolean>) => void) => {
+          return state.events.on("configured", () => cb(snapshot));
+        },
+      };
+      return snapshot;
+    },
+    async createFloatingWidget() {
       if (!state.url) {
         throw new Error("Fogbender: no url given");
       }
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      createFloatingWidget(rootEl, state.url, state.token);
-      return fogbender;
+      const cleanup = createFloatingWidget(state, openWindow);
+      return cleanup;
     },
     async renderIframe(opts) {
       if (!state.url) {
@@ -41,8 +69,16 @@ export const createNewFogbender = (): NewFogbenderType => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      state.iframe = renderIframe({ ...opts, token: state.token, url: state.url });
-      return fogbender;
+      const cleanup = renderIframe(
+        state,
+        { ...opts, token: state.token, url: state.url },
+        openWindow
+      );
+      return cleanup;
+    },
+    async renderUnreadBadge(opts) {
+      const cleanup = renderUnreadBadge(state, openWindow, opts);
+      return cleanup;
     },
   };
   return fogbender;

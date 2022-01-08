@@ -1,87 +1,110 @@
-import * as React from "react";
-import classNames from "classnames";
-import type { Badge, Fogbender, Token } from "fogbender";
+import React from "react";
+import { Badge, Fogbender, Token, createNewFogbender, NewFogbenderType } from "fogbender";
+import { FogbenderProvider, useFogbender, FogbenderProviderProps } from "./FogbenderProvider";
+import { FogbenderIsConfigured } from "./FogbenderIsConfigured";
+import { noopCleanup, useRenderComponent } from "./utils";
 
-export { Badge, Fogbender, Token };
-
-const handlers = {
-  onBadges: (_badges: Badge[]) => {},
+export {
+  Badge,
+  Fogbender,
+  Token,
+  createNewFogbender,
+  NewFogbenderType,
+  FogbenderProvider,
+  useFogbender,
+  FogbenderProviderProps,
+  FogbenderIsConfigured,
 };
 
-export function useFogbender(
-  clientUrl: string,
-  ref: HTMLDivElement | null,
-  token: Token,
-  headless = false
-) {
-  const onLoad = () => {
-    setLoaded(true);
-  };
+export const FogbenderSimpleWidget: React.FC<{
+  clientUrl: string;
+  token: Token;
+}> = ({ clientUrl, token }) => {
+  const [fogbender, setFogbender] = React.useState(undefined as NewFogbenderType | undefined);
   React.useEffect(() => {
-    const script = document.createElement("script");
-
-    script.src = `${clientUrl}/loader.js`;
-    script.async = true;
-    script.onload = onLoad;
-
-    document.body.appendChild(script);
+    const fb = createNewFogbender();
+    fb.setClientUrl(clientUrl);
+    fb.setToken(token);
+    setFogbender(fb);
   }, []);
-  const once = React.useRef(false);
-  const [loaded, setLoaded] = React.useState(false);
-  if (loaded) {
-    if (once.current === false) {
-      once.current = true;
-      const w = window as typeof window & { Fogbender?: Fogbender };
-      if (typeof w.Fogbender === "function") {
-        w.Fogbender({
-          rootEl: ref || undefined,
-          url: clientUrl,
-          token,
-          headless,
-          onBadges: badges => handlers.onBadges(badges),
-        });
-      }
-    }
+  if (!fogbender) {
+    return null;
   }
-}
-
-export const FogbenderWidget: React.FC<{
-  clientUrl: string;
-  token: Token;
-}> = ({ clientUrl, token }) => {
-  const divRef = React.useRef<HTMLDivElement>(null);
-  useFogbender(clientUrl, divRef.current, token);
-  return <div ref={divRef} />;
-};
-
-export const FogbenderHeadless: React.FC<{
-  clientUrl: string;
-  token: Token;
-}> = ({ clientUrl, token }) => {
-  const divRef = React.useRef<HTMLDivElement>(null);
-  useFogbender(clientUrl, divRef.current, token, true);
-  return <div ref={divRef} />;
-};
-
-export const FogbenderBadge: React.FC<{ className?: string }> = ({ className }) => {
-  const [howManyRoomsWithUnreads, setHowManyRoomsWithUnreads] = React.useState<number>();
-  React.useEffect(() => {
-    handlers.onBadges = badges => {
-      const roomsWithUnreads = Object.values(badges).reduce((acc, b) => acc + b.count, 0);
-      setHowManyRoomsWithUnreads(roomsWithUnreads);
-    };
-  }, []);
-
   return (
-    <span
-      className={classNames(
-        "px-2 rounded-full text-xs font-extrabold",
-        "bg-green-300 text-green-600",
-        !howManyRoomsWithUnreads && "hidden",
-        className !== undefined && className
-      )}
-    >
-      {howManyRoomsWithUnreads}
-    </span>
+    <FogbenderProvider fogbender={fogbender}>
+      <FogbenderWidget />
+    </FogbenderProvider>
   );
+};
+
+export const FogbenderWidget: React.FC = () => {
+  const divRef = React.useRef<HTMLDivElement>(null);
+  useRenderIframe(divRef, false);
+  return <div ref={divRef} />;
+};
+
+export const FogbenderHeadlessWidget: React.FC = () => {
+  const divRef = React.useRef<HTMLDivElement>(null);
+  useRenderIframe(divRef, true);
+  return <div ref={divRef} />;
+};
+
+const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headless: boolean) => {
+  const fogbender = useFogbender();
+  useRenderComponent(() => {
+    if (divRef.current) {
+      return fogbender.renderIframe({ headless, rootEl: divRef.current });
+    } else {
+      return noopCleanup();
+    }
+  });
+};
+
+export const FogbenderFloatingWidget: React.FC = () => {
+  useCreateFloatingWidget();
+  return null;
+};
+
+const useCreateFloatingWidget = () => {
+  const fogbender = useFogbender();
+  useRenderComponent(() => {
+    return fogbender.createFloatingWidget();
+  });
+};
+
+export const FogbenderUnreadBadge: React.FC = React.memo(() => {
+  const divRef = React.useRef<HTMLDivElement>(null);
+  useRenderUnreadBadge(divRef);
+  return <div ref={divRef} />;
+});
+
+const useRenderUnreadBadge = (divRef: React.RefObject<HTMLDivElement | null>) => {
+  const fogbender = useFogbender();
+  useRenderComponent(() => {
+    if (divRef.current) {
+      return fogbender.renderUnreadBadge({ el: divRef.current });
+    } else {
+      return noopCleanup();
+    }
+  });
+};
+
+export const FogbenderConfig: React.FC<{
+  clientUrl: string | undefined;
+  token: Token | undefined;
+}> = ({ clientUrl, token }) => {
+  const fogbender = useFogbender();
+  React.useEffect(() => {
+    fogbender.setClientUrl(clientUrl);
+    return () => {
+      fogbender.setClientUrl(undefined);
+    };
+  }, [clientUrl]);
+  React.useEffect(() => {
+    fogbender.setToken(token);
+    return () => {
+      fogbender.setToken(undefined);
+    };
+  }, [token]);
+  return null;
 };

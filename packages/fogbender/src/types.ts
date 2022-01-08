@@ -27,16 +27,23 @@ export type Fogbender = (opts: {
   showFloatingWidget?: boolean;
 }) => void;
 
+export type Snapshot<T> = {
+  getValue: () => T;
+  subscribe: (cb: (s: Snapshot<T>) => void) => () => void;
+};
+
 export interface NewFogbenderType {
   releaseInfo(info: string): Promise<NewFogbenderType>;
   setClientUrl(url: string | undefined): Promise<NewFogbenderType>;
   setToken(token: Token | undefined): Promise<NewFogbenderType>;
+  isClientConfigured(): Promise<Snapshot<boolean>>;
   renderIframe(opts: {
     rootEl: HTMLElement;
     headless: boolean;
     onBadges?: (badges: Badge[]) => void;
-  }): Promise<NewFogbenderType>;
-  createFloatingWidget(rootEl: HTMLElement): Promise<NewFogbenderType>;
+  }): Promise<() => void>;
+  createFloatingWidget(): Promise<() => void>;
+  renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
   startLoader: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;

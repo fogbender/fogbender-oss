@@ -2,34 +2,63 @@
 import { ResizeSensor } from "css-element-queries/";
 import { Badge, Token } from ".";
 
-export function renderIframe({
-  rootEl,
-  url,
-  token,
-  headless,
-  onBadges,
-}: {
-  rootEl: HTMLElement;
-  url: string;
-  token: Token;
-  headless: boolean;
-  onBadges?: (badges: Badge[]) => void;
-}) {
+type FogbenderEventMap = {
+  "configured": boolean;
+  "fogbender.badges": { badges: { [roomId: string]: Badge } };
+  "fogbender.unreadCount": { unreadCount: number };
+};
+
+export type Events = {
+  emit<K extends keyof FogbenderEventMap>(event: K, data: FogbenderEventMap[K]): void;
+  on<K extends keyof FogbenderEventMap>(
+    event: K,
+    listener: (ev: FogbenderEventMap[K]) => void
+  ): () => void;
+  badges: { [roomId: string]: Badge };
+  configured: boolean;
+  unreadCount: number;
+};
+
+export function createEvents() {
+  const listeners = new Map<keyof FogbenderEventMap, Set<(ev: any) => void>>();
+  const events = {} as unknown as Events;
+  events.badges = {};
+  events.configured = false;
+  events.emit = <T>(event: keyof FogbenderEventMap, data: T) => {
+    listeners.get(event)?.forEach(listener => listener(data));
+  };
+  events.on = <T>(event: keyof FogbenderEventMap, callback: (data: T) => void) => {
+    if (!listeners.has(event)) {
+      listeners.set(event, new Set());
+    }
+    listeners.get(event)?.add(callback);
+    return () => {
+      listeners.get(event)?.delete(callback);
+    };
+  };
+  return events;
+}
+
+export function renderIframe(
+  { events }: { events: Events },
+  {
+    rootEl,
+    url,
+    token,
+    headless,
+  }: {
+    rootEl: HTMLElement;
+    url: string;
+    token: Token;
+    headless: boolean;
+  },
+  openWindow: () => void
+) {
   const iFrame = document.createElement("iframe");
 
   iFrame.src = url;
   iFrame.style.display = "block";
   iFrame.style.width = "100%";
-
-  function emit(event: string, data: any) {
-    const myEvent = new CustomEvent(event, {
-      detail: data,
-      bubbles: false,
-      cancelable: true,
-      composed: false,
-    });
-    rootEl?.dispatchEvent(myEvent);
-  }
 
   window.addEventListener("message", e => {
     if (e.origin !== url) {
@@ -43,8 +72,26 @@ export function renderIframe({
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
-      onBadges !== undefined && onBadges(JSON.parse(e.data.badges));
-      emit("fogbender.badges", { badges: JSON.parse(e.data.badges) });
+      const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
+      events.badges = badges;
+      events.emit("fogbender.badges", { badges });
+      const unreadCount = (() => {
+        let isMentionOrDialog = false;
+        let count = 0;
+        Object.keys(badges).find(roomId => {
+          const badge = badges[roomId];
+          if (badge.mentionsCount) {
+            isMentionOrDialog = true;
+          }
+          // FIXME: find is this is a dialog
+          count += badge.count;
+          // stop once first mention or dialog is found
+          return isMentionOrDialog;
+        });
+        return isMentionOrDialog ? -1 : count;
+      })();
+      events.unreadCount = unreadCount;
+      events.emit("fogbender.unreadCount", { unreadCount });
     } else if (
       e.data?.type === "NOTIFICATION" &&
       e.data.notification !== undefined &&
@@ -54,8 +101,12 @@ export function renderIframe({
         const { body, roomId } = JSON.parse(e.data.notification);
         const notification = new Notification(token.customerName, { body });
         notification.onclick = () => {
-          window.parent.focus();
-          iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
+          if (headless) {
+            openWindow();
+          } else {
+            window.parent.focus();
+            iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
+          }
         };
       }
     }
@@ -79,5 +130,8 @@ export function renderIframe({
   new ResizeSensor(rootEl, adaptIFrame);
   new ResizeSensor(document.body, adaptIFrame);
   window.addEventListener("resize", adaptIFrame);
-  return iFrame;
+  return () => {
+    iFrame.src = "about:blank";
+    rootEl.innerHTML = "";
+  };
 }
