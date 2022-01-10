@@ -35,7 +35,7 @@ export type Snapshot<T> = {
 };
 
 export interface NewFogbenderType {
-  releaseInfo(info: string): Promise<NewFogbenderType>;
+  setVersion(tag: string, version: string): Promise<NewFogbenderType>;
   setClientUrl(url: string | undefined): Promise<NewFogbenderType>;
   setToken(token: Token | undefined): Promise<NewFogbenderType>;
   isClientConfigured(): Promise<Snapshot<boolean>>;
