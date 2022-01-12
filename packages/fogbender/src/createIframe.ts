@@ -64,6 +64,9 @@ export function renderIframe(
     if (e.origin !== url) {
       return;
     }
+    if (e.source !== iFrame.contentWindow) {
+      return;
+    }
     if (e.data?.type === "APP_IS_READY") {
       iFrame.contentWindow?.postMessage({ initToken: token, headless }, url);
       iFrame.contentWindow?.postMessage({ notificationsPermission: Notification.permission }, url);
