@@ -247,6 +247,8 @@ const useHistoryStore = () => {
         files,
         createdTs,
         updatedTs,
+        deletedTs,
+        deletedByName,
       } = message;
 
       messagesByTarget[targetMessageId].push({
@@ -258,6 +260,8 @@ const useHistoryStore = () => {
         rawText,
         files,
         roomId,
+        deletedTs,
+        deletedByName,
       });
     });
   }, []);
