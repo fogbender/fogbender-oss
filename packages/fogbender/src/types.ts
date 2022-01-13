@@ -16,6 +16,7 @@ export type Badge = {
   count: number;
   mentionsCount: number;
   roomId: string;
+  roomType: string;
 };
 
 export type Fogbender = (opts: {

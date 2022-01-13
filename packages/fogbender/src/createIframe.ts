@@ -85,8 +85,9 @@ export function renderIframe(
           const badge = badges[roomId];
           if (badge.mentionsCount) {
             isMentionOrDialog = true;
+          } else if (badge.count) {
+            isMentionOrDialog = badge.roomType === "dialog";
           }
-          // FIXME: find is this is a dialog
           count += badge.count;
           // stop once first mention or dialog is found
           return isMentionOrDialog;
