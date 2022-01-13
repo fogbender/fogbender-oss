@@ -464,8 +464,12 @@ export type EventBadge = {
   msgId?: string;
   msgType: "Event.Badge";
   roomId: string;
+  roomType: string;
   count: number;
   mentionsCount: number;
+  vendorId: string;
+  workspaceId: string;
+  customerId: string;
   firstUnreadMessage?: EventMessage | null;
   lastRoomMessage?: EventMessage | null;
   nextMentionMessage?: EventMessage | null;
