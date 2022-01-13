@@ -572,6 +572,8 @@ export type EventIssue = {
   title: string;
   integrationId: string;
   id: string;
+  number: string;
+  url: string;
   issueId: string;
   state: string;
   meta_tag: string;
