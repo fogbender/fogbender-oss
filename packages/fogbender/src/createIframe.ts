@@ -58,7 +58,7 @@ export function renderIframe(
 
   iFrame.src = url;
   iFrame.style.display = "block";
-  iFrame.style.width = "100%";
+  iFrame.style.width = headless ? "0" : "100%";
 
   window.addEventListener("message", e => {
     if (e.origin !== url) {
