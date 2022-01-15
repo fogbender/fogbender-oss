@@ -58,7 +58,7 @@ export function renderIframe(
 
   iFrame.src = url;
   iFrame.style.display = "block";
-  iFrame.style.width = "100%";
+  iFrame.style.width = headless ? "0" : "100%";
 
   window.addEventListener("message", e => {
     if (e.origin !== url) {
@@ -85,8 +85,9 @@ export function renderIframe(
           const badge = badges[roomId];
           if (badge.mentionsCount) {
             isMentionOrDialog = true;
+          } else if (badge.count) {
+            isMentionOrDialog = badge.roomType === "dialog";
           }
-          // FIXME: find is this is a dialog
           count += badge.count;
           // stop once first mention or dialog is found
           return isMentionOrDialog;

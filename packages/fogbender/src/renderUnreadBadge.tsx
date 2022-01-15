@@ -28,15 +28,20 @@ export function renderUnreadBadge(
     return (
       <button
         onClick={openWindow}
-        className={tw`absolute text-white rounded-full bg-brand-red-500 text-xs`}
-        style={{
-          display: unreadCounter() === 0 ? "none" : "block",
-          right: "-10px",
-          bottom: "-5px",
-          padding: "0px 5px",
-        }}
+        className={tw`hidden items-center justify-center py-0.5 px-1 bg-brand-red-500 rounded-full text-white text-xs font-bold leading-none`}
+        style={
+          !unreadCounter() || unreadCounter() === 0
+            ? {
+                display: "none",
+              }
+            : {
+                display: "flex",
+                minWidth: "1rem",
+                minHeight: "1rem",
+              }
+        }
       >
-        {unreadCounter() === -1 ? "@" : unreadCounter()}
+        {unreadCounter() === -1 ? "@" : <span className={tw`px-0.5`}>{unreadCounter()}</span>}
       </button>
     );
   }, el.shadowRoot!);
