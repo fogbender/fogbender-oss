@@ -39,15 +39,13 @@ export interface NewFogbenderType {
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
-  startLoader: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;
+  _load: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;
   _once: boolean;
-  _checkOnce: () => boolean;
-  _queue: {
-    methodName: keyof NewFogbenderType;
-    args: any[];
-    resolve: (value: any) => any;
-    reject: (value: any) => any;
-  }[];
+  _queue: [
+    methodName: keyof NewFogbenderType,
+    args: any[],
+    resolve: (value: any) => any,
+    reject: (value: any) => any
+  ][];
   _fogbender?: NewFogbenderType;
-  _setFogbender: (fogbender: NewFogbenderType) => void;
 };
