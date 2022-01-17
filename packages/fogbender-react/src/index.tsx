@@ -24,7 +24,7 @@ export const FogbenderSimpleWidget: React.FC<{
   React.useEffect(() => {
     const fb = createNewFogbender();
     fb.setClientUrl(clientUrl);
-    fb.setToken(token);
+    fb.setToken(addVersion(token));
     setFogbender(fb);
   }, []);
   if (!fogbender) {
@@ -101,10 +101,18 @@ export const FogbenderConfig: React.FC<{
     };
   }, [clientUrl]);
   React.useEffect(() => {
-    fogbender.setToken(token);
+    fogbender.setToken(addVersion(token));
     return () => {
       fogbender.setToken(undefined);
     };
   }, [token]);
   return null;
 };
+
+function addVersion(token: Token | undefined) {
+  if (token) {
+    token.versions = token.versions || {};
+    token.versions["fogbender-react"] = "0.0.1";
+  }
+  return token;
+}

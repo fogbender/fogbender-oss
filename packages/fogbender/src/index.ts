@@ -6,7 +6,7 @@ export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapsh
 
 export const createNewFogbender = (): NewFogbenderType => {
   const state = {
-    releaseInfo: "npm-0.0.1",
+    versions: {} as { [key: string]: string },
     token: undefined as Token | undefined,
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
@@ -29,8 +29,8 @@ export const createNewFogbender = (): NewFogbenderType => {
   };
   const fogbender: NewFogbenderType & { _privateData: any } = {
     _privateData: state,
-    async releaseInfo(info: string) {
-      state.releaseInfo = info;
+    async setVersion(tag, version) {
+      state.versions[tag] = version;
       return fogbender;
     },
     async setClientUrl(_url: string) {
@@ -38,8 +38,14 @@ export const createNewFogbender = (): NewFogbenderType => {
       updateConfigured();
       return fogbender;
     },
-    async setToken(_token: Token) {
-      state.token = _token;
+    async setToken(token) {
+      state.token = token;
+      if (state.token) {
+        state.token = {
+          ...state.token,
+          versions: { ...state.token.versions, ...state.versions, fogbender: "0.0.1" },
+        };
+      }
       updateConfigured();
       return fogbender;
     },
