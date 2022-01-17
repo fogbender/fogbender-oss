@@ -2,7 +2,7 @@
 
 > Made with create-react-library
 
-[![NPM](https://img.shields.io/npm/v/fogbender-react.svg)](https://www.npmjs.com/package/fogbender-react) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/fogbender-react.svg)](https://www.npmjs.com/package/fogbender-react)
 
 ## Install
 
@@ -14,7 +14,7 @@ npm install --save fogbender-react
 
 ```tsx
 import React from "react";
-import { FogbenderWidget } from "fogbender-react";
+import { FogbenderSimpleWidget } from "fogbender-react";
 
 export const Example = () => {
   const token = {
@@ -31,11 +31,15 @@ export const Example = () => {
   return (
     <div>
       <p>Hello Fogbender</p>
-      <FogbenderWidget clientUrl="https://master--fb-client.netlify.app" token={token} />
+      <FogbenderSimpleWidget clientUrl="https://master--fb-client.netlify.app" token={token} />
     </div>
   );
 };
 ```
+
+## Example
+
+- https://codesandbox.io/s/fogbender-demo-7e0kg
 
 ## License
 
