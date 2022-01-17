@@ -41,7 +41,7 @@ export interface NewFogbenderType {
   isClientConfigured(): Promise<Snapshot<boolean>>;
   renderIframe(opts: {
     rootEl: HTMLElement;
-    headless: boolean;
+    headless?: boolean;
     onBadges?: (badges: Badge[]) => void;
   }): Promise<() => void>;
   createFloatingWidget(): Promise<() => void>;
