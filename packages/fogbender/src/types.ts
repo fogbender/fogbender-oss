@@ -20,15 +20,6 @@ export type Badge = {
   roomType: string;
 };
 
-export type Fogbender = (opts: {
-  rootEl?: HTMLElement;
-  url?: string;
-  token?: Token;
-  headless?: boolean;
-  onBadges?: (badges: Badge[]) => void;
-  showFloatingWidget?: boolean;
-}) => void;
-
 export type Snapshot<T> = {
   getValue: () => T;
   subscribe: (cb: (s: Snapshot<T>) => void) => () => void;

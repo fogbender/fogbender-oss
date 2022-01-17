@@ -1,8 +1,8 @@
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot } from "./types";
-export type { Token, Badge, NewFogbenderType, Fogbender, FogbenderLoader, Snapshot };
+import type { Token, Badge, NewFogbenderType, FogbenderLoader, Snapshot } from "./types";
+export type { Token, Badge, NewFogbenderType, FogbenderLoader, Snapshot };
 
 export const createNewFogbender = (): NewFogbenderType => {
   const state = {
