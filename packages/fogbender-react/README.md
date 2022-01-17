@@ -37,10 +37,6 @@ export const Example = () => {
 };
 ```
 
-## Example
-
-- https://codesandbox.io/s/fogbender-demo-7e0kg
-
 ## License
 
 MIT © [JLarky](https://github.com/JLarky)
