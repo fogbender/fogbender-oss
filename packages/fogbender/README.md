@@ -1,22 +1,23 @@
-# fogbender-react
+# fogbender
 
 > Made with create-react-library
 
-[![NPM](https://img.shields.io/npm/v/fogbender-react.svg)](https://www.npmjs.com/package/fogbender-react) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/fogbender.svg)](https://www.npmjs.com/package/fogbender)
 
 ## Install
 
 ```bash
-npm install --save fogbender-react
+npm install --save fogbender
+yarn add fogbender
 ```
 
 ## Usage
 
 ```tsx
-import React from "react";
-import { FogbenderWidget } from "fogbender-react";
+import { createNewFogbender } from "fogbender";
 
-export const Example = () => {
+const addFogbender = async rootEl => {
+  const clientUrl = "https://master--fb-client.netlify.app";
   const token = {
     widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
     customerId: "org123",
@@ -28,13 +29,19 @@ export const Example = () => {
     userAvatarUrl:
       "https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png", // optional
   };
-  return (
-    <div>
-      <p>Hello Fogbender</p>
-      <FogbenderWidget clientUrl="https://master--fb-client.netlify.app" token={token} />
-    </div>
-  );
+
+  const fogbender = createNewFogbender();
+  fogbender.setClientUrl(clientUrl);
+  fogbender.setToken(token);
+  const cleanup = await fogbender.renderIframe({ headless, rootEl });
+  return cleanup;
 };
+
+const rootEl = document.getElementById("root");
+const cleanup = addFogbender(rootEl);
+setTimeout(() => {
+  cleanup();
+}, 10000);
 ```
 
 ## License
