@@ -50,7 +50,7 @@ export function renderIframe(
     rootEl: HTMLElement;
     url: string;
     token: Token;
-    headless: boolean;
+    headless?: boolean;
   },
   openWindow: () => void
 ) {
