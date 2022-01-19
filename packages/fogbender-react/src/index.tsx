@@ -1,12 +1,11 @@
 import React from "react";
-import { Badge, Fogbender, Token, createNewFogbender, NewFogbenderType } from "fogbender";
+import { Badge, Token, createNewFogbender, NewFogbenderType } from "fogbender";
 import { FogbenderProvider, useFogbender, FogbenderProviderProps } from "./FogbenderProvider";
 import { FogbenderIsConfigured } from "./FogbenderIsConfigured";
 import { noopCleanup, useRenderComponent } from "./utils";
 
 export {
   Badge,
-  Fogbender,
   Token,
   createNewFogbender,
   NewFogbenderType,
