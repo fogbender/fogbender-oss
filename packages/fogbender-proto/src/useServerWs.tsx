@@ -30,6 +30,9 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
   }
 };
 
+const isAuthMessage = (message: FogSchema["outbound"]) =>
+  message.msgType === "Auth.Agent" || message.msgType === "Auth.User";
+
 export function useServerWs(
   client: Client,
   token: AnyToken | undefined,
@@ -97,12 +100,6 @@ export function useServerWs(
   React.useEffect(() => {
     setLastIncomingMessage(undefined);
   }, [token]);
-
-  const isAuthMessage = React.useCallback(
-    (message: FogSchema["outbound"]) =>
-      message.msgType === "Auth.Agent" || message.msgType === "Auth.User",
-    []
-  );
 
   const flushQueue = React.useCallback(() => {
     queue.current.forEach(m => {
