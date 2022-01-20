@@ -40,6 +40,15 @@ const createTwind = () => {
         colors: {
           "brand-red-500": "#FA3541",
         },
+        fontSize: {
+          "2xs": "0.625rem",
+        },
+        minWidth: {
+          "1rem": "1rem",
+        },
+        minHeight: {
+          "1rem": "1rem",
+        },
       },
     },
   });
