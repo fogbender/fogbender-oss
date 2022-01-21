@@ -69,9 +69,12 @@ export function renderIframe(
     }
     if (e.data?.type === "APP_IS_READY") {
       iFrame.contentWindow?.postMessage({ initToken: token, headless }, url);
-      iFrame.contentWindow?.postMessage({ notificationsPermission: Notification.permission }, url);
+      iFrame.contentWindow?.postMessage(
+        { notificationsPermission: window.Notification?.permission },
+        url
+      );
     } else if (e.data?.type === "REQUEST_NOTIFICATIONS_PERMISSION") {
-      Notification.requestPermission().then(function (permission) {
+      window.Notification?.requestPermission().then(function (permission) {
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
@@ -101,7 +104,7 @@ export function renderIframe(
       e.data.notification !== undefined &&
       token !== undefined
     ) {
-      if (Notification.permission === "granted") {
+      if (window.Notification?.permission === "granted") {
         const { body, roomId } = JSON.parse(e.data.notification);
         const notification = new Notification(token.customerName, { body });
         notification.onclick = () => {
