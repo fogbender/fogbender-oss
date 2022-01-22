@@ -94,15 +94,21 @@ function useProviderValue(
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
   const [helpdeskId, setHelpdeskId] = React.useState<string>();
+  const [userAvatarUrl, setUserAvatarUrl] = React.useState<string>();
   const [providerClient] = React.useState<Client>(() => ({
     ...client,
-    setSession(sessionId, userId, helpdeskId) {
+    setSession(sessionId, userId, helpdeskId, userAvatarUrl) {
       setFogSessionId(sessionId);
       if (userId) {
         setUserId(userId);
       }
+
+      if (userAvatarUrl) {
+        setUserAvatarUrl(userAvatarUrl);
+      }
+
       setHelpdeskId(helpdeskId);
-      client?.setSession?.(sessionId, userId, helpdeskId);
+      client?.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
     },
   }));
   React.useEffect(() => {
@@ -119,7 +125,7 @@ function useProviderValue(
     helpdeskId,
     userId,
   });
-  return { ...ws, sharedRoster, token, fogSessionId, userId, helpdeskId };
+  return { ...ws, sharedRoster, token, fogSessionId, userId, helpdeskId, userAvatarUrl };
 }
 
 export const WsProvider: React.FC<{
@@ -229,6 +235,24 @@ const useHistoryStore = () => {
     [convertEventMessageToMessage, dedupAndSort, setHistoryMode]
   );
 
+  const updateAuthorImageUrl = React.useCallback(e => {
+    aroundMessages.current = aroundMessages.current.map(x => {
+      if (x.author.id === e.userId) {
+        return { ...x, author: { ...x.author, avatarUrl: e.imageUrl } };
+      } else {
+        return x;
+      }
+    });
+
+    latestMessages.current = latestMessages.current.map(x => {
+      if (x.author.id === e.userId) {
+        return { ...x, author: { ...x.author, avatarUrl: e.imageUrl } };
+      } else {
+        return x;
+      }
+    });
+  }, []);
+
   const expandLink = React.useCallback((targetMessageId: string, messages: EventMessage[]) => {
     const messagesByTarget = messagesByTargetRef.current;
 
@@ -269,6 +293,7 @@ const useHistoryStore = () => {
   return {
     messages: historyMode.current === "latest" ? latestMessages.current : aroundMessages.current,
     addMessages,
+    updateAuthorImageUrl,
     setHistoryMode,
     clearLatestHistory,
     clearAroundHistory,
@@ -297,6 +322,7 @@ export const useRoomHistory = ({
   const {
     messages,
     addMessages,
+    updateAuthorImageUrl,
     setHistoryMode,
     clearLatestHistory,
     clearAroundHistory,
@@ -548,6 +574,8 @@ export const useRoomHistory = ({
       lastIncomingMessage?.roomId === roomId
     ) {
       setSeenUpToMessageId(lastIncomingMessage.messageId);
+    } else if (lastIncomingMessage?.msgType === "Event.User") {
+      updateAuthorImageUrl(lastIncomingMessage);
     }
   }, [fogSessionId, onSeen, userId, roomId, lastIncomingMessage, processAndStoreMessages]);
 

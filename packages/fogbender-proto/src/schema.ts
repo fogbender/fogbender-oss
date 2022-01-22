@@ -45,6 +45,7 @@ export type APISchema = {
   RoomInProgressRPC: RPC<RoomInProgress, RoomOk>;
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
+  UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
   StreamSubRPC: RPC<
@@ -63,6 +64,7 @@ export type APISchema = {
       | EventBadge
       | EventAgent
       | EventTag
+      | EventUser
     >
   >;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
@@ -87,6 +89,7 @@ export type APISchema = {
   EventBadgeEVT: RPC<undefined, EventBadge>;
   EventCustomerEVT: RPC<undefined, EventCustomer>;
   EventTagEVT: RPC<undefined, EventTag>;
+  EventUserEVT: RPC<undefined, EventUser>;
 };
 
 export type Error<Type> = {
@@ -147,6 +150,19 @@ export type RoomOk = {
   msgId: string;
   msgType: "Room.Ok";
   roomId: string;
+};
+
+export type UserUpdate = {
+  msgId?: string;
+  msgType: "User.Update";
+  userId: string;
+  imageUrl: string | null;
+};
+
+export type UserOk = {
+  msgId: string;
+  msgType: "User.Ok";
+  userId: string;
 };
 
 export type Integration = {
@@ -386,6 +402,7 @@ export type AuthOk = {
   userId: string;
   helpdeskId: string;
   helpdesk?: Helpdesk;
+  userAvatarUrl?: string;
 };
 
 export type EchoGet = {
@@ -596,6 +613,13 @@ export type EventTag = {
   id: string;
   name: string;
   remove?: boolean;
+};
+
+export type EventUser = {
+  msgId?: string;
+  msgType: "Event.User";
+  userId: string;
+  imageUrl: string;
 };
 
 export type RoomMember = {

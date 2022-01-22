@@ -9,6 +9,7 @@ import {
   IntegrationForwardToIssue,
   RoomCreate,
   RoomUpdate,
+  UserUpdate,
   SearchRoster,
 } from "../schema";
 
@@ -35,7 +36,7 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const { sharedRoster, serverCall } = useWs();
+  const { sharedRoster, serverCall, userAvatarUrl } = useWs();
   const { roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster } =
     sharedRoster;
 
@@ -94,6 +95,19 @@ export const useRoster = ({
         tagsToRemove: params.tagsToRemove,
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
+  const updateUser = React.useCallback(
+    (params: Pick<UserUpdate, "userId" | "imageUrl">) =>
+      serverCall<UserUpdate>({
+        msgType: "User.Update",
+        userId: params.userId,
+        imageUrl: params.imageUrl,
+      }).then(x => {
+        console.assert(x.msgType === "User.Ok");
         return x;
       }),
     [serverCall]
@@ -239,11 +253,13 @@ export const useRoster = ({
     setRosterFilter,
     createRoom,
     updateRoom,
+    updateUser,
     createIssue,
     forwardToIssue,
     customers,
     badges,
     roomsByTags,
+    userAvatarUrl,
   };
 };
 

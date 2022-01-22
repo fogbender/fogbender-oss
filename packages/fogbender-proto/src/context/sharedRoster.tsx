@@ -7,6 +7,7 @@ import {
   EventCustomer,
   EventRoom,
   EventSeen,
+  EventUser,
   RoomMember,
   StreamGet,
   StreamSub,
@@ -167,6 +168,32 @@ export const useSharedRoster = ({
     [userId]
   );
 
+  const updateUserAvatarUrlInRoster = React.useCallback((e: EventUser) => {
+    setRawRoster(roster => {
+      const newRoster: Room[] = [];
+      roster.forEach(room => {
+        if (room.counterpart?.id === e.userId) {
+          const members =
+            room.members?.map(m => {
+              if (m.id === e.userId) {
+                return { ...m, imageUrl: e.imageUrl };
+              } else {
+                return m;
+              }
+            }) || [];
+          newRoster.push({
+            ...room,
+            members,
+            counterpart: { ...room.counterpart, imageUrl: e.imageUrl },
+          });
+        } else {
+          newRoster.push(room);
+        }
+      });
+      return newRoster;
+    });
+  }, []);
+
   React.useEffect(() => {
     if (!fogSessionId) {
       return;
@@ -175,6 +202,22 @@ export const useSharedRoster = ({
       return;
     }
     const topic = workspaceId ? `workspace/${workspaceId}/rooms` : `helpdesk/${helpdeskId}/rooms`;
+    serverCall<StreamSub>({
+      msgType: "Stream.Sub",
+      topic,
+    }).then(x => {
+      console.assert(x.msgType === "Stream.SubOk");
+    });
+  }, [fogSessionId, workspaceId, helpdeskId]);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    if (!workspaceId && !helpdeskId) {
+      return;
+    }
+    const topic = workspaceId ? `workspace/${workspaceId}/users` : `helpdesk/${helpdeskId}/users`;
     serverCall<StreamSub>({
       msgType: "Stream.Sub",
       topic,
@@ -301,6 +344,8 @@ export const useSharedRoster = ({
       updateCustomers([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Seen") {
       setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
+    } else if (lastIncomingMessage?.msgType === "Event.User") {
+      updateUserAvatarUrlInRoster(lastIncomingMessage);
     }
   }, [lastIncomingMessage, updateRoster, updateBadge]);
 
