@@ -8,6 +8,11 @@ export interface Client {
   getEnv?(): Env | undefined;
   getServerApiUrl?(): string | undefined;
   onError?(type: ErrorType, kind: ErrorKind, ...errors: (Error | string)[]): void;
-  setSession?(sessionId: string, userId?: string, helpdeskId?: string): void;
+  setSession?(
+    sessionId: string,
+    userId?: string,
+    helpdeskId?: string,
+    userAvatarUrl?: string
+  ): void;
   onWrongToken?(token: AnyToken): void;
 }

@@ -179,10 +179,10 @@ export function useServerWs(
           r => {
             authenticating.current = false;
             if (r.msgType === "Auth.Ok") {
-              const { sessionId, userId, helpdeskId } = r;
+              const { sessionId, userId, helpdeskId, userAvatarUrl } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
-              client.setSession?.(sessionId, userId, helpdeskId);
+              client.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
                 onWrongToken(token);

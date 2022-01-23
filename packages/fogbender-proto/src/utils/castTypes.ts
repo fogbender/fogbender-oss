@@ -6,6 +6,7 @@ import {
   EventTag,
   EventSeen,
   EventTyping,
+  EventUser,
 } from "../schema";
 
 // suppose you have `items` or type `(A|B|C)[]` but you know it's actually just `A[]`
@@ -44,6 +45,8 @@ const isEventTag = (x: ExtendsMessage<EventTag>): x is EventTag => x.msgType ===
 const isEventSeen = (x: ExtendsMessage<EventSeen>): x is EventSeen => x.msgType === "Event.Seen";
 const isEventTyping = (x: ExtendsMessage<EventTyping>): x is EventTyping =>
   x.msgType === "Event.Typing";
+export const isEventUser = (x: ExtendsMessage<EventUser>): x is EventUser =>
+  x.msgType === "Event.User";
 
 export function extractEventRoom(items: ExtendsMessage<EventRoom>[]) {
   return extract(items, isEventRoom);
