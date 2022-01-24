@@ -117,14 +117,14 @@ export const useRoster = ({
     (
       params: Pick<
         IntegrationCreateIssue,
-        "integrationId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+        "integrationProjectId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
       >
     ) =>
       workspaceId !== undefined
         ? serverCall<IntegrationCreateIssue>({
             msgType: "Integration.CreateIssue",
             workspaceId,
-            integrationId: params.integrationId,
+            integrationProjectId: params.integrationProjectId,
             title: params.title,
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
@@ -141,14 +141,18 @@ export const useRoster = ({
     (
       params: Pick<
         IntegrationForwardToIssue,
-        "integrationId" | "issueId" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+        | "integrationProjectId"
+        | "issueId"
+        | "linkRoomId"
+        | "linkStartMessageId"
+        | "linkEndMessageId"
       >
     ) =>
       workspaceId !== undefined
         ? serverCall<IntegrationForwardToIssue>({
             msgType: "Integration.ForwardToIssue",
             workspaceId,
-            integrationId: params.integrationId,
+            integrationProjectId: params.integrationProjectId,
             issueId: params.issueId,
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,

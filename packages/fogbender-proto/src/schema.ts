@@ -183,7 +183,7 @@ export type IntegrationCreateIssue = {
   msgId?: string;
   msgType: "Integration.CreateIssue";
   workspaceId: string;
-  integrationId: string;
+  integrationProjectId: string;
   title: string;
   linkRoomId: string;
   linkStartMessageId: string;
@@ -194,7 +194,7 @@ export type IntegrationForwardToIssue = {
   msgId?: string;
   msgType: "Integration.ForwardToIssue";
   workspaceId: string;
-  integrationId: string;
+  integrationProjectId: string;
   issueId: string;
   linkRoomId: string;
   linkStartMessageId: string;
