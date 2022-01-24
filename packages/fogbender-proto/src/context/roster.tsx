@@ -117,42 +117,52 @@ export const useRoster = ({
     (
       params: Pick<
         IntegrationCreateIssue,
-        "integrationId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+        "integrationProjectId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
       >
     ) =>
-      serverCall<IntegrationCreateIssue>({
-        msgType: "Integration.CreateIssue",
-        integrationId: params.integrationId,
-        title: params.title,
-        linkRoomId: params.linkRoomId,
-        linkStartMessageId: params.linkStartMessageId,
-        linkEndMessageId: params.linkEndMessageId,
-      }).then(x => {
-        console.assert(x.msgType === "Integration.Ok");
-        return x;
-      }),
-    [serverCall]
+      workspaceId !== undefined
+        ? serverCall<IntegrationCreateIssue>({
+            msgType: "Integration.CreateIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            title: params.title,
+            linkRoomId: params.linkRoomId,
+            linkStartMessageId: params.linkStartMessageId,
+            linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
   );
 
   const forwardToIssue = React.useCallback(
     (
       params: Pick<
         IntegrationForwardToIssue,
-        "integrationId" | "issueId" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
+        | "integrationProjectId"
+        | "issueId"
+        | "linkRoomId"
+        | "linkStartMessageId"
+        | "linkEndMessageId"
       >
     ) =>
-      serverCall<IntegrationForwardToIssue>({
-        msgType: "Integration.ForwardToIssue",
-        integrationId: params.integrationId,
-        issueId: params.issueId,
-        linkRoomId: params.linkRoomId,
-        linkStartMessageId: params.linkStartMessageId,
-        linkEndMessageId: params.linkEndMessageId,
-      }).then(x => {
-        console.assert(x.msgType === "Integration.Ok");
-        return x;
-      }),
-    [serverCall]
+      workspaceId !== undefined
+        ? serverCall<IntegrationForwardToIssue>({
+            msgType: "Integration.ForwardToIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            issueId: params.issueId,
+            linkRoomId: params.linkRoomId,
+            linkStartMessageId: params.linkStartMessageId,
+            linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
   );
 
   /*
