@@ -601,6 +601,8 @@ export declare type File = {
     url: string;
     height: number;
     width: number;
+    original_width: number;
+    original_height: number;
   };
   fileUrl: string;
   downloadUrl: string;
