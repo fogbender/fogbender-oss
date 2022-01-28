@@ -71,7 +71,7 @@ declare global {
   }
 }
 
-if (module.hot) {
+if (typeof module === "object" && module.hot) {
   singletonHolder = module.hot?.data?.singletonHolder || singletonHolder;
   module.hot.dispose(data => {
     data.singletonHolder = singletonHolder;
