@@ -297,6 +297,7 @@ const useHistoryStore = () => {
     addMessages,
     updateAuthorImageUrl,
     setHistoryMode,
+    latestLoadedMessageTs: latestMessages.current.slice(0, -1)[0]?.createdTs,
     clearLatestHistory,
     clearAroundHistory,
     newerHistoryComplete: newerHistoryComplete.current,
@@ -326,6 +327,7 @@ export const useRoomHistory = ({
     addMessages,
     updateAuthorImageUrl,
     setHistoryMode,
+    latestLoadedMessageTs,
     clearLatestHistory,
     clearAroundHistory,
     newerHistoryComplete,
@@ -369,17 +371,21 @@ export const useRoomHistory = ({
       topic: `room/${roomId}/messages`,
     }).then(async x => {
       console.assert(x.msgType === "Stream.SubOk");
+      if (x.msgType === "Stream.SubOk") {
+        await processAndStoreMessages(extractEventMessage(x.items), "event");
+      }
     });
     serverCall<StreamGet>({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
+      since: latestLoadedMessageTs,
     })
       .then(rejectIfUnmounted)
       .then(async x => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
-          await processAndStoreMessages(extractEventMessage(x.items), "page");
-          setNewerHistoryComplete(true);
+          await processAndStoreMessages(extractEventMessage(x.items), "event");
+          setNewerHistoryComplete(x.items.length === 0);
           setSubscribed(true);
           setSubscribing(false);
         }
@@ -513,6 +519,12 @@ export const useRoomHistory = ({
     clearAroundHistory,
     setNewerHistoryComplete,
   ]);
+
+  React.useEffect(() => {
+    if (fogSessionId) {
+      setNewerHistoryComplete(false);
+    }
+  }, [fogSessionId]);
 
   const [seenUpToMessageId, setSeenUpToMessageId] = React.useState<"initial" | string | undefined>(
     "initial"
