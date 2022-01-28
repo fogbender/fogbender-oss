@@ -89,7 +89,8 @@ function useProviderValue(
   token: AnyToken | undefined,
   workspaceId?: string,
   client?: Client,
-  isIdle?: boolean
+  isIdle?: boolean,
+  suspendConnection?: boolean
 ) {
   const [fogSessionId, setFogSessionId] = React.useState<string>();
   const [userId, setUserId] = React.useState<string>();
@@ -116,7 +117,7 @@ function useProviderValue(
       setUserId(token.agentId);
     }
   }, [token, userId, fogSessionId]);
-  const ws = useServerWs(providerClient, token, isIdle);
+  const ws = useServerWs(providerClient, token, isIdle, suspendConnection);
   const sharedRoster = useSharedRoster({
     ws,
     token,
@@ -133,9 +134,10 @@ export const WsProvider: React.FC<{
   workspaceId?: string | undefined;
   client?: Client;
   isIdle?: boolean;
+  suspendConnection?: boolean;
   children?: React.ReactNode;
-}> = ({ token, workspaceId, client, isIdle, ...props }) => {
-  const value = useProviderValue(token, workspaceId, client, isIdle);
+}> = ({ token, workspaceId, client, isIdle, suspendConnection, ...props }) => {
+  const value = useProviderValue(token, workspaceId, client, isIdle, suspendConnection);
   return <WsContext.Provider value={value} {...props} />;
 };
 
