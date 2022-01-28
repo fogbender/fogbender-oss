@@ -86,7 +86,7 @@ export const useSharedRoster = ({
     setCustomers([]);
     setCustomersLoaded(false);
     setOldestCustomerTs(Infinity);
-  }, [token, workspaceId]);
+  }, [token, workspaceId, fogSessionId]);
 
   const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
   const roomByName = React.useCallback(
