@@ -152,7 +152,9 @@ export function useWs() {
 export const nameMatchesFilter = (name: string, filter: string) =>
   [name].concat(name.split(/[\s-]+/)).some(s => s.toLowerCase().startsWith(filter));
 
-const useHistoryStore = () => {
+type HistoryMode = "latest" | "around";
+
+const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const messagesByTargetRef = React.useRef<{ [targetMessageId: string]: Message[] }>({});
@@ -168,9 +170,9 @@ const useHistoryStore = () => {
     }
   }, []);
 
-  const historyMode = React.useRef<"latest" | "around">("latest");
+  const historyMode = React.useRef<HistoryMode>(initialHistoryMode || "latest");
   const setHistoryMode = React.useCallback(
-    (mode: "latest" | "around") => {
+    (mode: HistoryMode) => {
       if (historyMode.current !== mode) {
         historyMode.current = mode;
         forceUpdate();
@@ -334,7 +336,7 @@ export const useRoomHistory = ({
     setNewerHistoryComplete,
     messagesByTarget,
     expandLink,
-  } = useHistoryStore();
+  } = useHistoryStore(aroundId ? "around" : "latest");
 
   const { updateLoadAround } = useLoadAround();
 
@@ -406,7 +408,7 @@ export const useRoomHistory = ({
   const [olderHistoryComplete, setOlderHistoryComplete] = React.useState(false);
 
   const fetchOlderPage = React.useCallback(
-    ts => {
+    (ts: number | undefined) => {
       setFetchingOlder(true);
       serverCall<StreamGet>({
         msgType: "Stream.Get",
@@ -446,6 +448,7 @@ export const useRoomHistory = ({
           if (x.msgType === "Stream.GetOk") {
             await processAndStoreMessages(extractEventMessage(x.items), "page");
             setFetchingNewer(false);
+            setNewerHistoryComplete(x.items.length === 0);
           }
         })
         .catch(() => {});
@@ -481,12 +484,17 @@ export const useRoomHistory = ({
   );
 
   const resetHistoryToLastPage = React.useCallback(() => {
+    if (!newerHistoryComplete) {
+      clearLatestHistory();
+      fetchNewerPage(undefined);
+    }
     setHistoryMode("latest");
     setOlderHistoryComplete(false);
+    setNewerHistoryComplete(false);
     setIsAroundFetched(false);
     setIsAroundFetching(false);
     updateLoadAround(roomId, undefined);
-  }, [roomId, setHistoryMode, updateLoadAround]);
+  }, [roomId, newerHistoryComplete, setHistoryMode, updateLoadAround, clearLatestHistory]);
 
   React.useLayoutEffect(() => {
     setIsAroundFetched(false);
