@@ -520,12 +520,7 @@ export const useRoomHistory = ({
 
   const onSeen = React.useCallback(
     (messageId?: string) => {
-      if (
-        messageId &&
-        !isIdle &&
-        seenUpToMessageId !== "initial" &&
-        (!seenUpToMessageId || messageId > seenUpToMessageId)
-      ) {
+      if (messageId && !isIdle && seenUpToMessageId !== "initial") {
         setSeenUpToMessageId(messageId);
 
         // XXX TODO: this gets called twice
