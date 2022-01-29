@@ -1,11 +1,11 @@
 import React from "react";
-import { NewFogbenderType } from ".";
+import { Fogbender } from ".";
 
 export interface FogbenderProviderProps {
-  fogbender: NewFogbenderType;
+  fogbender: Fogbender;
 }
 
-const context = React.createContext<NewFogbenderType | undefined>(undefined);
+const context = React.createContext<Fogbender | undefined>(undefined);
 
 context.displayName = "FogbenderProvider";
 
