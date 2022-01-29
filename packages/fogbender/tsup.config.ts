@@ -7,7 +7,7 @@ export default defineConfig(options => {
     dts: "src/index.ts",
     format: ["esm", "cjs"],
     // target: "es5",
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/index.ts", "src/server.ts"],
     esbuildPlugins: [solidPlugin()],
     sourcemap: true,
   };
