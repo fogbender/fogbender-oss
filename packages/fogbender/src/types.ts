@@ -25,10 +25,10 @@ export type Snapshot<T> = {
   subscribe: (cb: (s: Snapshot<T>) => void) => () => void;
 };
 
-export interface NewFogbenderType {
-  setVersion(tag: string, version: string): Promise<NewFogbenderType>;
-  setClientUrl(url: string | undefined): Promise<NewFogbenderType>;
-  setToken(token: Token | undefined): Promise<NewFogbenderType>;
+export interface Fogbender {
+  setVersion(tag: string, version: string): Promise<Fogbender>;
+  setClientUrl(url: string | undefined): Promise<Fogbender>;
+  setToken(token: Token | undefined): Promise<Fogbender>;
   isClientConfigured(): Promise<Snapshot<boolean>>;
   renderIframe(opts: {
     rootEl: HTMLElement;
@@ -39,13 +39,13 @@ export interface NewFogbenderType {
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
-  _load: (clientUrl: string, onLoad: () => void) => Promise<NewFogbenderType>;
+  _load: (clientUrl: string, onLoad: () => void) => Promise<Fogbender>;
   _once: boolean;
   _queue: [
-    methodName: keyof NewFogbenderType,
+    methodName: keyof Fogbender,
     args: any[],
     resolve: (value: any) => any,
     reject: (value: any) => any
   ][];
-  _fogbender?: NewFogbenderType;
+  _fogbender?: Fogbender;
 };

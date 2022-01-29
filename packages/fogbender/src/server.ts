@@ -1,7 +1,7 @@
-import type { Token, Badge, NewFogbenderType, FogbenderLoader, Snapshot } from "./types";
-export type { Token, Badge, NewFogbenderType, FogbenderLoader, Snapshot };
+import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
+export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
 
-export const createNewFogbender = (): NewFogbenderType => {
+export const createNewFogbender = (): Fogbender => {
   const state = {
     versions: {} as { [key: string]: string },
     token: undefined as Token | undefined,
@@ -9,7 +9,7 @@ export const createNewFogbender = (): NewFogbenderType => {
     iframe: undefined as HTMLIFrameElement | undefined,
     chatWindow: null as null | Window,
   };
-  const fogbender: NewFogbenderType & { _privateData: any } = {
+  const fogbender: Fogbender & { _privateData: any } = {
     _privateData: state,
     async setVersion(tag, version) {
       state.versions[tag] = version;
