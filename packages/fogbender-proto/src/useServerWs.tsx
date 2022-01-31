@@ -131,9 +131,8 @@ export function useServerWs(
   React.useEffect(() => {
     if (readyState === ReadyState.OPEN) {
       waitForCloseRef.current = false;
-      flushQueue();
     }
-  }, [readyState, flushQueue]);
+  }, [readyState]);
 
   const serverCall = React.useCallback(
     ((origMessage: ServerCalls["orig"]) => {
