@@ -303,7 +303,14 @@ export function useServerWs(
       clearInterval(interval);
     };
   }, [getWebSocket, readyState, serverCall, isConnected]);
-  return { serverCall, lastIncomingMessage, respondToMessage, helpdesk, isConnected };
+  return {
+    serverCall,
+    lastIncomingMessage,
+    respondToMessage,
+    helpdesk,
+    isConnected,
+    isAuthenticated: authenticated.current,
+  };
 }
 
 function ensureId(message: ServerCalls["orig"]): FogSchema["outbound"] {
