@@ -159,25 +159,17 @@ export function useServerWs(
     getWebSocket()?.close();
   };
 
-  const authenticating = React.useRef(false);
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
-    if (
-      token &&
-      !authenticating.current &&
-      !authenticated.current &&
-      readyState === ReadyState.OPEN
-    ) {
+    if (token && !authenticated.current && readyState === ReadyState.OPEN) {
       if ("widgetId" in token) {
-        authenticating.current = true;
         serverCall({
           ...token,
           msgType: "Auth.User",
           widgetId: token.widgetId,
         }).then(
           r => {
-            authenticating.current = false;
             if (r.msgType === "Auth.Ok") {
               const { sessionId, userId, helpdeskId, userAvatarUrl } = r;
               authenticated.current = true;
@@ -190,12 +182,10 @@ export function useServerWs(
             }
           },
           r => {
-            authenticating.current = false;
             onError("error", "other", r);
           }
         );
       } else if ("agentId" in token) {
-        authenticating.current = true;
         fetch(`${getServerApiUrl(env, client)}/token`, {
           method: "post",
           credentials: "include",
@@ -221,7 +211,6 @@ export function useServerWs(
               token: apiToken,
             }).then(
               r => {
-                authenticating.current = false;
                 if (r.msgType === "Auth.Ok") {
                   const { sessionId } = r;
                   authenticated.current = true;
@@ -234,14 +223,9 @@ export function useServerWs(
                 }
               },
               r => {
-                authenticating.current = false;
                 onError("error", "other", r);
               }
             );
-          })
-          .catch(error => {
-            authenticating.current = false;
-            throw new Error(error);
           });
       }
     }
@@ -250,7 +234,6 @@ export function useServerWs(
   React.useEffect(() => {
     return () => {
       authenticated.current = false;
-      authenticating.current = false;
       wrongToken.current = false;
       setHelpdesk(undefined);
       if (token) {
