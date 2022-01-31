@@ -121,7 +121,7 @@ export function useServerWs(
       } else {
         queue.current.push(message);
       }
-      if (socketIsOpen && (authenticated.current || isAuthMessage)) {
+      if (socketIsOpen && (authenticated.current || isAuthMessage(message))) {
         flushQueue();
       }
     },
