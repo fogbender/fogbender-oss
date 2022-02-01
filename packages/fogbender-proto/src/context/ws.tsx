@@ -206,9 +206,9 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
         return;
       }
       messagesIn.map(convertEventMessageToMessage).forEach(message => {
-        const isUpdate =
-          message.updatedTs > message.createdTs &&
-          latestMessages.current.concat(aroundMessages.current).find(m => m.id === message.id);
+        const isUpdate = latestMessages.current
+          .concat(aroundMessages.current)
+          .find(m => m.id === message.id);
         if (type === "event" && isUpdate) {
           const update = (acc: Message[], m: Message) =>
             m.id === message.id ? acc.concat(message) : acc.concat(m);
