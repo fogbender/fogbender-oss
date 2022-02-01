@@ -206,9 +206,9 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
         return;
       }
       messagesIn.map(convertEventMessageToMessage).forEach(message => {
-        const isUpdate =
-          message.updatedTs > message.createdTs &&
-          latestMessages.current.concat(aroundMessages.current).find(m => m.id === message.id);
+        const isUpdate = latestMessages.current
+          .concat(aroundMessages.current)
+          .find(m => m.id === message.id);
         if (type === "event" && isUpdate) {
           const update = (acc: Message[], m: Message) =>
             m.id === message.id ? acc.concat(message) : acc.concat(m);
@@ -540,7 +540,12 @@ export const useRoomHistory = ({
 
   const onSeen = React.useCallback(
     (messageId?: string) => {
-      if (messageId && !isIdle && seenUpToMessageId !== "initial") {
+      if (
+        messageId &&
+        !isIdle &&
+        seenUpToMessageId !== "initial" &&
+        (!seenUpToMessageId || messageId > seenUpToMessageId)
+      ) {
         setSeenUpToMessageId(messageId);
 
         // XXX TODO: this gets called twice
@@ -562,6 +567,20 @@ export const useRoomHistory = ({
       }
     },
     [isIdle, roomId, serverCall, seenUpToMessageId]
+  );
+
+  const onSeenBack = React.useCallback(
+    (messageId: string) => {
+      setSeenUpToMessageId(messageId);
+      serverCall<MessageSeen>({
+        msgType: "Message.Seen",
+        roomId,
+        messageId,
+      }).then(x => {
+        console.assert(x.msgType === "Message.Ok");
+      });
+    },
+    [roomId, serverCall]
   );
 
   const onUnseen = React.useCallback(() => {
@@ -700,6 +719,7 @@ export const useRoomHistory = ({
     serverCall,
     messagesByTarget,
     onSeen,
+    onSeenBack,
     onUnseen,
     seenUpToMessageId,
     messageCreate,
