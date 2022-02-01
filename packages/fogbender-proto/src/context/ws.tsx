@@ -569,6 +569,20 @@ export const useRoomHistory = ({
     [isIdle, roomId, serverCall, seenUpToMessageId]
   );
 
+  const onSeenBack = React.useCallback(
+    (messageId: string) => {
+      setSeenUpToMessageId(messageId);
+      serverCall<MessageSeen>({
+        msgType: "Message.Seen",
+        roomId,
+        messageId,
+      }).then(x => {
+        console.assert(x.msgType === "Message.Ok");
+      });
+    },
+    [roomId, serverCall]
+  );
+
   const onUnseen = React.useCallback(() => {
     serverCall<MessageUnseen>({
       msgType: "Message.Unseen",
@@ -705,6 +719,7 @@ export const useRoomHistory = ({
     serverCall,
     messagesByTarget,
     onSeen,
+    onSeenBack,
     onUnseen,
     seenUpToMessageId,
     messageCreate,
