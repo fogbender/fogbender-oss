@@ -293,6 +293,7 @@ export function useServerWs(
     helpdesk,
     isConnected,
     isAuthenticated: authenticated.current,
+    isTokenWrong: wrongToken.current,
   };
 }
 
