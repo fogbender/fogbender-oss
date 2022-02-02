@@ -657,5 +657,6 @@ export type Tag = {
 export type Helpdesk = {
   id: string;
   tags: Tag[];
+  vendorName: string;
 };
 // END nested types
