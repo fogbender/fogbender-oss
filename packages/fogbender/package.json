@@ -4,7 +4,6 @@
   "description": "Made with create-react-library",
   "author": "JLarky",
   "license": "MIT",
-  "private": false,
   "sideEffects": false,
   "type": "module",
   "main": "./dist/server.cjs",
@@ -36,7 +35,6 @@
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
-  "peerDependencies": {},
   "devDependencies": {
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/user-event": "^10.1.0",
