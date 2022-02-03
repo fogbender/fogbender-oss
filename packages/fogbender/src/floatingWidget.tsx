@@ -7,7 +7,7 @@ import { getTwind } from "./twind";
 export function createFloatingWidget(
   { events }: { events: Events },
   openWindow: () => void,
-  style: { verbose?: boolean }
+  opts: { verbose?: boolean }
 ) {
   const container = document.createElement("div");
   container.style.position = "fixed";
@@ -35,7 +35,7 @@ export function createFloatingWidget(
       setUnreadCount(e.unreadCount);
     });
 
-    return style.verbose ? (
+    return opts.verbose ? (
       <div
         className={tw`w-36 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
         style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
