@@ -35,7 +35,7 @@ export interface Fogbender {
     headless?: boolean;
     onBadges?: (badges: Badge[]) => void;
   }): Promise<() => void>;
-  createFloatingWidget(): Promise<() => void>;
+  createFloatingWidget(opts?: { verbose?: boolean }): Promise<() => void>;
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
