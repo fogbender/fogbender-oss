@@ -111,27 +111,14 @@ export function createFloatingWidget(
               <feFlood flood-opacity="0" result="BackgroundImageFix" />
               <feColorMatrix
                 in="SourceAlpha"
-                type="matrix"
                 values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                 result="hardAlpha"
               />
               <feOffset dy="6" />
               <feGaussianBlur stdDeviation="10" />
-              <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 0.0751563 0 0 0 0 0.113891 0 0 0 0 0.4625 0 0 0 0.15 0"
-              />
-              <feBlend
-                mode="normal"
-                in2="BackgroundImageFix"
-                result="effect1_dropShadow_2573_3255"
-              />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="effect1_dropShadow_2573_3255"
-                result="shape"
-              />
+              <feColorMatrix values="0 0 0 0 0.0751563 0 0 0 0 0.113891 0 0 0 0 0.4625 0 0 0 0.15 0" />
+              <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2573_3255" />
+              <feBlend in="SourceGraphic" in2="effect1_dropShadow_2573_3255" result="shape" />
             </filter>
           </defs>
         </svg>
