@@ -534,11 +534,19 @@ export const useRoomHistory = ({
     }
   }, [fogSessionId]);
 
-  const [seenUpToMessageId, setSeenUpToMessageId] = React.useState<string | undefined>();
+  const seenUpToMessageId = React.useRef<string>();
+  const setSeenUpToMessageId = React.useCallback((value: string | undefined) => {
+    if (!value || !seenUpToMessageId.current || value > seenUpToMessageId.current)
+      seenUpToMessageId.current = value;
+  }, []);
 
   const onSeen = React.useCallback(
     (messageId?: string) => {
-      if (messageId && !isIdle && (!seenUpToMessageId || messageId > seenUpToMessageId)) {
+      if (
+        messageId &&
+        !isIdle &&
+        (!seenUpToMessageId.current || messageId > seenUpToMessageId.current)
+      ) {
         setSeenUpToMessageId(messageId);
 
         // XXX TODO: this gets called twice
@@ -714,7 +722,6 @@ export const useRoomHistory = ({
     onSeen,
     onSeenBack,
     onUnseen,
-    seenUpToMessageId,
     messageCreate,
     messageCreateMany,
     messageUpdate,
