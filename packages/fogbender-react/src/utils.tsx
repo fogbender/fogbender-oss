@@ -1,7 +1,7 @@
 import React from "react";
 
-export const noopCleanup = async () => {
-  return () => {};
+export const noopCleanup = () => {
+  return new Promise<() => void>(resolve => resolve(() => {}));
 };
 
 export function useRenderComponent(componentRenderer: () => Promise<() => void>) {
