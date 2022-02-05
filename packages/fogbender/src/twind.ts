@@ -25,6 +25,9 @@ const createSheet = () => {
     const target = document.createElement("style");
     attach = (root: ShadowRoot | null) => {
       root?.appendChild(target.cloneNode(true));
+      setTimeout(() => {
+        root?.appendChild(target.cloneNode(true));
+      }, 0);
     };
     return { sheet: domSheet({ target }), attach };
   }
