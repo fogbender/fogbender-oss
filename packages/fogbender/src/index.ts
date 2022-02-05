@@ -5,10 +5,11 @@ import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types
 export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
 
 export const createNewFogbender = (): Fogbender => {
+  const defaultUrl = "https://client.fogbender.com";
   const state = {
     versions: {} as { [key: string]: string },
     token: undefined as Token | undefined,
-    url: undefined as string | undefined,
+    url: defaultUrl as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
     events: createEvents(),
     chatWindow: null as null | Window,
@@ -33,8 +34,8 @@ export const createNewFogbender = (): Fogbender => {
       state.versions[tag] = version;
       return fogbender;
     },
-    async setClientUrl(_url: string) {
-      state.url = _url;
+    async setClientUrl(_url) {
+      state.url = _url === undefined ? defaultUrl : _url;
       updateConfigured();
       return fogbender;
     },
