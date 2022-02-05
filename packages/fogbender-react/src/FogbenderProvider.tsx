@@ -20,12 +20,5 @@ export const useFogbender = () => {
 };
 
 export const FogbenderProvider: React.FC<FogbenderProviderProps> = ({ fogbender, children }) => {
-  React.useEffect(() => {
-    // fogbender.mount();
-    return () => {
-      //   fogbender.destroy();
-    };
-  }, [fogbender]);
-
   return <context.Provider value={fogbender}>{children}</context.Provider>;
 };
