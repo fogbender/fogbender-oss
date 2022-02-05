@@ -59,6 +59,10 @@ export function renderIframe(
   iFrame.src = url;
   iFrame.style.display = "block";
   iFrame.style.width = headless ? "0" : "100%";
+  if (headless) {
+    iFrame.style.position = "fixed";
+    iFrame.style.top = "-100px";
+  }
 
   window.addEventListener("message", e => {
     if (e.origin !== url) {
