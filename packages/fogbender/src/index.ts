@@ -1,3 +1,4 @@
+import { checkToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
@@ -40,6 +41,10 @@ export const createNewFogbender = (): Fogbender => {
       return fogbender;
     },
     async setToken(token) {
+      const tokenCheck = checkToken(token);
+      if (!tokenCheck) {
+        throw new Error("Wrong token format.");
+      }
       state.token = token;
       if (state.token) {
         state.token = {
