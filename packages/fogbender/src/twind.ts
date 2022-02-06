@@ -1,5 +1,14 @@
-import { domSheet } from "twind/sheets";
-import { cssomSheet, setup } from "twind";
+import { cssomSheet, setup, Sheet } from "twind";
+
+export const domSheet = ({ target }: { target: HTMLStyleElement }): Sheet<HTMLStyleElement> => {
+  const offset = target.childNodes.length;
+
+  return {
+    target,
+    insert: (rule, index) =>
+      target.insertBefore(document.createTextNode(rule), target.childNodes[offset + index]),
+  };
+};
 
 const createSheet = () => {
   let attach = (_root: ShadowRoot | null) => {};
@@ -23,13 +32,14 @@ const createSheet = () => {
     return { sheet: cssomSheet({ target }), attach };
   } else {
     const target = document.createElement("style");
+    const sheet = domSheet({ target });
     attach = (root: ShadowRoot | null) => {
       root?.appendChild(target.cloneNode(true));
       setTimeout(() => {
         root?.appendChild(target.cloneNode(true));
       }, 0);
     };
-    return { sheet: domSheet({ target }), attach };
+    return { sheet, attach };
   }
 };
 
