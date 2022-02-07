@@ -2,6 +2,7 @@
 // configuration types
 export type UserToken = {
   widgetId: string;
+  widgetKey?: string;
   customerId: string;
   customerName: string;
   userId: string;

@@ -1,6 +1,7 @@
 // make sure to keep in sync with fogbender-ptoto schema
 export type Token = {
   widgetId: string;
+  widgetKey?: string;
   customerId: string;
   customerName: string;
   userId: string;
