@@ -4,6 +4,7 @@ import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
 import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
 export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
+export { checkToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";

@@ -1,6 +1,8 @@
 import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
 export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
 
+export { checkToken } from "./checkToken";
+
 export const createNewFogbender = (): Fogbender => {
   const state = {
     versions: {} as { [key: string]: string },
