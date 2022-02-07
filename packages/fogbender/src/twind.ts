@@ -1,5 +1,27 @@
-import { domSheet } from "twind/sheets";
-import { cssomSheet, setup } from "twind";
+import { cssomSheet, setup, Sheet } from "twind";
+
+export const sharedSheet = () => {
+  const target = document.createElement("style");
+  const offset = target.childNodes.length;
+  const instances = new Set<HTMLStyleElement>([target]);
+
+  const sheet: Sheet<HTMLStyleElement> = {
+    target,
+    insert: (rule, index) =>
+      instances.forEach(instance => {
+        instance.insertBefore(document.createTextNode(rule), instance.childNodes[offset + index]);
+      }),
+  };
+  const attach = (root: ShadowRoot | null) => {
+    const instance = target.cloneNode(true) as typeof target;
+    instances.add(instance);
+    if (instances.size === 100) {
+      console.error("Fogbender: oopsie poopsie, too many instances of sharedSheet");
+    }
+    root?.appendChild(instance);
+  };
+  return { sheet, attach };
+};
 
 const createSheet = () => {
   let attach = (_root: ShadowRoot | null) => {};
@@ -22,14 +44,7 @@ const createSheet = () => {
     };
     return { sheet: cssomSheet({ target }), attach };
   } else {
-    const target = document.createElement("style");
-    attach = (root: ShadowRoot | null) => {
-      root?.appendChild(target.cloneNode(true));
-      setTimeout(() => {
-        root?.appendChild(target.cloneNode(true));
-      }, 0);
-    };
-    return { sheet: domSheet({ target }), attach };
+    return sharedSheet();
   }
 };
 
