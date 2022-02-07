@@ -10,7 +10,7 @@ export type UserToken = {
   userPaseto?: string;
   userName: string;
   userAvatarUrl?: string;
-  userEmail?: string;
+  userEmail: string;
   versions?: { [key: string]: string };
 };
 
