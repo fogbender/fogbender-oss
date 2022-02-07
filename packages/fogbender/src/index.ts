@@ -1,8 +1,10 @@
+import { checkToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
 import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
 export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
+export { checkToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";
@@ -40,6 +42,10 @@ export const createNewFogbender = (): Fogbender => {
       return fogbender;
     },
     async setToken(token) {
+      const tokenCheck = checkToken(token);
+      if (tokenCheck) {
+        throw new Error("Wrong token format:\n" + JSON.stringify(tokenCheck, null, 1));
+      }
       state.token = token;
       if (state.token) {
         state.token = {
