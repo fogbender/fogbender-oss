@@ -42,8 +42,8 @@ export const createNewFogbender = (): Fogbender => {
     },
     async setToken(token) {
       const tokenCheck = checkToken(token);
-      if (!tokenCheck) {
-        throw new Error("Wrong token format.");
+      if (tokenCheck) {
+        throw new Error("Wrong token format:\n" + JSON.stringify(tokenCheck, null, 1));
       }
       state.token = token;
       if (state.token) {
