@@ -16,7 +16,7 @@ export {
 };
 
 export const FogbenderSimpleWidget: React.FC<{
-  clientUrl: string;
+  clientUrl?: string;
   token: Token;
 }> = ({ clientUrl, token }) => {
   const [fogbender, setFogbender] = React.useState(undefined as Fogbender | undefined);
@@ -89,7 +89,7 @@ const useRenderUnreadBadge = (divRef: React.RefObject<HTMLDivElement | null>) =>
 };
 
 export const FogbenderConfig: React.FC<{
-  clientUrl: string | undefined;
+  clientUrl?: string;
   token: Token | undefined;
 }> = ({ clientUrl, token }) => {
   const fogbender = useFogbender();
