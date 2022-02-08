@@ -313,12 +313,10 @@ export const useRoomHistory = ({
   userId,
   roomId,
   aroundId,
-  isIdle,
 }: {
   userId: string | undefined;
   roomId: string;
   aroundId: string | undefined;
-  isIdle: boolean;
 }) => {
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
 
