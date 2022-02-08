@@ -12,7 +12,8 @@ export function checkToken(token: Token | undefined) {
       x =>
         typeof token[x] !== "string" &&
         typeof token[x] !== "undefined" &&
-        (errors[x] = "should be string or undefined")
+        token[x] !== null &&
+        (errors[x] = "should be string or undefined or null")
     );
 
     if (!(token.userJWT || token.userHMAC || token.userPaseto || token.widgetKey)) {
