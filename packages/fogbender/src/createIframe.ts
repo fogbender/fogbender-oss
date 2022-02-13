@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import { ResizeSensor } from "css-element-queries/";
+import { ResizeSensor } from "css-element-queries";
 import { Badge, Token } from ".";
 
 type FogbenderEventMap = {
