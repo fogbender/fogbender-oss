@@ -283,6 +283,46 @@ export function useServerWs(
       clearInterval(interval);
     };
   }, [getWebSocket, readyState, serverCall, isConnected]);
+  useOnResumedFromSleep(delta => {
+    if (!isConnected || wrongToken.current) {
+      return;
+    }
+    if (delta > 15 * 60 * 1000) {
+      // here we know that it has been too long since last setTimeout and
+      // there's no way that server connection can still be active
+      onError(
+        "error",
+        "server_stopped_responding",
+        new Error(`Server connection completely lost after ${delta} ms`)
+      );
+      getWebSocket()?.close();
+    } else {
+      // we know that a lot of time have passed since previous setInterval,
+      // but that doesn't always mean that we lost connection to the server
+      // completely, but if server stopped responding to ping calls, that's
+      // when we know that we need to restart the websocket connection
+      const timer = setTimeout(() => {
+        onError(
+          "error",
+          "server_stopped_responding",
+          new Error(`Server connection lost after ${delta} ms`)
+        );
+        getWebSocket()?.close();
+      }, 5000);
+      serverCall<PingPing>({
+        msgType: "Ping.Ping",
+        lastActivityTs: lastActivityTs.current,
+      }).then(
+        r => {
+          clearTimeout(timer);
+          console.assert(r.msgType === "Ping.Pong");
+        },
+        r => {
+          onError("error", "other", r);
+        }
+      );
+    }
+  });
   return {
     serverCall,
     lastIncomingMessage,
@@ -311,4 +351,30 @@ function isServerEvent(
   x: ServerCalls["inbound"] | ServerEvents["inbound"]
 ): x is ServerEvents["inbound"] {
   return x.msgType.indexOf("Event.") === 0;
+}
+
+function useOnResumedFromSleep(handleLongSleep: (delta: number) => void) {
+  const callbackRef = React.useRef(handleLongSleep);
+  callbackRef.current = handleLongSleep;
+  const lastTime = React.useRef(new Date().getTime());
+  const sleepTimeout = 3 * 60_000;
+  React.useEffect(() => {
+    let stopLoop = () => {};
+    function loop() {
+      const timer = setTimeout(() => {
+        const currentTime = new Date().getTime();
+        const delta = currentTime - lastTime.current;
+        lastTime.current = currentTime;
+        if (delta > 2 * sleepTimeout) {
+          callbackRef.current(delta);
+        }
+        loop();
+      }, sleepTimeout);
+      stopLoop = () => {
+        clearTimeout(timer);
+      };
+    }
+    loop();
+    return () => stopLoop();
+  }, []);
 }
