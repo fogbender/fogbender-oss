@@ -297,10 +297,9 @@ export function useServerWs(
       );
       getWebSocket()?.close();
     } else {
-      // we know that a lot of time have passed since previous setInterval,
-      // but that doesn't always mean that we lost connection to the server
-      // completely, but if server stopped responding to ping calls, that's
-      // when we know that we need to restart the websocket connection
+      // 1. We know a lot of time has passed since previous setInterval
+      // 2. This doesn't always mean that we lost connection to the server completely
+      // 3. If the server stopped responding to ping calls, we know we need to restart the websocket
       const timer = setTimeout(() => {
         onError(
           "error",
