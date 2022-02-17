@@ -9,6 +9,7 @@ import {
   IntegrationForwardToIssue,
   RoomCreate,
   RoomUpdate,
+  RoomArchive,
   UserUpdate,
   SearchRoster,
 } from "../schema";
@@ -93,6 +94,18 @@ export const useRoster = ({
         membersToRemove: params.membersToRemove,
         tagsToAdd: params.tagsToAdd,
         tagsToRemove: params.tagsToRemove,
+      }).then(x => {
+        console.assert(x.msgType === "Room.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
+  const archiveRoom = React.useCallback(
+    (params: Pick<RoomArchive, "roomId">) =>
+      serverCall<RoomArchive>({
+        msgType: "Room.Archive",
+        roomId: params.roomId,
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         return x;
@@ -263,6 +276,7 @@ export const useRoster = ({
     setRosterFilter,
     createRoom,
     updateRoom,
+    archiveRoom,
     updateUser,
     createIssue,
     forwardToIssue,
