@@ -35,7 +35,6 @@ export type Author = {
 
 export type Message = {
   id: string;
-  clientId: string;
   author: Author;
   createdTs: number;
   updatedTs: number;
@@ -58,7 +57,6 @@ export type Message = {
 
 const convertEventMessageToMessage = (message: EventMessage): Message => ({
   id: message.id,
-  clientId: message.clientId,
   author: {
     id: message.fromId,
     name: message.fromName,
@@ -267,7 +265,6 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
     messages.forEach(message => {
       const {
         id,
-        clientId,
         roomId,
         fromId,
         fromName,
@@ -284,7 +281,6 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
 
       messagesByTarget[targetMessageId].push({
         id,
-        clientId,
         author: { id: fromId, name: fromName, type: fromType, avatarUrl: fromAvatarUrl },
         createdTs: createdTs || Date.now(),
         updatedTs: updatedTs || Date.now(),
