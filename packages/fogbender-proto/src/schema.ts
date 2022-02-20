@@ -644,7 +644,7 @@ export type RoomMember = {
   email: string;
 };
 
-export const MetaTypes = ["issue_tracker", "issue"];
+export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
 export const KnownIntegrations = ["gitlab", "github", "linear"];
