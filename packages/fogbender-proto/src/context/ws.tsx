@@ -137,6 +137,7 @@ function useProviderValue(
     helpdeskId,
     workspaceId,
     userAvatarUrl,
+    isIdle,
   };
 }
 
