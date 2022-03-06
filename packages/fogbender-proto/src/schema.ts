@@ -554,6 +554,7 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
+  isTriage?: boolean;
   imageUrl: string; // search template
   email: string; // search template
   agentId: string; // search template

@@ -128,7 +128,17 @@ function useProviderValue(
     helpdeskId,
     userId,
   });
-  return { ...ws, sharedRoster, token, fogSessionId, userId, helpdeskId, userAvatarUrl };
+  return {
+    ...ws,
+    sharedRoster,
+    token,
+    fogSessionId,
+    userId,
+    helpdeskId,
+    workspaceId,
+    userAvatarUrl,
+    isIdle,
+  };
 }
 
 export const WsProvider: React.FC<{

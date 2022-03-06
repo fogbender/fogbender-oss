@@ -330,6 +330,7 @@ export function useServerWs(
     isConnected,
     isAuthenticated: authenticated.current,
     isTokenWrong: wrongToken.current,
+    isAgent: token && "agentId" in token,
   };
 }
 
