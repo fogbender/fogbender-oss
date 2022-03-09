@@ -617,6 +617,7 @@ export declare type File = {
   };
   fileUrl: string;
   downloadUrl: string;
+  fileSize: number;
 };
 
 export type Customer = {
