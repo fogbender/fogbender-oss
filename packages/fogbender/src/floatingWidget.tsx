@@ -10,25 +10,26 @@ export function createFloatingWidget(
   opts: { verbose?: boolean }
 ) {
   const container = document.createElement("div");
-  container.style.position = "fixed";
-  container.style.bottom = "0";
-  container.style.right = "0";
-  container.style.zIndex = "9999";
-  const button = document.createElement("button");
-  button.title = "Customer support";
-  button.style.display = "block";
-  button.style.outline = "none";
-  button.style.marginRight = "1rem";
-  button.style.marginBottom = "1rem";
 
-  button.onclick = openWindow;
   const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
-  container.shadowRoot?.appendChild(button);
   const { attach } = getTwind();
   attach(container.shadowRoot);
   body.appendChild(container);
-  const cleanup = render(() => <Floatie {...{ ...opts, events }} />, button);
+  const cleanup = render(
+    () => (
+      <div className={tw`fixed bottom-0 right-0`} style="z-index: 9999;">
+        <button
+          onClick={openWindow}
+          title="Customer support"
+          className={tw`outline-none mr-4 mb-4`}
+        >
+          <Floatie events={events} verbose={opts.verbose} />
+        </button>
+      </div>
+    ),
+    container.shadowRoot!
+  );
   return () => {
     cleanup();
     body.removeChild(container);
