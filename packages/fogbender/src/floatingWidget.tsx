@@ -10,30 +10,33 @@ export function createFloatingWidget(
   opts: { verbose?: boolean }
 ) {
   const container = document.createElement("div");
-
-  const body = document.getElementsByTagName("body")[0];
   container.attachShadow({ mode: "open" });
   const { attach } = getTwind();
   attach(container.shadowRoot);
+  const body = document.getElementsByTagName("body")[0];
   body.appendChild(container);
   const cleanup = render(
-    () => (
-      <div className={tw`fixed bottom-0 right-0`} style="z-index: 9999;">
-        <button
-          onClick={openWindow}
-          title="Customer support"
-          className={tw`outline-none mr-4 mb-4`}
-        >
-          <Floatie events={events} verbose={opts.verbose} />
-        </button>
-      </div>
-    ),
+    () => <Container events={events} verbose={opts.verbose} openWindow={openWindow} />,
     container.shadowRoot!
   );
   return () => {
     cleanup();
     body.removeChild(container);
   };
+}
+
+function Container(props: { events: Events; verbose?: boolean; openWindow: () => void }) {
+  return (
+    <div className={tw`fixed bottom-0 right-0`} style="z-index: 9999;">
+      <button
+        onClick={props.openWindow}
+        title="Customer support"
+        className={tw`outline-none mr-4 mb-4`}
+      >
+        <Floatie events={props.events} verbose={props.verbose} />
+      </button>
+    </div>
+  );
 }
 
 function Floatie(props: { events: Events; verbose?: boolean }) {
