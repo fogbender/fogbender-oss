@@ -7,6 +7,7 @@ import { getTwind } from "./twind";
 export function createFloatingWidget(
   { events }: { events: Events },
   openWindow: () => void,
+  renderIframe: (el: HTMLElement) => () => void,
   opts: { verbose?: boolean }
 ) {
   const container = document.createElement("div");
@@ -16,7 +17,14 @@ export function createFloatingWidget(
   const body = document.getElementsByTagName("body")[0];
   body.appendChild(container);
   const cleanup = render(
-    () => <Container events={events} verbose={opts.verbose} openWindow={openWindow} />,
+    () => (
+      <Container
+        events={events}
+        verbose={opts.verbose}
+        openWindow={openWindow}
+        renderIframe={renderIframe}
+      />
+    ),
     container.shadowRoot!
   );
   return () => {
@@ -25,17 +33,66 @@ export function createFloatingWidget(
   };
 }
 
-function Container(props: { events: Events; verbose?: boolean; openWindow: () => void }) {
+function Container(props: {
+  events: Events;
+  verbose?: boolean;
+  openWindow: () => void;
+  renderIframe: (el: HTMLElement) => () => void;
+}) {
   return (
-    <div className={tw`fixed bottom-0 right-0`} style="z-index: 9999;">
+    <div
+      className={tw`fixed bottom-0 right-0 flex flex-col sm:mr-4 sm:mb-4 h-screen w-full sm:h-auto sm:w-auto items-center`}
+      style="z-index: 9999;"
+    >
+      <Talky renderIframe={props.renderIframe} />
       <button
         onClick={props.openWindow}
         title="Customer support"
-        className={tw`outline-none mr-4 mb-4`}
+        className={tw`outline-none self-end hidden sm:block`}
       >
         <Floatie events={props.events} verbose={props.verbose} />
       </button>
     </div>
+  );
+}
+
+function Talky(props: { renderIframe: (el: HTMLElement) => () => void }) {
+  return (
+    <div
+      className={tw`shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw]`}
+    >
+      <Header />
+      <Iframe renderIframe={props.renderIframe} />
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <div className={tw("p-2 text-center text-3xl bg-gray-400 rounded-t-xl")}>
+      Support
+      <button className={tw`mx-2 px-2 text-2xl font-semibold float-right font-mono`}>
+        <div className={tw("rotate-45")} aria-label="Close">
+          +
+        </div>
+      </button>
+    </div>
+  );
+}
+
+function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
+  let cleanup = () => {};
+  return (
+    <div
+      className={tw("h-[60vh] rounded-b-xl overflow-hidden")}
+      ref={el => {
+        if (el) {
+          cleanup = props.renderIframe(el);
+        } else {
+          cleanup();
+        }
+      }}
+    />
   );
 }
 

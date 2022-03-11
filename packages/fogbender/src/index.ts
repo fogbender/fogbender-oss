@@ -77,7 +77,13 @@ export const createNewFogbender = (): Fogbender => {
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      const cleanup = createFloatingWidget(state, openWindow, opts);
+      const { token, url, env } = state;
+      const cleanup = createFloatingWidget(
+        state,
+        openWindow,
+        el => renderIframe(state, { rootEl: el, env, token, url, disableFit: true }, openWindow),
+        opts
+      );
       return cleanup;
     },
     async renderIframe(opts) {
