@@ -34,6 +34,7 @@ export interface Fogbender {
   renderIframe(opts: {
     rootEl: HTMLElement;
     headless?: boolean;
+    disableFit?: boolean;
     onBadges?: (badges: Badge[]) => void;
   }): Promise<() => void>;
   createFloatingWidget(opts?: { verbose?: boolean }): Promise<() => void>;

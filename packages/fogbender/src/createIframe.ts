@@ -46,11 +46,13 @@ export function renderIframe(
     url,
     token,
     headless,
+    disableFit,
   }: {
     rootEl: HTMLElement;
     url: string;
     token: Token;
     headless?: boolean;
+    disableFit?: boolean;
   },
   openWindow: () => void
 ) {
@@ -59,6 +61,7 @@ export function renderIframe(
   iFrame.src = url;
   iFrame.style.display = "block";
   iFrame.style.width = headless ? "0" : "100%";
+  iFrame.style.height = headless ? "0" : "100%";
   if (headless) {
     iFrame.style.position = "fixed";
     iFrame.style.top = "-100px";
@@ -127,7 +130,7 @@ export function renderIframe(
   rootEl.append(iFrame);
 
   function adaptIFrame() {
-    if (!rootEl) {
+    if (!rootEl || disableFit) {
       return;
     }
     const height = headless
