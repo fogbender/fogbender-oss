@@ -56,7 +56,7 @@ function Container(props: {
           setIsOpen(x => (x === "open" ? "hidden" : "open"));
         }}
         title="Customer support"
-        className={tw`outline-none self-end hidden sm:block`}
+        className={tw("outline-none self-end", isOpen() && "hidden sm:block")}
       >
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
