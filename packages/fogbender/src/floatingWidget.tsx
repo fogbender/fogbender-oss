@@ -43,6 +43,9 @@ function Container(props: {
 }) {
   const [open, setIsOpen] = createSignal("closed" as Open);
   const isOpen = createMemo(() => open() === "open");
+  const close = () => {
+    setIsOpen("hidden");
+  };
   return (
     <div
       className={tw`fixed bottom-0 right-0 flex flex-col-reverse sm:mr-4 sm:mb-4 h-screen w-full sm:h-auto sm:w-auto items-center`}
@@ -57,34 +60,40 @@ function Container(props: {
       >
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
-      {open() !== "closed" && <Talky isOpen={isOpen} renderIframe={props.renderIframe} />}
+      {open() !== "closed" && (
+        <Talky isOpen={isOpen} close={close} renderIframe={props.renderIframe} />
+      )}
     </div>
   );
 }
 
 function Talky(props: {
   isOpen: Accessor<boolean>;
+  close: () => void;
   renderIframe: (el: HTMLElement) => () => void;
 }) {
   return (
     <div
       className={tw(
         !props.isOpen() && "hidden",
-        "shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] -mb-[60px]"
+        "shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:-mb-[60px]"
       )}
     >
-      <Header />
+      <Header close={props.close} />
       <Iframe renderIframe={props.renderIframe} />
     </div>
   );
 }
 
-function Header() {
+function Header(props: { close: () => void }) {
   return (
     <div className={tw("p-2 sm:pb-0 text-center text-3xl bg-gray-400 sm:bg-white rounded-t-xl")}>
       <div className={tw("sm:hidden")}>
         Support
-        <button className={tw`mx-2 px-2 text-2xl font-semibold float-right font-mono`}>
+        <button
+          className={tw`mx-2 px-2 text-2xl font-semibold float-right font-mono`}
+          onClick={props.close}
+        >
           <div className={tw("rotate-45")} aria-label="Close">
             +
           </div>
