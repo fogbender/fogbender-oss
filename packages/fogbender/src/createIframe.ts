@@ -46,13 +46,13 @@ export function renderIframe(
     url,
     token,
     headless,
-    disableResize,
+    disableFit,
   }: {
     rootEl: HTMLElement;
     url: string;
     token: Token;
     headless?: boolean;
-    disableResize?: boolean;
+    disableFit?: boolean;
   },
   openWindow: () => void
 ) {
@@ -130,7 +130,7 @@ export function renderIframe(
   rootEl.append(iFrame);
 
   function adaptIFrame() {
-    if (!rootEl || disableResize) {
+    if (!rootEl || disableFit) {
       return;
     }
     const height = headless
