@@ -48,7 +48,10 @@ function Container(props: {
   };
   return (
     <div
-      className={tw`fixed bottom-0 right-0 flex flex-col-reverse sm:mr-4 sm:mb-4 h-screen w-full sm:h-auto sm:w-auto items-center`}
+      className={tw(
+        isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
+        "fixed sm:top-auto sm:bottom-0 right-0 flex flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
+      )}
       style="z-index: 9999;"
     >
       <button
@@ -75,8 +78,8 @@ function Talky(props: {
   return (
     <div
       className={tw(
-        !props.isOpen() && "hidden",
-        "shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:-mb-[60px]"
+        props.isOpen() ? "flex flex-col" : "hidden",
+        "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:-mb-[60px] sm:h-[calc(60vh+60px)] sm:max-h-screen"
       )}
     >
       <Header close={props.close} />
@@ -107,7 +110,7 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
   let cleanup = () => {};
   return (
     <div
-      className={tw("h-[60vh] rounded-b-xl overflow-hidden")}
+      className={tw("flex-1 rounded-b-xl overflow-hidden")}
       ref={el => {
         if (el) {
           cleanup = props.renderIframe(el);
