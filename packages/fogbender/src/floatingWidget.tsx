@@ -69,13 +69,15 @@ function Talky(props: { renderIframe: (el: HTMLElement) => () => void }) {
 
 function Header() {
   return (
-    <div className={tw("p-2 text-center text-3xl bg-gray-400 rounded-t-xl")}>
-      Support
-      <button className={tw`mx-2 px-2 text-2xl font-semibold float-right font-mono`}>
-        <div className={tw("rotate-45")} aria-label="Close">
-          +
-        </div>
-      </button>
+    <div className={tw("p-2 sm:pb-0 text-center text-3xl bg-gray-400 sm:bg-white rounded-t-xl")}>
+      <div className={tw("sm:hidden")}>
+        Support
+        <button className={tw`mx-2 px-2 text-2xl font-semibold float-right font-mono`}>
+          <div className={tw("rotate-45")} aria-label="Close">
+            +
+          </div>
+        </button>
+      </div>
     </div>
   );
 }
