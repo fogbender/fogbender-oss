@@ -1,5 +1,5 @@
 import { render } from "solid-js/web";
-import { createSignal } from "solid-js";
+import { Accessor, createMemo, createSignal } from "solid-js";
 import { tw } from "twind";
 import { Events } from "./createIframe";
 import { getTwind } from "./twind";
@@ -33,33 +33,45 @@ export function createFloatingWidget(
   };
 }
 
+type Open = "open" | "closed" | "hidden";
+
 function Container(props: {
   events: Events;
   verbose?: boolean;
   openWindow: () => void;
   renderIframe: (el: HTMLElement) => () => void;
 }) {
+  const [open, setIsOpen] = createSignal("closed" as Open);
+  const isOpen = createMemo(() => open() === "open");
   return (
     <div
-      className={tw`fixed bottom-0 right-0 flex flex-col sm:mr-4 sm:mb-4 h-screen w-full sm:h-auto sm:w-auto items-center`}
+      className={tw`fixed bottom-0 right-0 flex flex-col-reverse sm:mr-4 sm:mb-4 h-screen w-full sm:h-auto sm:w-auto items-center`}
       style="z-index: 9999;"
     >
-      <Talky renderIframe={props.renderIframe} />
       <button
-        onClick={props.openWindow}
+        onClick={() => {
+          setIsOpen(x => (x === "open" ? "hidden" : "open"));
+        }}
         title="Customer support"
         className={tw`outline-none self-end hidden sm:block`}
       >
         <Floatie events={props.events} verbose={props.verbose} />
       </button>
+      {open() !== "closed" && <Talky isOpen={isOpen} renderIframe={props.renderIframe} />}
     </div>
   );
 }
 
-function Talky(props: { renderIframe: (el: HTMLElement) => () => void }) {
+function Talky(props: {
+  isOpen: Accessor<boolean>;
+  renderIframe: (el: HTMLElement) => () => void;
+}) {
   return (
     <div
-      className={tw`shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw]`}
+      className={tw(
+        !props.isOpen() && "hidden",
+        "shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] -mb-[60px]"
+      )}
     >
       <Header />
       <Iframe renderIframe={props.renderIframe} />
