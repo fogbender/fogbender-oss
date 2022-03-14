@@ -55,7 +55,7 @@ function Container(props: {
         title="Customer support"
         className={tw`outline-none self-end hidden sm:block`}
       >
-        <Floatie events={props.events} verbose={props.verbose} />
+        <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
       {open() !== "closed" && <Talky isOpen={isOpen} renderIframe={props.renderIframe} />}
     </div>
@@ -110,7 +110,7 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
   );
 }
 
-function Floatie(props: { events: Events; verbose?: boolean }) {
+function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: boolean }) {
   const [unreadCounter, setUnreadCount] = createSignal(0);
 
   props.events.on("fogbender.unreadCount", e => {
@@ -137,7 +137,7 @@ function Floatie(props: { events: Events; verbose?: boolean }) {
       </div>
     </div>
   ) : (
-    <div>
+    <div className={tw("duration-500", props.isOpen() ? "rotate-180" : "")}>
       <FloatingSvg />
       <div
         className={tw`absolute text-white rounded-full bg-brand-red-500 text-xs leading-none`}
