@@ -54,6 +54,8 @@ export type Message = {
   sources?: Message[];
   deletedTs?: number;
   deletedByName?: string;
+  editedTs?: number;
+  editedByName?: string;
 };
 
 const convertEventMessageToMessage = (message: EventMessage): Message => ({
@@ -80,6 +82,8 @@ const convertEventMessageToMessage = (message: EventMessage): Message => ({
   sources: message.sources?.map(convertEventMessageToMessage),
   deletedTs: message.deletedTs,
   deletedByName: message.deletedByName,
+  editedTs: message.editedTs,
+  editedByName: message.editedByName,
 });
 
 export type WsContext = ReturnType<typeof useProviderValue>;
@@ -290,6 +294,8 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
         updatedTs,
         deletedTs,
         deletedByName,
+        editedTs,
+        editedByName,
       } = message;
 
       messagesByTarget[targetMessageId].push({
@@ -304,6 +310,8 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
         roomId,
         deletedTs,
         deletedByName,
+        editedTs,
+        editedByName,
       });
     });
   }, []);

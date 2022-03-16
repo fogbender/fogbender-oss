@@ -468,6 +468,8 @@ export type EventMessage = {
   sources?: EventMessage[];
   deletedTs?: number;
   deletedByName?: string;
+  editedTs?: number;
+  editedByName?: string;
 };
 
 export type EventNotificationMessage = {
