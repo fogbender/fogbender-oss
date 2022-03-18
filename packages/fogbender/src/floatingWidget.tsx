@@ -64,7 +64,12 @@ function Container(props: {
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
       {open() !== "closed" && (
-        <Talky isOpen={isOpen} close={close} renderIframe={props.renderIframe} />
+        <Talky
+          isOpen={isOpen}
+          close={close}
+          verbose={props.verbose}
+          renderIframe={props.renderIframe}
+        />
       )}
     </div>
   );
@@ -72,6 +77,7 @@ function Container(props: {
 
 function Talky(props: {
   isOpen: Accessor<boolean>;
+  verbose: boolean | undefined;
   close: () => void;
   renderIframe: (el: HTMLElement) => () => void;
 }) {
@@ -79,7 +85,10 @@ function Talky(props: {
     <div
       className={tw(
         props.isOpen() ? "flex flex-col" : "hidden",
-        "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:-mb-[60px] sm:h-[calc(60vh+60px)] sm:max-h-screen"
+        props.verbose
+          ? "sm:-mb-[30px] sm:h-[calc(60vh+30px)]"
+          : "sm:-mb-[60px] sm:h-[calc(60vh+60px)]",
+        "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
       )}
     >
       <Header close={props.close} />
