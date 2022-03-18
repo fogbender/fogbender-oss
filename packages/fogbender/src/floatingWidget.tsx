@@ -8,7 +8,7 @@ export function createFloatingWidget(
   { events }: { events: Events },
   openWindow: () => void,
   renderIframe: (el: HTMLElement) => () => void,
-  opts: { verbose?: boolean }
+  opts: { verbose?: boolean; openInNewTab?: boolean }
 ) {
   const container = document.createElement("div");
   container.attachShadow({ mode: "open" });
@@ -21,7 +21,7 @@ export function createFloatingWidget(
       <Container
         events={events}
         verbose={opts.verbose}
-        openWindow={openWindow}
+        openWindow={opts.openInNewTab ? openWindow : undefined}
         renderIframe={renderIframe}
       />
     ),
@@ -38,11 +38,14 @@ type Open = "open" | "closed" | "hidden";
 function Container(props: {
   events: Events;
   verbose?: boolean;
-  openWindow: () => void;
+  openWindow?: () => void;
   renderIframe: (el: HTMLElement) => () => void;
 }) {
   const [open, setIsOpen] = createSignal("closed" as Open);
   const isOpen = createMemo(() => open() === "open");
+  createMemo(() => {
+    console.log("open", open());
+  });
   const close = () => {
     setIsOpen("hidden");
   };
@@ -56,7 +59,11 @@ function Container(props: {
     >
       <button
         onClick={() => {
-          setIsOpen(x => (x === "open" ? "hidden" : "open"));
+          if (props.openWindow) {
+            props.openWindow();
+          } else {
+            setIsOpen(x => (x === "open" ? "hidden" : "open"));
+          }
         }}
         title="Customer support"
         className={tw("outline-none self-end overflow-hidden", isOpen() && "hidden sm:block")}

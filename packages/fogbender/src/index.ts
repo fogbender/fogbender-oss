@@ -70,7 +70,7 @@ export const createNewFogbender = (): Fogbender => {
       };
       return snapshot;
     },
-    async createFloatingWidget(opts: { verbose?: boolean } = {}) {
+    async createFloatingWidget(opts = {}) {
       if (!state.url) {
         throw new Error("Fogbender: no url given");
       }

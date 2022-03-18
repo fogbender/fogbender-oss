@@ -62,15 +62,24 @@ const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headles
   });
 };
 
-export const FogbenderFloatingWidget: React.FC<{ verbose?: boolean }> = ({ verbose }) => {
-  useCreateFloatingWidget({ verbose });
+export const FogbenderFloatingWidget: React.FC<{ verbose?: boolean; openInNewTab?: boolean }> = ({
+  verbose,
+  openInNewTab,
+}) => {
+  useCreateFloatingWidget({ verbose, openInNewTab });
   return null;
 };
 
-const useCreateFloatingWidget = ({ verbose }: { verbose?: boolean }) => {
+const useCreateFloatingWidget = ({
+  verbose,
+  openInNewTab,
+}: {
+  verbose?: boolean;
+  openInNewTab?: boolean;
+}) => {
   const fogbender = useFogbender();
   useRenderComponent(() => {
-    return fogbender.createFloatingWidget({ verbose });
+    return fogbender.createFloatingWidget({ verbose, openInNewTab });
   });
 };
 

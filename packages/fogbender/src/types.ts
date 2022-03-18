@@ -40,7 +40,7 @@ export interface Fogbender {
     disableFit?: boolean;
     onBadges?: (badges: Badge[]) => void;
   }): Promise<() => void>;
-  createFloatingWidget(opts?: { verbose?: boolean }): Promise<() => void>;
+  createFloatingWidget(opts?: { verbose?: boolean; openInNewTab?: boolean }): Promise<() => void>;
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
