@@ -21,7 +21,7 @@ export function createFloatingWidget(
       <Container
         events={events}
         verbose={opts.verbose}
-        openWindow={opts.openInNewTab ? openWindow : undefined}
+        openWindow={opts.openInNewTab ?? true ? openWindow : undefined}
         renderIframe={renderIframe}
       />
     ),
