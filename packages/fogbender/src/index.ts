@@ -2,14 +2,15 @@ import { checkToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
-export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
+import type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
+export type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot };
 export { checkToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";
   const state = {
     versions: {} as { [key: string]: string },
+    env: undefined as Env | undefined,
     token: undefined as Token | undefined,
     url: defaultUrl as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
@@ -34,6 +35,10 @@ export const createNewFogbender = (): Fogbender => {
     _privateData: state,
     async setVersion(tag, version) {
       state.versions[tag] = version;
+      return fogbender;
+    },
+    async setEnv(env) {
+      state.env = env;
       return fogbender;
     },
     async setClientUrl(_url) {
@@ -84,7 +89,7 @@ export const createNewFogbender = (): Fogbender => {
       }
       const cleanup = renderIframe(
         state,
-        { ...opts, token: state.token, url: state.url },
+        { ...opts, env: state.env, token: state.token, url: state.url },
         openWindow
       );
       return cleanup;

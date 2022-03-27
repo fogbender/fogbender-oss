@@ -1,11 +1,12 @@
 import React from "react";
-import { Badge, Token, createNewFogbender, Fogbender } from "fogbender";
+import { Badge, Env, Token, createNewFogbender, Fogbender } from "fogbender";
 import { FogbenderProvider, useFogbender, FogbenderProviderProps } from "./FogbenderProvider";
 import { FogbenderIsConfigured } from "./FogbenderIsConfigured";
 import { noopCleanup, useRenderComponent } from "./utils";
 
 export {
   Badge,
+  Env,
   Token,
   createNewFogbender,
   Fogbender,
@@ -17,12 +18,14 @@ export {
 
 export const FogbenderSimpleWidget: React.FC<{
   clientUrl?: string;
+  env?: Env;
   token: Token;
-}> = ({ clientUrl, token }) => {
+}> = ({ clientUrl, env, token }) => {
   const [fogbender, setFogbender] = React.useState(undefined as Fogbender | undefined);
   React.useEffect(() => {
     const fb = createNewFogbender();
     fb.setClientUrl(clientUrl);
+    fb.setEnv(env);
     fb.setToken(addVersion(token));
     setFogbender(fb);
   }, []);
