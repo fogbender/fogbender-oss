@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
-import { Badge, Token } from ".";
+import { Badge, Env, Token } from ".";
 
 type FogbenderEventMap = {
   "configured": boolean;
@@ -43,12 +43,14 @@ export function renderIframe(
   { events }: { events: Events },
   {
     rootEl,
+    env,
     url,
     token,
     headless,
     disableFit,
   }: {
     rootEl: HTMLElement;
+    env: Env | undefined;
     url: string;
     token: Token;
     headless?: boolean;
@@ -75,7 +77,7 @@ export function renderIframe(
       return;
     }
     if (e.data?.type === "APP_IS_READY") {
-      iFrame.contentWindow?.postMessage({ initToken: token, headless }, url);
+      iFrame.contentWindow?.postMessage({ env, initToken: token, headless }, url);
       iFrame.contentWindow?.postMessage(
         { notificationsPermission: window.Notification?.permission },
         url

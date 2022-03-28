@@ -1,11 +1,12 @@
-import type { Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
-export type { Token, Badge, Fogbender, FogbenderLoader, Snapshot };
+import type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
+export type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot };
 
 export { checkToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const state = {
     versions: {} as { [key: string]: string },
+    env: undefined as Env | undefined,
     token: undefined as Token | undefined,
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
@@ -15,6 +16,10 @@ export const createNewFogbender = (): Fogbender => {
     _privateData: state,
     async setVersion(tag, version) {
       state.versions[tag] = version;
+      return fogbender;
+    },
+    async setEnv(env) {
+      state.env = env;
       return fogbender;
     },
     async setClientUrl(_url: string) {

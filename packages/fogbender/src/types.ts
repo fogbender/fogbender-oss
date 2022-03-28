@@ -14,6 +14,8 @@ export type Token = {
   versions?: { [key: string]: string };
 };
 
+export type Env = "prod" | "staging" | "dev";
+
 export type Badge = {
   count: number;
   mentionsCount: number;
@@ -28,6 +30,7 @@ export type Snapshot<T> = {
 
 export interface Fogbender {
   setVersion(tag: string, version: string): Promise<Fogbender>;
+  setEnv(env: Env | undefined): Promise<Fogbender>;
   setClientUrl(url: string | undefined): Promise<Fogbender>;
   setToken(token: Token | undefined): Promise<Fogbender>;
   isClientConfigured(): Promise<Snapshot<boolean>>;
