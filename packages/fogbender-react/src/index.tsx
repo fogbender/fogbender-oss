@@ -93,13 +93,20 @@ const useRenderUnreadBadge = (divRef: React.RefObject<HTMLDivElement | null>) =>
 
 export const FogbenderConfig: React.FC<{
   clientUrl?: string;
+  env?: Env;
   token: Token | undefined;
-}> = ({ clientUrl, token }) => {
+}> = ({ clientUrl, env, token }) => {
   const fogbender = useFogbender();
   React.useEffect(() => {
     fogbender.setClientUrl(clientUrl);
     return () => {
       fogbender.setClientUrl(undefined);
+    };
+  }, [clientUrl]);
+  React.useEffect(() => {
+    fogbender.setEnv(env);
+    return () => {
+      fogbender.setEnv(undefined);
     };
   }, [clientUrl]);
   React.useEffect(() => {
