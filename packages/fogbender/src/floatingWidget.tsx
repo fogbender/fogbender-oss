@@ -43,9 +43,6 @@ function Container(props: {
 }) {
   const [open, setIsOpen] = createSignal("closed" as Open);
   const isOpen = createMemo(() => open() === "open");
-  createMemo(() => {
-    console.log("open", open());
-  });
   const close = () => {
     setIsOpen("hidden");
   };
