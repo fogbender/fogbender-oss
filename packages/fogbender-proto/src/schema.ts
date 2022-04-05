@@ -651,7 +651,7 @@ export type RoomMember = {
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
-export const KnownIntegrations = ["gitlab", "github", "asana", "linear"];
+export const KnownIntegrations = ["gitlab", "github", "asana", "jira", "linear"];
 export type KnownIntegration = typeof KnownIntegrations[number];
 
 export type Tag = {
