@@ -8,7 +8,9 @@ const config = {
     serverApiUrl: "https://api.fogbender-test.com/api",
   },
   dev: {
-    serverApiUrl: process.env.REACT_APP_SERVER_API_URL || "http://localhost:8000/api",
+    serverApiUrl: process.env.REACT_APP_API_SERVER_URL
+      ? process.env.REACT_APP_API_SERVER_URL + "/api"
+      : "http://localhost:8000/api",
   },
 };
 
