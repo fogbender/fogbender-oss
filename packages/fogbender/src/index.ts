@@ -70,14 +70,20 @@ export const createNewFogbender = (): Fogbender => {
       };
       return snapshot;
     },
-    async createFloatingWidget(opts: { verbose?: boolean } = {}) {
+    async createFloatingWidget(opts = {}) {
       if (!state.url) {
         throw new Error("Fogbender: no url given");
       }
       if (!state.token) {
         throw new Error("Fogbender: no token given");
       }
-      const cleanup = createFloatingWidget(state, openWindow, opts);
+      const { token, url, env } = state;
+      const cleanup = createFloatingWidget(
+        state,
+        openWindow,
+        el => renderIframe(state, { rootEl: el, env, token, url, disableFit: true }, openWindow),
+        opts
+      );
       return cleanup;
     },
     async renderIframe(opts) {
