@@ -63,7 +63,10 @@ function Container(props: {
           }
         }}
         title="Customer support"
-        className={tw("outline-none self-end overflow-hidden", isOpen() && "hidden sm:block")}
+        className={tw(
+          "focus:outline-none outline-none self-end overflow-hidden",
+          isOpen() && "hidden sm:block"
+        )}
       >
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
