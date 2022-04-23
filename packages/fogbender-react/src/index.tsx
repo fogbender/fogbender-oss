@@ -130,7 +130,7 @@ export const FogbenderConfig: React.FC<{
 function addVersion(token: Token | undefined) {
   if (token) {
     token.versions = token.versions || {};
-    token.versions["fogbender-react"] = "0.1.3";
+    token.versions["fogbender-react"] = "0.1.4";
   }
   return token;
 }
