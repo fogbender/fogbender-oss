@@ -15,7 +15,7 @@ import {
 } from "../schema";
 
 import { eventRoomToRoom, Room } from "./sharedRoster";
-import { useWs } from "./ws";
+import { Author, useWs } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { extractEventTag } from "../utils/castTypes";
@@ -24,6 +24,29 @@ export type { Room } from "./sharedRoster";
 
 function useImmer<T>(initialValue: T) {
   return useImmerAtom(React.useRef(atom(initialValue)).current);
+}
+
+export function useAuthorEmail(author: Author) {
+  const { serverCall } = useWs();
+  const [email, setEmail] = React.useState<string>();
+  React.useEffect(() => {
+    if (email === undefined) {
+      serverCall({
+        msgType: "Search.AuthorEmail",
+        authorId: author.id,
+        type: author.type,
+        workspaceId: "",
+      }).then(x => {
+        if (x.msgType !== "Search.Ok") {
+          console.error(x);
+          return;
+        }
+        setEmail(x.items[0].email);
+      });
+    }
+  }, [author, email, serverCall]);
+
+  return email;
 }
 
 export const useRoster = ({
