@@ -11,6 +11,7 @@ import {
   MessageSeen,
   MessageUnseen,
   MentionIn,
+  Reaction,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -42,6 +43,7 @@ export type Message = {
   parsed: string;
   rawText: string;
   mentions?: MentionIn[];
+  reactions?: Reaction[];
   files: File[];
   roomId: string;
   isPinned?: boolean;
@@ -72,6 +74,7 @@ const convertEventMessageToMessage = (message: EventMessage): Message => ({
   parsed: message.text,
   rawText: message.rawText,
   mentions: message.mentions,
+  reactions: message.reactions,
   files: message.files,
   roomId: message.roomId,
   linkRoomId: message.linkRoomId,
