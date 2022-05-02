@@ -83,6 +83,7 @@ export type APISchema = {
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
+  SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchAuthorEmailOk<EventAuthorEmail>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -392,6 +393,20 @@ export type SearchOk<Item> = {
   items: Item[];
 };
 
+export type SearchAuthorEmail = {
+  msgId?: string;
+  msgType: "Search.AuthorEmail";
+  workspaceId: string;
+  type: "agent" | "user";
+  authorId: string;
+};
+
+export type SearchAuthorEmailOk<Item> = {
+  msgId: string;
+  msgType: "Search.Ok";
+  items: Item[];
+};
+
 export type AuthUser = {
   msgId?: string;
   msgType: "Auth.User";
@@ -591,6 +606,10 @@ export type EventIssue = {
   state: string;
   meta_tag: string;
   labels?: IssueLabel[];
+};
+
+export type EventAuthorEmail = {
+  email: string;
 };
 
 // END events
