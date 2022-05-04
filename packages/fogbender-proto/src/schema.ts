@@ -83,7 +83,7 @@ export type APISchema = {
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
-  SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchAuthorEmailOk<EventAuthorEmail>>;
+  SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -399,12 +399,6 @@ export type SearchAuthorEmail = {
   workspaceId: string;
   type: "agent" | "user";
   authorId: string;
-};
-
-export type SearchAuthorEmailOk<Item> = {
-  msgId: string;
-  msgType: "Search.Ok";
-  items: Item[];
 };
 
 export type AuthUser = {
