@@ -21,6 +21,7 @@ import {
 } from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { useServerWs } from "../useServerWs";
+import { useRoomResolver } from "./useRoomResolver";
 
 export type Room = EventRoom & {
   orderWeight?: string;
@@ -73,6 +74,7 @@ export const useSharedRoster = ({
   const [customers, setCustomers] = React.useState<EventCustomer[]>([]);
   const [customersLoaded, setCustomersLoaded] = React.useState(false);
   const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
+  const { onRoomRef, dispatch } = useRoomResolver(fogSessionId, serverCall);
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token or workspace is changed
@@ -86,9 +88,17 @@ export const useSharedRoster = ({
     setCustomers([]);
     setCustomersLoaded(false);
     setOldestCustomerTs(Infinity);
+    dispatch("token_change");
   }, [token, workspaceId, fogSessionId]);
 
-  const roomById = React.useCallback((id: string) => rawRoster.find(r => r.id === id), [rawRoster]);
+  const roomById = React.useCallback(
+    (id: string) => {
+      const room = rawRoster.find(r => r.id === id);
+      dispatch({ type: "roomById", roomId: id, room });
+      return room;
+    },
+    [rawRoster]
+  );
   const roomByName = React.useCallback(
     (name: string) => rawRoster.find(r => r.name === name),
     [rawRoster]
@@ -96,6 +106,9 @@ export const useSharedRoster = ({
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
+      if (b.count) {
+        roomById(b.roomId);
+      }
       setBadges(x => {
         x[b.roomId] = b;
       });
@@ -167,6 +180,8 @@ export const useSharedRoster = ({
     },
     [userId]
   );
+
+  onRoomRef.current = updateRoster;
 
   const updateUserAvatarUrlInRoster = React.useCallback((e: EventUser) => {
     setRawRoster(roster => {
