@@ -67,6 +67,10 @@ const createTwind = () => {
         minHeight: {
           "1rem": "1rem",
         },
+        fill: {
+          "white": "#FFF",
+          "blue-500": "#3B82F6",
+        },
       },
     },
   });
