@@ -51,10 +51,7 @@ export function useRoomResolver(fogSessionId: string | undefined, serverCall: Se
   );
   React.useEffect(() => {
     sideEffects.forEach(sideEffect => sideEffect());
-    setSideEffects(x => {
-      x.clear();
-      return x;
-    });
+    sideEffects.clear();
   }, [sideEffects]);
   return { onRoomRef, resolveById, dispatch };
 }
