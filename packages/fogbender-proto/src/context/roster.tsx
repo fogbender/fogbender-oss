@@ -10,6 +10,7 @@ import {
   RoomCreate,
   RoomUpdate,
   RoomArchive,
+  RoomUnarchive,
   UserUpdate,
   SearchRoster,
 } from "../schema";
@@ -128,6 +129,18 @@ export const useRoster = ({
     (params: Pick<RoomArchive, "roomId">) =>
       serverCall<RoomArchive>({
         msgType: "Room.Archive",
+        roomId: params.roomId,
+      }).then(x => {
+        console.assert(x.msgType === "Room.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
+  const unarchiveRoom = React.useCallback(
+    (params: Pick<RoomUnarchive, "roomId">) =>
+      serverCall<RoomUnarchive>({
+        msgType: "Room.Unarchive",
         roomId: params.roomId,
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
@@ -300,6 +313,7 @@ export const useRoster = ({
     createRoom,
     updateRoom,
     archiveRoom,
+    unarchiveRoom,
     updateUser,
     createIssue,
     forwardToIssue,
