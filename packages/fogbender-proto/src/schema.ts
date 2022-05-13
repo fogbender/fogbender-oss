@@ -47,6 +47,7 @@ export type APISchema = {
   CreateRoomRPC: RPC<RoomCreate, RoomOk>;
   UpdateRoomRPC: RPC<RoomUpdate, RoomOk>;
   ArchiveRoomRPC: RPC<RoomArchive, RoomOk>;
+  UnarchiveRoomRPC: RPC<RoomUnarchive, RoomOk>;
   UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
@@ -153,6 +154,12 @@ export type RoomUpdate = {
 export type RoomArchive = {
   msgId?: string;
   msgType: "Room.Archive";
+  roomId: string;
+};
+
+export type RoomUnarchive = {
+  msgId?: string;
+  msgType: "Room.Unarchive";
   roomId: string;
 };
 
