@@ -20,7 +20,7 @@ export function useRoomResolver(fogSessionId: string | undefined, serverCall: Se
         if (room) {
           // room was resolved somehow
           has && resolveById.current.delete(roomId);
-        } else if (!has && fogSessionId) {
+        } else if (!has) {
           // room is not resolved yet, and we have a connection
           resolveById.current.add(roomId);
           queueMicrotask(() => {
@@ -50,8 +50,10 @@ export function useRoomResolver(fogSessionId: string | undefined, serverCall: Se
     [fogSessionId]
   );
   React.useEffect(() => {
-    sideEffects.forEach(sideEffect => sideEffect());
-    sideEffects.clear();
-  }, [sideEffects]);
+    if (fogSessionId) {
+      sideEffects.forEach(sideEffect => sideEffect());
+      sideEffects.clear();
+    }
+  }, [sideEffects, fogSessionId]);
   return { onRoomRef, resolveById, dispatch };
 }
