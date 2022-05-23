@@ -76,6 +76,7 @@ export type APISchema = {
   FileRPC: RPC<FileUpload, FileOk>;
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
   MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
+  MessageSetReactionRPC: RPC<MessageSetReaction, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -294,6 +295,14 @@ export type MentionIn = {
   type: "Agent" | "User";
 };
 
+export type Reaction = {
+  fromid: string;
+  fromName: string;
+  fromType: "User" | "Agent";
+  updatedTs: number;
+  reaction: string;
+};
+
 export type MessageCreate = {
   msgId?: string;
   msgType: "Message.Create";
@@ -352,6 +361,13 @@ export type MessageUnseen = {
   msgId?: string;
   msgType: "Message.Unseen";
   roomId: string;
+};
+
+export type MessageSetReaction = {
+  msgId?: string;
+  msgType: "Message.SetReaction";
+  messageId: string;
+  reaction: string | null;
 };
 
 export type MessageOk = {
@@ -480,6 +496,7 @@ export type EventMessage = {
   text: string;
   rawText: string;
   mentions?: MentionIn[];
+  reactions?: Reaction[];
   files: File[];
   updatedTs: number;
   createdTs: number;
