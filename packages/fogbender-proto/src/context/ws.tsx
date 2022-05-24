@@ -404,6 +404,7 @@ export const useRoomHistory = ({
       msgType: "Stream.Get",
       topic: `room/${roomId}/messages`,
       since: latestLoadedMessageTs,
+      limit: 30,
     })
       .then(rejectIfUnmounted)
       .then(async x => {
@@ -437,6 +438,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         before: ts,
+        limit: 30,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -464,6 +466,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         since: ts,
+        limit: 30,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
@@ -490,6 +493,7 @@ export const useRoomHistory = ({
         msgType: "Stream.Get",
         topic: `room/${roomId}/messages`,
         aroundId,
+        limit: 30,
       })
         .then(rejectIfUnmounted)
         .then(async x => {
