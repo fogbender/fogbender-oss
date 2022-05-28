@@ -258,6 +258,7 @@ export const useSharedRoster = ({
         msgType: "Stream.Get",
         topic,
         before: oldestRoomTs,
+        limit: 30,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
