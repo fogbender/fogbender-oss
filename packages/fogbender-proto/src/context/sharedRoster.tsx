@@ -106,7 +106,9 @@ export const useSharedRoster = ({
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
-      if (b.count) {
+      // rooms that are higher in the roster will have unread counter or recent messages
+      if (b.count || b.lastRoomMessage?.createdTs) {
+        // TODO: once we have big enough roster we should probably load only rooms that have unread messages
         roomById(b.roomId);
       }
       setBadges(x => {
