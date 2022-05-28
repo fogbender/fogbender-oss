@@ -81,7 +81,7 @@ export function useServerWs(
       try {
         message = JSON.parse(lastMessage.data);
       } catch (e) {
-        onError("error", "other", new Error("Failed to parse incoming data"), e);
+        onError("error", "other", new Error("Failed to parse incoming data"), e as Error);
       }
       if (message) {
         if (!isServerEvent(message)) {
