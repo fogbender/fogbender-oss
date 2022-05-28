@@ -242,6 +242,8 @@ export const useSharedRoster = ({
       console.assert(x.msgType === "Stream.SubOk");
     });
   }, [fogSessionId, workspaceId, helpdeskId]);
+  const enoughRooms = React.useRef(false);
+  enoughRooms.current = rawRoster.length >= 90;
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -262,7 +264,8 @@ export const useSharedRoster = ({
           const items = extractEventRoom(x.items);
           updateRoster(items);
           setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
-          if (items.length === 0) {
+          const noMoreRooms = items.length === 0;
+          if (noMoreRooms || enoughRooms.current) {
             setRosterLoaded(true);
           }
         }
