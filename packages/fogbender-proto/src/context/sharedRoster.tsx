@@ -106,7 +106,9 @@ export const useSharedRoster = ({
 
   const updateBadge = React.useCallback(
     (b: EventBadge) => {
-      if (b.count) {
+      // rooms that are higher in the roster will have unread counter or recent messages
+      if (b.count || b.lastRoomMessage?.createdTs) {
+        // TODO: once we have big enough roster we should probably load only rooms that have unread messages
         roomById(b.roomId);
       }
       setBadges(x => {
@@ -240,6 +242,8 @@ export const useSharedRoster = ({
       console.assert(x.msgType === "Stream.SubOk");
     });
   }, [fogSessionId, workspaceId, helpdeskId]);
+  const enoughRooms = React.useRef(false);
+  enoughRooms.current = rawRoster.length >= 90;
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -254,13 +258,15 @@ export const useSharedRoster = ({
         msgType: "Stream.Get",
         topic,
         before: oldestRoomTs,
+        limit: 30,
       }).then(x => {
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
           const items = extractEventRoom(x.items);
           updateRoster(items);
           setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
-          if (items.length === 0) {
+          const noMoreRooms = items.length === 0;
+          if (noMoreRooms || enoughRooms.current) {
             setRosterLoaded(true);
           }
         }
