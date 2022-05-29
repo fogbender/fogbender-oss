@@ -621,7 +621,7 @@ export type IssueLabel = {
 export type EventIssue = {
   msgId?: string;
   msgType: "Event.Issue";
-  type: "gitlab";
+  type: KnownIntegration;
   title: string;
   integrationId: string;
   id: string;
@@ -695,7 +695,7 @@ export type RoomMember = {
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
-export const KnownIntegrations = ["gitlab", "github", "asana", "jira", "linear"];
+export const KnownIntegrations = ["gitlab", "github", "asana", "jira", "linear", "height"];
 export type KnownIntegration = typeof KnownIntegrations[number];
 
 export type Tag = {
