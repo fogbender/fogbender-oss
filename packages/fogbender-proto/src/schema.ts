@@ -599,8 +599,8 @@ export type EventRoom = {
   isTriage?: boolean;
   imageUrl: string; // search template
   email: string; // search template
-  agentId: string; // search template
-  userId: string; // search template
+  agentId: string | null; // search template
+  userId: string | null; // search template
   createdTs: number;
   updatedTs: number;
   vendorId: string;
