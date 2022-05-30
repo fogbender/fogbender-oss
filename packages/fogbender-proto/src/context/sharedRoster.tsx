@@ -34,13 +34,16 @@ export const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
     return counterpart ? { ...e, counterpart } : e;
   } else {
     const type: "agent" | "user" = e.agentId ? "agent" : "user";
-    const counterpart = {
-      id: e.agentId || e.userId,
-      type,
-      imageUrl: e.imageUrl,
-      name: e.name,
-      email: e.email,
-    };
+    const id = e.agentId || e.userId;
+    const counterpart = id
+      ? {
+          id,
+          type,
+          imageUrl: e.imageUrl,
+          name: e.name,
+          email: e.email,
+        }
+      : undefined;
 
     return { ...e, counterpart };
   }
