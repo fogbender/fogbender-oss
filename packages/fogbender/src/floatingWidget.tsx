@@ -49,6 +49,7 @@ function Container(props: {
   return (
     <div
       className={tw(
+        "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
         "fixed sm:top-auto sm:bottom-0 right-0 flex flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
       )}
@@ -63,7 +64,7 @@ function Container(props: {
           }
         }}
         title="Customer support"
-        className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden`}
+        className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto`}
       >
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
@@ -88,6 +89,7 @@ function Talky(props: {
   return (
     <div
       className={tw(
+        "pointer-events-auto",
         props.isOpen() ? "flex flex-col" : "hidden",
         props.verbose ? "sm:h-[calc(60vh+30px)]" : "-mb-[48px] sm:h-[calc(60vh+60px)]",
         "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
