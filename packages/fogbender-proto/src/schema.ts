@@ -195,6 +195,7 @@ export type Integration = {
   repository_name: string;
   inserted_at: string;
   meta_tag: string;
+  webhook_id?: string;
 };
 
 export type IntegrationCreateIssue = {
@@ -695,7 +696,15 @@ export type RoomMember = {
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
-export const KnownIntegrations = ["gitlab", "github", "asana", "jira", "linear", "height"];
+export const KnownIntegrations = [
+  "gitlab",
+  "github",
+  "asana",
+  "jira",
+  "linear",
+  "height",
+  "trello",
+];
 export type KnownIntegration = typeof KnownIntegrations[number];
 
 export type Tag = {
