@@ -565,7 +565,7 @@ export type EventAgent = {
   msgType: "Event.Agent";
   id: string;
   email: string;
-  role: "owner" | "admin" | "agent" | "app";
+  role: "owner" | "admin" | "agent" | "reader" | "app";
   imageUrl: string;
   createdTs: number;
   updatedTs: number;
