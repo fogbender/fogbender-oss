@@ -594,6 +594,7 @@ export type EventRoom = {
   msgType: "Event.Room";
   customerId: string;
   customerName: string;
+  customerDeletedTs?: string;
   helpdeskId: string;
   id: string;
   name: string;
@@ -668,6 +669,7 @@ export declare type File = {
 export type Customer = {
   id: string;
   name: string;
+  deletedTs?: string;
 };
 
 export type EventTag = {
