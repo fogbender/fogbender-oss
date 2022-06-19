@@ -40,6 +40,7 @@ export function useServerWs(
   suspendConnection?: boolean
 ) {
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
+  const [avatarLibraryUrl, setAvatarLibraryUrl] = React.useState<string>();
   const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
     ServerEvents["inbound"] | undefined
   >();
@@ -171,6 +172,7 @@ export function useServerWs(
               const { sessionId, userId, helpdeskId, userAvatarUrl } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
+              setAvatarLibraryUrl(r.avatarLibraryUrl);
               client.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
@@ -331,6 +333,7 @@ export function useServerWs(
     isAuthenticated: authenticated.current,
     isTokenWrong: wrongToken.current,
     isAgent: token && "agentId" in token,
+    avatarLibraryUrl: avatarLibraryUrl,
   };
 }
 
