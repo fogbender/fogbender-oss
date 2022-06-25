@@ -188,6 +188,11 @@ export type Integration = {
   id: string;
   workspace_id: string;
   type: string;
+  userInfo?: {
+    email: string;
+    pictureUrl: string;
+    username: string;
+  };
   base_url: string;
   project_url: string;
   project_id: string;
