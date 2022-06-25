@@ -453,6 +453,7 @@ export type AuthOk = {
   helpdeskId: string;
   helpdesk?: Helpdesk;
   userAvatarUrl?: string;
+  avatarLibraryUrl?: string;
 };
 
 export type EchoGet = {
