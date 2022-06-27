@@ -136,7 +136,15 @@ function useProviderValue(
     userId,
   });
   return {
-    ...ws,
+    serverCall: ws.serverCall,
+    lastIncomingMessage: ws.lastIncomingMessage,
+    respondToMessage: ws.respondToMessage,
+    helpdesk: ws.helpdesk,
+    isConnected: ws.isConnected,
+    isAuthenticated: ws.isAuthenticated,
+    isTokenWrong: ws.isTokenWrong,
+    isAgent: ws.isAgent,
+    avatarLibraryUrl: ws.avatarLibraryUrl,
     sharedRoster,
     token,
     fogSessionId,
