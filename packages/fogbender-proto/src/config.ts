@@ -43,7 +43,7 @@ export function getServerWsUrl(env?: Env, client?: Client) {
 export function getVersion(env?: Env) {
   const { REACT_APP_SHA, REACT_APP_BRANCH, REACT_APP_VERSION } = process.env;
   const version = REACT_APP_VERSION || "0.0.0";
-  const sha = (REACT_APP_SHA || "000000").substring(0, 6);
+  const sha = (REACT_APP_SHA || "00000000").substring(0, 8);
   const niceVersion = `${version}-${sha}`;
   const meta: string[] = [defaultEnv];
   if (env && defaultEnv !== env) {
