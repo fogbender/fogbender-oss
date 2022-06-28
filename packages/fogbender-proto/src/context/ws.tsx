@@ -42,6 +42,7 @@ export type Message = {
   updatedTs: number;
   parsed: string;
   rawText: string;
+  plainText?: string;
   mentions?: MentionIn[];
   reactions?: Reaction[];
   files: File[];
@@ -73,6 +74,7 @@ const convertEventMessageToMessage = (message: EventMessage): Message => ({
   updatedTs: message.updatedTs || Date.now() * 1000,
   parsed: message.text,
   rawText: message.rawText,
+  plainText: message.plainText,
   mentions: message.mentions,
   reactions: message.reactions,
   files: message.files,

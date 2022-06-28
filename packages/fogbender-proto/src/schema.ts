@@ -497,6 +497,7 @@ export type EventMessage = {
   id: string;
   text: string;
   rawText: string;
+  plainText?: string;
   mentions?: MentionIn[];
   reactions?: Reaction[];
   files: File[];
