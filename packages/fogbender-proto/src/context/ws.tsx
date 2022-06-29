@@ -155,6 +155,7 @@ function useProviderValue(
     workspaceId,
     userAvatarUrl,
     isIdle,
+    agentRole: ws.agentRole,
   };
 }
 
