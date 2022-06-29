@@ -532,6 +532,7 @@ export type EventNotificationMessage = {
   text: string;
   updatedTs: number;
   createdTs: number;
+  plainText: string;
 };
 
 export type EventBadge = {
