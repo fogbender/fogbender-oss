@@ -14,8 +14,7 @@ export function createFloatingWidget(
   container.attachShadow({ mode: "open" });
   const { attach } = getTwind();
   attach(container.shadowRoot);
-  const body = document.getElementsByTagName("body")[0];
-  body.appendChild(container);
+  document.body.appendChild(container);
   const cleanup = render(
     () => (
       <Container
