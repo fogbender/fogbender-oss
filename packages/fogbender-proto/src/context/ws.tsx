@@ -739,24 +739,24 @@ export const useRoomHistory = ({
   }, [roomId, clearLatestHistory, clearAroundHistory, serverCall]);
 
   return {
-    messages,
-    fetchOlderPage,
-    fetchingOlder,
-    olderHistoryComplete,
     fetchNewerPage,
+    fetchOlderPage,
     fetchingNewer,
-    newerHistoryComplete,
+    fetchingOlder,
     isAroundFetched,
     isAroundFetching,
-    resetHistoryToLastPage,
-    serverCall,
-    messagesByTarget,
-    onSeen,
-    onSeenBack,
-    onUnseen,
     messageCreate,
     messageCreateMany,
     messageUpdate,
+    messages,
+    messagesByTarget,
+    newerHistoryComplete,
+    olderHistoryComplete,
+    onSeen,
+    onSeenBack,
+    onUnseen,
+    resetHistoryToLastPage,
+    serverCall,
   };
 };
 

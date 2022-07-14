@@ -85,6 +85,7 @@ export type APISchema = {
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   SearchRoomRPC: RPC<SearchRoom, SearchOk<EventRoom>>;
+  SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage[]>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
   EventMessageEVT: RPC<undefined, EventMessage>;
@@ -430,6 +431,14 @@ export type SearchRoom = {
   msgId?: string;
   msgType: "Search.Room";
   roomId: string;
+};
+
+export type SearchRoomMessages = {
+  msgId?: string;
+  msgType: "Search.RoomMessages";
+  roomId: string;
+  term: string;
+  limit?: number;
 };
 
 export type AuthUser = {
