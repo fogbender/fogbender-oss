@@ -12,6 +12,7 @@ import {
   MessageUnseen,
   MentionIn,
   Reaction,
+  SearchRoomMessages,
   StreamGet,
   StreamSub,
 } from "../schema";
@@ -725,6 +726,19 @@ export const useRoomHistory = ({
     [roomId, serverCall]
   );
 
+  const searchHistory = React.useCallback(
+    async (args: SearchRoomMessages) =>
+      await serverCall(args)
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Search.Ok") {
+            throw x;
+          }
+        })
+        .catch(() => {}),
+    [roomId, serverCall]
+  );
+
   React.useEffect(() => {
     return () => {
       clearLatestHistory();
@@ -739,24 +753,25 @@ export const useRoomHistory = ({
   }, [roomId, clearLatestHistory, clearAroundHistory, serverCall]);
 
   return {
-    messages,
-    fetchOlderPage,
-    fetchingOlder,
-    olderHistoryComplete,
     fetchNewerPage,
+    fetchOlderPage,
     fetchingNewer,
-    newerHistoryComplete,
+    fetchingOlder,
     isAroundFetched,
     isAroundFetching,
-    resetHistoryToLastPage,
-    serverCall,
-    messagesByTarget,
-    onSeen,
-    onSeenBack,
-    onUnseen,
     messageCreate,
     messageCreateMany,
     messageUpdate,
+    messages,
+    messagesByTarget,
+    newerHistoryComplete,
+    olderHistoryComplete,
+    onSeen,
+    onSeenBack,
+    onUnseen,
+    resetHistoryToLastPage,
+    serverCall,
+    searchHistory,
   };
 };
 
