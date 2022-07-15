@@ -28,7 +28,7 @@ export function createFloatingWidget(
   );
   return () => {
     cleanup();
-    body.removeChild(container);
+    document.body.removeChild(container);
   };
 }
 
