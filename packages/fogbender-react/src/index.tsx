@@ -141,9 +141,9 @@ export const FogbenderSimpleFloatie: React.FC<{
   verbose?: boolean;
   openInNewTab?: boolean;
 }> = ({ token, clientUrl, openInNewTab, verbose }) => {
-  const fogbender = React.useRef(createNewFogbender());
+  const fogbender = React.useMemo(createNewFogbender, []);
   return (
-    <FogbenderProvider fogbender={fogbender.current}>
+    <FogbenderProvider fogbender={fogbender}>
       <FogbenderConfig clientUrl={clientUrl} token={token} />
       <FogbenderIsConfigured>
         <FogbenderFloatingWidget
