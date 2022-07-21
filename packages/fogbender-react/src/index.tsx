@@ -134,3 +134,24 @@ function addVersion(token: Token | undefined) {
   }
   return token;
 }
+
+export const FogbenderSimpleFloatie: React.FC<{
+  token: Token;
+  clientUrl?: string | undefined;
+  verbose?: boolean;
+  openInNewTab?: boolean;
+}> = ({ token, clientUrl, openInNewTab, verbose }) => {
+  const fogbender = React.useMemo(createNewFogbender, []);
+  return (
+    <FogbenderProvider fogbender={fogbender}>
+      <FogbenderConfig clientUrl={clientUrl} token={token} />
+      <FogbenderIsConfigured>
+        <FogbenderFloatingWidget
+          key={"" + verbose + ":" + openInNewTab}
+          verbose={verbose}
+          openInNewTab={openInNewTab}
+        />
+      </FogbenderIsConfigured>
+    </FogbenderProvider>
+  );
+};
