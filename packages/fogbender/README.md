@@ -1,6 +1,6 @@
 # fogbender
 
-> Made with create-react-library
+> https://fogbender.com/
 
 [![NPM](https://img.shields.io/npm/v/fogbender.svg)](https://www.npmjs.com/package/fogbender)
 

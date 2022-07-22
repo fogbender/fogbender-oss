@@ -1,6 +1,6 @@
 # fogbender-react
 
-> Made with create-react-library
+> https://fogbender.com/
 
 [![NPM](https://img.shields.io/npm/v/fogbender-react.svg)](https://www.npmjs.com/package/fogbender-react)
 
@@ -8,6 +8,7 @@
 
 ```bash
 npm install --save fogbender-react
+yarn add fogbender-react
 ```
 
 ## Usage
