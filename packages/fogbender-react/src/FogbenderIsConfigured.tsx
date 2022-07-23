@@ -2,7 +2,9 @@ import React from "react";
 import { Snapshot } from "fogbender";
 import { useFogbender } from "./FogbenderProvider";
 
-export const FogbenderIsConfigured: React.FC = ({ children }) => {
+export const FogbenderIsConfigured: React.FC<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
   const isConfigured = useIsConfigured();
   if (isConfigured) {
     return <>{children}</>;

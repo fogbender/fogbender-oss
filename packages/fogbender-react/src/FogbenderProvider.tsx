@@ -4,6 +4,7 @@ import { Fogbender } from ".";
 
 export interface FogbenderProviderProps {
   fogbender?: Fogbender;
+  children?: React.ReactNode;
 }
 
 const context = React.createContext<Fogbender | undefined>(undefined);
