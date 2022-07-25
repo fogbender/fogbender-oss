@@ -5,12 +5,11 @@ export const noopCleanup = () => {
 };
 
 export function useRenderComponent(componentRenderer: () => Promise<() => void>) {
-  const isMounted = React.useRef(false);
-  let cleanup: () => void = () => {};
   React.useEffect(() => {
-    isMounted.current = true;
+    let isMounted = true;
+    let cleanup = () => {};
     componentRenderer().then(componentCleanup => {
-      if (!isMounted.current) {
+      if (!isMounted) {
         // promise was resolved after component was unmounted, so there's no way to render
         componentCleanup();
       } else {
@@ -19,7 +18,7 @@ export function useRenderComponent(componentRenderer: () => Promise<() => void>)
       }
     });
     return () => {
-      isMounted.current = false;
+      isMounted = false;
       cleanup();
     };
   }, []);
