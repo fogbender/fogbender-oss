@@ -10,5 +10,5 @@ export function useRenderComponent(componentRenderer: () => Promise<() => void>)
     return () => {
       promise.then(cleanup => cleanup());
     };
-  }, []);
+  }, [componentRenderer]);
 }
