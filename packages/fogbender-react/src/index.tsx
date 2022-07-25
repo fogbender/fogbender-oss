@@ -53,13 +53,15 @@ export const FogbenderHeadlessWidget: React.FC = () => {
 
 const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headless: boolean) => {
   const fogbender = useFogbender();
-  useRenderComponent(() => {
-    if (divRef.current) {
-      return fogbender.renderIframe({ headless, rootEl: divRef.current });
-    } else {
-      return noopCleanup();
-    }
-  });
+  useRenderComponent(
+    React.useCallback(() => {
+      if (divRef.current) {
+        return fogbender.renderIframe({ headless, rootEl: divRef.current });
+      } else {
+        return noopCleanup();
+      }
+    }, [fogbender, headless])
+  );
 };
 
 export const FogbenderFloatingWidget: React.FC<{ verbose?: boolean; openInNewTab?: boolean }> = ({
@@ -78,9 +80,11 @@ const useCreateFloatingWidget = ({
   openInNewTab?: boolean;
 }) => {
   const fogbender = useFogbender();
-  useRenderComponent(() => {
-    return fogbender.createFloatingWidget({ verbose, openInNewTab });
-  });
+  useRenderComponent(
+    React.useCallback(() => {
+      return fogbender.createFloatingWidget({ verbose, openInNewTab });
+    }, [fogbender, verbose, openInNewTab])
+  );
 };
 
 export const FogbenderUnreadBadge: React.FC = React.memo(() => {
@@ -91,13 +95,15 @@ export const FogbenderUnreadBadge: React.FC = React.memo(() => {
 
 const useRenderUnreadBadge = (divRef: React.RefObject<HTMLDivElement | null>) => {
   const fogbender = useFogbender();
-  useRenderComponent(() => {
-    if (divRef.current) {
-      return fogbender.renderUnreadBadge({ el: divRef.current });
-    } else {
-      return noopCleanup();
-    }
-  });
+  useRenderComponent(
+    React.useCallback(() => {
+      if (divRef.current) {
+        return fogbender.renderUnreadBadge({ el: divRef.current });
+      } else {
+        return noopCleanup();
+      }
+    }, [fogbender])
+  );
 };
 
 export const FogbenderConfig: React.FC<{
@@ -130,7 +136,7 @@ export const FogbenderConfig: React.FC<{
 function addVersion(token: Token | undefined) {
   if (token) {
     token.versions = token.versions || {};
-    token.versions["fogbender-react"] = "0.2.1";
+    token.versions["fogbender-react"] = "0.2.2";
   }
   return token;
 }

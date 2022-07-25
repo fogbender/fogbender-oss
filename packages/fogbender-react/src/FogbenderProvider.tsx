@@ -23,6 +23,7 @@ export const useFogbender = () => {
 
 export const FogbenderProvider: React.FC<FogbenderProviderProps> = ({ fogbender, children }) => {
   const defaultFogbender = React.useRef<Fogbender | undefined>();
-  const value = fogbender || (defaultFogbender.current = createNewFogbender());
+  const value =
+    fogbender || defaultFogbender.current || (defaultFogbender.current = createNewFogbender());
   return <context.Provider value={value}>{children}</context.Provider>;
 };
