@@ -6,20 +6,9 @@ export const noopCleanup = () => {
 
 export function useRenderComponent(componentRenderer: () => Promise<() => void>) {
   React.useEffect(() => {
-    let isMounted = true;
-    let cleanup = () => {};
-    componentRenderer().then(componentCleanup => {
-      if (!isMounted) {
-        // promise was resolved after component was unmounted, so there's no way to render
-        componentCleanup();
-      } else {
-        // default case: use component cleanup function when component is unmounted
-        cleanup = componentCleanup;
-      }
-    });
+    const promise = componentRenderer();
     return () => {
-      isMounted = false;
-      cleanup();
+      promise.then(cleanup => cleanup());
     };
   }, []);
 }
