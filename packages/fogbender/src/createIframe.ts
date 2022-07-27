@@ -100,7 +100,9 @@ export function renderIframe(
           } else if (badge.count) {
             isMentionOrDialog = badge.roomType === "dialog";
           }
-          count += badge.count;
+          if (badge.count) {
+            count++;
+          }
           // stop once first mention or dialog is found
           return isMentionOrDialog;
         });
