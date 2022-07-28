@@ -14,6 +14,9 @@ import {
   Reaction,
   StreamGet,
   StreamSub,
+  TagCreate,
+  TagUpdate,
+  TagDelete,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -177,6 +180,61 @@ export function useWs() {
     throw new Error(`useWs must be used within a WsProvider`);
   }
   return context;
+}
+
+export function useWsCalls() {
+  const { workspaceId, serverCall } = useWs();
+
+  const createTag = React.useCallback(
+    (tag: string) => {
+      if (!workspaceId) {
+        return;
+      }
+      serverCall<TagCreate>({
+        msgType: "Tag.Create",
+        workspaceId,
+        tag,
+      }).then(async x => {
+        console.assert(x.msgType === "Tag.Ok");
+      });
+    },
+    [workspaceId, serverCall]
+  );
+
+  const updateTag = React.useCallback(
+    (tag: string, newTag: string) => {
+      if (!workspaceId) {
+        return;
+      }
+      serverCall<TagUpdate>({
+        msgType: "Tag.Update",
+        workspaceId,
+        tag,
+        newTag,
+      }).then(async x => {
+        console.assert(x.msgType === "Tag.Ok");
+      });
+    },
+    [workspaceId, serverCall]
+  );
+
+  const deleteTag = React.useCallback(
+    (tag: string) => {
+      if (!workspaceId) {
+        return;
+      }
+      serverCall<TagDelete>({
+        msgType: "Tag.Delete",
+        workspaceId,
+        tag,
+      }).then(async x => {
+        console.assert(x.msgType === "Tag.Ok");
+      });
+    },
+    [workspaceId, serverCall]
+  );
+
+  return { createTag, updateTag, deleteTag };
 }
 
 export const nameMatchesFilter = (name: string, filter: string) =>

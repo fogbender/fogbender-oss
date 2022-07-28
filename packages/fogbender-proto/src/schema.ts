@@ -88,6 +88,9 @@ export type APISchema = {
   SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage[]>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
+  TagCreate: RPC<TagCreate, TagOk>;
+  TagUpdate: RPC<TagUpdate, TagOk>;
+  TagDelete: RPC<TagDelete, TagOk>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -444,6 +447,33 @@ export type SearchRoomMessages = {
   roomId: string;
   term: string;
   limit?: number;
+};
+
+export type TagOk = {
+  msgId: string;
+  msgType: "Tag.Ok";
+};
+
+export type TagCreate = {
+  msgId?: string;
+  msgType: "Tag.Create";
+  workspaceId: string;
+  tag: string;
+};
+
+export type TagUpdate = {
+  msgId?: string;
+  msgType: "Tag.Update";
+  workspaceId: string;
+  tag: string;
+  newTag: string;
+};
+
+export type TagDelete = {
+  msgId?: string;
+  msgType: "Tag.Delete";
+  workspaceId: string;
+  tag: string;
 };
 
 export type AuthUser = {
