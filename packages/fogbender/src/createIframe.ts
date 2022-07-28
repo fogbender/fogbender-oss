@@ -130,7 +130,6 @@ export function renderIframe(
     }
   });
 
-  rootEl.innerHTML = "";
   rootEl.append(iFrame);
 
   function adaptIFrame() {
@@ -150,6 +149,6 @@ export function renderIframe(
   window.addEventListener("resize", adaptIFrame);
   return () => {
     iFrame.src = "about:blank";
-    rootEl.innerHTML = "";
+    rootEl.removeChild(iFrame);
   };
 }
