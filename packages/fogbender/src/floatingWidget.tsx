@@ -8,7 +8,7 @@ export function createFloatingWidget(
   { events }: { events: Events },
   openWindow: () => void,
   renderIframe: (el: HTMLElement) => () => void,
-  opts: { verbose?: boolean; openInNewTab?: boolean }
+  opts: { verbose?: boolean; openInNewTab?: boolean; closeable?: boolean }
 ) {
   const container = document.createElement("div");
   container.attachShadow({ mode: "open" });
@@ -22,6 +22,7 @@ export function createFloatingWidget(
         verbose={opts.verbose}
         openWindow={opts.openInNewTab ? openWindow : undefined}
         renderIframe={renderIframe}
+        closeable={opts.closeable}
       />
     ),
     container.shadowRoot!
@@ -39,6 +40,7 @@ function Container(props: {
   verbose?: boolean;
   openWindow?: () => void;
   renderIframe: (el: HTMLElement) => () => void;
+  closeable?: boolean;
 }) {
   const [open, setIsOpen] = createSignal("closed" as Open);
   const isOpen = createMemo(() => open() === "open");
