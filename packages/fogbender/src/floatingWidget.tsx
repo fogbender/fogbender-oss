@@ -91,7 +91,7 @@ function Container(props: {
           renderIframe={props.renderIframe}
         />
       )}
-      {props.closeable && !isOpen() && (
+      {props.closeable && !props.verbose && !isOpen() && (
         <div
           className={tw("bottom-[23px] right-4 sm:right-8 fixed top-auto") + " " + showOnHover()}
         >
