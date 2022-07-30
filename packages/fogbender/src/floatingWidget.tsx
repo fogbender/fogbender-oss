@@ -52,11 +52,13 @@ function Container(props: {
   const showOnHover = () =>
     tw(
       css({
-        "&": {
-          display: "none",
-        },
-        "*:hover &": {
-          display: "block",
+        "@media (hover: hover)": {
+          "&": {
+            display: "none",
+          },
+          "*:hover &": {
+            display: "block",
+          },
         },
       })
     );
