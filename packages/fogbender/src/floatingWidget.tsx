@@ -1,5 +1,6 @@
 import { render } from "solid-js/web";
 import { Accessor, createMemo, createSignal } from "solid-js";
+import { css } from "twind/css";
 import { tw } from "twind";
 import { Events } from "./createIframe";
 import { getTwind } from "./twind";
@@ -48,6 +49,17 @@ function Container(props: {
     setIsOpen("hidden");
   };
   const [closed, setClosed] = createSignal(false);
+  const showOnHover = () =>
+    tw(
+      css({
+        "&": {
+          display: "none",
+        },
+        "*:hover &": {
+          display: "block",
+        },
+      })
+    );
   return (
     <div
       className={tw(
@@ -79,9 +91,9 @@ function Container(props: {
           renderIframe={props.renderIframe}
         />
       )}
-      {props.closeable && (
+      {props.closeable && !isOpen() && (
         <div
-          className={tw("bottom-[23px] right-4 sm:right-8", isOpen() ? "hidden" : "fixed top-auto")}
+          className={tw("bottom-[23px] right-4 sm:right-8 fixed top-auto") + " " + showOnHover()}
         >
           <button
             onClick={() => setClosed(true)}
