@@ -47,12 +47,14 @@ function Container(props: {
   const close = () => {
     setIsOpen("hidden");
   };
+  const [closed, setClosed] = createSignal(false);
   return (
     <div
       className={tw(
+        closed() ? "hidden" : "flex",
         "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
-        "fixed sm:top-auto sm:bottom-0 right-0 flex flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
+        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
       )}
       style="z-index: 9999;"
     >
@@ -76,6 +78,18 @@ function Container(props: {
           verbose={props.verbose}
           renderIframe={props.renderIframe}
         />
+      )}
+      {props.closeable && (
+        <div
+          className={tw("bottom-[23px] right-4 sm:right-8", isOpen() ? "hidden" : "fixed top-auto")}
+        >
+          <button
+            onClick={() => setClosed(true)}
+            className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto`}
+          >
+            <FloatingCloseButton />
+          </button>
+        </div>
       )}
     </div>
   );
@@ -304,6 +318,23 @@ function FloatingSvgOpened() {
           <feBlend in="SourceGraphic" in2="effect1_dropShadow_3861_7231" result="shape" />
         </filter>
       </defs>
+    </svg>
+  );
+}
+
+function FloatingCloseButton() {
+  return (
+    <svg width="52" height="52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#a)">
+        <rect x="10" y="7" width="32" height="32" rx="16" fill="#fff" />
+        <path
+          d="m21.3 18.3 9.4 9.4m-9.4 0 9.4-9.4"
+          stroke="#000"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
     </svg>
   );
 }
