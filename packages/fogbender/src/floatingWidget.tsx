@@ -54,10 +54,14 @@ function Container(props: {
       css({
         "@media (hover: hover)": {
           "&": {
-            display: "none",
+            opacity: 0,
+            pointerEvents: "none",
+            transitionProperty: "none",
           },
           "*:hover &": {
-            display: "block",
+            opacity: 1,
+            pointerEvents: "auto",
+            transitionProperty: "opacity",
           },
         },
       })
@@ -95,11 +99,15 @@ function Container(props: {
       )}
       {props.closeable && !props.verbose && !isOpen() && (
         <div
-          className={tw("bottom-[23px] right-4 sm:right-8 fixed top-auto") + " " + showOnHover()}
+          className={
+            tw("bottom-[23px] right-4 sm:right-8 fixed top-auto transition duration-700") +
+            " " +
+            showOnHover()
+          }
         >
           <button
             onClick={() => setClosed(true)}
-            className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto`}
+            className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto text-black hover:text-red-500`}
           >
             <FloatingCloseButton />
           </button>
@@ -343,7 +351,7 @@ function FloatingCloseButton() {
         <rect x="10" y="7" width="32" height="32" rx="16" fill="#fff" />
         <path
           d="m21.3 18.3 9.4 9.4m-9.4 0 9.4-9.4"
-          stroke="#000"
+          stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
