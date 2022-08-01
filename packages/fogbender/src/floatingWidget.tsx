@@ -72,7 +72,8 @@ function Container(props: {
         closed() ? "hidden" : "flex",
         "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
-        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
+        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse w-full sm:h-auto sm:w-auto items-center",
+        props.verbose && "sm:mr-4 mb-4"
       )}
       style="z-index: 9999;"
     >
@@ -100,14 +101,17 @@ function Container(props: {
       {props.closeable && !props.verbose && !isOpen() && (
         <div
           className={
-            tw("bottom-[23px] right-4 sm:right-8 fixed top-auto transition duration-700") +
+            tw(
+              "absolute bottom-[28px] right-[24px] top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700"
+            ) +
             " " +
             showOnHover()
           }
+          style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
         >
           <button
             onClick={() => setClosed(true)}
-            className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto text-black hover:text-red-500`}
+            className={tw`w-4 h-4 active:outline-none focus:outline-none outline-none overflow-hidden pointer-events-auto text-black hover:text-red-500`}
           >
             <FloatingCloseButton />
           </button>
@@ -128,7 +132,7 @@ function Talky(props: {
       className={tw(
         "pointer-events-auto",
         props.isOpen() ? "flex flex-col" : "hidden",
-        props.verbose ? "sm:h-[calc(60vh+30px)]" : "-mb-[48px] sm:h-[calc(60vh+60px)]",
+        props.verbose ? "sm:h-[calc(60vh+30px)]" : "-mb-[48px] sm:h-[calc(60vh+60px)] sm:mr-8",
         "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
       )}
     >
@@ -181,12 +185,12 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
     </div>
   ) : (
     <div className={tw("relative w-32 h-32")}>
-      <div className={tw("absolute top-0 left-0")}>
+      <div className={tw("absolute inset-0")}>
         <FloatingSvg />
       </div>
       <div
         className={tw(
-          "absolute top-0 left-0 duration-300",
+          "absolute inset-0 duration-300",
           props.isOpen() ? "opacity-100" : "opacity-0"
         )}
       >
@@ -346,17 +350,14 @@ function FloatingSvgOpened() {
 
 function FloatingCloseButton() {
   return (
-    <svg width="52" height="52" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g filter="url(#a)">
-        <rect x="10" y="7" width="32" height="32" rx="16" fill="#fff" />
-        <path
-          d="m21.3 18.3 9.4 9.4m-9.4 0 9.4-9.4"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </g>
+    <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m3.333 3.333 9.334 9.334M3.333 12.667l9.334-9.334"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   );
 }
