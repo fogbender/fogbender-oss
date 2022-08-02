@@ -1,6 +1,5 @@
 import { render } from "solid-js/web";
 import { Accessor, createMemo, createSignal } from "solid-js";
-import { css } from "twind/css";
 import { tw } from "twind";
 import { Events } from "./createIframe";
 import { getTwind } from "./twind";
@@ -49,30 +48,13 @@ function Container(props: {
     setIsOpen("hidden");
   };
   const [closed, setClosed] = createSignal(false);
-  const showOnHover = () =>
-    tw(
-      css({
-        "@media (hover: hover)": {
-          "&": {
-            opacity: 0,
-            pointerEvents: "none",
-            transitionProperty: "none",
-          },
-          "*:hover &": {
-            opacity: 1,
-            pointerEvents: "auto",
-            transitionProperty: "opacity",
-          },
-        },
-      })
-    );
   return (
     <div
       className={tw(
         closed() ? "hidden" : "flex",
         "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
-        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse w-full sm:h-auto sm:w-auto items-center",
+        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse w-full sm:h-auto sm:w-auto items-center group",
         props.verbose && "sm:mr-4 mb-4"
       )}
       style="z-index: 9999;"
@@ -100,13 +82,9 @@ function Container(props: {
       )}
       {props.closeable && !props.verbose && !isOpen() && (
         <div
-          className={
-            tw(
-              "absolute bottom-[28px] right-[24px] top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700"
-            ) +
-            " " +
-            showOnHover()
-          }
+          className={tw(
+            "absolute bottom-[28px] right-[24px] top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700  opacity-0 group-hover:opacity-100"
+          )}
           style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
         >
           <button
