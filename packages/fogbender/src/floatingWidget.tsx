@@ -80,10 +80,11 @@ function Container(props: {
           renderIframe={props.renderIframe}
         />
       )}
-      {props.closeable && !props.verbose && !isOpen() && (
+      {props.closeable && !isOpen() && (
         <div
           className={tw(
-            "absolute bottom-[28px] right-[24px] top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700  opacity-0 group-hover:opacity-100"
+            props.closeable && !props.verbose ? "bottom-[28px] right-[24px]" : "bottom-2 right-0",
+            "absolute top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700  opacity-0 group-hover:opacity-100"
           )}
           style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
         >
@@ -146,7 +147,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
 
   return props.verbose ? (
     <div
-      className={tw`w-36 mb-4 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
+      className={tw`w-36 mb-4 mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
       style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
     >
       <div>
