@@ -64,26 +64,29 @@ const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headles
   );
 };
 
-export const FogbenderFloatingWidget: React.FC<{ verbose?: boolean; openInNewTab?: boolean }> = ({
-  verbose,
-  openInNewTab,
-}) => {
-  useCreateFloatingWidget({ verbose, openInNewTab });
+export const FogbenderFloatingWidget: React.FC<{
+  verbose?: boolean;
+  openInNewTab?: boolean;
+  closeable?: boolean;
+}> = ({ verbose, openInNewTab, closeable }) => {
+  useCreateFloatingWidget({ verbose, openInNewTab, closeable });
   return null;
 };
 
 const useCreateFloatingWidget = ({
   verbose,
   openInNewTab,
+  closeable,
 }: {
   verbose?: boolean;
   openInNewTab?: boolean;
+  closeable?: boolean;
 }) => {
   const fogbender = useFogbender();
   useRenderComponent(
     React.useCallback(() => {
-      return fogbender.createFloatingWidget({ verbose, openInNewTab });
-    }, [fogbender, verbose, openInNewTab])
+      return fogbender.createFloatingWidget({ verbose, openInNewTab, closeable });
+    }, [fogbender, verbose, openInNewTab, closeable])
   );
 };
 
@@ -146,16 +149,18 @@ export const FogbenderSimpleFloatie: React.FC<{
   clientUrl?: string | undefined;
   verbose?: boolean;
   openInNewTab?: boolean;
-}> = ({ token, clientUrl, openInNewTab, verbose }) => {
+  closeable?: boolean;
+}> = ({ token, clientUrl, openInNewTab, verbose, closeable }) => {
   const fogbender = React.useMemo(createNewFogbender, []);
   return (
     <FogbenderProvider fogbender={fogbender}>
       <FogbenderConfig clientUrl={clientUrl} token={token} />
       <FogbenderIsConfigured>
         <FogbenderFloatingWidget
-          key={"" + verbose + ":" + openInNewTab}
+          key={"" + verbose + ":" + openInNewTab + ":" + closeable}
           verbose={verbose}
           openInNewTab={openInNewTab}
+          closeable={closeable}
         />
       </FogbenderIsConfigured>
     </FogbenderProvider>

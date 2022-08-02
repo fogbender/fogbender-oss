@@ -1,5 +1,6 @@
 import { render } from "solid-js/web";
 import { Accessor, createMemo, createSignal } from "solid-js";
+import { css } from "twind/css";
 import { tw } from "twind";
 import { Events } from "./createIframe";
 import { getTwind } from "./twind";
@@ -8,7 +9,7 @@ export function createFloatingWidget(
   { events }: { events: Events },
   openWindow: () => void,
   renderIframe: (el: HTMLElement) => () => void,
-  opts: { verbose?: boolean; openInNewTab?: boolean }
+  opts: { verbose?: boolean; openInNewTab?: boolean; closeable?: boolean }
 ) {
   const container = document.createElement("div");
   container.attachShadow({ mode: "open" });
@@ -22,6 +23,7 @@ export function createFloatingWidget(
         verbose={opts.verbose}
         openWindow={opts.openInNewTab ? openWindow : undefined}
         renderIframe={renderIframe}
+        closeable={opts.closeable}
       />
     ),
     container.shadowRoot!
@@ -39,18 +41,39 @@ function Container(props: {
   verbose?: boolean;
   openWindow?: () => void;
   renderIframe: (el: HTMLElement) => () => void;
+  closeable?: boolean;
 }) {
   const [open, setIsOpen] = createSignal("closed" as Open);
   const isOpen = createMemo(() => open() === "open");
   const close = () => {
     setIsOpen("hidden");
   };
+  const [closed, setClosed] = createSignal(false);
+  const showOnHover = () =>
+    tw(
+      css({
+        "@media (hover: hover)": {
+          "&": {
+            opacity: 0,
+            pointerEvents: "none",
+            transitionProperty: "none",
+          },
+          "*:hover &": {
+            opacity: 1,
+            pointerEvents: "auto",
+            transitionProperty: "opacity",
+          },
+        },
+      })
+    );
   return (
     <div
       className={tw(
+        closed() ? "hidden" : "flex",
         "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
-        "fixed sm:top-auto sm:bottom-0 right-0 flex flex-col-reverse sm:mr-4 mb-4 w-full sm:h-auto sm:w-auto items-center"
+        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse w-full sm:h-auto sm:w-auto items-center",
+        props.verbose && "sm:mr-4 mb-4"
       )}
       style="z-index: 9999;"
     >
@@ -75,6 +98,25 @@ function Container(props: {
           renderIframe={props.renderIframe}
         />
       )}
+      {props.closeable && !props.verbose && !isOpen() && (
+        <div
+          className={
+            tw(
+              "absolute bottom-[28px] right-[24px] top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700"
+            ) +
+            " " +
+            showOnHover()
+          }
+          style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
+        >
+          <button
+            onClick={() => setClosed(true)}
+            className={tw`w-4 h-4 active:outline-none focus:outline-none outline-none overflow-hidden pointer-events-auto text-black hover:text-red-500`}
+          >
+            <FloatingCloseButton />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -90,7 +132,7 @@ function Talky(props: {
       className={tw(
         "pointer-events-auto",
         props.isOpen() ? "flex flex-col" : "hidden",
-        props.verbose ? "sm:h-[calc(60vh+30px)]" : "-mb-[48px] sm:h-[calc(60vh+60px)]",
+        props.verbose ? "sm:h-[calc(60vh+30px)]" : "-mb-[48px] sm:h-[calc(60vh+60px)] sm:mr-8",
         "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
       )}
     >
@@ -143,12 +185,12 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
     </div>
   ) : (
     <div className={tw("relative w-32 h-32")}>
-      <div className={tw("absolute top-0 left-0")}>
+      <div className={tw("absolute inset-0")}>
         <FloatingSvg />
       </div>
       <div
         className={tw(
-          "absolute top-0 left-0 duration-300",
+          "absolute inset-0 duration-300",
           props.isOpen() ? "opacity-100" : "opacity-0"
         )}
       >
@@ -302,6 +344,20 @@ function FloatingSvgOpened() {
           <feBlend in="SourceGraphic" in2="effect1_dropShadow_3861_7231" result="shape" />
         </filter>
       </defs>
+    </svg>
+  );
+}
+
+function FloatingCloseButton() {
+  return (
+    <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m3.333 3.333 9.334 9.334M3.333 12.667l9.334-9.334"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   );
 }
