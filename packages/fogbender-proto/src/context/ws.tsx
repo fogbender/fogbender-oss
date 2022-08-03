@@ -208,6 +208,18 @@ export function useWsCalls() {
     [serverCall]
   );
 
+  const markRoomAsSeen = React.useCallback(
+    (roomId: string) => {
+      serverCall<MessageSeen>({
+        msgType: "Message.Seen",
+        roomId,
+      }).then(x => {
+        console.assert(x.msgType === "Message.Ok");
+      });
+    },
+    [serverCall]
+  );
+
   const createTag = React.useCallback(
     (tag: string) => {
       if (!workspaceId) {
@@ -257,7 +269,7 @@ export function useWsCalls() {
     [workspaceId, serverCall]
   );
 
-  return { updateRoom, createTag, updateTag, deleteTag };
+  return { updateRoom, markRoomAsSeen, createTag, updateTag, deleteTag };
 }
 
 export const nameMatchesFilter = (name: string, filter: string) =>
