@@ -164,6 +164,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
     setUnreadCount(e.unreadCount);
   });
 
+  setUnreadCount(props.events.unreadCount === undefined ? 0 : props.events.unreadCount);
   return props.verbose ? (
     <div
       className={tw`w-36 mb-4 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
