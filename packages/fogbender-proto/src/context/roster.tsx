@@ -8,7 +8,6 @@ import {
   IntegrationCreateIssue,
   IntegrationForwardToIssue,
   RoomCreate,
-  RoomUpdate,
   RoomArchive,
   RoomUnarchive,
   UserUpdate,
@@ -16,7 +15,7 @@ import {
 } from "../schema";
 
 import { eventRoomToRoom, Room } from "./sharedRoster";
-import { Author, useWs } from "./ws";
+import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { extractEventTag } from "../utils/castTypes";
@@ -69,6 +68,8 @@ export const useRoster = ({
     API calls work independently for each hook
   */
 
+  const { updateRoom } = useWsCalls();
+
   const createRoom = React.useCallback(
     (
       params: Pick<
@@ -98,28 +99,6 @@ export const useRoster = ({
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
         setSeenRoster(roster => ({ ...roster, [Date.now() * 1000]: x }));
-        return x;
-      }),
-    [serverCall]
-  );
-
-  const updateRoom = React.useCallback(
-    (
-      params: Pick<
-        RoomUpdate,
-        "roomId" | "name" | "membersToAdd" | "membersToRemove" | "tagsToAdd" | "tagsToRemove"
-      >
-    ) =>
-      serverCall<RoomUpdate>({
-        msgType: "Room.Update",
-        roomId: params.roomId,
-        name: params.name,
-        membersToAdd: params.membersToAdd,
-        membersToRemove: params.membersToRemove,
-        tagsToAdd: params.tagsToAdd,
-        tagsToRemove: params.tagsToRemove,
-      }).then(x => {
-        console.assert(x.msgType === "Room.Ok");
         return x;
       }),
     [serverCall]

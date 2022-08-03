@@ -12,6 +12,7 @@ import {
   MessageUnseen,
   MentionIn,
   Reaction,
+  RoomUpdate,
   StreamGet,
   StreamSub,
   TagCreate,
@@ -185,6 +186,28 @@ export function useWs() {
 export function useWsCalls() {
   const { workspaceId, serverCall } = useWs();
 
+  const updateRoom = React.useCallback(
+    (
+      params: Pick<
+        RoomUpdate,
+        "roomId" | "name" | "membersToAdd" | "membersToRemove" | "tagsToAdd" | "tagsToRemove"
+      >
+    ) =>
+      serverCall<RoomUpdate>({
+        msgType: "Room.Update",
+        roomId: params.roomId,
+        name: params.name,
+        membersToAdd: params.membersToAdd,
+        membersToRemove: params.membersToRemove,
+        tagsToAdd: params.tagsToAdd,
+        tagsToRemove: params.tagsToRemove,
+      }).then(x => {
+        console.assert(x.msgType === "Room.Ok");
+        return x;
+      }),
+    [serverCall]
+  );
+
   const createTag = React.useCallback(
     (tag: string) => {
       if (!workspaceId) {
@@ -234,7 +257,7 @@ export function useWsCalls() {
     [workspaceId, serverCall]
   );
 
-  return { createTag, updateTag, deleteTag };
+  return { updateRoom, createTag, updateTag, deleteTag };
 }
 
 export const nameMatchesFilter = (name: string, filter: string) =>
