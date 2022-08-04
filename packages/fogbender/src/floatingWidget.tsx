@@ -1,6 +1,7 @@
 import { render } from "solid-js/web";
 import { Accessor, createMemo, createSignal } from "solid-js";
 import { tw } from "twind";
+import { css } from "twind/css";
 import { Events } from "./createIframe";
 import { getTwind } from "./twind";
 
@@ -48,6 +49,19 @@ function Container(props: {
     setIsOpen("hidden");
   };
   const [closed, setClosed] = createSignal(false);
+  const alwaysVisibleOnTouchDevice = () =>
+    tw(
+      css({
+        "&": {
+          opacity: 1,
+        },
+        "@media (hover: hover)": {
+          "&": {
+            opacity: 0,
+          },
+        },
+      })
+    );
   return (
     <div
       className={tw(
@@ -86,7 +100,8 @@ function Container(props: {
             props.closeable && !props.verbose
               ? "bottom-[28px] right-[24px]"
               : "bottom-2 right-4 sm:right-0",
-            "absolute top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700  opacity-0 group-hover:opacity-100"
+            "absolute top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700 group-hover:opacity-100",
+            alwaysVisibleOnTouchDevice()
           )}
           style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
         >
