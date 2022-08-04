@@ -158,13 +158,14 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
 }
 
 function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: boolean }) {
-  const [unreadCounter, setUnreadCount] = createSignal(0);
+  const [unreadCounter, setUnreadCount] = createSignal(
+    props.events.unreadCount === undefined ? 0 : props.events.unreadCount
+  );
 
   props.events.on("fogbender.unreadCount", e => {
     setUnreadCount(e.unreadCount);
   });
 
-  setUnreadCount(props.events.unreadCount === undefined ? 0 : props.events.unreadCount);
   return props.verbose ? (
     <div
       className={tw`w-36 mb-4 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
