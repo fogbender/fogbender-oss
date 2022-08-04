@@ -48,7 +48,6 @@ export interface Fogbender {
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
 export type FogbenderLoader = {
-  _load: (clientUrl: string, onLoad: () => void) => Promise<Fogbender>;
   _once: boolean;
   _queue: [
     methodName: keyof Fogbender,
