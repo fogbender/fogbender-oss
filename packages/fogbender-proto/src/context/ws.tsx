@@ -65,7 +65,7 @@ export type Message = {
   editedByName?: string;
 };
 
-const convertEventMessageToMessage = (message: EventMessage): Message => ({
+export const convertEventMessageToMessage = (message: EventMessage): Message => ({
   id: message.id,
   clientId: message.clientId,
   author: {
