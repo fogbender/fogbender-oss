@@ -158,7 +158,9 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
 }
 
 function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: boolean }) {
-  const [unreadCounter, setUnreadCount] = createSignal(0);
+  const [unreadCounter, setUnreadCount] = createSignal(
+    props.events.unreadCount === undefined ? 0 : props.events.unreadCount
+  );
 
   props.events.on("fogbender.unreadCount", e => {
     setUnreadCount(e.unreadCount);
