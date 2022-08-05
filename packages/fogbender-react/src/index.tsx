@@ -68,8 +68,9 @@ export const FogbenderFloatingWidget: React.FC<{
   verbose?: boolean;
   openInNewTab?: boolean;
   closeable?: boolean;
-}> = ({ verbose, openInNewTab, closeable }) => {
-  useCreateFloatingWidget({ verbose, openInNewTab, closeable });
+  defaultOpen?: boolean;
+}> = ({ verbose, openInNewTab, closeable, defaultOpen }) => {
+  useCreateFloatingWidget({ verbose, openInNewTab, closeable, defaultOpen });
   return null;
 };
 
@@ -77,15 +78,17 @@ const useCreateFloatingWidget = ({
   verbose,
   openInNewTab,
   closeable,
+  defaultOpen,
 }: {
   verbose?: boolean;
   openInNewTab?: boolean;
   closeable?: boolean;
+  defaultOpen?: boolean;
 }) => {
   const fogbender = useFogbender();
   useRenderComponent(
     React.useCallback(() => {
-      return fogbender.createFloatingWidget({ verbose, openInNewTab, closeable });
+      return fogbender.createFloatingWidget({ verbose, openInNewTab, closeable, defaultOpen });
     }, [fogbender, verbose, openInNewTab, closeable])
   );
 };

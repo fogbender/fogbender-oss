@@ -44,6 +44,7 @@ export interface Fogbender {
     verbose?: boolean;
     openInNewTab?: boolean;
     closeable?: boolean;
+    defaultOpen?: boolean;
   }): Promise<() => void>;
   renderUnreadBadge(otps: { el: HTMLElement }): Promise<() => void>;
 }
