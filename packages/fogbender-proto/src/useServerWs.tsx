@@ -179,6 +179,10 @@ export function useServerWs(
               if (r.code === 401 || r.code === 403) {
                 onWrongToken(token);
               }
+            } else if (r.msgType === "Error.Fatal") {
+              if ("code" in r && r.code === 409) {
+                onWrongToken(token);
+              }
             }
           },
           r => {
