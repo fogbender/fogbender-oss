@@ -13,7 +13,7 @@ export type {
   FogbenderLoader,
   Snapshot,
 } from "./types";
-export { checkToken } from "./checkToken";
+export { checkToken, isUserToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";
