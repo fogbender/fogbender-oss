@@ -15,6 +15,8 @@ export function checkToken(token: Token | undefined) {
     const isString = (x: string) =>
       typeof token[x] !== "string" && (errors[x] = "should be string");
 
+    ["widgetId"].forEach(isString);
+
     if (isUserToken(token)) {
       ["customerId", "customerName", "userId", "userEmail", "userName"].forEach(isString);
 
@@ -22,7 +24,7 @@ export function checkToken(token: Token | undefined) {
         errors.userJWT = "userJWT or widgetKey should be set";
       }
     } else {
-      ["widgetId", "widgetKey"].forEach(isString);
+      ["widgetKey"].forEach(isString);
     }
     if (Object.keys(errors).length > 0) {
       return errors;
