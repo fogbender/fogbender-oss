@@ -117,7 +117,8 @@ export function renderIframe(
     ) {
       if (window.Notification?.permission === "granted") {
         const { body, roomId } = JSON.parse(e.data.notification);
-        const notification = new Notification(token.customerName, { body });
+        // customerName is not set only in FallbackToken, so we should not be seeing any notifications
+        const notification = new Notification(token.customerName || "Support", { body });
         notification.onclick = () => {
           if (headless) {
             openWindow();
