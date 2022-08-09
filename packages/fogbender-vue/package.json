@@ -4,8 +4,8 @@
   "description": "Fogbender wrapper for Vue 2 and Vue 3",
   "author": "JLarky",
   "license": "MIT",
-  "main": "./dist/fogbender-vue.umd.cjs",
-  "module": "./dist/fogbender-vue.js",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
   "source": "src/index.ts",
@@ -18,14 +18,14 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/fogbender-vue.js",
-      "require": "./dist/fogbender-vue.umd.cjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
     }
   },
   "scripts": {
     "build": "vite build",
     "start": "vite",
-    "prepare": "run-s build"
+    "prepare": "yarn build"
   },
   "peerDependencies": {
     "vue": "^2.0.0 || >=3.0.0"

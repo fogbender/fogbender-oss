@@ -17,6 +17,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     build: {
       lib: {
         name,
+        fileName: "index",
         entry: path.resolve(__dirname, "src/index.ts"),
       },
       rollupOptions: {
