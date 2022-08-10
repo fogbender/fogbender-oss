@@ -2,6 +2,8 @@
 
 [![NPM](https://img.shields.io/npm/v/fogbender-vue.svg)](https://www.npmjs.com/package/fogbender-vue)
 
+This is still an experimental package. Please use [fogbender-react](https://www.npmjs.com/package/fogbender-react) or [fogbender](https://www.npmjs.com/package/fogbender) if you can.
+
 ## Install
 
 ```bash
