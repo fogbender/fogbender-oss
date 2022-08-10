@@ -33,6 +33,10 @@ npm install --save fogbender-vue
 </template>
 ```
 
+## Examples
+
+- https://codesandbox.io/s/fogbender-vue-scgn25?file=/src/App.vue
+
 ## License
 
 MIT © [JLarky](https://github.com/JLarky)
