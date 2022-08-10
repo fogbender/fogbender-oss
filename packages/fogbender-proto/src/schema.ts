@@ -85,7 +85,7 @@ export type APISchema = {
   SearchRosterRPC: RPC<SearchRoster, SearchOk<EventRoom>>;
   SearchMembersRPC: RPC<SearchMembers, SearchOk<EventRoom>>;
   SearchRoomRPC: RPC<SearchRoom, SearchOk<EventRoom>>;
-  SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage[]>>;
+  SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
   TagCreate: RPC<TagCreate, TagOk>;
