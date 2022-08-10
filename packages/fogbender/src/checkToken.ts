@@ -1,12 +1,8 @@
-import { Token } from "./types";
+import { UserToken, Token } from "./types";
 
 export function checkToken(token: Token | undefined) {
   if (token !== undefined) {
     const errors: { [key: string]: string } = {};
-
-    ["customerId", "customerName", "userId", "userEmail", "userName"].forEach(
-      x => typeof token[x] !== "string" && (errors[x] = "should be string")
-    );
 
     ["userAvatarUrl", "widgetKey", "userJWT", "userHMAC", "userPaseto"].forEach(
       x =>
@@ -16,12 +12,27 @@ export function checkToken(token: Token | undefined) {
         (errors[x] = "should be string or undefined or null")
     );
 
-    if (!(token.userJWT || token.userHMAC || token.userPaseto || token.widgetKey)) {
-      errors.userJWT = "userJWT or widgetKey should be set";
+    const isString = (x: string) =>
+      typeof token[x] !== "string" && (errors[x] = "should be string");
+
+    ["widgetId"].forEach(isString);
+
+    if (isUserToken(token)) {
+      ["customerId", "customerName", "userId", "userEmail", "userName"].forEach(isString);
+
+      if (!(token.userJWT || token.userHMAC || token.userPaseto || token.widgetKey)) {
+        errors.userJWT = "userJWT or widgetKey should be set";
+      }
+    } else {
+      ["widgetKey"].forEach(isString);
     }
     if (Object.keys(errors).length > 0) {
       return errors;
     }
   }
   return;
+}
+
+export function isUserToken(token: Token | undefined): token is UserToken {
+  return token ? "userId" in token : false;
 }

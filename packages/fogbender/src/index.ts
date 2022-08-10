@@ -2,9 +2,18 @@ import { checkToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot } from "./types";
-export type { Env, Token, Badge, Fogbender, FogbenderLoader, Snapshot };
-export { checkToken } from "./checkToken";
+import type { Env, Fogbender, Snapshot, Token } from "./types";
+export type {
+  Env,
+  Token,
+  FallbackToken,
+  UserToken,
+  Badge,
+  Fogbender,
+  FogbenderLoader,
+  Snapshot,
+} from "./types";
+export { checkToken, isUserToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";

@@ -1,5 +1,21 @@
-// make sure to keep in sync with fogbender-ptoto schema
+// type Token = UserToken | FallbackToken;
 export type Token = {
+  widgetId: string;
+  widgetKey?: string;
+  customerId?: string;
+  customerName?: string;
+  userId?: string;
+  userHMAC?: string;
+  userJWT?: string;
+  userPaseto?: string;
+  userName?: string;
+  userAvatarUrl?: string;
+  userEmail?: string;
+  versions?: { [key: string]: string };
+};
+
+// make sure to keep in sync with fogbender-ptoto schema
+export type UserToken = {
   widgetId: string;
   widgetKey?: string;
   customerId: string;
@@ -11,6 +27,12 @@ export type Token = {
   userName: string;
   userAvatarUrl?: string;
   userEmail: string;
+  versions?: { [key: string]: string };
+};
+
+export type FallbackToken = {
+  widgetId: string;
+  widgetKey: string;
   versions?: { [key: string]: string };
 };
 
