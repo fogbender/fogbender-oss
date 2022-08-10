@@ -44,9 +44,10 @@ setTimeout(() => {
 }, 10000);
 ```
 
-## Example
+## Examples
 
 - https://codesandbox.io/s/fogbender-demo-7e0kg
+- https://codesandbox.io/s/fogbender-floatie-v9yisp
 
 ## License
 

@@ -38,6 +38,11 @@ export const Example = () => {
 };
 ```
 
+## Examples
+
+- https://codesandbox.io/s/fogbender-demo-with-react-w519q?file=/src/index.tsx
+- https://codesandbox.io/s/fogbender-demo-with-react-floatie-1j3dtw?file=/src/index.tsx
+
 ## License
 
 MIT © [JLarky](https://github.com/JLarky)

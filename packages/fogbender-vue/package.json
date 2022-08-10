@@ -1,0 +1,59 @@
+{
+  "name": "fogbender-vue",
+  "version": "0.0.3",
+  "description": "Fogbender wrapper for Vue 2 and Vue 3",
+  "author": "JLarky",
+  "license": "MIT",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "source": "src/index.ts",
+  "keywords": [
+    "fogbender",
+    "vue",
+    "vue2",
+    "vue3",
+    "vue-demi"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "start": "vite",
+    "prepare": "bun run build"
+  },
+  "peerDependencies": {
+    "vue": "^2.0.0 || >=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "core-js": "^3.8.3",
+    "fogbender": "*",
+    "vue-demi": "^0.13.6"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.26.0",
+    "@vitejs/plugin-vue": "^2.2.4",
+    "vite-plugin-dts": "^1.3.1",
+    "@vitejs/plugin-vue-jsx": "^1.3.8",
+    "@vitejs/plugin-vue2": "^1.1.2",
+    "typescript": "^4.5.4",
+    "vite": "^3.0.5",
+    "vue": "3"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "dist"
+  ]
+}
