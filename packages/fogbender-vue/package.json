@@ -25,7 +25,7 @@
   "scripts": {
     "build": "vite build",
     "start": "vite",
-    "prepare": "yarn build"
+    "prepare": "bun run build"
   },
   "peerDependencies": {
     "vue": "^2.0.0 || >=3.0.0"
