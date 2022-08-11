@@ -4,25 +4,23 @@ Open source packages to work with fogbender.com
 
 ## What is Fogbender
 
-Fogbender is a helpdesk product for supporting customer teams. [See our website](https://fogbender.com/) to learn more.
+Fogbender is a helpdesk product for supporting customer teams (not individuals). [Check out our website](https://fogbender.com/) to learn more.
 
 
 ## What is this repository
 
-This repository has source code of packages that are published to [npm](https://www.npmjs.com/).
-This will allow you to both see how those packages are built as well as create contribute to it,
-by creating issues and pull requests.
+This repository contains the source code of packages published to [npm](https://www.npmjs.com/). Here, you can learn how those packages are built, as well as contribute by filing issues and creating pull requests.
 
-## Contents
+## What's inside?
 
-- [fogbender-proto](https://www.npmjs.com/package/fogbender-proto) - low level package that allows you to connect to our
-real-time WebSocket API (you would need that if you want to create your own chat application or bot).
-- [fogbender](https://www.npmjs.com/package/fogbender) - vanilla javascript module to integrate Fogbender Widget into your
+- [fogbender-proto](https://www.npmjs.com/package/fogbender-proto) - low-level package that allows you to connect to our
+real-time WebSocket API (you'll need this if you want to create your own Fogbender chat application or bot).
+- [fogbender](https://www.npmjs.com/package/fogbender) - vanilla JavaScript module to embed the Fogbender Widget on your
 website
-- [fogbender-react](https://www.npmjs.com/package/fogbender-react) - React wrapper for `fogbender` to integrate Fogbender
-Widget into your website
-- [fogbender-vue](https://www.npmjs.com/package/fogbender-react) - Experimental Vue wrapper for `fogbender` to integrate
-Fogbender Widget into your website
+- [fogbender-react](https://www.npmjs.com/package/fogbender-react) - The React wrapper for `fogbender` to embed the Fogbender
+Widget on your website
+- [fogbender-vue](https://www.npmjs.com/package/fogbender-react) - The experimental Vue wrapper for `fogbender` to embed
+the Fogbender Widget on your website
 
 ## Examples
 
