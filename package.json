@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "fmt": "prettier --write '**/*.{ts,js,tsx,jsx,css,json,md,prettierrc,html,yml}'"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
