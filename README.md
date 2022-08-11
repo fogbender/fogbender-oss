@@ -17,9 +17,9 @@ This repository contains the source code of Fogbender packages published to [npm
 real-time WebSocket API (you'll need this if you want to create your own Fogbender chat application or bot).
 - [fogbender](https://www.npmjs.com/package/fogbender) - vanilla JavaScript module to embed the Fogbender Widget on your
 website
-- [fogbender-react](https://www.npmjs.com/package/fogbender-react) - The React wrapper for `fogbender` to embed the Fogbender
+- [fogbender-react](https://www.npmjs.com/package/fogbender-react) - React wrapper for `fogbender` to embed the Fogbender
 Widget on your website
-- [fogbender-vue](https://www.npmjs.com/package/fogbender-react) - The experimental Vue wrapper for `fogbender` to embed
+- [fogbender-vue](https://www.npmjs.com/package/fogbender-react) - experimental Vue wrapper for `fogbender` to embed
 the Fogbender Widget on your website
 
 ## Examples
