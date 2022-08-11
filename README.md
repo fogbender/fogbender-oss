@@ -2,14 +2,14 @@
 Open source packages to work with fogbender.com
 
 
-## What is Fogbender
+## What is Fogbender?
 
 Fogbender is a helpdesk product for supporting customer teams (not individuals). [Check out our website](https://fogbender.com/) to learn more.
 
 
-## What is this repository
+## What is this repository?
 
-This repository contains the source code of packages published to [npm](https://www.npmjs.com/). Here, you can learn how those packages are built, as well as contribute by filing issues and creating pull requests.
+This repository contains the source code of Fogbender packages published to [npm](https://www.npmjs.com/). Here, you can learn how those packages are built, as well as contribute by filing issues and creating pull requests.
 
 ## What's inside?
 
