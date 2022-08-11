@@ -11,7 +11,7 @@ Fogbender is a helpdesk product for supporting customer teams (not individuals).
 
 This repository contains the source code of Fogbender packages published to [npm](https://www.npmjs.com/). Here, you can learn how those packages are built, as well as contribute by filing issues and creating pull requests.
 
-## What's inside?
+## Which packages?
 
 - [fogbender-proto](https://www.npmjs.com/package/fogbender-proto) - low-level package that allows you to connect to our
 real-time WebSocket API (you'll need this if you want to create your own Fogbender chat application or bot).
