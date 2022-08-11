@@ -41,6 +41,7 @@
     "@types/node": "13.13.2",
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
+    "css-element-queries": "^1.2.3",
     "esbuild-plugin-solid": "^0.4.2",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.11.0",
