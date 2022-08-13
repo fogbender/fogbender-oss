@@ -78,6 +78,7 @@ export const useSharedRoster = ({
   const [customersLoaded, setCustomersLoaded] = React.useState(false);
   const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
   const { onRoomRef, dispatch } = useRoomResolver(fogSessionId, serverCall);
+  const enoughBadges = React.useRef(0);
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token or workspace is changed
@@ -91,6 +92,7 @@ export const useSharedRoster = ({
     setCustomers([]);
     setCustomersLoaded(false);
     setOldestCustomerTs(Infinity);
+    enoughBadges.current = 0;
     dispatch("token_change");
   }, [token, workspaceId, fogSessionId]);
 
@@ -112,7 +114,12 @@ export const useSharedRoster = ({
       // rooms that are higher in the roster will have unread counter or recent messages
       if (b.count || b.lastRoomMessage?.createdTs) {
         // TODO: once we have big enough roster we should probably load only rooms that have unread messages
-        roomById(b.roomId);
+        if (!b.count) {
+          enoughBadges.current++;
+        }
+        if (enoughBadges.current < 10) {
+          roomById(b.roomId);
+        }
       }
       setBadges(x => {
         x[b.roomId] = b;
@@ -246,7 +253,7 @@ export const useSharedRoster = ({
     });
   }, [fogSessionId, workspaceId, helpdeskId]);
   const enoughRooms = React.useRef(false);
-  enoughRooms.current = rawRoster.length >= 90;
+  enoughRooms.current = rawRoster.length >= 20;
 
   React.useEffect(() => {
     if (!fogSessionId) {
