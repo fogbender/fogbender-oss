@@ -1,15 +1,11 @@
 import path from "path";
 import type { UserConfigExport, ConfigEnv } from "vite";
 import { name } from "./package.json";
-import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
 import dts from "vite-plugin-dts";
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
     plugins: [
-      vue(),
-      vueJsx(),
       dts({
         insertTypesEntry: true,
       }),
