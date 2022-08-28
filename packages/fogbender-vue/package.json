@@ -9,6 +9,9 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "source": "src/index.ts",
+  "repository": {
+    "url": "https://github.com/fogbender/fogbender-oss/tree/main/packages/fogbender-vue"
+  },
   "keywords": [
     "fogbender",
     "vue",
