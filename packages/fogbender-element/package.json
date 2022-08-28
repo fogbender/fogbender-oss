@@ -1,0 +1,19 @@
+{
+  "name": "fogbender-element",
+  "private": true,
+  "version": "0.0.3",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/tree/feature--custom-elements/packages/fogbender-webcomponent"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4",
+    "vite": "^3.0.7"
+  }
+}
