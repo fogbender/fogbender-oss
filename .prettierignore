@@ -1,3 +1,4 @@
+packages/fogbender-vue/components.d.ts
 build
 dist
 .netlify
