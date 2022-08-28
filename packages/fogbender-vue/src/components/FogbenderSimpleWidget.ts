@@ -1,6 +1,6 @@
 import { createNewFogbender, Env, Token } from "fogbender";
 import { defineComponent, h, PropType } from "vue-demi";
-import { configureFogbender, renderWidget } from "../util";
+import { addVersion, renderWidget } from "../util";
 export default defineComponent({
   name: "FogbenderSimpleWidget",
   props: {
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   data: function () {
     return {
-      fbInstance: createNewFogbender(),
+      fb: createNewFogbender(),
       isMounted: false,
       cleanup: () => {},
     };
@@ -37,9 +37,12 @@ export default defineComponent({
     },
   },
   mounted() {
-    configureFogbender(this.fbInstance, this.token, this.clientUrl, this.env);
+    this.fb.setClientUrl(this.clientUrl);
+    this.fb.setEnv(this.env);
+    this.fb.setToken(addVersion(this.token));
+
     renderWidget(
-      this.fbInstance,
+      this.fb,
       this.$refs["fogbender-widget"],
       this.headless,
       this.isMounted,

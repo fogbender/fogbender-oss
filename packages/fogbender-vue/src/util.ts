@@ -49,9 +49,3 @@ export const renderComponent = (
     }
   });
 };
-
-export const configureFogbender = (fb: Fogbender, token?: Token, clientUrl?: string, env?: Env) => {
-  fb.setClientUrl(clientUrl);
-  fb.setEnv(env);
-  fb.setToken(addVersion(token));
-};
