@@ -17,7 +17,6 @@ export {
 };
 
 type FogbenderWidgetOptions = {
-  height?: string;
   disableFit?: boolean;
   cssWidth?: string;
   cssHeight?: string;
