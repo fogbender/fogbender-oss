@@ -48,6 +48,8 @@ export function renderIframe(
     token,
     headless,
     disableFit,
+    cssWidth,
+    cssHeight,
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
@@ -55,19 +57,14 @@ export function renderIframe(
     token: Token;
     headless?: boolean;
     disableFit?: boolean;
+    cssWidth?: string;
+    cssHeight?: string;
   },
   openWindow: () => void
 ) {
   const iFrame = document.createElement("iframe");
 
   iFrame.src = url;
-  iFrame.style.display = "block";
-  iFrame.style.width = headless ? "0" : "100%";
-  iFrame.style.height = headless ? "0" : "100%";
-  if (headless) {
-    iFrame.style.position = "fixed";
-    iFrame.style.top = "-100px";
-  }
 
   window.addEventListener("message", e => {
     if (e.origin !== url) {
@@ -133,21 +130,37 @@ export function renderIframe(
 
   rootEl.append(iFrame);
 
-  function adaptIFrame() {
-    if (!rootEl || disableFit) {
+  function fitIFrame() {
+    if (!rootEl || headless) {
       return;
     }
-    const height = headless
-      ? 0
-      : Math.min(window.innerHeight, window.innerHeight - rootEl.getBoundingClientRect().top);
+    // Get full height from widget's top position to the bottom of the screen
+    const height = Math.min(
+      window.innerHeight,
+      window.innerHeight - rootEl.getBoundingClientRect().top
+    );
     iFrame.style.height = height + "px";
   }
 
-  adaptIFrame();
+  iFrame.style.display = "block";
 
-  new ResizeSensor(rootEl, adaptIFrame);
-  new ResizeSensor(document.body, adaptIFrame);
-  window.addEventListener("resize", adaptIFrame);
+  if (headless) {
+    iFrame.style.width = "0";
+    iFrame.style.height = "0";
+    iFrame.style.position = "fixed";
+    iFrame.style.top = "-100px";
+  } else {
+    iFrame.style.width = cssWidth !== undefined ? cssWidth : "100%";
+    if (cssHeight) {
+      iFrame.style.height = cssHeight;
+    } else if (!disableFit) {
+      fitIFrame();
+      new ResizeSensor(rootEl, fitIFrame);
+      new ResizeSensor(document.body, fitIFrame);
+      window.addEventListener("resize", fitIFrame);
+    }
+  }
+
   return () => {
     iFrame.src = "about:blank";
     rootEl.removeChild(iFrame);

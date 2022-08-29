@@ -39,9 +39,16 @@ export const FogbenderSimpleWidget: React.FC<{
   );
 };
 
-export const FogbenderWidget: React.FC = () => {
+type FogbenderWidgetOptions = {
+  height?: string;
+  disableFit?: boolean;
+  cssWidth?: string;
+  cssHeight?: string;
+};
+
+export const FogbenderWidget: React.FC<{ options?: FogbenderWidgetOptions }> = ({ options }) => {
   const divRef = React.useRef<HTMLDivElement>(null);
-  useRenderIframe(divRef, false);
+  useRenderIframe(divRef, false, options);
   return <div ref={divRef} />;
 };
 
@@ -51,12 +58,22 @@ export const FogbenderHeadlessWidget: React.FC = () => {
   return <div ref={divRef} />;
 };
 
-const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headless: boolean) => {
+const useRenderIframe = (
+  divRef: React.RefObject<HTMLDivElement | null>,
+  headless: boolean,
+  options?: FogbenderWidgetOptions
+) => {
   const fogbender = useFogbender();
   useRenderComponent(
     React.useCallback(() => {
       if (divRef.current) {
-        return fogbender.renderIframe({ headless, rootEl: divRef.current });
+        return fogbender.renderIframe({
+          headless,
+          rootEl: divRef.current,
+          disableFit: options?.disableFit === true,
+          cssWidth: options?.cssWidth,
+          cssHeight: options?.cssHeight,
+        });
       } else {
         return noopCleanup();
       }
