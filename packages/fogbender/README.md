@@ -44,6 +44,21 @@ setTimeout(() => {
 }, 10000);
 ```
 
+### Layout options
+
+```tsx
+  <!-- ... -->
+  const cleanup = await fogbender.renderIframe({
+    headless,
+    rootEl,
+    disableFit: false, // `true` by default
+    cssWidth: "calc(100% - 2rem)", // `100%` by default
+    cssHeight: "500px", // `undefined` by default
+  });
+  <!-- ... -->
+
+```
+
 ## Examples
 
 - https://codesandbox.io/s/fogbender-demo-7e0kg

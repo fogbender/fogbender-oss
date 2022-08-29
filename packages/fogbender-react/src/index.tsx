@@ -16,11 +16,19 @@ export {
   FogbenderIsConfigured,
 };
 
+type FogbenderWidgetOptions = {
+  height?: string;
+  disableFit?: boolean;
+  cssWidth?: string;
+  cssHeight?: string;
+};
+
 export const FogbenderSimpleWidget: React.FC<{
   clientUrl?: string;
   env?: Env;
   token: Token;
-}> = ({ clientUrl, env, token }) => {
+  options?: FogbenderWidgetOptions;
+}> = ({ clientUrl, env, token, options }) => {
   const [fogbender, setFogbender] = React.useState(undefined as Fogbender | undefined);
   React.useEffect(() => {
     const fb = createNewFogbender();
@@ -34,16 +42,9 @@ export const FogbenderSimpleWidget: React.FC<{
   }
   return (
     <FogbenderProvider fogbender={fogbender}>
-      <FogbenderWidget />
+      <FogbenderWidget options={options} />
     </FogbenderProvider>
   );
-};
-
-type FogbenderWidgetOptions = {
-  height?: string;
-  disableFit?: boolean;
-  cssWidth?: string;
-  cssHeight?: string;
 };
 
 export const FogbenderWidget: React.FC<{ options?: FogbenderWidgetOptions }> = ({ options }) => {

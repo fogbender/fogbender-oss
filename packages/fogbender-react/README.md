@@ -17,6 +17,12 @@ yarn add fogbender-react
 import React from "react";
 import { FogbenderSimpleWidget } from "fogbender-react";
 
+const options = {
+  cssWidth: "calc(100% - 2rem)",
+  cssHeight: "500px",
+  disbaleFit: true,
+}; // default options are { cssWidth: "100%", cssHeight: undefined, disableFit: false }
+
 export const Example = () => {
   const token = {
     widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -32,7 +38,11 @@ export const Example = () => {
   return (
     <div>
       <p>Hello Fogbender</p>
-      <FogbenderSimpleWidget clientUrl="https://master--fb-client.netlify.app" token={token} />
+      <FogbenderSimpleWidget
+        clientUrl="https://master--fb-client.netlify.app"
+        token={token}
+        options={options}
+      />
     </div>
   );
 };
