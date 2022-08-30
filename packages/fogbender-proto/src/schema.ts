@@ -671,7 +671,7 @@ export type IssueLabel = {
 export type EventIssue = {
   msgId?: string;
   msgType: "Event.Issue";
-  type: KnownIntegration;
+  type: KnownIssueTrackerIntegration;
   title: string;
   integrationId: string;
   id: string;
@@ -746,7 +746,7 @@ export type RoomMember = {
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
-export const KnownIntegrations = [
+export const KnownIssueTrackerIntegrations = [
   "gitlab",
   "github",
   "asana",
@@ -755,7 +755,10 @@ export const KnownIntegrations = [
   "height",
   "trello",
 ];
-export type KnownIntegration = typeof KnownIntegrations[number];
+export type KnownIssueTrackerIntegration = typeof KnownIssueTrackerIntegrations[number];
+
+export const KnownCommsIntegrations = ["slack", "msteams"];
+export type KnownCommsIntegration = typeof KnownCommsIntegrations[number];
 
 export type Tag = {
   id: string;
@@ -763,7 +766,7 @@ export type Tag = {
   workspaceId?: string;
   title?: string;
   meta_type?: MetaType;
-  meta_entity_type?: KnownIntegration;
+  meta_entity_type?: KnownIssueTrackerIntegration | KnownCommsIntegration;
   meta_entity_url?: string;
   meta_entity_name?: string;
   meta_entity_id?: string;
