@@ -1,4 +1,4 @@
-import { createNewFogbender, Fogbender, Env, Snapshot } from "fogbender";
+import { createNewFogbender, Fogbender, Env } from "fogbender";
 
 type WidgetType = "simple" | "floatie";
 
@@ -23,7 +23,7 @@ class FogbenderElement extends HTMLElement {
 
   constructor() {
     super();
-    this.fogbender = this.fogbender || createNewFogbender();
+    this.fogbender = createNewFogbender();
     this.wrapper = document.createElement("div");
   }
 
@@ -34,45 +34,27 @@ class FogbenderElement extends HTMLElement {
 
     this.appendChild(this.wrapper);
 
-    this._getConfigurationSnapshot(async () => {
-      return this.fogbender.isClientConfigured();
-    })
-      .then(() => {
-        if (this.isClientConfigured) {
-          this._renderSelectedWidget();
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (this.token) {
+      (async () => {
+        this.cleanup = await this._renderSelectedWidget();
+      })();
+    }
   }
 
   _renderSelectedWidget() {
     switch (this.widgetType) {
-      case "simple":
-        this._renderSimpleWidget();
-        break;
       case "floatie":
-        this._renderFloatie();
-        break;
+        return this._renderFloatie();
       default:
-        this._renderSimpleWidget();
-        break;
+        return this.fogbender.renderIframe({ rootEl: this.wrapper });
     }
   }
 
-  _renderSimpleWidget() {
-    this.fogbender.renderIframe({ rootEl: this.wrapper }).then(cleanup => {
-      this.cleanup = cleanup;
-    });
-  }
-
   _renderFloatie() {
-    this.fogbender
-      .createFloatingWidget({ verbose: this.verbose, openInNewTab: this.openInNewTab })
-      .then(cleanup => {
-        this.cleanup = cleanup;
-      });
+    return this.fogbender.createFloatingWidget({
+      verbose: this.verbose,
+      openInNewTab: this.openInNewTab,
+    });
   }
 
   _setClientUrl() {
@@ -90,18 +72,6 @@ class FogbenderElement extends HTMLElement {
     if (this.hasAttribute("env")) {
       this.fogbender.setEnv(this.getAttribute("env") as Env | undefined);
     }
-  }
-
-  async _getConfigurationSnapshot(snapshotGen: () => Promise<Snapshot<boolean>>) {
-    const snapshot = await snapshotGen();
-
-    this.isClientConfigured = snapshot.getValue();
-
-    this.unsub.push(
-      snapshot.subscribe(s => {
-        this.isClientConfigured = s.getValue();
-      })
-    );
   }
 
   // This function will be automatically executed by javascript when custom element is mounted on the DOM.
