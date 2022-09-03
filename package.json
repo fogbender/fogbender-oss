@@ -5,5 +5,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@changesets/cli": "^2.24.4"
+  }
 }
