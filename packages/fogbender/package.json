@@ -1,6 +1,9 @@
 {
   "name": "fogbender",
   "version": "0.1.3",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Made with create-react-library",
   "author": "JLarky",
   "license": "MIT",

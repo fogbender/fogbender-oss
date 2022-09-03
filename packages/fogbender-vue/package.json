@@ -1,6 +1,9 @@
 {
   "name": "fogbender-vue",
   "version": "0.0.4",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Fogbender wrapper for Vue 2 and Vue 3",
   "author": "JLarky",
   "license": "MIT",
