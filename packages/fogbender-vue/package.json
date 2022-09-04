@@ -11,6 +11,10 @@
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-vue"
+  },
   "source": "src/index.ts",
   "keywords": [
     "fogbender",

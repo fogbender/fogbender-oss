@@ -11,6 +11,10 @@
   "type": "module",
   "main": "./dist/server.cjs",
   "module": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender"
+  },
   "types": "./dist/index.d.ts",
   "exports": {
     "node": {
