@@ -7,7 +7,10 @@
   "description": "Made with create-react-library",
   "author": "JLarky",
   "license": "MIT",
-  "repository": "JLarky/fogbender-proto",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-proto"
+  },
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",

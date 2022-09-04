@@ -10,6 +10,10 @@
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-react"
+  },
   "engines": {
     "node": ">=10"
   },
