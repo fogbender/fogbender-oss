@@ -62,94 +62,102 @@ export function renderIframe(
 
   iFrame.src = url;
   iFrame.style.display = "block";
-  iFrame.style.width = headless ? "0" : "100%";
-  iFrame.style.height = headless ? "0" : "100%";
-  if (headless) {
-    iFrame.style.position = "fixed";
-    iFrame.style.top = "-100px";
+  iFrame.style.width = "100%";
+  iFrame.style.height = "100%";
+
+  function calculateHeight(element: HTMLElement) {
+    const height = Math.min(window.innerHeight, window.innerHeight - rootEl.getBoundingClientRect().top);
+    element.style.height = height + "px";
   }
 
-  window.addEventListener("message", e => {
-    if (e.origin !== url) {
-      return;
+  function shouldResizeElement() {
+    calculateHeight(iFrame)
+    new ResizeSensor(rootEl, () => calculateHeight(iFrame));
+    new ResizeSensor(document.body, () => calculateHeight(iFrame));
+    window.addEventListener("resize", () => calculateHeight(iFrame));
+  }
+
+
+  if (rootEl) {
+
+    if (!disableFit && !headless) {
+      shouldResizeElement()
     }
-    if (e.source !== iFrame.contentWindow) {
-      return;
+
+    else if (headless) {
+      iFrame.style.position = "fixed";
+      iFrame.style.top = "-100px";
+      iFrame.style.width = "0";
+      iFrame.style.height = "0";
     }
-    if (e.data?.type === "APP_IS_READY") {
-      iFrame.contentWindow?.postMessage({ env, initToken: token, headless }, url);
-      iFrame.contentWindow?.postMessage(
-        { notificationsPermission: window.Notification?.permission },
-        url
-      );
-    } else if (e.data?.type === "REQUEST_NOTIFICATIONS_PERMISSION") {
-      window.Notification?.requestPermission().then(function (permission) {
-        iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
-      });
-    } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
-      const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
-      events.badges = badges;
-      events.emit("fogbender.badges", { badges });
-      const unreadCount = (() => {
-        let isMentionOrDialog = false;
-        let count = 0;
-        Object.keys(badges).find(roomId => {
-          const badge = badges[roomId];
-          if (badge.mentionsCount) {
-            isMentionOrDialog = true;
-          } else if (badge.count) {
-            isMentionOrDialog = badge.roomType === "dialog";
-          }
-          if (badge.count) {
-            count++;
-          }
-          // stop once first mention or dialog is found
-          return isMentionOrDialog;
-        });
-        return isMentionOrDialog ? -1 : count;
-      })();
-      events.unreadCount = unreadCount;
-      events.emit("fogbender.unreadCount", { unreadCount });
-    } else if (
-      e.data?.type === "NOTIFICATION" &&
-      e.data.notification !== undefined &&
-      token !== undefined
-    ) {
-      if (window.Notification?.permission === "granted") {
-        const { body, roomId } = JSON.parse(e.data.notification);
-        // customerName is not set only in FallbackToken, so we should not be seeing any notifications
-        const notification = new Notification(token.customerName || "Support", { body });
-        notification.onclick = () => {
-          if (headless) {
-            openWindow();
-          } else {
-            window.parent.focus();
-            iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
-          }
-        };
+
+    window.addEventListener("message", e => {
+      if (e.origin !== url) {
+        return;
       }
-    }
-  });
+      if (e.source !== iFrame.contentWindow) {
+        return;
+      }
+      if (e.data?.type === "APP_IS_READY") {
+        iFrame.contentWindow?.postMessage({ env, initToken: token, headless }, url);
+        iFrame.contentWindow?.postMessage(
+          { notificationsPermission: window.Notification?.permission },
+          url
+        );
+      } else if (e.data?.type === "REQUEST_NOTIFICATIONS_PERMISSION") {
+        window.Notification?.requestPermission().then(function (permission) {
+          iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
+        });
+      } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
+        const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
+        events.badges = badges;
+        events.emit("fogbender.badges", { badges });
+        const unreadCount = (() => {
+          let isMentionOrDialog = false;
+          let count = 0;
+          Object.keys(badges).find(roomId => {
+            const badge = badges[roomId];
+            if (badge.mentionsCount) {
+              isMentionOrDialog = true;
+            } else if (badge.count) {
+              isMentionOrDialog = badge.roomType === "dialog";
+            }
+            if (badge.count) {
+              count++;
+            }
+            // stop once first mention or dialog is found
+            return isMentionOrDialog;
+          });
+          return isMentionOrDialog ? -1 : count;
+        })();
+        events.unreadCount = unreadCount;
+        events.emit("fogbender.unreadCount", { unreadCount });
+      } else if (
+        e.data?.type === "NOTIFICATION" &&
+        e.data.notification !== undefined &&
+        token !== undefined
+      ) {
+        if (window.Notification?.permission === "granted") {
+          const { body, roomId } = JSON.parse(e.data.notification);
+          // customerName is not set only in FallbackToken, so we should not be seeing any notifications
+          const notification = new Notification(token.customerName || "Support", { body });
+          notification.onclick = () => {
+            if (headless) {
+              openWindow();
+            } else {
+              window.parent.focus();
+              iFrame.contentWindow?.postMessage({ roomIdToOpen: roomId }, url);
+            }
+          };
+        }
+      }
+    });
 
-  rootEl.append(iFrame);
-
-  function adaptIFrame() {
-    if (!rootEl || disableFit) {
-      return;
-    }
-    const height = headless
-      ? 0
-      : Math.min(window.innerHeight, window.innerHeight - rootEl.getBoundingClientRect().top);
-    iFrame.style.height = height + "px";
+    rootEl.append(iFrame);
   }
 
-  adaptIFrame();
-
-  new ResizeSensor(rootEl, adaptIFrame);
-  new ResizeSensor(document.body, adaptIFrame);
-  window.addEventListener("resize", adaptIFrame);
   return () => {
     iFrame.src = "about:blank";
-    rootEl.removeChild(iFrame);
+    rootEl?.removeChild(iFrame);
   };
 }
