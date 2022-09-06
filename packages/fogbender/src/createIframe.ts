@@ -66,25 +66,24 @@ export function renderIframe(
   iFrame.style.height = "100%";
 
   function calculateHeight(element: HTMLElement) {
-    const height = Math.min(window.innerHeight, window.innerHeight - rootEl.getBoundingClientRect().top);
+    const height = Math.min(
+      window.innerHeight,
+      window.innerHeight - rootEl.getBoundingClientRect().top
+    );
     element.style.height = height + "px";
   }
 
   function shouldResizeElement() {
-    calculateHeight(iFrame)
+    calculateHeight(iFrame);
     new ResizeSensor(rootEl, () => calculateHeight(iFrame));
     new ResizeSensor(document.body, () => calculateHeight(iFrame));
     window.addEventListener("resize", () => calculateHeight(iFrame));
   }
 
-
   if (rootEl) {
-
     if (!disableFit && !headless) {
-      shouldResizeElement()
-    }
-
-    else if (headless) {
+      shouldResizeElement();
+    } else if (headless) {
       iFrame.style.position = "fixed";
       iFrame.style.top = "-100px";
       iFrame.style.width = "0";
