@@ -1,0 +1,37 @@
+{
+  "name": "fogbender-element",
+  "version": "0.0.1",
+  "description": "Web Component wrapper for `fogbender` to embed the Fogbender Widget on your website",
+  "author": "JLarky",
+  "type": "module",
+  "main": "./dist/fogbender-element.umd.cjs",
+  "module": "./dist/fogbender-element.js",
+  "exports": {
+    ".": {
+      "import": "./dist/fogbender-element.js",
+      "require": "./dist/fogbender-element.umd.cjs"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "start": "vite",
+    "dev": "vite",
+    "build": "yarn clean && vite build",
+    "test": "tsc --noEmit",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.5.4",
+    "vite": "^3.0.5",
+    "vite-plugin-solid": "^2.3.0"
+  },
+  "dependencies": {
+    "fogbender": "*",
+    "solid-element": "^1.5.4",
+    "solid-js": "^1.5.1"
+  },
+  "files": [
+    "dist"
+  ]
+}
