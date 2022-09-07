@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "release": "changeset version && yarn install && yarn fmt",
-    "test": "yarn workspace fogbender test",
+    "test": "yarn workspace fogbender test && yarn workspace fogbender-vue test",
     "build": "yarn workspace fogbender build && yarn workspace fogbender-react build && yarn workspace fogbender-vue build && yarn workspace fogbender-proto build",
     "fmt": "prettier --write '**/*.{ts,js,tsx,jsx,css,json,md,prettierrc,html,yml}'"
   },

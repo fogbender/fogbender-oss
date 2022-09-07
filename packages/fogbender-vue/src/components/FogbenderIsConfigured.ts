@@ -11,19 +11,16 @@ export default defineComponent({
     onMounted(async () => {
       const fb = inject(fogbender);
       if (fb) {
-        getConfiguredFromSnapshot(async () => {
-          return fb.isClientConfigured();
-        }, false);
+        const snapshot = await fb.isClientConfigured();
+
+        isConfigured.value = snapshot.getValue();
+
+        unsub.push(
+          snapshot.subscribe(s => {
+            isConfigured.value = s.getValue();
+          })
+        );
       }
-      const snapshot = await fb.isClientConfigured();
-
-      isConfigured.value = snapshot.getValue();
-
-      unsub.push(
-        snapshot.subscribe(s => {
-          isConfigured.value = s.getValue();
-        })
-      );
     });
 
     onUnmounted(() => {
