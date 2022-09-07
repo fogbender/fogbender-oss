@@ -36,7 +36,7 @@ export function renderUnreadBadge(
         {unreadCounter() === -1 ? (
           <span className={tw`text-xs`}>@</span>
         ) : (
-          <span className={tw`px-1`}>{unreadCounter()}</span>
+          <span class={tw`px-1`}>{unreadCounter()}</span>
         )}
       </button>
     );
