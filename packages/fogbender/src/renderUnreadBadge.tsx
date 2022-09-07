@@ -28,13 +28,13 @@ export function renderUnreadBadge(
     return (
       <button
         onClick={openWindow}
-        className={tw`hidden min-w-1rem min-h-1rem items-center justify-center bg-brand-red-500 rounded-full text-white text-2xs font-bold leading-none`}
+        class={tw`hidden min-w-1rem min-h-1rem items-center justify-center bg-brand-red-500 rounded-full text-white text-2xs font-bold leading-none`}
         style={{
           display: !unreadCounter() || unreadCounter() === 0 ? "none" : "flex",
         }}
       >
         {unreadCounter() === -1 ? (
-          <span className={tw`text-xs`}>@</span>
+          <span class={tw`text-xs`}>@</span>
         ) : (
           <span class={tw`px-1`}>{unreadCounter()}</span>
         )}

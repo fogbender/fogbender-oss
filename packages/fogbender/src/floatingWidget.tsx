@@ -76,7 +76,7 @@ function Container(props: {
     );
   return (
     <div
-      className={tw(
+      class={tw(
         closed() ? "hidden" : "flex",
         "pointer-events-none",
         isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
@@ -94,7 +94,7 @@ function Container(props: {
           }
         }}
         title="Customer support"
-        className={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto`}
+        class={tw`active:outline-none focus:outline-none outline-none self-end overflow-hidden pointer-events-auto`}
       >
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
@@ -108,7 +108,7 @@ function Container(props: {
       )}
       {props.closeable && !isOpen() && (
         <div
-          className={tw(
+          class={tw(
             props.closeable && !props.verbose
               ? "bottom-[28px] right-[24px]"
               : "bottom-2 right-4 sm:right-0",
@@ -119,7 +119,7 @@ function Container(props: {
         >
           <button
             onClick={() => setClosed(true)}
-            className={tw`w-4 h-4 active:outline-none focus:outline-none outline-none overflow-hidden pointer-events-auto text-black hover:text-red-500`}
+            class={tw`w-4 h-4 active:outline-none focus:outline-none outline-none overflow-hidden pointer-events-auto text-black hover:text-red-500`}
           >
             <FloatingCloseButton />
           </button>
@@ -137,7 +137,7 @@ function Talky(props: {
 }) {
   return (
     <div
-      className={tw(
+      class={tw(
         "pointer-events-auto",
         props.isOpen() ? "flex flex-col" : "hidden",
         props.verbose
@@ -155,7 +155,7 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
   let cleanup = () => {};
   return (
     <div
-      className={tw("flex-1 rounded-xl overflow-hidden")}
+      class={tw("flex-1 rounded-xl overflow-hidden")}
       ref={el => {
         if (el) {
           cleanup = props.renderIframe(el);
@@ -178,15 +178,15 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
 
   return props.verbose ? (
     <div
-      className={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
+      class={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
       style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
     >
       <div>
         <FloatingVerboseSvg />
       </div>
-      <div className={tw`text-left text-sm font-semibold`}>Customer support</div>
+      <div class={tw`text-left text-sm font-semibold`}>Customer support</div>
       <div
-        className={tw`absolute top-0 right-0 text-white rounded-full bg-brand-red-500 text-xs leading-none`}
+        class={tw`absolute top-0 right-0 text-white rounded-full bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
@@ -196,20 +196,17 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
       </div>
     </div>
   ) : (
-    <div className={tw("relative w-32 h-32")}>
-      <div className={tw("absolute inset-0")}>
+    <div class={tw("relative w-32 h-32")}>
+      <div class={tw("absolute inset-0")}>
         <FloatingSvg />
       </div>
       <div
-        className={tw(
-          "absolute inset-0 duration-300",
-          props.isOpen() ? "opacity-100" : "opacity-0"
-        )}
+        class={tw("absolute inset-0 duration-300", props.isOpen() ? "opacity-100" : "opacity-0")}
       >
         <FloatingSvgOpened />
       </div>
       <div
-        className={tw`absolute text-white rounded-full bg-brand-red-500 text-xs leading-none`}
+        class={tw`absolute text-white rounded-full bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           top: "20px",
@@ -303,7 +300,7 @@ function FloatingSvg() {
 function FloatingSvgOpened() {
   return (
     <svg
-      className={tw`text-black fill-white hover:text-white hover:fill-blue-500 transition-colors`}
+      class={tw`text-black fill-white hover:text-white hover:fill-blue-500 transition-colors`}
       width="120"
       height="120"
       fill="none"
