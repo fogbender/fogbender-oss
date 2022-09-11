@@ -2,12 +2,21 @@
   "private": true,
   "scripts": {
     "release": "changeset version && yarn install && yarn fmt",
+    "test": "yarn workspace fogbender test",
     "build": "yarn workspace fogbender build && yarn workspace fogbender-react build && yarn workspace fogbender-vue build && yarn workspace fogbender-proto build",
     "fmt": "prettier --write '**/*.{ts,js,tsx,jsx,css,json,md,prettierrc,html,yml}'"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@types/react",
+      "**/@types/react/**",
+      "**/@types/react-dom",
+      "**/@types/react-dom/**"
+    ]
+  },
   "dependencies": {
     "@changesets/cli": "^2.24.4"
   }
