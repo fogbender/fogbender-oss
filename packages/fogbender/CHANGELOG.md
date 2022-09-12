@@ -1,5 +1,13 @@
 # fogbender
 
+## 0.1.5
+
+### Patch Changes
+
+- 40d32b3: Migrate from deprecated className to class
+
+  This is internal change that will esentially compile into exacty the same code.
+
 ## 0.1.4
 
 ### Patch Changes
