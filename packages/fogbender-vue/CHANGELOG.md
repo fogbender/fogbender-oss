@@ -1,5 +1,11 @@
 # fogbender-vue
 
+## 0.1.0
+
+### Minor Changes
+
+- e978c13: improve types and add FogbenderFloatie component
+
 ## 0.0.5
 
 ### Patch Changes
