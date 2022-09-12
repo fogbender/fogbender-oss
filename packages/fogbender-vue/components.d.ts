@@ -4,8 +4,12 @@
 
 declare module "vue" {
   export interface GlobalComponents {
-    FogbenderSimpleWidget: typeof import("./src/components/FogbenderSimpleWidget");
+    FogbenderSimpleWidget: typeof import("./src/components/FogbenderSimpleWidget"),
+    FogbenderProvider: typeof import("./src/components/FogbenderProvider"),
+    FogbenderFloatingWidget: typeof import("./src/components/FogbenderFloatingWidget"),
+    FogbenderConfig: typeof import("./src/components/FogbenderConfig"),
+    FogbenderIsConfigured: typeof import("./src/components/FogbenderIsConfigured")
   }
 }
 
-export {};
+export { };

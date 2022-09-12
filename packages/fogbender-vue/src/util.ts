@@ -1,4 +1,5 @@
-import { Token, Fogbender, Env } from "fogbender";
+import { Env, Fogbender, Token } from "fogbender";
+import { InjectionKey, Slot } from "vue";
 
 export const noopCleanup = () => {
   return new Promise<() => void>(resolve => resolve(() => {}));
@@ -49,3 +50,10 @@ export const renderComponent = (
     }
   });
 };
+
+export const slot = (s: Slot | any, attrs?: any) => {
+  if (typeof s == "function") return s(attrs);
+  return s;
+};
+
+export const fogbender: InjectionKey<Fogbender> = Symbol("fogbender");

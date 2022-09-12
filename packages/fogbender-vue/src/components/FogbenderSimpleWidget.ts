@@ -9,7 +9,7 @@ export default defineComponent({
       required: false,
     },
     env: {
-      type: Object as PropType<Env>,
+      type: String as PropType<Env>,
       required: false,
     },
     token: {
