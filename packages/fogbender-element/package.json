@@ -1,6 +1,9 @@
 {
   "name": "fogbender-element",
   "version": "0.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Web Component wrapper for `fogbender` to embed the Fogbender Widget on your website",
   "author": "JLarky",
   "type": "module",
