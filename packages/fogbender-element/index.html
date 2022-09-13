@@ -37,6 +37,14 @@
         const myTemplate = html` <button id="button" @click=${clickHandler}>
             ${show ? "Unmount" : "Remount"}
           </button>
+          ${show ? html`<fogbender-widget />` : ""}
+          ${show
+            ? html`<fogbender-provider
+                client-url="https://master--fb-client.netlify.app"
+                .token=${token}
+                >123<fogbender-widget
+              /></fogbender-provider>`
+            : ""}
           ${show
             ? html`<fogbender-simple-widget
                 client-url="https://master--fb-client.netlify.app"

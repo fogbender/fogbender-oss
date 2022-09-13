@@ -15,6 +15,7 @@ export const noopCleanup = () => {
 
 export const renderIframe = (divRef: HTMLDivElement | undefined, headless: boolean) => {
   const fogbender = useContext(FogbenderContext);
+  console.log("rendering iframe", fogbender);
 
   createEffect(() => {
     if (fogbender && divRef) {
