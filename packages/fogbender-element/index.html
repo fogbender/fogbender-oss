@@ -8,17 +8,17 @@
     <script defer src="./dist/fogbender-element.js" type="module"></script>
   </head>
   <body>
-    <!-- native HTML:
     <fogbender-provider>
-      <fogbender-simple-widget
+      <fogbender-config
         client-url="https://master--fb-client.netlify.app"
         token='{"widgetId":"dzAwMTQ5OTEzNjgyNjkwNzA3NDU2","customerId":"org123","customerName":"Org Name","userId":"example_PLEASE_CHANGE","userEmail":"user@example.com","userHMAC":"04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3","userName":"User Name","userAvatarUrl":"https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png"}'
-      ></fogbender-simple-widget>
-    </fogbender-provider> -->
+      ></fogbender-config>
+      <fogbender-floating-widget verbose="true" default-open="true"></fogbender-floating-widget>
+    </fogbender-provider>
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <script type="module">
+    <!-- <script type="module">
       import { html, render } from "https://unpkg.com/lit-html?module";
       const token = {
         widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -50,6 +50,6 @@
         render(myTemplate, document.body);
       };
       app();
-    </script>
+    </script> -->
   </body>
 </html>
