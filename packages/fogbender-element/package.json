@@ -17,8 +17,8 @@
   },
   "scripts": {
     "clean": "rimraf dist/*",
-    "start": "vite",
-    "dev": "vite",
+    "start": "yarn build && vite",
+    "dev": "yarn build && vite",
     "build": "yarn clean && vite build",
     "test": "tsc --noEmit",
     "serve": "vite preview"
