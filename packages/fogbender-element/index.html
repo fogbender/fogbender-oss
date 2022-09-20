@@ -41,10 +41,12 @@
           </button>
           ${show
             ? html`<fogbender-provider>
-                <fogbender-simple-widget
+                <fogbender-config
                   client-url="https://master--fb-client.netlify.app"
                   .token=${token}
-              /></fogbender-provider>`
+                ></fogbender-config>
+                <fogbender-floating-widget verbose="true"></fogbender-floating-widget
+              ></fogbender-provider>`
             : ""}`;
         render(myTemplate, document.body);
       };

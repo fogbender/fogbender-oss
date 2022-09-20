@@ -1,3 +1,6 @@
 import { fogbenderProvider } from "./FogbenderProvider";
 import { fogbenderSimpleWidget } from "./FogbenderSimpleWidget";
-export { fogbenderProvider, fogbenderSimpleWidget };
+import { fogbenderConfig } from "./FogbenderConfig";
+import { fogbenderFloatingWidget } from "./FogbenderFloatingWidget";
+
+export { fogbenderProvider, fogbenderSimpleWidget, fogbenderConfig, fogbenderFloatingWidget };
