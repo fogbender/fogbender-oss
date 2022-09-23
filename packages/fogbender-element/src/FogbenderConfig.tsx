@@ -1,7 +1,7 @@
 import { consume } from "component-register";
 import { Env, Fogbender, Token } from "fogbender";
 import { customElement } from "solid-element";
-import { JSX, onCleanup, onMount } from "solid-js";
+import { createEffect, JSX, onCleanup } from "solid-js";
 import { fogbenderContext } from "./FogbenderProvider";
 import { addVersion } from "./utils";
 
@@ -12,32 +12,19 @@ interface FogbenderConfigProps {
   clientUrl?: string;
 }
 
-const fogbenderConfig = customElement(
+customElement(
   "fogbender-config",
   { env: undefined, clientUrl: undefined, token: undefined, children: undefined },
   (props: FogbenderConfigProps, { element }) => {
     const fogbender: Fogbender = consume(fogbenderContext, element.elemenmt);
 
-    element.addPropertyChangedCallback((name, val) => {
-      switch (name) {
-        case "env": {
-          fogbender.setEnv(val);
-          break;
-        }
-        case "clientUrl": {
-          fogbender.setClientUrl(val);
-          break;
-        }
-        case "token": {
-          fogbender.setToken(val);
-          break;
-        }
-      }
-    });
-
-    onMount(() => {
+    createEffect(() => {
       fogbender.setClientUrl(props.clientUrl);
+    });
+    createEffect(() => {
       fogbender.setEnv(props.env);
+    });
+    createEffect(() => {
       fogbender.setToken(addVersion(props.token));
     });
 
@@ -50,4 +37,3 @@ const fogbenderConfig = customElement(
     return [...(props.children as JSX.Element[])];
   }
 );
-export { fogbenderConfig };

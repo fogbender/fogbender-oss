@@ -24,7 +24,7 @@ const fogbenderFloatingWidget = customElement<FloatingWidgetProps>(
 
     const fogbender: Fogbender = consume(fogbenderContext, element as HTMLElement & ICustomElement);
 
-    const [isConfigured, toggleIsConfigured] = createSignal(false);
+    const [isConfigured, setIsConfigured] = createSignal(false);
 
     const unsub: (() => void)[] = [];
 
@@ -53,10 +53,10 @@ const fogbenderFloatingWidget = customElement<FloatingWidgetProps>(
       const checkIsConfigured = async () => {
         const snapshot = await fogbender.isClientConfigured();
 
-        toggleIsConfigured(snapshot.getValue());
+        setIsConfigured(snapshot.getValue());
         unsub.push(
           snapshot.subscribe(s => {
-            toggleIsConfigured(s.getValue());
+            setIsConfigured(s.getValue());
           })
         );
       };
@@ -67,7 +67,7 @@ const fogbenderFloatingWidget = customElement<FloatingWidgetProps>(
       if (isConfigured()) {
         renderComponent(() =>
           fogbender.createFloatingWidget({
-            verbose: verbose(),
+            verbose: props.verbose,
             openInNewTab: openInNewTab(),
             defaultOpen: defaultOpen(),
             closeable: closeable(),

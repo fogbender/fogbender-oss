@@ -17,16 +17,18 @@ const fogbenderContext: Context = createContext((fogbender?: Fogbender) => {
   return fogbender;
 });
 
-const fogbenderProvider = customElement<FogbenderProviderProps>(
-  "fogbender-provider",
-  { fogbender: undefined, children: undefined },
-  props => {
-    const defaultFogbender = props.fogbender || createNewFogbender();
+export function registerPrivider() {
+  customElement<FogbenderProviderProps>(
+    "fogbender-provider",
+    { fogbender: undefined, children: undefined },
+    props => {
+      const defaultFogbender = props.fogbender || createNewFogbender();
 
-    provide(fogbenderContext, defaultFogbender);
+      provide(fogbenderContext, defaultFogbender);
 
-    return [...(props.children as JSX.Element[])];
-  }
-);
+      return [...(props.children as JSX.Element[])];
+    }
+  );
+}
 
-export { fogbenderProvider, fogbenderContext };
+export { fogbenderContext };

@@ -18,6 +18,8 @@
     -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module">
+      import "https://unpkg.com/fogbender-elemen?module";
+      registerPrivider();
       import { html, render } from "https://unpkg.com/lit-html?module";
       const token = {
         widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -39,15 +41,26 @@
         const myTemplate = html` <button id="button" @click=${clickHandler}>
             ${show ? "Unmount" : "Remount"}
           </button>
-          ${show
-            ? html`<fogbender-provider>
-                <fogbender-config
-                  client-url="https://master--fb-client.netlify.app"
-                  .token=${token}
-                ></fogbender-config>
-                <fogbender-floating-widget verbose="true"></fogbender-floating-widget
-              ></fogbender-provider>`
+          ${true
+            ? html`
+                <fogbender-provider>
+                  <fogbender-config
+                    client-url="https://master--fb-client.netlify.app"
+                    .token=${show ? token : undefined}
+                  />
+                  <fogbender-is-configured>
+                    <template slot="isConfigured">
+                      <fogbender-simple-widget></fogbender-simple-widget>
+                    </template>
+                  </fogbender-is-configured>
+                  {isConfigured ? <Message /> :
+                  <div>Not configured</div>
+                  }
+                  <fogbender-floating-widget verbose="true" />
+                </fogbender-provider>
+              `
             : ""}`;
+        Message = () => (useIsConfigured() ? "yes" : "no");
         render(myTemplate, document.body);
       };
       app();
