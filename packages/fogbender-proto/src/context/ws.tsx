@@ -823,20 +823,17 @@ export const useRoomHistory = ({
         msgType: "Message.CreateMany",
         clientId: messages.map(m => m.clientId).join("-"),
         messages: messages,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          if (x.msgType !== "Message.Ok") {
-            throw x;
+      }).then(x => {
+        if (x.msgType !== "Message.Ok") {
+          throw x;
+        }
+        x?.messageIds?.forEach(messageId => {
+          if (messages.every(m => m.roomId === roomId)) {
+            setSeenUpToMessageId(messageId);
           }
-          x?.messageIds?.forEach(messageId => {
-            if (messages.every(m => m.roomId === roomId)) {
-              setSeenUpToMessageId(messageId);
-            }
-          });
-          return x;
-        })
-        .catch(() => {}),
+        });
+        return x;
+      }),
     [roomId, serverCall]
   );
 
@@ -1025,22 +1022,24 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
   const { fogSessionId, token, serverCall } = useWs();
   const [issuesFilter, setIssuesFilter] = React.useState<string>();
   const [issues, setIssues] = React.useState([] as EventIssue[]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const searchIssues: (workspaceId: string, issuesFilter: string) => void = React.useCallback(
-    throttle(
-      (workspaceId: string, issuesFilter: string) =>
-        serverCall({
-          msgType: "Search.Issues",
-          workspaceId,
-          term: issuesFilter,
-        }).then(x => {
+    throttle((workspaceId: string, issuesFilter: string) => {
+      setIsLoading(true);
+      serverCall({
+        msgType: "Search.Issues",
+        workspaceId,
+        term: issuesFilter,
+      })
+        .then(x => {
           if (x.msgType !== "Search.Ok") {
             throw x;
           }
           setIssues(x.items);
-        }),
-      2000
-    ),
+        })
+        .finally(() => setIsLoading(false));
+    }, 2000),
     [serverCall]
   );
 
@@ -1052,5 +1051,5 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
     }
   }, [fogSessionId, token, workspaceId, serverCall, issuesFilter]);
 
-  return { issues, setIssuesFilter };
+  return { issues, issuesFilter, setIssuesFilter, isLoading };
 };
