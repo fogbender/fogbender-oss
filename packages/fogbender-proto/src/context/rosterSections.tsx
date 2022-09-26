@@ -70,7 +70,7 @@ export type RosterSectionsAtom = PrimitiveAtom<Map<string, EventRosterSectionWit
 export type RosterSectionsActionsAtom = WritableAtom<null, RosterSectionActions, void>;
 
 export const useRosterSections = () => {
-  const { serverCall, workspaceId, fogSessionId, helpdeskId } = useWs();
+  const { serverCall, workspaceId, lastIncomingMessage, fogSessionId, helpdeskId } = useWs();
 
   const { rosterSectionsActionsAtom, rosterSectionsAtom } = React.useMemo(() => {
     // this is slightly silly, we have to do two atoms instead of one
@@ -103,6 +103,21 @@ export const useRosterSections = () => {
       }
     });
   }, [fogSessionId, workspaceId, helpdeskId]);
+
+  React.useEffect(() => {
+    if (lastIncomingMessage?.msgType === "Event.RosterSection") {
+      const data = new Map(rosterSections);
+      setRosterSections(handleRosterSectionsUpdate(data, [lastIncomingMessage]));
+    } else if (lastIncomingMessage?.msgType === "Event.RosterRoom") {
+      const data = new Map(rosterSections);
+      data.forEach(section => {
+        if (!lastIncomingMessage.sections[section.id]) {
+          section.rooms = section.rooms?.filter(x => x.room.id !== lastIncomingMessage.room.id);
+        }
+      });
+      setRosterSections(handleRosterSectionsUpdate(data, [lastIncomingMessage]));
+    }
+  }, [lastIncomingMessage]);
 
   return { rosterSectionsAtom, rosterSectionsActionsAtom };
 };
