@@ -5,17 +5,24 @@
     <meta name="theme-color" content="#000000" />
     <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
     <title>Fogbender Solid Element</title>
-    <script defer src="./src/index.tsx" type="module"></script>
+    <script defer src="./src/index.ts" type="module"></script>
   </head>
   <body>
-    <!-- native HTML:
-    <fogbender-simple-widget
-      client-url="https://master--fb-client.netlify.app"
-      token='{"widgetId":"dzAwMTQ5OTEzNjgyNjkwNzA3NDU2","customerId":"org123","customerName":"Org Name","userId":"example_PLEASE_CHANGE","userEmail":"user@example.com","userHMAC":"04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3","userName":"User Name","userAvatarUrl":"https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png"}'
-    ></fogbender-simple-widget>
-    -->
+    native HTML:
+    <fogbender-provider>
+      <fogbender-config
+        client-url="https://master--fb-client.netlify.app"
+        token='{"widgetId":"dzAwMTQ5OTEzNjgyNjkwNzA3NDU2","customerId":"org123","customerName":"Org Name","userId":"example_PLEASE_CHANGE","userEmail":"user@example.com","userHMAC":"04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3","userName":"User Name","userAvatarUrl":"https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png"}'
+      ></fogbender-config>
+      <fogbender-is-configured>
+        <template id="is-configured" slot="is-configured">
+          <fogbender-floating-widget></fogbender-floating-widget>
+        </template>
+      </fogbender-is-configured>
+    </fogbender-provider>
+
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <script type="module">
+    <!-- <script type="module">
       import { html, render } from "https://unpkg.com/lit-html?module";
       const token = {
         widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -39,15 +46,20 @@
           </button>
           ${show
             ? html` <fogbender-provider>
-                <fogbender-simple-widget
+                <fogbender-config
                   client-url="https://master--fb-client.netlify.app"
                   .token=${token}
-                />
+                ></fogbender-config>
+                <fogbender-is-configured>
+                  <template slot="is-configured">
+                    <fogbender-floating-widget verbose="true"></fogbender-floating-widget>
+                  </template>
+                </fogbender-is-configured>
               </fogbender-provider>`
             : ""}`;
         render(myTemplate, document.body);
       };
       app();
-    </script>
+    </script> -->
   </body>
 </html>
