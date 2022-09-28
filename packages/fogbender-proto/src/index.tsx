@@ -7,3 +7,4 @@ export * from "./context/roster";
 export * from "./context/ws";
 export * from "./context/useSearchHistory";
 export * from "./utils/castTypes";
+export { calculateCounterpart } from "./utils/counterpart";
