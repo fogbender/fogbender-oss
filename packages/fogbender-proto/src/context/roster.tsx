@@ -14,11 +14,12 @@ import {
   SearchRoster,
 } from "../schema";
 
-import { eventRoomToRoom, Room } from "./sharedRoster";
+import { Room } from "./sharedRoster";
 import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { extractEventTag } from "../utils/castTypes";
+import { eventRoomToRoom } from "../utils/counterpart";
 
 export type { Room } from "./sharedRoster";
 
