@@ -84,13 +84,17 @@ export type APISchema = {
   EventCustomerEVT: RPC<undefined, EventCustomer>;
   EventTagEVT: RPC<undefined, EventTag>;
   EventUserEVT: RPC<undefined, EventUser>;
+  EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
+  EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
 };
 
 export type EventStreamSubRPC =
   | EventRoom
   | EventMessage
   | EventTyping
-  | EventSeen;
+  | EventSeen
+  | EventRosterSection
+  | EventRosterRoom;
 
 export type EventStreamGetRPC =
   | EventCustomer
@@ -101,7 +105,8 @@ export type EventStreamGetRPC =
   | EventBadge
   | EventAgent
   | EventTag
-  | EventUser;
+  | EventUser
+  | EventRosterRoom;
 
 export type Error<Type> = {
   code: number;
@@ -686,6 +691,38 @@ export type EventIssue = {
 
 export type EventAuthorEmail = {
   email: string;
+};
+
+export type RosterSectionId =
+  | "ARCHIVED"
+  | "PINNED"
+  | "ASSIGNED TO ME"
+  | "ASSIGNED"
+  | "DIRECT"
+  | "OPEN"
+  | "PRIVATE"
+  | "INBOX";
+
+export type EventRosterSection = {
+  msgId?: string;
+  msgType: "Event.RosterSection";
+  name: string;
+  id: RosterSectionId;
+  pos: number;
+  unreadCount: number;
+  mentionsCount: number;
+  count: number;
+};
+
+// Record<id, pos>
+export type EventRosterSectionPosition = Record<RosterSectionId, number>;
+
+export type EventRosterRoom = {
+  msgId?: string;
+  msgType: "Event.RosterRoom";
+  room: EventRoom;
+  badge: EventBadge;
+  sections: EventRosterSectionPosition;
 };
 
 // END events
