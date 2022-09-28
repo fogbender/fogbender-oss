@@ -51,25 +51,9 @@ export type APISchema = {
   UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
-  StreamSubRPC: RPC<
-    StreamSub,
-    StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
-  >;
+  StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
-  StreamGetRPC: RPC<
-    StreamGet,
-    StreamGetOk<
-      | EventCustomer
-      | EventRoom
-      | EventMessage
-      | EventTyping
-      | EventSeen
-      | EventBadge
-      | EventAgent
-      | EventTag
-      | EventUser
-    >
-  >;
+  StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -101,6 +85,23 @@ export type APISchema = {
   EventTagEVT: RPC<undefined, EventTag>;
   EventUserEVT: RPC<undefined, EventUser>;
 };
+
+export type EventStreamSubRPC =
+  | EventRoom
+  | EventMessage
+  | EventTyping
+  | EventSeen;
+
+export type EventStreamGetRPC =
+  | EventCustomer
+  | EventRoom
+  | EventMessage
+  | EventTyping
+  | EventSeen
+  | EventBadge
+  | EventAgent
+  | EventTag
+  | EventUser;
 
 export type Error<Type> = {
   code: number;
