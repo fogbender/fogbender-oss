@@ -6,6 +6,7 @@ import {
   EventRosterSection,
   EventStreamSubRPC,
   RosterSectionId,
+  StreamGet,
   StreamSub,
 } from "../schema";
 
@@ -76,9 +77,27 @@ export const useRosterSections = () => {
     // this is slightly silly, we have to do two atoms instead of one
     // because of some kind of typescript and jotai bug
     const rosterSectionsAtom = atom(new Map<string, EventRosterSectionWithRooms>());
-    const rosterSectionsActionsAtom = atom(null, (_get, _set, command: RosterSectionActions) => {
+    const rosterSectionsActionsAtom = atom(null, (get, set, command: RosterSectionActions) => {
       if (command.action === "load") {
-        throw new Error("not implemented");
+        const { sectionId, done } = command;
+        const start = 1 + (get(rosterSectionsAtom).get(sectionId)?.rooms?.length || 0);
+        serverCall<StreamGet>({
+          msgType: "Stream.Get",
+          topic: `workspace/${workspaceId}/roster`,
+          startId: `${sectionId}/${start}`,
+          limit: 30,
+        })
+          .then(x => {
+            console.assert(x.msgType === "Stream.GetOk");
+            if (x.msgType === "Stream.GetOk") {
+              const rosterSections = get(rosterSectionsAtom);
+              set(
+                rosterSectionsAtom,
+                handleRosterSectionsUpdate(new Map(rosterSections), x.items as EventRosterRoom[])
+              );
+            }
+          })
+          .finally(done);
       }
     });
     return { rosterSectionsAtom, rosterSectionsActionsAtom };
