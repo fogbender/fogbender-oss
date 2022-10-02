@@ -1,6 +1,8 @@
-import { Token } from "fogbender";
-import { createEffect, onCleanup, useContext } from "solid-js";
-import { FogbenderContext } from "./FogbenderProvider";
+import { consume } from "component-register";
+import { ICustomElement } from "component-register/types/utils";
+import { Fogbender, Token } from "fogbender";
+import { createEffect, createSignal, onCleanup } from "solid-js";
+import { fogbenderContext } from "./FogbenderProvider";
 export const addVersion = (token?: Token): Token | undefined => {
   if (token) {
     token.versions = token.versions || {};
@@ -13,23 +15,35 @@ export const noopCleanup = () => {
   return new Promise<() => void>(resolve => resolve(() => {}));
 };
 
-export const renderIframe = (divRef: HTMLDivElement | undefined, headless: boolean) => {
-  const fogbender = useContext(FogbenderContext);
+export const renderIframe = (
+  divRef: HTMLDivElement | undefined,
+  headless: boolean,
+  element: ICustomElement
+) => {
+  const fogbender: Fogbender = consume(fogbenderContext, element as HTMLElement & ICustomElement);
 
-  createEffect(() => {
-    if (fogbender && divRef) {
-      renderComponent(() => fogbender().renderIframe({ headless, rootEl: divRef }));
-    } else {
-      return noopCleanup();
-    }
-  });
+  if (!fogbender) {
+    throw new Error("No fogbender set, use FogbenderProvider to set one");
+  }
+
+  if (fogbender && divRef) {
+    return renderComponent(() => fogbender.renderIframe({ headless, rootEl: divRef }));
+  } else {
+    return noopCleanup();
+  }
 };
 
 export const renderComponent = (componentRenderer: () => Promise<() => void>) => {
+  let cleanup = () => {};
+
   createEffect(() => {
     const promise = componentRenderer();
+
+    promise.then(componentCleanup => {
+      cleanup = componentCleanup;
+    });
     onCleanup(() => {
-      promise.then(cleanup => cleanup());
+      cleanup();
     });
   });
 };

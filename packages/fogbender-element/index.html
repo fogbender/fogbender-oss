@@ -38,10 +38,12 @@
             ${show ? "Unmount" : "Remount"}
           </button>
           ${show
-            ? html`<fogbender-simple-widget
-                client-url="https://master--fb-client.netlify.app"
-                .token=${token}
-              />`
+            ? html` <fogbender-provider>
+                <fogbender-simple-widget
+                  client-url="https://master--fb-client.netlify.app"
+                  .token=${token}
+                />
+              </fogbender-provider>`
             : ""}`;
         render(myTemplate, document.body);
       };
