@@ -1,5 +1,11 @@
 # fogbender-react
 
+## 0.2.7
+
+### Patch Changes
+
+- 2932120: update version number that is sent to server
+
 ## 0.2.6
 
 ### Patch Changes
