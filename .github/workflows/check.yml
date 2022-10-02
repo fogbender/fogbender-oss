@@ -23,5 +23,7 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build
+      - name: Prettier
+        run: yarn fmt-ci
       - name: Test
         run: yarn test
