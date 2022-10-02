@@ -1,1 +1,2 @@
+import "./FogbenderProvider";
 import "./FogbenderSimpleWidget";
