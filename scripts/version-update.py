@@ -1,36 +1,18 @@
+from pathlib import Path
 import json
-import os
-import fileinput
+import re
 
-top_level_directory = "packages"
-package_json = "package.json"
-packages = [
+for key, value in [
     ["fogbender-vue", "util.ts"],
     ["fogbender-element", "utils.ts"],
     ["fogbender-react", "index.tsx"],
-]
+]:
+    packge_json_file = Path(f"packages/{key}/package.json")
+    version = json.loads(packge_json_file.read_text())["version"]
 
-for key, value in packages:
-    packge_json_file = open(
-        os.path.join(top_level_directory, key, package_json)
-    )
-    version_number = json.load(packge_json_file)["version"]
-    packge_json_file.close()
-    string_to_replace = f'token.versions["{key}"]'
-    new_string = f'{string_to_replace} = "{version_number}";'
-
-    with fileinput.FileInput(
-        os.path.join(top_level_directory, key, "src", value),
-        inplace=True,
-    ) as file:
-        for line in file:
-            if string_to_replace in line:
-                replacement = line.replace(
-                    line,
-                    new_string,
-                    1,
-                )
-                print(str(replacement),end="")
-            else:
-                print(line,end="")
-        file.close()
+    file = Path(f"packages/{key}/src/{value}")
+    file.write_text(re.sub(
+        r'('+key+'.+) "(.+)\";',
+        f'\\1 "{version}";',
+        file.read_text()
+    ))
