@@ -45,6 +45,7 @@ function handleRosterSectionsUpdate(
           msgType: "Event.RosterSection",
           count: 0,
           unreadCount: 0,
+          unresolvedCount: 0,
           mentionsCount: 0,
         };
         let rooms = sectionItem.rooms || [];

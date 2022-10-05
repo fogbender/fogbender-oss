@@ -649,6 +649,7 @@ export type EventBadge = {
   firstUnreadMessage?: EventMessage | null;
   lastRoomMessage?: EventMessage | null;
   nextMentionMessage?: EventMessage | null;
+  resolved: boolean;
 };
 
 export type EventCustomer = {
@@ -717,6 +718,10 @@ export type EventRoom = {
   tags?: Tag[];
   status: RoomStatus; // deprecated
   remove?: boolean;
+  resolved: boolean;
+  resolvedAt: number | null;
+  resolvedByAgentId: string | null;
+  resolvedTil: number | null;
 };
 
 export type IssueLabel = {
@@ -759,6 +764,7 @@ export type EventRosterSection = {
   name: string;
   id: RosterSectionId;
   pos: number;
+  unresolvedCount: number;
   unreadCount: number;
   mentionsCount: number;
   count: number;
