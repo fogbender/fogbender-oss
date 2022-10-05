@@ -3,6 +3,8 @@ import json
 import re
 
 for key, value in [
+    ["fogbender", "index.ts"],
+    ["fogbender-proto", "useServerWs.tsx"],
     ["fogbender-vue", "util.ts"],
     ["fogbender-element", "utils.ts"],
     ["fogbender-react", "index.tsx"],
@@ -12,7 +14,7 @@ for key, value in [
 
     file = Path(f"packages/{key}/src/{value}")
     file.write_text(re.sub(
-        r'('+key+'.+) "(.+)\";',
-        f'\\1 "{version}";',
+        r'('+key+'.+) \"(.+)\"',
+        f'\\1 "{version}"',
         file.read_text()
     ))
