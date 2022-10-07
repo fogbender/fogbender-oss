@@ -64,7 +64,7 @@ export const createNewFogbender = (): Fogbender => {
       if (state.token) {
         state.token = {
           ...state.token,
-          versions: { ...state.token.versions, ...state.versions, fogbender: "0.1.2" },
+          versions: { ...state.token.versions, ...state.versions, fogbender: "0.1.5" },
         };
       }
       updateConfigured();
