@@ -1,25 +1,26 @@
+import { createContext, provide, noShadowDOM } from "component-register";
 import { createNewFogbender, Fogbender } from "fogbender";
-import type { JSX, Accessor, Component } from "solid-js";
-import { createContext, useContext, createSignal, createEffect } from "solid-js";
+import { customElement } from "solid-element";
+import type { JSX } from "solid-js";
 
 export interface FogbenderProviderProps {
-  fogbender?: Accessor<Fogbender>;
-  children?: JSX.Element;
+  fogbender?: Fogbender;
+  children?: JSX.Element[];
 }
 
-export const FogbenderContext = createContext<Accessor<Fogbender>>();
-
-export function getFogbender() {
-  const fogbender = useContext(FogbenderContext);
-
-  if (!fogbender) {
-    throw new Error("No fogbender set, use FogbenderProvider to set one");
-  }
+const fogbenderContext = createContext((fogbender?: Fogbender) => {
   return fogbender;
-}
+});
+customElement<FogbenderProviderProps>(
+  "fogbender-provider",
+  { fogbender: undefined, children: undefined },
+  props => {
+    noShadowDOM();
 
-export const FogbenderProvider: Component<FogbenderProviderProps> = props => {
-  return (
-    <FogbenderContext.Provider value={props.fogbender}>{props.children}</FogbenderContext.Provider>
-  );
-};
+    const fogbender = props.fogbender || createNewFogbender();
+
+    provide(fogbenderContext, fogbender);
+  }
+);
+
+export { fogbenderContext };
