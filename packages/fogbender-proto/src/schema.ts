@@ -79,6 +79,8 @@ export type APISchema = {
   TagCreate: RPC<TagCreate, TagOk>;
   TagUpdate: RPC<TagUpdate, TagOk>;
   TagDelete: RPC<TagDelete, TagOk>;
+  RoomResolve: RPC<RoomResolve, RoomOk>;
+  RoomUnresolve: RPC<RoomUnresolve, RoomOk>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -530,6 +532,19 @@ export type TagDelete = {
   msgType: "Tag.Delete";
   workspaceId: string;
   tag: string;
+};
+
+export type RoomResolve = {
+  msgId?: string;
+  msgType: "Room.Resolve";
+  roomId: string;
+  tilTs?: number | null;
+};
+
+export type RoomUnresolve = {
+  msgId?: string;
+  msgType: "Room.Unresolve";
+  roomId: string;
 };
 
 export type AuthUser = {

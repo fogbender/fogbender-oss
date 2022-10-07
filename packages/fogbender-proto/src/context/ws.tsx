@@ -281,7 +281,30 @@ export function useWsCalls() {
     [workspaceId, serverCall]
   );
 
-  return { updateRoom, markRoomAsSeen, markRoomAsUnseen, createTag, updateTag, deleteTag };
+  const resolveRoom = React.useCallback(
+    (roomId: string, tilTs?: number) => {
+      return serverCall({ msgType: "Room.Resolve", roomId, tilTs });
+    },
+    [serverCall]
+  );
+
+  const unresolveRoom = React.useCallback(
+    (roomId: string) => {
+      return serverCall({ msgType: "Room.Unresolve", roomId });
+    },
+    [serverCall]
+  );
+
+  return {
+    updateRoom,
+    markRoomAsSeen,
+    markRoomAsUnseen,
+    createTag,
+    updateTag,
+    deleteTag,
+    resolveRoom,
+    unresolveRoom,
+  };
 }
 
 export const nameMatchesFilter = (name: string, filter: string) =>
