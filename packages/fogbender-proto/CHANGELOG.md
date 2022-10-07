@@ -1,5 +1,13 @@
 # fogbender-proto
 
+## 0.14.3
+
+### Patch Changes
+
+- eeca7a0: schema: add msteams and slack as possible integration types
+- 412d4e7: pass current package version to server
+- eeca7a0: add experimental useRosterSections hook to replace useRoster
+
 ## 0.14.2
 
 ### Patch Changes
