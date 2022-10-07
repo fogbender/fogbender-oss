@@ -51,25 +51,9 @@ export type APISchema = {
   UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
-  StreamSubRPC: RPC<
-    StreamSub,
-    StreamError | StreamSubOk<EventRoom | EventMessage | EventTyping | EventSeen> // these returns are deprecated
-  >;
+  StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
-  StreamGetRPC: RPC<
-    StreamGet,
-    StreamGetOk<
-      | EventCustomer
-      | EventRoom
-      | EventMessage
-      | EventTyping
-      | EventSeen
-      | EventBadge
-      | EventAgent
-      | EventTag
-      | EventUser
-    >
-  >;
+  StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -100,7 +84,29 @@ export type APISchema = {
   EventCustomerEVT: RPC<undefined, EventCustomer>;
   EventTagEVT: RPC<undefined, EventTag>;
   EventUserEVT: RPC<undefined, EventUser>;
+  EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
+  EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
 };
+
+export type EventStreamSubRPC =
+  | EventRoom
+  | EventMessage
+  | EventTyping
+  | EventSeen
+  | EventRosterSection
+  | EventRosterRoom;
+
+export type EventStreamGetRPC =
+  | EventCustomer
+  | EventRoom
+  | EventMessage
+  | EventTyping
+  | EventSeen
+  | EventBadge
+  | EventAgent
+  | EventTag
+  | EventUser
+  | EventRosterRoom;
 
 export type Error<Type> = {
   code: number;
@@ -671,7 +677,7 @@ export type IssueLabel = {
 export type EventIssue = {
   msgId?: string;
   msgType: "Event.Issue";
-  type: KnownIntegration;
+  type: KnownIssueTrackerIntegration;
   title: string;
   integrationId: string;
   id: string;
@@ -685,6 +691,38 @@ export type EventIssue = {
 
 export type EventAuthorEmail = {
   email: string;
+};
+
+export type RosterSectionId =
+  | "ARCHIVED"
+  | "PINNED"
+  | "ASSIGNED TO ME"
+  | "ASSIGNED"
+  | "DIRECT"
+  | "OPEN"
+  | "PRIVATE"
+  | "INBOX";
+
+export type EventRosterSection = {
+  msgId?: string;
+  msgType: "Event.RosterSection";
+  name: string;
+  id: RosterSectionId;
+  pos: number;
+  unreadCount: number;
+  mentionsCount: number;
+  count: number;
+};
+
+// Record<id, pos>
+export type EventRosterSectionPosition = Record<RosterSectionId, number>;
+
+export type EventRosterRoom = {
+  msgId?: string;
+  msgType: "Event.RosterRoom";
+  room: EventRoom;
+  badge: EventBadge;
+  sections: EventRosterSectionPosition;
 };
 
 // END events
@@ -746,7 +784,7 @@ export type RoomMember = {
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
 
-export const KnownIntegrations = [
+export const KnownIssueTrackerIntegrations = [
   "gitlab",
   "github",
   "asana",
@@ -755,7 +793,10 @@ export const KnownIntegrations = [
   "height",
   "trello",
 ];
-export type KnownIntegration = typeof KnownIntegrations[number];
+export type KnownIssueTrackerIntegration = typeof KnownIssueTrackerIntegrations[number];
+
+export const KnownCommsIntegrations = ["slack", "msteams"];
+export type KnownCommsIntegration = typeof KnownCommsIntegrations[number];
 
 export type Tag = {
   id: string;
@@ -763,7 +804,7 @@ export type Tag = {
   workspaceId?: string;
   title?: string;
   meta_type?: MetaType;
-  meta_entity_type?: KnownIntegration;
+  meta_entity_type?: KnownIssueTrackerIntegration | KnownCommsIntegration;
   meta_entity_url?: string;
   meta_entity_name?: string;
   meta_entity_id?: string;
