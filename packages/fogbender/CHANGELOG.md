@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.1.6
+
+### Patch Changes
+
+- 412d4e7: pass current package version to server
+
 ## 0.1.5
 
 ### Patch Changes
