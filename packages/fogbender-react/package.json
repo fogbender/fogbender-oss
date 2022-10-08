@@ -29,7 +29,7 @@
     "predeploy": "cd example && yarn install && yarn run build"
   },
   "dependencies": {
-    "fogbender": "*"
+    "fogbender": ">=0.2"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
