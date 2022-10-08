@@ -45,9 +45,12 @@ export type Badge = {
   roomType: string;
 };
 
+/**
+ * Snapshot value changes over time and stores the last value. Subscription callback will be called at the start with the current value when subscribed.
+ */
 export type Snapshot<T> = {
   getValue: () => T;
-  subscribe: (cb: (s: Snapshot<T>) => void) => () => void;
+  subscribe: (cb: (v: T) => void) => () => void;
 };
 
 export interface Fogbender {

@@ -2,7 +2,7 @@ import { checkToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Env, Fogbender, Snapshot, Token } from "./types";
+import type { Env, Fogbender, Token } from "./types";
 export type {
   Env,
   Token,
@@ -73,8 +73,10 @@ export const createNewFogbender = (): Fogbender => {
     async isClientConfigured() {
       const snapshot = {
         getValue: () => state.events.configured,
-        subscribe: (cb: (s: Snapshot<boolean>) => void) => {
-          return state.events.on("configured", () => cb(snapshot));
+        subscribe: (cb: (value: boolean) => void) => {
+          const setState = () => cb(state.events.configured);
+          setState();
+          return state.events.on("configured", setState);
         },
       };
       return snapshot;
