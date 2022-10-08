@@ -1,43 +1,35 @@
-import { createNewFogbender, Env, Fogbender, Token } from "fogbender";
-import { customElement } from "solid-element";
-import type { Component } from "solid-js";
-import { createEffect, createSignal, onMount, Show } from "solid-js";
-import { FogbenderProvider } from "./FogbenderProvider";
-import { addVersion, renderIframe } from "./utils";
+import { createNewFogbender, Env, Token } from "fogbender";
+import { customElement, noShadowDOM } from "solid-element";
+import { createEffect, onCleanup } from "solid-js";
+import { addVersion } from "./utils";
+
 interface SimpleWidgetProps {
   env?: Env;
   token?: Token;
   clientUrl?: string;
 }
 
-export const FogbenderWidget: Component = props => {
-  let divRef: HTMLDivElement | undefined;
-
-  onMount(() => {
-    renderIframe(divRef, false);
-  });
-
-  return <div ref={divRef}></div>;
-};
-
 customElement<SimpleWidgetProps>(
   "fogbender-simple-widget",
   { env: undefined, clientUrl: undefined, token: undefined },
   (props: SimpleWidgetProps, { element }) => {
-    const { token, clientUrl, env } = props;
-    const [fogbender, setFogbender] = createSignal(createNewFogbender());
+    noShadowDOM();
+    let divRef: HTMLDivElement | undefined;
+
+    const fogbender = createNewFogbender();
 
     createEffect(() => {
-      const fb = fogbender();
-      fb.setClientUrl(clientUrl);
-      fb.setEnv(env);
-      fb.setToken(addVersion(token));
+      fogbender.setClientUrl(props.clientUrl);
+      fogbender.setEnv(props.env);
+      fogbender.setToken(addVersion(props.token));
+      if (divRef) {
+        const promise = fogbender.renderIframe({ headless: false, rootEl: divRef });
+        onCleanup(() => {
+          promise.then(cleanup => cleanup());
+        });
+      }
     });
 
-    return (
-      <FogbenderProvider fogbender={fogbender}>
-        <FogbenderWidget />
-      </FogbenderProvider>
-    );
+    return <div ref={divRef} />;
   }
 );
