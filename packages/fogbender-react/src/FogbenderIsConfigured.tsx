@@ -27,12 +27,7 @@ export function useFromSnapshot<T>(snapshotGen: () => Promise<Snapshot<T>>, init
     const unsub = [] as (() => void)[];
     const run = async () => {
       const snapshot = await snapshotGen();
-      setValue(snapshot.getValue());
-      unsub.push(
-        snapshot.subscribe(s => {
-          setValue(s.getValue());
-        })
-      );
+      unsub.push(snapshot.subscribe(setValue));
     };
     run();
     return () => {
