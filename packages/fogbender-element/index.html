@@ -55,9 +55,26 @@
             : ""}
         </div>`;
 
+        const scenario3 = html`<div>
+          ${show
+            ? html`<fogbender-provider>
+                <fogbender-config
+                  client-url="https://master--fb-client.netlify.app"
+                  .token=${token}
+                ></fogbender-config>
+                <fogbender-is-configured>
+                  <template data-is-configured>
+                    <fogbender-headless-widget />
+                    <fogbender-floating-widget />
+                  </template>
+                </fogbender-is-configured>
+              </fogbender-provider>`
+            : ""}
+        </div>`;
+
         const myTemplate = html`
           <button id="button" @click=${clickHandler}>${show ? "Unmount" : "Remount"}</button>
-          ${scenario2}
+          ${scenario3}
         `;
         render(myTemplate, document.body);
       };
