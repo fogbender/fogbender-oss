@@ -1,5 +1,11 @@
 # fogbender-react
 
+## 0.2.9
+
+### Patch Changes
+
+- a4810d6: set minimal version of fogbender package to make sure it's compatible
+
 ## 0.2.8
 
 ### Patch Changes
