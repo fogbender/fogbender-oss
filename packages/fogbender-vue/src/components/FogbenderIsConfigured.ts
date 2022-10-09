@@ -12,12 +12,9 @@ export default defineComponent({
       const fb = inject(fogbender);
       if (fb) {
         const snapshot = await fb.isClientConfigured();
-
-        isConfigured.value = snapshot.getValue();
-
         unsub.push(
-          snapshot.subscribe(s => {
-            isConfigured.value = s.getValue();
+          snapshot.subscribe(v => {
+            isConfigured.value = v;
           })
         );
       }
