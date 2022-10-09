@@ -1,5 +1,11 @@
 # fogbender-vue
 
+## 0.1.2
+
+### Patch Changes
+
+- a4810d6: set minimal version of fogbender package to make sure it's compatible
+
 ## 0.1.1
 
 ### Patch Changes
