@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.1.0
+
+### Minor Changes
+
+- 59b2237: Web components implementation with API similar to fogbender-react. Following components are available: fogbender-simple-widget, fogbender-simple-floatie, fogbender-provider, fogbender-config, fogbender-is-configured, fogbender-widget, fogbender-headless-widget, fogbender-floating-widget.
+
 ## 0.0.3
 
 ### Patch Changes
