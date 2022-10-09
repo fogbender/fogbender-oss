@@ -1,5 +1,14 @@
 # fogbender
 
+## 0.2.0
+
+### Minor Changes
+
+- 5805603: BREAKING CHANGE: type of isClientConfigured has changed
+
+  Snapshot callbacks no longer receive the snapshot as an argument
+  but instead get the value itself.
+
 ## 0.1.6
 
 ### Patch Changes

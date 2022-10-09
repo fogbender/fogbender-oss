@@ -1,5 +1,14 @@
 # fogbender-react
 
+## 0.2.8
+
+### Patch Changes
+
+- 5805603: Update `FogbenderIsConfigured` to support new return type of `isClientConfigured`.
+  Return type of `isClientConfigured` in versions 0.1 and 0.2 of `fogbender` package are not compatible.
+- Updated dependencies [5805603]
+  - fogbender@0.2.0
+
 ## 0.2.7
 
 ### Patch Changes
