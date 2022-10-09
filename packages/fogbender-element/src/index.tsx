@@ -5,3 +5,4 @@ import "./FogbenderWidget";
 import "./FogbenderHeadlessWidget";
 import "./FogbenderFloatingWidget";
 import "./FogbenderIsConfigured";
+import "./FogbenderSimpleFloatie";
