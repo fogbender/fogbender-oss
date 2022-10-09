@@ -74,9 +74,8 @@ export const createNewFogbender = (): Fogbender => {
       const snapshot = {
         getValue: () => state.events.configured,
         subscribe: (cb: (value: boolean) => void) => {
-          const setState = () => cb(state.events.configured);
-          setState();
-          return state.events.on("configured", setState);
+          cb(state.events.configured);
+          return state.events.on("configured", cb);
         },
       };
       return snapshot;
