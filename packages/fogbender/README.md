@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install --save fogbender
+npm install fogbender
 yarn add fogbender
 ```
 

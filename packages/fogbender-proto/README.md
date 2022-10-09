@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install --save fogbender-proto
+npm install fogbender-proto
 ```
 
 ## Usage

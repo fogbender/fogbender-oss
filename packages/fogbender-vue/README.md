@@ -7,7 +7,7 @@ This is still an experimental package. Please use [fogbender-react](https://www.
 ## Install
 
 ```bash
-npm install --save fogbender-vue
+npm install fogbender-vue
 ```
 
 ## Usage
