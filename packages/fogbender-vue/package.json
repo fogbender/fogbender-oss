@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "fogbender": "*",
+    "fogbender": ">=0.2",
     "vue-demi": "^0.13.6"
   },
   "devDependencies": {
