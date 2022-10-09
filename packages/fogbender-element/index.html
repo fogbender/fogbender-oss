@@ -17,6 +17,7 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module">
       import { html, render } from "https://unpkg.com/lit-html?module";
+      const clientUrl = "https://master--fb-client.netlify.app";
       const token = {
         widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
         customerId: "org123",
@@ -35,21 +36,13 @@
       };
       const app = () => {
         const scenario1 = html`<div>
-          ${show
-            ? html`<fogbender-simple-widget
-                client-url="https://master--fb-client.netlify.app"
-                .token=${token}
-              />`
-            : ""}
+          ${show ? html`<fogbender-simple-widget client-url=${clientUrl} .token=${token} />` : ""}
         </div>`;
 
         const scenario2 = html`<div>
           ${show
             ? html`<fogbender-provider>
-                <fogbender-config
-                  client-url="https://master--fb-client.netlify.app"
-                  .token=${token}
-                ></fogbender-config>
+                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
                 ${show && html`<fogbender-widget />`}
               </fogbender-provider>`
             : ""}
@@ -58,10 +51,7 @@
         const scenario3 = html`<div>
           ${show
             ? html`<fogbender-provider>
-                <fogbender-config
-                  client-url="https://master--fb-client.netlify.app"
-                  .token=${token}
-                ></fogbender-config>
+                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
                 <fogbender-is-configured>
                   <template data-is-configured>
                     <fogbender-headless-widget />
@@ -75,7 +65,7 @@
         const scenario4 = html`<div>
           ${show
             ? html`<fogbender-simple-floatie
-                client-url="https://master--fb-client.netlify.app"
+                client-url=${clientUrl}
                 .token=${token}
               ></fogbender-simple-floatie>`
             : ""}
