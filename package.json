@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "release": "changeset version && yarn install && python3 './scripts/version-update.py' && yarn fmt",
-    "test": "yarn workspace fogbender test && yarn workspace fogbender-vue test && yarn workspace fogbender-element test",
-    "build": "yarn workspace fogbender build && yarn workspace fogbender-react build && yarn workspace fogbender-vue build && yarn workspace fogbender-element build && yarn workspace fogbender-proto build",
+    "build": "turbo run build",
+    "test": "turbo run test",
     "fmt-ci": "prettier --check '**/*.{ts,js,tsx,jsx,css,json,md,prettierrc,html,yml}'",
     "fmt": "prettier --write '**/*.{ts,js,tsx,jsx,css,json,md,prettierrc,html,yml}'"
   },
@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "@changesets/cli": "^2.24.4"
+  },
+  "devDependencies": {
+    "turbo": "^1.5.5"
   }
 }
