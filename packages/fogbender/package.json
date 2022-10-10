@@ -35,8 +35,7 @@
     "start:tsup": "tsup --watch",
     "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
     "prepare": "run-s build",
-    "test": "run-s test:build test:tsc test:lint",
-    "test:build": "run-s build",
+    "test": "run-s test:tsc test:lint",
     "test:lint": "eslint .",
     "test:tsc": "tsc --noEmit",
     "predeploy": "cd example && yarn install && yarn run build"
