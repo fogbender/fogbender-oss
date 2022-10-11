@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.14.4
+
+### Patch Changes
+
+- 6f9f9be: proto: add slack-customer as one of possible integration names
+
 ## 0.14.3
 
 ### Patch Changes
