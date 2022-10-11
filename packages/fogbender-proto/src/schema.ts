@@ -795,7 +795,7 @@ export const KnownIssueTrackerIntegrations = [
 ];
 export type KnownIssueTrackerIntegration = typeof KnownIssueTrackerIntegrations[number];
 
-export const KnownCommsIntegrations = ["slack", "msteams"];
+export const KnownCommsIntegrations = ["slack", "msteams", "slack-customer"];
 export type KnownCommsIntegration = typeof KnownCommsIntegrations[number];
 
 export type Tag = {
