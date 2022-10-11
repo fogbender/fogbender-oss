@@ -15,5 +15,25 @@ export default defineConfig({
       name: "fogbender-element",
       fileName: "fogbender-element",
     },
+    rollupOptions: {
+      external: [
+        "fogbender",
+        "twind",
+        "twind/css",
+        "component-register",
+        "solid-element",
+        "solid-js",
+        "solid-js/web",
+      ],
+      output: {
+        globals: {
+          fogbender: "fogbender",
+          "solid-js": "solid",
+          "solid-js/web": "solidWeb",
+          "solid-element": "solidElement",
+          "component-register": "componentRegister",
+        },
+      },
+    },
   },
 });
