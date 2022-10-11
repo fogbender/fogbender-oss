@@ -16,9 +16,10 @@ export default defineConfig({
       fileName: "fogbender-element",
     },
     rollupOptions: {
-      external: ["twind", "twind/css", "component-register", "solid-element"],
+      external: ["twind", "twind/css", "component-register", "solid-element", "fogbender"],
       output: {
         globals: {
+          fogbender: "fogbender",
           twind: "twind",
           "twind/css": "twindCss",
           "solid-element": "solidElement",
