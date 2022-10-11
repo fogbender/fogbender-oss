@@ -22,13 +22,11 @@ export default defineConfig({
         "twind/css",
         "component-register",
         "solid-element",
-        "solid-js",
         "solid-js/web",
       ],
       output: {
         globals: {
           fogbender: "fogbender",
-          "solid-js": "solid",
           "solid-js/web": "solidWeb",
           "solid-element": "solidElement",
           "component-register": "componentRegister",
