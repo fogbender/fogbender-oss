@@ -20,7 +20,8 @@ export const FogbenderSimpleWidget: React.FC<{
   clientUrl?: string;
   env?: Env;
   token: Token;
-}> = ({ clientUrl, env, token }) => {
+  disableFit?: boolean;
+}> = ({ clientUrl, env, token, disableFit }) => {
   const [fogbender, setFogbender] = React.useState(undefined as Fogbender | undefined);
   React.useEffect(() => {
     const fb = createNewFogbender();
@@ -34,29 +35,37 @@ export const FogbenderSimpleWidget: React.FC<{
   }
   return (
     <FogbenderProvider fogbender={fogbender}>
-      <FogbenderWidget />
+      <FogbenderWidget disableFit={!!disableFit} />
     </FogbenderProvider>
   );
 };
 
-export const FogbenderWidget: React.FC = () => {
+export const FogbenderWidget: React.FC<{ disableFit: boolean }> = ({ disableFit }) => {
   const divRef = React.useRef<HTMLDivElement>(null);
-  useRenderIframe(divRef, false);
+  useRenderIframe(divRef, false, disableFit);
   return <div ref={divRef} />;
 };
 
-export const FogbenderHeadlessWidget: React.FC = () => {
+export const FogbenderHeadlessWidget: React.FC<{ disableFit: boolean }> = ({ disableFit }) => {
   const divRef = React.useRef<HTMLDivElement>(null);
-  useRenderIframe(divRef, true);
+  useRenderIframe(divRef, true, disableFit);
   return <div ref={divRef} />;
 };
 
-const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headless: boolean) => {
+const useRenderIframe = (
+  divRef: React.RefObject<HTMLDivElement | null>,
+  headless: boolean,
+  disableFit: boolean
+) => {
   const fogbender = useFogbender();
   useRenderComponent(
     React.useCallback(() => {
       if (divRef.current) {
-        return fogbender.renderIframe({ headless, rootEl: divRef.current });
+        return fogbender.renderIframe({
+          headless,
+          rootEl: divRef.current,
+          disableFit,
+        });
       } else {
         return noopCleanup();
       }
