@@ -8,6 +8,7 @@ export default defineConfig({
     port: 3000,
   },
   build: {
+    sourcemap: true,
     target: "esnext",
     lib: {
       entry: resolve(__dirname, "src/index.tsx"),
