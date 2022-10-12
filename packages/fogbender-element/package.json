@@ -9,6 +9,7 @@
   "type": "module",
   "main": "./dist/fogbender-element.umd.cjs",
   "module": "./dist/fogbender-element.js",
+  "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-element",
   "exports": {
     ".": {
       "import": "./dist/fogbender-element.js",
