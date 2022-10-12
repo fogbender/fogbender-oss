@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.1.1
+
+### Patch Changes
+
+- e1e4c14: add repository url in fogbender-element package.json
+
 ## 0.1.0
 
 ### Minor Changes
