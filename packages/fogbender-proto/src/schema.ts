@@ -551,7 +551,7 @@ export type EventMessage = {
   plainText?: string;
   mentions?: MentionIn[];
   reactions?: Reaction[];
-  files: File[];
+  files: Attachment[];
   updatedTs: number;
   createdTs: number;
   linkRoomId?: string;
@@ -735,7 +735,7 @@ export type TypingUser = {
   name: string;
 };
 
-export declare type File = {
+export declare type Attachment = {
   id: string;
   filename: string;
   contentType: string;
