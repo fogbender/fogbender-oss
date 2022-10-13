@@ -1,7 +1,11 @@
-import { ExampleComponent } from ".";
+import { getConfig } from ".";
 
-describe("ExampleComponent", () => {
+describe("getConfig", () => {
   it("is truthy", () => {
-    expect(ExampleComponent).toBeTruthy();
+    expect(getConfig()).toMatchInlineSnapshot(`
+      Object {
+        "serverApiUrl": "http://localhost:8000/api",
+      }
+    `);
   });
 });
