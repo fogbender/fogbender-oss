@@ -790,6 +790,7 @@ export declare type Attachment = {
     original_width: number;
     original_height: number;
   };
+  fileExpirationTs: number;
   fileUrl: string;
   downloadUrl: string;
   fileSize: number;
