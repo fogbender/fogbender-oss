@@ -64,6 +64,7 @@ export type APISchema = {
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
   MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
   MessageSetReactionRPC: RPC<MessageSetReaction, MessageOk>;
+  MessageRefreshFilesRPC: RPC<MessageRefreshFiles, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -427,6 +428,12 @@ export type MessageSetReaction = {
   msgType: "Message.SetReaction";
   messageId: string;
   reaction: string | null;
+};
+
+export type MessageRefreshFiles = {
+  msgId?: string;
+  msgType: "Message.RefreshFiles";
+  messageId: string;
 };
 
 export type MessageOk = {
