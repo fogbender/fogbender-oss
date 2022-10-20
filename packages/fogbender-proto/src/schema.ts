@@ -359,6 +359,7 @@ export type MessageUpdate = {
   msgType: "Message.Update";
   messageId: string;
   text?: string;
+  fileIds?: string[];
   mentions?: Mention[];
   linkRoomId?: string | null;
   linkStartMessageId?: string | null;
