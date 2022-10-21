@@ -54,6 +54,9 @@ export type APISchema = {
   StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
+  RosterSubRPC: RPC<RosterSub, RosterError | RosterSubOk<EventRoster>>;
+  RosterUnSubRPC: RPC<RosterUnSub, RosterError | RosterUnSubOk>;
+  RosterGetRPC: RPC<RosterGetRange, RosterError | RosterGetOk<EventRosterRoom>>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -88,13 +91,7 @@ export type APISchema = {
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
 };
 
-export type EventStreamSubRPC =
-  | EventRoom
-  | EventMessage
-  | EventTyping
-  | EventSeen
-  | EventRosterSection
-  | EventRosterRoom;
+export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
 
 export type EventStreamGetRPC =
   | EventCustomer
@@ -105,8 +102,9 @@ export type EventStreamGetRPC =
   | EventBadge
   | EventAgent
   | EventTag
-  | EventUser
-  | EventRosterRoom;
+  | EventUser;
+
+export type EventRoster = EventRosterRoom | EventRosterSection;
 
 export type Error<Type> = {
   code: number;
@@ -296,6 +294,50 @@ export type StreamGetOk<Item> = {
   items: Item[];
   prev?: string | null;
   next?: string | null;
+};
+
+export type RosterSub = {
+  msgId?: string;
+  msgType: "Roster.Sub";
+  topic: string;
+  limit: number;
+};
+
+export type RosterSubOk<Item> = {
+  msgId: string;
+  msgType: "Roster.SubOk";
+  topic: string;
+  items: Item[];
+};
+
+export type RosterError = Error<"Roster.Err"> & { topic: null | string };
+
+export type RosterUnSub = {
+  msgId?: string;
+  msgType: "Roster.UnSub";
+  topic: string;
+};
+
+export type RosterUnSubOk = {
+  msgId: string;
+  msgType: "Roster.UnSubOk";
+  topic: string;
+};
+
+export type RosterGetRange = {
+  msgId?: string;
+  msgType: "Roster.GetRange";
+  topic: string;
+  sectionId: string;
+  startPos: number;
+  limit: number;
+};
+
+export type RosterGetOk<Item> = {
+  msgId: string;
+  msgType: "Roster.GetOk";
+  topic: string;
+  items: Item[];
 };
 
 export type Mention = {

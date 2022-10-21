@@ -5,10 +5,10 @@ import { useUpdateAtom } from "jotai/utils";
 import {
   EventRosterRoom,
   EventRosterSection,
-  EventStreamSubRPC,
+  EventRoster,
   RosterSectionId,
-  StreamGet,
-  StreamSub,
+  RosterGetRange,
+  RosterSub,
 } from "../schema";
 
 import { useWs } from "./ws";
@@ -24,7 +24,7 @@ type EventRosterSectionWithRooms = EventRosterSection & { rooms?: EventRosterRoo
 
 function handleRosterSectionsUpdate(
   data: Map<string, EventRosterSectionWithRooms>,
-  newUpdates: EventStreamSubRPC[]
+  newUpdates: EventRoster[]
 ) {
   let needsSort = false;
   newUpdates.forEach(item => {
@@ -82,20 +82,18 @@ export const useRosterSections = () => {
       if (command.action === "load") {
         const { sectionId, done } = command;
         const start = 1 + (get(rosterSectionsAtom).get(sectionId)?.rooms?.length || 0);
-        serverCall<StreamGet>({
-          msgType: "Stream.Get",
+        serverCall<RosterGetRange>({
+          msgType: "Roster.GetRange",
           topic: `workspace/${workspaceId}/roster`,
-          startId: `${sectionId}/${start}`,
+          sectionId: sectionId,
+          startPos: start,
           limit: 30,
         })
           .then(x => {
-            console.assert(x.msgType === "Stream.GetOk");
-            if (x.msgType === "Stream.GetOk") {
+            console.assert(x.msgType === "Roster.GetOk");
+            if (x.msgType === "Roster.GetOk") {
               const rosterSections = get(rosterSectionsAtom);
-              set(
-                rosterSectionsAtom,
-                handleRosterSectionsUpdate(new Map(rosterSections), x.items as EventRosterRoom[])
-              );
+              set(rosterSectionsAtom, handleRosterSectionsUpdate(new Map(rosterSections), x.items));
             }
           })
           .finally(done);
@@ -113,12 +111,13 @@ export const useRosterSections = () => {
       return;
     }
 
-    serverCall<StreamSub>({
-      msgType: "Stream.Sub",
+    serverCall<RosterSub>({
+      msgType: "Roster.Sub",
       topic: `workspace/${workspaceId}/roster`,
+      limit: 10,
     }).then(x => {
-      console.assert(x.msgType === "Stream.SubOk");
-      if (x.msgType === "Stream.SubOk") {
+      console.assert(x.msgType === "Roster.SubOk");
+      if (x.msgType === "Roster.SubOk") {
         setRosterSections(rosterSections =>
           handleRosterSectionsUpdate(new Map(rosterSections), x.items)
         );
