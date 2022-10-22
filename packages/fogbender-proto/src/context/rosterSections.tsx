@@ -1,5 +1,6 @@
 import React from "react";
-import { atom, PrimitiveAtom, useAtom, WritableAtom } from "jotai";
+import { atom, PrimitiveAtom, WritableAtom } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 
 import {
   EventRosterRoom,
@@ -102,7 +103,7 @@ export const useRosterSections = () => {
     });
     return { rosterSectionsAtom, rosterSectionsActionsAtom };
   }, []);
-  const [rosterSections, setRosterSections] = useAtom(rosterSectionsAtom);
+  const setRosterSections = useUpdateAtom(rosterSectionsAtom);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -118,23 +119,28 @@ export const useRosterSections = () => {
     }).then(x => {
       console.assert(x.msgType === "Stream.SubOk");
       if (x.msgType === "Stream.SubOk") {
-        setRosterSections(handleRosterSectionsUpdate(new Map(rosterSections), x.items));
+        setRosterSections(rosterSections =>
+          handleRosterSectionsUpdate(new Map(rosterSections), x.items)
+        );
       }
     });
   }, [fogSessionId, workspaceId, helpdeskId]);
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.RosterSection") {
-      const data = new Map(rosterSections);
-      setRosterSections(handleRosterSectionsUpdate(data, [lastIncomingMessage]));
+      setRosterSections(rosterSections =>
+        handleRosterSectionsUpdate(new Map(rosterSections), [lastIncomingMessage])
+      );
     } else if (lastIncomingMessage?.msgType === "Event.RosterRoom") {
-      const data = new Map(rosterSections);
-      data.forEach(section => {
-        if (!lastIncomingMessage.sections[section.id]) {
-          section.rooms = section.rooms?.filter(x => x.room.id !== lastIncomingMessage.room.id);
-        }
+      setRosterSections(rosterSections => {
+        const data = new Map(rosterSections);
+        data.forEach(section => {
+          if (!lastIncomingMessage.sections[section.id]) {
+            section.rooms = section.rooms?.filter(x => x.room.id !== lastIncomingMessage.room.id);
+          }
+        });
+        return handleRosterSectionsUpdate(data, [lastIncomingMessage]);
       });
-      setRosterSections(handleRosterSectionsUpdate(data, [lastIncomingMessage]));
     }
   }, [lastIncomingMessage]);
 
