@@ -71,6 +71,20 @@
             : ""}
         </div>`;
 
+        const scenerio5 = html`<div>
+          ${show
+            ? html`<fogbender-provider>
+                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
+                <fogbender-is-configured>
+                  <template data-is-configured>
+                    <fogbender-headless-widget />
+                    <fogbender-unread-badge />
+                  </template>
+                </fogbender-is-configured>
+              </fogbender-provider>`
+            : ""}
+        </div>`;
+
         const myTemplate = html`
           <button id="button" @click=${clickHandler}>${show ? "Unmount" : "Remount"}</button>
           ${scenario4}
