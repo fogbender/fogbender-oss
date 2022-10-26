@@ -42,9 +42,6 @@ export function useServerWs(
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [avatarLibraryUrl, setAvatarLibraryUrl] = React.useState<string>();
   const [agentRole, setAgentRole] = React.useState<string>();
-  const [lastIncomingMessage, setLastIncomingMessage] = React.useState<
-    ServerEvents["inbound"] | undefined
-  >();
   const inFlight = React.useRef(new Map<string, Requests>());
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
@@ -77,8 +74,8 @@ export function useServerWs(
   } = useWebSocket(socketUrl, opts, connect);
   ready.current = readyState;
 
-  React.useEffect(() => {
-    if (lastMessage !== null) {
+  const lastIncomingMessage = React.useMemo(() => {
+    if (token !== undefined && lastMessage !== null) {
       let message: FogSchema["inbound"] | undefined;
       try {
         message = JSON.parse(lastMessage.data);
@@ -93,15 +90,12 @@ export function useServerWs(
             x.resolve(message);
           }
         } else {
-          setLastIncomingMessage(message);
+          return message;
         }
       }
     }
-  }, [lastMessage]);
-
-  React.useEffect(() => {
-    setLastIncomingMessage(undefined);
-  }, [token]);
+    return undefined;
+  }, [lastMessage, token]);
 
   const flushQueue = React.useCallback(() => {
     queue.current.forEach(m => {

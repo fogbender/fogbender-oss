@@ -5,7 +5,7 @@ import {
   EventMessage,
   EventNotificationMessage,
   EventTyping,
-  File,
+  Attachment,
   MessageCreate,
   MessageUpdate,
   MessageSeen,
@@ -49,7 +49,7 @@ export type Message = {
   plainText?: string;
   mentions?: MentionIn[];
   reactions?: Reaction[];
-  files: File[];
+  files: Attachment[];
   roomId: string;
   isPinned?: boolean;
   tags?: string[];

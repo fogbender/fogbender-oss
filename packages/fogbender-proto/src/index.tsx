@@ -1,4 +1,5 @@
 export * from "./schema";
+export type { Attachment as File } from "./schema"; // deprecated
 export * from "./client";
 export * from "./config";
 export * from "./useServerWs";
