@@ -1,5 +1,13 @@
 # fogbender-react
 
+## 0.2.10
+
+### Patch Changes
+
+- 8fdf54d: update npm install instructions in readme
+- Updated dependencies [8fdf54d]
+  - fogbender@0.2.1
+
 ## 0.2.9
 
 ### Patch Changes
