@@ -1,5 +1,14 @@
 # fogbender-element
 
+## 0.1.2
+
+### Patch Changes
+
+- 8fdf54d: update npm install instructions in readme
+- 4a91aee: implement `<fogbender-unread-badge />`
+- Updated dependencies [8fdf54d]
+  - fogbender@0.2.1
+
 ## 0.1.1
 
 ### Patch Changes

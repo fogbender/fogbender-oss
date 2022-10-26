@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.14.5
+
+### Patch Changes
+
+- 8fdf54d: update npm install instructions in readme
+
 ## 0.14.4
 
 ### Patch Changes

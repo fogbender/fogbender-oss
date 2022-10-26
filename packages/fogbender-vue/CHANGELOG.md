@@ -1,5 +1,14 @@
 # fogbender-vue
 
+## 0.1.3
+
+### Patch Changes
+
+- 8fdf54d: update npm install instructions in readme
+- 9e6e47b: implement FogbenderUnreadBadge
+- Updated dependencies [8fdf54d]
+  - fogbender@0.2.1
+
 ## 0.1.2
 
 ### Patch Changes
