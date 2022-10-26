@@ -10,7 +10,11 @@ This is still an experimental package. Please use [fogbender-react](https://www.
 
 ```bash
 npm install fogbender-element
-# or
+```
+
+Or if you are using other package managers like yarn, pnpm or bun:
+
+```
 npm i -g @antfu/ni && ni fogbender-element
 ```
 

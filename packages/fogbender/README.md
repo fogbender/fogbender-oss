@@ -7,8 +7,13 @@
 ## Install
 
 ```bash
-npm install --save fogbender
-yarn add fogbender
+npm install fogbender
+```
+
+Or if you are using other package managers like yarn, pnpm or bun:
+
+```
+npm i -g @antfu/ni && ni fogbender
 ```
 
 ## Usage
