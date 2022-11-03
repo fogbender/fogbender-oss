@@ -240,6 +240,7 @@ export type IntegrationOk = {
   msgId: string;
   msgType: "Integration.Ok";
   issueId?: string;
+  issueTag?: string;
 };
 
 export type StreamSub = {
