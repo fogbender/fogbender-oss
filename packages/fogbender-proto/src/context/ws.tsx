@@ -1024,8 +1024,15 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
   const [issues, setIssues] = React.useState([] as EventIssue[]);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const searchIssues: (workspaceId: string, issuesFilter: string) => void = React.useCallback(
-    throttle((workspaceId: string, issuesFilter: string) => {
+  // https://www.loom.com/share/337bc19ada86447a80d3f189ad8e09ce
+  const throttledRef = React.useRef<{
+    [fId: string]: ((x: string, y: string, z: string) => void) & { cancel: () => void };
+  }>({});
+
+  const searchIssues: ((workspaceId: string, issuesFilter: string, fId: string) => void) & {
+    cancel: () => void;
+  } = React.useCallback(
+    throttle((workspaceId: string, issuesFilter: string, fId: string) => {
       setIsLoading(true);
       serverCall({
         msgType: "Search.Issues",
@@ -1036,7 +1043,13 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
           if (x.msgType !== "Search.Ok") {
             throw x;
           }
-          setIssues(x.items);
+
+          if (throttledRef.current[fId]) {
+            delete throttledRef.current[fId];
+            setIssues(x.items);
+          } else {
+            setIssues([]);
+          }
         })
         .finally(() => setIsLoading(false));
     }, 2000),
@@ -1044,12 +1057,28 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
   );
 
   React.useEffect(() => {
-    if (token && issuesFilter && workspaceId) {
-      searchIssues(workspaceId, issuesFilter);
+    if (token && workspaceId) {
+      if (issuesFilter) {
+        const fId = Math.random().toString(36).substring(7);
+        const f = searchIssues;
+
+        throttledRef.current[fId] = f;
+
+        f(workspaceId, issuesFilter, fId);
+      } else {
+        const fIds = Object.keys(throttledRef.current);
+
+        fIds.forEach(fId => {
+          throttledRef.current[fId].cancel();
+          delete throttledRef.current[fId];
+        });
+
+        setIssues([]);
+      }
     } else {
       setIssues([]);
     }
   }, [fogSessionId, token, workspaceId, serverCall, issuesFilter]);
 
-  return { issues, issuesFilter, setIssuesFilter, isLoading };
+  return { issues, issuesFilter, setIssuesFilter, issuesLoading: isLoading };
 };
