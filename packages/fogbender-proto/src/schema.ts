@@ -814,6 +814,7 @@ export declare type Attachment = {
   thumbnail?: {
     url: string;
     height: number;
+    thumbnailDataUrl?: string;
     width: number;
     original_width: number;
     original_height: number;
