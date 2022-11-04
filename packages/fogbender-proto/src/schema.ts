@@ -665,7 +665,6 @@ export type EventBadge = {
   firstUnreadMessage?: EventMessage | null;
   lastRoomMessage?: EventMessage | null;
   nextMentionMessage?: EventMessage | null;
-  resolved: boolean;
 };
 
 export type EventCustomer = {
