@@ -748,6 +748,7 @@ export type EventRoom = {
   resolvedByAgentId: string | null;
   resolvedTil: number | null;
   lastMessage: EventMessage | null;
+  createdBy: Actor | null;
 };
 
 export type IssueLabel = {
@@ -860,13 +861,15 @@ export type EventUser = {
   createdTs: number;
 };
 
-export type RoomMember = {
+export type Actor = {
   id: string;
   type: "agent" | "user";
   imageUrl: string;
   name: string;
   email: string;
 };
+
+export type RoomMember = Actor;
 
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
