@@ -57,6 +57,7 @@ export type APISchema = {
   RosterSubRPC: RPC<RosterSub, RosterError | RosterSubOk<EventRoster>>;
   RosterUnSubRPC: RPC<RosterUnSub, RosterError | RosterUnSubOk>;
   RosterGetRPC: RPC<RosterGetRange, RosterError | RosterGetOk<EventRosterRoom>>;
+  RosterGetRoomsRPC: RPC<RosterGetRooms, RosterError | RosterGetOk<EventRosterRoom>>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -104,6 +105,7 @@ export type EventStreamGetRPC =
   | EventSeen
   | EventBadge
   | EventAgent
+  | EventUser
   | EventTag
   | EventUser;
 
@@ -335,6 +337,13 @@ export type RosterGetRange = {
   sectionId: string;
   startPos: number;
   limit: number;
+};
+
+export type RosterGetRooms = {
+  msgId?: string;
+  msgType: "Roster.GetRooms";
+  topic: string;
+  roomIds: string[];
 };
 
 export type RosterGetOk<Item> = {
