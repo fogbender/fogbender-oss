@@ -737,6 +737,7 @@ export type EventRoom = {
   resolvedAt: number | null;
   resolvedByAgentId: string | null;
   resolvedTil: number | null;
+  lastMessage: EventMessage | null;
 };
 
 export type IssueLabel = {
