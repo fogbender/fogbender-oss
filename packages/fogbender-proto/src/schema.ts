@@ -685,6 +685,7 @@ export type EventAgent = {
   msgType: "Event.Agent";
   id: string;
   email: string;
+  name: string;
   role: "owner" | "admin" | "agent" | "reader" | "app";
   imageUrl: string;
   createdTs: number;
@@ -845,6 +846,9 @@ export type EventUser = {
   msgType: "Event.User";
   userId: string;
   imageUrl: string;
+  name: string;
+  email: string;
+  createdTs: number;
 };
 
 export type RoomMember = {
