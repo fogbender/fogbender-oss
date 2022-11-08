@@ -5,6 +5,7 @@ import React from "react";
 import {
   EventRoom,
   EventTag,
+  EventUser,
   IntegrationCreateIssue,
   IntegrationForwardToIssue,
   RoomCreate,
@@ -18,7 +19,7 @@ import { Room } from "./sharedRoster";
 import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { extractEventTag } from "../utils/castTypes";
+import { extractEventTag, extractEventUser } from "../utils/castTypes";
 import { eventRoomToRoom } from "../utils/counterpart";
 
 export type { Room } from "./sharedRoster";
@@ -62,8 +63,22 @@ export const useRoster = ({
   roomId?: string;
 }) => {
   const { sharedRoster, serverCall, userAvatarUrl } = useWs();
-  const { roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster } =
-    sharedRoster;
+  const {
+    roster: fullRoster,
+    roomById,
+    roomByName,
+    badges,
+    customers,
+    seenRoster,
+    setSeenRoster,
+  } = sharedRoster;
+
+  const [roster, setRoster] = React.useState([] as Room[]);
+
+  React.useMemo(
+    () => setRoster(helpdeskId ? fullRoster.filter(x => x.helpdeskId === helpdeskId) : fullRoster),
+    [fullRoster]
+  );
 
   /*
     API calls work independently for each hook
@@ -422,4 +437,69 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
   }, [userId, serverCall]);
 
   return { tags, helpdeskTags: helpdesk?.tags || [] };
+};
+
+export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  const [users, setUsers] = React.useState<EventUser[]>([]);
+
+  const updateUsers = React.useCallback(
+    (usersIn: EventUser[]) => {
+      let newUsers = users;
+      usersIn.forEach(user => {
+        newUsers = newUsers.filter(x => x.userId !== user.userId);
+        newUsers.push(user);
+      });
+      setUsers(newUsers);
+    },
+    [users]
+  );
+
+  React.useEffect(() => {
+    if (helpdeskId && lastIncomingMessage?.msgType === "Event.User") {
+      updateUsers([lastIncomingMessage]);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (helpdeskId && token) {
+      const topic = `helpdesk/${helpdeskId}/users`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
+          updateUsers(extractEventUser(x.items));
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [helpdeskId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (helpdeskId && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `helpdesk/${helpdeskId}/users`,
+        }).then(x => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [helpdeskId, serverCall]);
+
+  return { users };
 };

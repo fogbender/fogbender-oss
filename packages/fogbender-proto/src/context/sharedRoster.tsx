@@ -57,7 +57,12 @@ export const useSharedRoster = ({
   const [customers, setCustomers] = React.useState<EventCustomer[]>([]);
   const [customersLoaded, setCustomersLoaded] = React.useState(false);
   const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
-  const { onRoomRef, dispatch } = useRoomResolver(fogSessionId, serverCall);
+  const { onRoomRef, dispatch } = useRoomResolver(
+    fogSessionId,
+    serverCall,
+    workspaceId,
+    helpdeskId
+  );
   const enoughBadges = React.useRef(0);
 
   React.useLayoutEffect(() => {
