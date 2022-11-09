@@ -19,7 +19,7 @@ import { Room } from "./sharedRoster";
 import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { extractEventTag, extractEventUser } from "../utils/castTypes";
+import { extractEventRoom, extractEventTag, extractEventUser } from "../utils/castTypes";
 import { eventRoomToRoom } from "../utils/counterpart";
 
 export type { Room } from "./sharedRoster";
@@ -437,6 +437,72 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
   }, [userId, serverCall]);
 
   return { tags, helpdeskTags: helpdesk?.tags || [] };
+};
+
+export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  const [rooms, setRooms] = React.useState<EventRoom[]>([]);
+
+  const updateRooms = React.useCallback(
+    (roomsIn: EventRoom[]) => {
+      let newRooms = rooms;
+      roomsIn.forEach(room => {
+        newRooms = newRooms.filter(x => x.id !== room.id);
+        newRooms.push(room);
+      });
+      setRooms(newRooms);
+    },
+    [rooms]
+  );
+
+  React.useEffect(() => {
+    if (helpdeskId && lastIncomingMessage?.msgType === "Event.Room") {
+      updateRooms([lastIncomingMessage]);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (helpdeskId && token) {
+      const topic = `helpdesk/${helpdeskId}/rooms`;
+      serverCall({
+        msgType: "Stream.Get",
+        limit: 100,
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
+          updateRooms(extractEventRoom(x.items));
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [helpdeskId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (helpdeskId && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `helpdesk/${helpdeskId}/rooms`,
+        }).then(x => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [helpdeskId, serverCall]);
+
+  return { rooms };
 };
 
 export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
