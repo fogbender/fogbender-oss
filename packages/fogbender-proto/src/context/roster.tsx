@@ -441,7 +441,6 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
 
 export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
   const { token, serverCall, lastIncomingMessage } = useWs();
-  const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [rooms, setRooms] = React.useState<EventRoom[]>([]);
 
@@ -471,7 +470,6 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
         limit: 100,
         topic,
       })
-        .then(rejectIfUnmounted)
         .then(x => {
           if (x.msgType !== "Stream.GetOk") {
             throw x;
