@@ -13,6 +13,7 @@ import {
   RoomUnarchive,
   UserUpdate,
   SearchRoster,
+  StreamGet,
 } from "../schema";
 
 import { Room } from "./sharedRoster";
@@ -465,7 +466,7 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
   React.useEffect(() => {
     if (helpdeskId && token) {
       const topic = `helpdesk/${helpdeskId}/rooms`;
-      serverCall({
+      serverCall<StreamGet>({
         msgType: "Stream.Get",
         limit: 100,
         topic,
