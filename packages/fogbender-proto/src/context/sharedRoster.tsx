@@ -386,13 +386,15 @@ export const useSharedRoster = ({
       .reverse();
   }, [rawRoster, badges, workspaceId]);
 
-  return {
-    roster,
-    roomById,
-    roomByName,
-    badges,
-    customers,
-    seenRoster,
-    setSeenRoster,
-  };
+  return React.useMemo(() => {
+    return {
+      roster,
+      roomById,
+      roomByName,
+      badges,
+      customers,
+      seenRoster,
+      setSeenRoster,
+    };
+  }, [roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster]);
 };
