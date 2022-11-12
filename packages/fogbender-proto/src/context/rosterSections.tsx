@@ -2,7 +2,7 @@ import React from "react";
 import { atom, PrimitiveAtom, WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 
-import {
+import type {
   EventRosterRoom,
   EventRosterSection,
   EventRoster,

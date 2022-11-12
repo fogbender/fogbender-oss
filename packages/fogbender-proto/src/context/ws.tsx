@@ -1,4 +1,4 @@
-import {
+import type {
   AnyToken,
   EventAgent,
   EventIssue,
@@ -28,7 +28,7 @@ import { useLoadAround } from "./loadAround";
 import { useSharedRoster } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { Client } from "../client";
+import type { Client } from "../client";
 import { extractEventMessage, extractEventSeen, extractEventTyping } from "../utils/castTypes";
 
 export type Author = {

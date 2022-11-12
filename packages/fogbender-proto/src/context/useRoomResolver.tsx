@@ -1,6 +1,6 @@
 import React from "react";
-import { EventRoom } from "../schema";
-import { ServerCall } from "../useServerWs";
+import type { EventRoom } from "../schema";
+import type { ServerCall } from "../useServerWs";
 
 export function useRoomResolver(
   fogSessionId: string | undefined,

@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
-import {
+import type {
   EventRoom,
   EventTag,
   EventUser,
@@ -16,7 +16,7 @@ import {
   StreamGet,
 } from "../schema";
 
-import { Room } from "./sharedRoster";
+import type { Room } from "./sharedRoster";
 import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";

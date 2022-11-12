@@ -3,8 +3,8 @@ import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
-import { Client } from "./client";
+import type { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
+import type { Client } from "./client";
 
 type Requests = {
   message: ServerCalls["outbound"];

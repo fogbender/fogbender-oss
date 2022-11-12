@@ -1,7 +1,7 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
-import {
+import type {
   AnyToken,
   EventBadge,
   EventCustomer,
@@ -21,7 +21,7 @@ import {
 } from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
-import { useServerWs } from "../useServerWs";
+import type { useServerWs } from "../useServerWs";
 import { useRoomResolver } from "./useRoomResolver";
 
 export type Room = EventRoom & {
