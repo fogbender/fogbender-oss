@@ -18,6 +18,7 @@ import type {
   TagCreate,
   TagUpdate,
   TagDelete,
+  EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -397,7 +398,7 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
     [convertEventMessageToMessage, dedupAndSort, setHistoryMode]
   );
 
-  const updateAuthorImageUrl = React.useCallback(e => {
+  const updateAuthorImageUrl = React.useCallback((e: EventUser) => {
     aroundMessages.current = aroundMessages.current.map(x => {
       if (x.author.id === e.userId) {
         return { ...x, author: { ...x.author, avatarUrl: e.imageUrl } };
@@ -599,7 +600,7 @@ export const useRoomHistory = ({
   const [fetchingNewer, setFetchingNewer] = React.useState(false);
 
   const fetchNewerPage = React.useCallback(
-    ts => {
+    (ts: number | undefined) => {
       setFetchingNewer(true);
       serverCall<StreamGet>({
         msgType: "Stream.Get",
