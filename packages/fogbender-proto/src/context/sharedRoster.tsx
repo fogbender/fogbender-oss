@@ -23,6 +23,7 @@ import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
 import type { useServerWs } from "../useServerWs";
 import { useRoomResolver } from "./useRoomResolver";
+import { useConnectRosterSections } from "./rosterSections";
 
 export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
@@ -44,6 +45,12 @@ export const useSharedRoster = ({
   userId?: string;
 }) => {
   const { serverCall, lastIncomingMessage } = ws;
+  const { rosterSectionsAtom, rosterSectionsActionsAtom } = useConnectRosterSections(
+    ws,
+    fogSessionId,
+    workspaceId,
+    helpdeskId
+  );
   const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [rawRoster, setRawRoster] = useImmer<Room[]>([]);
@@ -389,6 +396,8 @@ export const useSharedRoster = ({
       customers,
       seenRoster,
       setSeenRoster,
+      rosterSectionsAtom,
+      rosterSectionsActionsAtom,
     };
   }, [roster, roomById, badges, customers, seenRoster, setSeenRoster]);
 };

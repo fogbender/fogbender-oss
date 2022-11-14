@@ -1,5 +1,5 @@
 import React from "react";
-import { atom, PrimitiveAtom, WritableAtom } from "jotai";
+import { atom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 
 import type {
@@ -11,7 +11,7 @@ import type {
   RosterSub,
 } from "../schema";
 
-import { useWs } from "./ws";
+import type { useServerWs } from "../useServerWs";
 
 function forEach<T extends Record<any, any>>(
   o: T,
@@ -63,18 +63,19 @@ function handleRosterSectionsUpdate(
   return needsSort ? new Map(Array.from(data.entries()).sort((a, b) => a[1].pos - b[1].pos)) : data;
 }
 
-type RosterSectionActions = {
+export type RosterSectionActions = {
   action: "load";
   sectionId: RosterSectionId;
   done: () => {};
 };
 
-export type RosterSectionsAtom = PrimitiveAtom<Map<string, EventRosterSectionWithRooms>>;
-export type RosterSectionsActionsAtom = WritableAtom<null, RosterSectionActions, void>;
-
-export const useRosterSections = () => {
-  const { serverCall, workspaceId, lastIncomingMessage, fogSessionId, helpdeskId } = useWs();
-
+export const useConnectRosterSections = (
+  ws: ReturnType<typeof useServerWs>,
+  fogSessionId: string | undefined,
+  workspaceId?: string,
+  helpdeskId?: string
+) => {
+  const { serverCall, lastIncomingMessage } = ws;
   const { rosterSectionsActionsAtom, rosterSectionsAtom } = React.useMemo(() => {
     // this is slightly silly, we have to do two atoms instead of one
     // because of some kind of typescript and jotai bug
