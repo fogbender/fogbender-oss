@@ -33,7 +33,7 @@ export function useAuthorEmail(author: Author) {
   const { serverCall } = useWs();
   const [email, setEmail] = React.useState<string>();
   React.useEffect(() => {
-    if (email === undefined) {
+    if (email === undefined && ["agent", "user"].includes(author.type)) {
       serverCall({
         msgType: "Search.AuthorEmail",
         authorId: author.id,

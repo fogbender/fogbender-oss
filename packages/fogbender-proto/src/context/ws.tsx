@@ -6,6 +6,7 @@ import type {
   EventNotificationMessage,
   EventTyping,
   Attachment,
+  AuthorType,
   MessageCreate,
   MessageUpdate,
   MessageSeen,
@@ -35,7 +36,7 @@ import { extractEventMessage, extractEventSeen, extractEventTyping } from "../ut
 export type Author = {
   id: string;
   name: string;
-  type: "agent" | "user";
+  type: AuthorType;
   avatarUrl?: string;
 };
 
@@ -64,6 +65,8 @@ export type Message = {
   deletedByName?: string;
   editedTs?: number;
   editedByName?: string;
+  fromNameOverride?: string;
+  fromAvatarUrlOverride?: string;
 };
 
 export const convertEventMessageToMessage = (message: EventMessage): Message => ({
@@ -94,6 +97,8 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
   deletedByName: message.deletedByName,
   editedTs: message.editedTs,
   editedByName: message.editedByName,
+  fromNameOverride: message.fromNameOverride,
+  fromAvatarUrlOverride: message.fromAvatarUrlOverride,
 });
 
 export type WsContext = ReturnType<typeof useProviderValue>;

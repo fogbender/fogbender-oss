@@ -369,7 +369,7 @@ export type MentionIn = {
 export type Reaction = {
   fromid: string;
   fromName: string;
-  fromType: "User" | "Agent";
+  fromType: AuthorType;
   updatedTs: number;
   reaction: string;
 };
@@ -499,7 +499,7 @@ export type SearchAuthorEmail = {
   msgId?: string;
   msgType: "Search.AuthorEmail";
   workspaceId: string;
-  type: "agent" | "user";
+  type: AuthorType;
   authorId: string;
 };
 
@@ -617,8 +617,10 @@ export type EventMessage = {
   customerId: string;
   fromId: string;
   fromName: string;
+  fromNameOverride?: string;
   fromAvatarUrl: string;
-  fromType: "user" | "agent";
+  fromAvatarUrlOverride?: string;
+  fromType: AuthorType;
   roomId: string;
   id: string;
   text: string;
@@ -652,7 +654,7 @@ export type EventNotificationMessage = {
   fromId: string;
   fromName: string;
   fromAvatarUrl: string;
-  fromType: "User" | "Agent";
+  fromType: AuthorType;
   roomId: string;
   id: string;
   text: string;
@@ -774,6 +776,8 @@ export type EventIssue = {
 export type EventAuthorEmail = {
   email: string;
 };
+
+export type AuthorType = "user" | "agent" | "app";
 
 export type RosterSectionId =
   | "ARCHIVED"
