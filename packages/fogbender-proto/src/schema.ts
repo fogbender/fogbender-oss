@@ -77,6 +77,7 @@ export type APISchema = {
   SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
+  SearchCustomersRPC: RPC<SearchCustomers, SearchOk<EventCustomer>>;
   TagCreate: RPC<TagCreate, TagOk>;
   TagUpdate: RPC<TagUpdate, TagOk>;
   TagDelete: RPC<TagDelete, TagOk>;
@@ -517,6 +518,14 @@ export type SearchRoomMessages = {
   limit?: number;
 };
 
+export type SearchCustomers = {
+  msgId?: string;
+  msgType: "Search.Customers";
+  workspaceId: string;
+  term: string;
+  limit?: number;
+};
+
 export type TagOk = {
   msgId: string;
   msgType: "Tag.Ok";
@@ -689,6 +698,8 @@ export type EventCustomer = {
   name: string;
   updatedTs: number;
   createdTs: number;
+  lastMessageAt: number | null;
+  usersCount: number | null;
 };
 
 export type EventAgent = {
@@ -845,6 +856,9 @@ export type Customer = {
   id: string;
   name: string;
   deletedTs?: string;
+  lastMessageAt: number | null;
+  usersCount: number | null;
+  createdTs: number;
 };
 
 export type EventTag = {
