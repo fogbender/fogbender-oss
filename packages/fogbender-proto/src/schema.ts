@@ -617,7 +617,7 @@ export type EventMessage = {
   customerId: string;
   fromId: string;
   fromName: string;
-  fromNameOverride?: string;
+  fromNameOverride: string | null;
   fromAvatarUrl: string;
   fromAvatarUrlOverride?: string;
   fromType: AuthorType;

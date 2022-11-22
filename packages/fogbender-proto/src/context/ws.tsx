@@ -97,7 +97,7 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
   deletedByName: message.deletedByName,
   editedTs: message.editedTs,
   editedByName: message.editedByName,
-  fromNameOverride: message.fromNameOverride,
+  fromNameOverride: message.fromNameOverride ?? undefined,
   fromAvatarUrlOverride: message.fromAvatarUrlOverride,
 });
 
