@@ -50,7 +50,9 @@ export type APISchema = {
   UnarchiveRoomRPC: RPC<RoomUnarchive, RoomOk>;
   UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
+  IntegrationCreateIssueWithForwardRPC: RPC<IntegrationCreateIssueWithForward, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
+  IntegrationLabelIssueRPC: RPC<IntegrationLabelIssue, IntegrationOk>;
   StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
@@ -225,6 +227,15 @@ export type IntegrationCreateIssue = {
   workspaceId: string;
   integrationProjectId: string;
   title: string;
+  roomId: string;
+};
+
+export type IntegrationCreateIssueWithForward = {
+  msgId?: string;
+  msgType: "Integration.CreateIssueWithForward";
+  workspaceId: string;
+  integrationProjectId: string;
+  title: string;
   linkRoomId: string;
   linkStartMessageId: string;
   linkEndMessageId: string;
@@ -239,6 +250,14 @@ export type IntegrationForwardToIssue = {
   linkRoomId: string;
   linkStartMessageId: string;
   linkEndMessageId: string;
+};
+
+export type IntegrationLabelIssue = {
+  msgId?: string;
+  msgType: "Integration.LabelIssue";
+  workspaceId: string;
+  integrationProjectId: string;
+  issueId: string;
 };
 
 export type IntegrationOk = {
@@ -777,6 +796,7 @@ export type EventIssue = {
   type: KnownIssueTrackerIntegration;
   title: string;
   integrationId: string;
+  integrationProjectId: string;
   id: string;
   number: string;
   url: string;
@@ -925,6 +945,7 @@ export type Tag = {
   meta_entity_url?: string;
   meta_entity_name?: string;
   meta_entity_id?: string;
+  meta_entity_parent_id?: string;
 };
 
 export type Helpdesk = {

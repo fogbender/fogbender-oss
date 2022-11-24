@@ -7,7 +7,9 @@ import type {
   EventTag,
   EventUser,
   IntegrationCreateIssue,
+  IntegrationCreateIssueWithForward,
   IntegrationForwardToIssue,
+  IntegrationLabelIssue,
   RoomCreate,
   RoomArchive,
   RoomUnarchive,
@@ -158,22 +160,39 @@ export const useRoster = ({
     [serverCall]
   );
 
-  const createIssue = React.useCallback(
+  const createIssueWithForward = React.useCallback(
     (
       params: Pick<
-        IntegrationCreateIssue,
+        IntegrationCreateIssueWithForward,
         "integrationProjectId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
       >
     ) =>
       workspaceId !== undefined
-        ? serverCall<IntegrationCreateIssue>({
-            msgType: "Integration.CreateIssue",
+        ? serverCall<IntegrationCreateIssueWithForward>({
+            msgType: "Integration.CreateIssueWithForward",
             workspaceId,
             integrationProjectId: params.integrationProjectId,
             title: params.title,
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
             linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
+  );
+
+  const createIssue = React.useCallback(
+    (params: Pick<IntegrationCreateIssue, "integrationProjectId" | "title" | "roomId">) =>
+      workspaceId !== undefined
+        ? serverCall<IntegrationCreateIssue>({
+            msgType: "Integration.CreateIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            title: params.title,
+            roomId: params.roomId,
           }).then(x => {
             console.assert(x.msgType === "Integration.Ok");
             return x;
@@ -202,6 +221,22 @@ export const useRoster = ({
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
             linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
+  );
+
+  const labelIssue = React.useCallback(
+    (params: Pick<IntegrationLabelIssue, "integrationProjectId" | "issueId">) =>
+      workspaceId !== undefined
+        ? serverCall<IntegrationLabelIssue>({
+            msgType: "Integration.LabelIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            issueId: params.issueId,
           }).then(x => {
             console.assert(x.msgType === "Integration.Ok");
             return x;
@@ -312,7 +347,9 @@ export const useRoster = ({
     unarchiveRoom,
     updateUser,
     createIssue,
+    createIssueWithForward,
     forwardToIssue,
+    labelIssue,
     customers,
     badges,
     roomsByTags,
