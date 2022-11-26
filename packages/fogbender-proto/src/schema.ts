@@ -200,7 +200,7 @@ export type UserOk = {
 export type Integration = {
   id: string;
   workspace_id: string;
-  type: string;
+  type: KnownIssueTrackerIntegration | KnownCommsIntegration;
   userInfo?: {
     email: string;
     pictureUrl: string;
