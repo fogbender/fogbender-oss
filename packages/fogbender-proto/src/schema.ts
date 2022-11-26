@@ -215,6 +215,8 @@ export type Integration = {
   inserted_at: string;
   meta_tag: string;
   webhook_id?: string;
+  aggressive_ticketing?: boolean;
+  jira_url?: string;
 };
 
 export type IntegrationCreateIssue = {
