@@ -855,10 +855,17 @@ export declare type Attachment = {
 export type Customer = {
   id: string;
   name: string;
+  helpdeskId: string;
+  workspaceId: string;
+  externalUid: string;
   deletedTs?: string;
   lastMessageAt: number | null;
   usersCount: number | null;
+  insertedAt: number;
+  deletedAt: number;
   createdTs: number;
+  domains?: string[];
+  crmLinks?: any[];
 };
 
 export type EventTag = {
