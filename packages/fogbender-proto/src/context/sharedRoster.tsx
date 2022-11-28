@@ -45,12 +45,8 @@ export const useSharedRoster = ({
   userId?: string;
 }) => {
   const { serverCall, lastIncomingMessage } = ws;
-  const { rosterSectionsAtom, rosterSectionsActionsAtom } = useConnectRosterSections(
-    ws,
-    fogSessionId,
-    workspaceId,
-    helpdeskId
-  );
+  const { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily } =
+    useConnectRosterSections(ws, fogSessionId, workspaceId, helpdeskId);
   const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [rawRoster, setRawRoster] = useImmer<Room[]>([]);
@@ -398,6 +394,7 @@ export const useSharedRoster = ({
       setSeenRoster,
       rosterSectionsAtom,
       rosterSectionsActionsAtom,
+      rosterRoomFamily,
     };
   }, [roster, roomById, badges, customers, seenRoster, setSeenRoster]);
 };

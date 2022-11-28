@@ -9,3 +9,11 @@ export function useRosterSections() {
   const [, dispatch] = useAtom(rosterSectionsActionsAtom);
   return { rosterSections, dispatch };
 }
+
+export function useRosterRoom(roomId: string) {
+  const { sharedRoster } = useWs();
+  const { rosterRoomFamily, rosterSectionsActionsAtom } = sharedRoster;
+  const [rosterRoom] = useAtom(rosterRoomFamily(roomId));
+  const [, dispatch] = useAtom(rosterSectionsActionsAtom);
+  return { rosterRoom, dispatch };
+}
