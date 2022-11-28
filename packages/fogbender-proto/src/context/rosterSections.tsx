@@ -1,6 +1,6 @@
 import React from "react";
 import { atom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { atomFamily, useUpdateAtom } from "jotai/utils";
 
 import type {
   EventRosterRoom,
@@ -76,7 +76,12 @@ export const useConnectRosterSections = (
   helpdeskId?: string
 ) => {
   const { serverCall, lastIncomingMessage } = ws;
-  const { rosterSectionsActionsAtom, rosterSectionsAtom } = React.useMemo(() => {
+  const {
+    //
+    rosterSectionsActionsAtom,
+    rosterSectionsAtom,
+    rosterRoomFamily,
+  } = React.useMemo(() => {
     // this is slightly silly, we have to do two atoms instead of one
     // because of some kind of typescript and jotai bug
     const rosterSectionsAtom = atom(new Map<string, EventRosterSectionWithRooms>());
@@ -101,7 +106,25 @@ export const useConnectRosterSections = (
           .finally(done);
       }
     });
-    return { rosterSectionsAtom, rosterSectionsActionsAtom };
+
+    const rosterRoomFamily = atomFamily((roomId: string) =>
+      atom(get => {
+        const rosterSections = get(rosterSectionsAtom);
+        for (const [, section] of Array.from(rosterSections)) {
+          if (section.rooms) {
+            for (const room of section.rooms) {
+              if (room.room.id === roomId) {
+                return room;
+              }
+            }
+          }
+        }
+        // eslint-disable-next-line no-useless-return
+        return;
+      })
+    );
+
+    return { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily };
   }, []);
   const setRosterSections = useUpdateAtom(rosterSectionsAtom);
 
@@ -145,5 +168,5 @@ export const useConnectRosterSections = (
     }
   }, [lastIncomingMessage]);
 
-  return { rosterSectionsAtom, rosterSectionsActionsAtom };
+  return { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily };
 };
