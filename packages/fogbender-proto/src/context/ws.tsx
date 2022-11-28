@@ -67,6 +67,10 @@ export type Message = {
   editedByName?: string;
   fromNameOverride?: string;
   fromAvatarUrlOverride?: string;
+  deletedByType?: AuthorType;
+  deletedById?: string;
+  editedByType?: AuthorType;
+  editedById?: string;
 };
 
 export const convertEventMessageToMessage = (message: EventMessage): Message => ({

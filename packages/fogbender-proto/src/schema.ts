@@ -391,7 +391,7 @@ export type MentionIn = {
   id: string;
   name: string;
   text: string;
-  type: "Agent" | "User";
+  type: AuthorType;
 };
 
 export type Reaction = {
@@ -675,8 +675,12 @@ export type EventMessage = {
   sources?: EventMessage[];
   deletedTs?: number;
   deletedByName?: string;
+  deletedByType?: AuthorType;
+  deletedById?: string;
   editedTs?: number;
   editedByName?: string;
+  editedByType?: AuthorType;
+  editedById?: string;
 };
 
 export type EventNotificationMessage = {
