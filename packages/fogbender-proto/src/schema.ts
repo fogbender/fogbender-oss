@@ -851,7 +851,7 @@ export type EventRosterRoom = {
   msgId?: string;
   msgType: "Event.RosterRoom";
   room: EventRoom;
-  badge: EventBadge;
+  badge: EventBadge | null;
   sections: EventRosterSectionPosition;
 };
 
