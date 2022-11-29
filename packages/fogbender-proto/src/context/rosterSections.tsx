@@ -125,7 +125,7 @@ export const useConnectRosterSections = (
         for (const [, section] of Array.from(rosterSections)) {
           if (section.rooms) {
             for (const room of section.rooms) {
-              if (room.room.id === roomId) {
+              if (room && room.room.id === roomId) {
                 return room;
               }
             }
