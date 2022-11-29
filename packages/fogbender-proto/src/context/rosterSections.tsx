@@ -69,6 +69,18 @@ export type RosterSectionActions = {
   done: () => {};
 };
 
+function handleRosterRoomEvent(
+  data: Map<string, EventRosterSectionWithRooms>,
+  rosterRoomEvent: EventRosterRoom
+) {
+  data.forEach(section => {
+    if (!rosterRoomEvent.sections[section.id]) {
+      section.rooms = section.rooms?.filter(x => x.room.id !== rosterRoomEvent.room.id);
+    }
+  });
+  return handleRosterSectionsUpdate(data, [rosterRoomEvent]);
+}
+
 export const useConnectRosterSections = (
   ws: ReturnType<typeof useServerWs>,
   fogSessionId: string | undefined,
@@ -156,15 +168,9 @@ export const useConnectRosterSections = (
         handleRosterSectionsUpdate(new Map(rosterSections), [lastIncomingMessage])
       );
     } else if (lastIncomingMessage?.msgType === "Event.RosterRoom") {
-      setRosterSections(rosterSections => {
-        const data = new Map(rosterSections);
-        data.forEach(section => {
-          if (!lastIncomingMessage.sections[section.id]) {
-            section.rooms = section.rooms?.filter(x => x.room.id !== lastIncomingMessage.room.id);
-          }
-        });
-        return handleRosterSectionsUpdate(data, [lastIncomingMessage]);
-      });
+      setRosterSections(rosterSections =>
+        handleRosterRoomEvent(new Map(rosterSections), lastIncomingMessage)
+      );
     }
   }, [lastIncomingMessage]);
 
