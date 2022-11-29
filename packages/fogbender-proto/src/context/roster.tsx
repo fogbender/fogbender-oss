@@ -69,7 +69,6 @@ export const useRoster = ({
   const {
     roster: fullRoster,
     roomById,
-    roomByName,
     badges,
     customers,
     seenRoster,
@@ -336,7 +335,6 @@ export const useRoster = ({
     roster,
     seenRoster,
     roomById,
-    roomByName,
     filteredRoster,
     filteredRooms,
     filteredDialogs,

@@ -25,7 +25,6 @@ import type { useServerWs } from "../useServerWs";
 import { useRoomResolver } from "./useRoomResolver";
 
 export type Room = EventRoom & {
-  orderWeight?: string;
   counterpart?: RoomMember; // when type === "dialog"
 };
 
@@ -87,10 +86,6 @@ export const useSharedRoster = ({
       dispatch({ type: "roomById", roomId: id, room });
       return room;
     },
-    [rawRoster]
-  );
-  const roomByName = React.useCallback(
-    (name: string) => rawRoster.find(r => r.name === name),
     [rawRoster]
   );
 
@@ -390,11 +385,10 @@ export const useSharedRoster = ({
     return {
       roster,
       roomById,
-      roomByName,
       badges,
       customers,
       seenRoster,
       setSeenRoster,
     };
-  }, [roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster]);
+  }, [roster, roomById, badges, customers, seenRoster, setSeenRoster]);
 };
