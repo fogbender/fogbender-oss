@@ -199,6 +199,11 @@ export type UserOk = {
   userId: string;
 };
 
+type SharedChannelAssociation = {
+  shared_channel_id: string;
+  helpdesk_id: string;
+};
+
 export type Integration = {
   id: string;
   workspace_id: string;
@@ -219,6 +224,7 @@ export type Integration = {
   webhook_id?: string;
   aggressive_ticketing?: boolean;
   jira_url?: string;
+  shared_channel_helpdesk_associations?: SharedChannelAssociation[];
 };
 
 export type IntegrationCreateIssue = {
