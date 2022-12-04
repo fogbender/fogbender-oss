@@ -1,5 +1,7 @@
 {
-  "extends": [
-    "@nuxtjs/eslint-config-typescript"
-  ]
+  "extends": ["@nuxtjs/eslint-config-typescript", "prettier"],
+  "rules": {
+    "import/no-named-as-default": "off",
+    "require-resolve-not-external": "off"
+  }
 }
