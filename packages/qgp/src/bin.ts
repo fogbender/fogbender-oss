@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-console.log("Hello world!");
-
 // import { fileURLToPath } from "url";
 import { createServer } from "vite";
+
+console.log("Hello world!");
 // import { resolve } from "pathe";
 
 // const clientDist = resolve(fileURLToPath(import.meta.url), "../../src");
