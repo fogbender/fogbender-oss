@@ -1,6 +1,6 @@
 import React from "react";
 import { useWs, Message, convertEventMessageToMessage } from "./ws";
-import { SearchRoomMessages } from "../schema";
+import type { SearchRoomMessages } from "../schema";
 
 export function useSearchHistory(term: string, roomId: string) {
   const [result, setResult] = React.useState<Message[]>();

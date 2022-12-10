@@ -1,4 +1,4 @@
-import { EventRoom } from "../schema";
+import type { EventRoom } from "../schema";
 
 export const calculateCounterpart = (e: EventRoom, ourUserId?: string) => {
   if (e.created) {

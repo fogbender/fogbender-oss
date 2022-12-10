@@ -1,4 +1,4 @@
-import {
+import type {
   AnyToken,
   EventAgent,
   EventIssue,
@@ -6,6 +6,7 @@ import {
   EventNotificationMessage,
   EventTyping,
   Attachment,
+  AuthorType,
   MessageCreate,
   MessageUpdate,
   MessageSeen,
@@ -18,6 +19,7 @@ import {
   TagCreate,
   TagUpdate,
   TagDelete,
+  EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
 import { atom } from "jotai";
@@ -28,13 +30,13 @@ import { useLoadAround } from "./loadAround";
 import { useSharedRoster } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { Client } from "../client";
+import type { Client } from "../client";
 import { extractEventMessage, extractEventSeen, extractEventTyping } from "../utils/castTypes";
 
 export type Author = {
   id: string;
   name: string;
-  type: "agent" | "user";
+  type: AuthorType;
   avatarUrl?: string;
 };
 
@@ -63,6 +65,12 @@ export type Message = {
   deletedByName?: string;
   editedTs?: number;
   editedByName?: string;
+  fromNameOverride?: string;
+  fromAvatarUrlOverride?: string;
+  deletedByType?: AuthorType;
+  deletedById?: string;
+  editedByType?: AuthorType;
+  editedById?: string;
 };
 
 export const convertEventMessageToMessage = (message: EventMessage): Message => ({
@@ -93,6 +101,8 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
   deletedByName: message.deletedByName,
   editedTs: message.editedTs,
   editedByName: message.editedByName,
+  fromNameOverride: message.fromNameOverride ?? undefined,
+  fromAvatarUrlOverride: message.fromAvatarUrlOverride,
 });
 
 export type WsContext = ReturnType<typeof useProviderValue>;
@@ -281,7 +291,30 @@ export function useWsCalls() {
     [workspaceId, serverCall]
   );
 
-  return { updateRoom, markRoomAsSeen, markRoomAsUnseen, createTag, updateTag, deleteTag };
+  const resolveRoom = React.useCallback(
+    (roomId: string, tilTs?: number) => {
+      return serverCall({ msgType: "Room.Resolve", roomId, tilTs });
+    },
+    [serverCall]
+  );
+
+  const unresolveRoom = React.useCallback(
+    (roomId: string) => {
+      return serverCall({ msgType: "Room.Unresolve", roomId });
+    },
+    [serverCall]
+  );
+
+  return {
+    updateRoom,
+    markRoomAsSeen,
+    markRoomAsUnseen,
+    createTag,
+    updateTag,
+    deleteTag,
+    resolveRoom,
+    unresolveRoom,
+  };
 }
 
 export const nameMatchesFilter = (name: string, filter: string) =>
@@ -374,7 +407,7 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
     [convertEventMessageToMessage, dedupAndSort, setHistoryMode]
   );
 
-  const updateAuthorImageUrl = React.useCallback(e => {
+  const updateAuthorImageUrl = React.useCallback((e: EventUser) => {
     aroundMessages.current = aroundMessages.current.map(x => {
       if (x.author.id === e.userId) {
         return { ...x, author: { ...x.author, avatarUrl: e.imageUrl } };
@@ -576,7 +609,7 @@ export const useRoomHistory = ({
   const [fetchingNewer, setFetchingNewer] = React.useState(false);
 
   const fetchNewerPage = React.useCallback(
-    ts => {
+    (ts: number | undefined) => {
       setFetchingNewer(true);
       serverCall<StreamGet>({
         msgType: "Stream.Get",
@@ -800,20 +833,17 @@ export const useRoomHistory = ({
         msgType: "Message.CreateMany",
         clientId: messages.map(m => m.clientId).join("-"),
         messages: messages,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          if (x.msgType !== "Message.Ok") {
-            throw x;
+      }).then(x => {
+        if (x.msgType !== "Message.Ok") {
+          throw x;
+        }
+        x?.messageIds?.forEach(messageId => {
+          if (messages.every(m => m.roomId === roomId)) {
+            setSeenUpToMessageId(messageId);
           }
-          x?.messageIds?.forEach(messageId => {
-            if (messages.every(m => m.roomId === roomId)) {
-              setSeenUpToMessageId(messageId);
-            }
-          });
-          return x;
-        })
-        .catch(() => {}),
+        });
+        return x;
+      }),
     [roomId, serverCall]
   );
 
@@ -1002,32 +1032,63 @@ export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
   const { fogSessionId, token, serverCall } = useWs();
   const [issuesFilter, setIssuesFilter] = React.useState<string>();
   const [issues, setIssues] = React.useState([] as EventIssue[]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const searchIssues: (workspaceId: string, issuesFilter: string) => void = React.useCallback(
-    throttle(
-      (workspaceId: string, issuesFilter: string) =>
-        serverCall({
-          msgType: "Search.Issues",
-          workspaceId,
-          term: issuesFilter,
-        }).then(x => {
+  // https://www.loom.com/share/337bc19ada86447a80d3f189ad8e09ce
+  const throttledRef = React.useRef<{
+    [fId: string]: ((x: string, y: string, z: string) => void) & { cancel: () => void };
+  }>({});
+
+  const searchIssues: ((workspaceId: string, issuesFilter: string, fId: string) => void) & {
+    cancel: () => void;
+  } = React.useCallback(
+    throttle((workspaceId: string, issuesFilter: string, fId: string) => {
+      setIsLoading(true);
+      serverCall({
+        msgType: "Search.Issues",
+        workspaceId,
+        term: issuesFilter,
+      })
+        .then(x => {
           if (x.msgType !== "Search.Ok") {
             throw x;
           }
-          setIssues(x.items);
-        }),
-      2000
-    ),
+
+          if (throttledRef.current[fId]) {
+            delete throttledRef.current[fId];
+            setIssues(x.items);
+          } else {
+            setIssues([]);
+          }
+        })
+        .finally(() => setIsLoading(false));
+    }, 2000),
     [serverCall]
   );
 
   React.useEffect(() => {
-    if (token && issuesFilter && workspaceId) {
-      searchIssues(workspaceId, issuesFilter);
+    if (token && workspaceId) {
+      if (issuesFilter) {
+        const fId = Math.random().toString(36).substring(7);
+        const f = searchIssues;
+
+        throttledRef.current[fId] = f;
+
+        f(workspaceId, issuesFilter, fId);
+      } else {
+        const fIds = Object.keys(throttledRef.current);
+
+        fIds.forEach(fId => {
+          throttledRef.current[fId].cancel();
+          delete throttledRef.current[fId];
+        });
+
+        setIssues([]);
+      }
     } else {
       setIssues([]);
     }
   }, [fogSessionId, token, workspaceId, serverCall, issuesFilter]);
 
-  return { issues, setIssuesFilter };
+  return { issues, issuesFilter, setIssuesFilter, issuesLoading: isLoading };
 };

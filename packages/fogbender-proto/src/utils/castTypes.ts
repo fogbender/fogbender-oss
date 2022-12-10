@@ -1,4 +1,4 @@
-import {
+import type {
   EventRoom,
   EventMessage,
   EventBadge,
@@ -74,4 +74,8 @@ export function extractEventSeen(items: ExtendsMessage<EventSeen>[]) {
 
 export function extractEventTyping(items: ExtendsMessage<EventTyping>[]) {
   return extract(items, isEventTyping);
+}
+
+export function extractEventUser(items: ExtendsMessage<EventUser>[]) {
+  return extract(items, isEventUser);
 }

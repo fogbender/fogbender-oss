@@ -1,8 +1,13 @@
 import React from "react";
-import { EventRoom } from "../schema";
-import { ServerCall } from "../useServerWs";
+import type { EventRoom } from "../schema";
+import type { ServerCall } from "../useServerWs";
 
-export function useRoomResolver(fogSessionId: string | undefined, serverCall: ServerCall) {
+export function useRoomResolver(
+  fogSessionId: string | undefined,
+  serverCall: ServerCall,
+  workspaceId: string | undefined,
+  helpdeskId: string | undefined
+) {
   const onRoomRef = React.useRef<(roomsIn: EventRoom[]) => void>(() => {});
   const [sideEffects, setSideEffects] = React.useState(new Map<string, () => void>());
   const resolveById = React.useRef(new Set<string>());
@@ -28,18 +33,26 @@ export function useRoomResolver(fogSessionId: string | undefined, serverCall: Se
               sideEffects =>
                 new Map(
                   sideEffects.set(roomId, () => {
-                    serverCall({ msgType: "Search.Room", roomId }).then(
-                      x => {
-                        if (x.msgType !== "Search.Ok") {
-                          console.error(x);
-                          return;
+                    const topic = helpdeskId
+                      ? `helpdesk/${helpdeskId}/roster`
+                      : workspaceId
+                      ? `workspace/${workspaceId}/roster`
+                      : null;
+
+                    if (topic) {
+                      serverCall({ msgType: "Roster.GetRooms", roomIds: [roomId], topic }).then(
+                        x => {
+                          if (x.msgType !== "Roster.GetOk") {
+                            console.error(x);
+                            return;
+                          }
+                          onRoomRef.current(x.items.map(i => i.room));
+                        },
+                        err => {
+                          console.error("failed to resolve", err);
                         }
-                        onRoomRef.current(x.items);
-                      },
-                      err => {
-                        console.error("failed to resolve", err);
-                      }
-                    );
+                      );
+                    }
                   })
                 )
             );

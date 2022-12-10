@@ -1,7 +1,7 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
-import {
+import type {
   AnyToken,
   EventBadge,
   EventCustomer,
@@ -21,11 +21,10 @@ import {
 } from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
-import { useServerWs } from "../useServerWs";
+import type { useServerWs } from "../useServerWs";
 import { useRoomResolver } from "./useRoomResolver";
 
 export type Room = EventRoom & {
-  orderWeight?: string;
   counterpart?: RoomMember; // when type === "dialog"
 };
 
@@ -57,7 +56,12 @@ export const useSharedRoster = ({
   const [customers, setCustomers] = React.useState<EventCustomer[]>([]);
   const [customersLoaded, setCustomersLoaded] = React.useState(false);
   const [oldestCustomerTs, setOldestCustomerTs] = React.useState(Infinity);
-  const { onRoomRef, dispatch } = useRoomResolver(fogSessionId, serverCall);
+  const { onRoomRef, dispatch } = useRoomResolver(
+    fogSessionId,
+    serverCall,
+    workspaceId,
+    helpdeskId
+  );
   const enoughBadges = React.useRef(0);
 
   React.useLayoutEffect(() => {
@@ -82,10 +86,6 @@ export const useSharedRoster = ({
       dispatch({ type: "roomById", roomId: id, room });
       return room;
     },
-    [rawRoster]
-  );
-  const roomByName = React.useCallback(
-    (name: string) => rawRoster.find(r => r.name === name),
     [rawRoster]
   );
 
@@ -381,13 +381,14 @@ export const useSharedRoster = ({
       .reverse();
   }, [rawRoster, badges, workspaceId]);
 
-  return {
-    roster,
-    roomById,
-    roomByName,
-    badges,
-    customers,
-    seenRoster,
-    setSeenRoster,
-  };
+  return React.useMemo(() => {
+    return {
+      roster,
+      roomById,
+      badges,
+      customers,
+      seenRoster,
+      setSeenRoster,
+    };
+  }, [roster, roomById, badges, customers, seenRoster, setSeenRoster]);
 };

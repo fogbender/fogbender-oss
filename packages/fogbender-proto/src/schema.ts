@@ -50,13 +50,16 @@ export type APISchema = {
   UnarchiveRoomRPC: RPC<RoomUnarchive, RoomOk>;
   UpdateUserRPC: RPC<UserUpdate, UserOk>;
   IntegrationCreateIssueRPC: RPC<IntegrationCreateIssue, IntegrationOk>;
+  IntegrationCreateIssueWithForwardRPC: RPC<IntegrationCreateIssueWithForward, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
+  IntegrationLabelIssueRPC: RPC<IntegrationLabelIssue, IntegrationOk>;
   StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
   RosterSubRPC: RPC<RosterSub, RosterError | RosterSubOk<EventRoster>>;
   RosterUnSubRPC: RPC<RosterUnSub, RosterError | RosterUnSubOk>;
   RosterGetRPC: RPC<RosterGetRange, RosterError | RosterGetOk<EventRosterRoom>>;
+  RosterGetRoomsRPC: RPC<RosterGetRooms, RosterError | RosterGetOk<EventRosterRoom>>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -64,6 +67,7 @@ export type APISchema = {
   MessageSeenRPC: RPC<MessageSeen, MessageOk>;
   MessageUnseenRPC: RPC<MessageUnseen, MessageOk>;
   MessageSetReactionRPC: RPC<MessageSetReaction, MessageOk>;
+  MessageRefreshFilesRPC: RPC<MessageRefreshFiles, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
@@ -75,9 +79,12 @@ export type APISchema = {
   SearchRoomMessagesRPC: RPC<SearchRoomMessages, SearchOk<EventMessage>>;
   SearchIssuesRPC: RPC<SearchIssues, SearchOk<EventIssue>>;
   SearchAuthorEmailRPC: RPC<SearchAuthorEmail, SearchOk<EventAuthorEmail>>;
+  SearchCustomersRPC: RPC<SearchCustomers, SearchOk<EventCustomer>>;
   TagCreate: RPC<TagCreate, TagOk>;
   TagUpdate: RPC<TagUpdate, TagOk>;
   TagDelete: RPC<TagDelete, TagOk>;
+  RoomResolve: RPC<RoomResolve, RoomOk>;
+  RoomUnresolve: RPC<RoomUnresolve, RoomOk>;
   EventMessageEVT: RPC<undefined, EventMessage>;
   EventTypingEVT: RPC<undefined, EventTyping>;
   EventRoomEVT: RPC<undefined, EventRoom>;
@@ -101,6 +108,7 @@ export type EventStreamGetRPC =
   | EventSeen
   | EventBadge
   | EventAgent
+  | EventUser
   | EventTag
   | EventUser;
 
@@ -191,10 +199,15 @@ export type UserOk = {
   userId: string;
 };
 
+type SharedChannelAssociation = {
+  shared_channel_id: string;
+  helpdesk_id: string;
+};
+
 export type Integration = {
   id: string;
   workspace_id: string;
-  type: string;
+  type: KnownIssueTrackerIntegration | KnownCommsIntegration;
   userInfo?: {
     email: string;
     pictureUrl: string;
@@ -209,11 +222,23 @@ export type Integration = {
   inserted_at: string;
   meta_tag: string;
   webhook_id?: string;
+  aggressive_ticketing?: boolean;
+  jira_url?: string;
+  shared_channel_helpdesk_associations?: SharedChannelAssociation[];
 };
 
 export type IntegrationCreateIssue = {
   msgId?: string;
   msgType: "Integration.CreateIssue";
+  workspaceId: string;
+  integrationProjectId: string;
+  title: string;
+  roomId: string;
+};
+
+export type IntegrationCreateIssueWithForward = {
+  msgId?: string;
+  msgType: "Integration.CreateIssueWithForward";
   workspaceId: string;
   integrationProjectId: string;
   title: string;
@@ -233,10 +258,19 @@ export type IntegrationForwardToIssue = {
   linkEndMessageId: string;
 };
 
+export type IntegrationLabelIssue = {
+  msgId?: string;
+  msgType: "Integration.LabelIssue";
+  workspaceId: string;
+  integrationProjectId: string;
+  issueId: string;
+};
+
 export type IntegrationOk = {
   msgId: string;
   msgType: "Integration.Ok";
   issueId?: string;
+  issueTag?: string;
 };
 
 export type StreamSub = {
@@ -333,6 +367,13 @@ export type RosterGetRange = {
   limit: number;
 };
 
+export type RosterGetRooms = {
+  msgId?: string;
+  msgType: "Roster.GetRooms";
+  topic: string;
+  roomIds: string[];
+};
+
 export type RosterGetOk<Item> = {
   msgId: string;
   msgType: "Roster.GetOk";
@@ -350,13 +391,13 @@ export type MentionIn = {
   id: string;
   name: string;
   text: string;
-  type: "Agent" | "User";
+  type: AuthorType;
 };
 
 export type Reaction = {
   fromid: string;
   fromName: string;
-  fromType: "User" | "Agent";
+  fromType: AuthorType;
   updatedTs: number;
   reaction: string;
 };
@@ -429,6 +470,12 @@ export type MessageSetReaction = {
   reaction: string | null;
 };
 
+export type MessageRefreshFiles = {
+  msgId?: string;
+  msgType: "Message.RefreshFiles";
+  messageId: string;
+};
+
 export type MessageOk = {
   msgId: string;
   msgType: "Message.Ok";
@@ -480,7 +527,7 @@ export type SearchAuthorEmail = {
   msgId?: string;
   msgType: "Search.AuthorEmail";
   workspaceId: string;
-  type: "agent" | "user";
+  type: AuthorType;
   authorId: string;
 };
 
@@ -494,6 +541,14 @@ export type SearchRoomMessages = {
   msgId?: string;
   msgType: "Search.RoomMessages";
   roomId: string;
+  term: string;
+  limit?: number;
+};
+
+export type SearchCustomers = {
+  msgId?: string;
+  msgType: "Search.Customers";
+  workspaceId: string;
   term: string;
   limit?: number;
 };
@@ -523,6 +578,19 @@ export type TagDelete = {
   msgType: "Tag.Delete";
   workspaceId: string;
   tag: string;
+};
+
+export type RoomResolve = {
+  msgId?: string;
+  msgType: "Room.Resolve";
+  roomId: string;
+  tilTs?: number | null;
+};
+
+export type RoomUnresolve = {
+  msgId?: string;
+  msgType: "Room.Unresolve";
+  roomId: string;
 };
 
 export type AuthUser = {
@@ -585,8 +653,10 @@ export type EventMessage = {
   customerId: string;
   fromId: string;
   fromName: string;
+  fromNameOverride: string | null;
   fromAvatarUrl: string;
-  fromType: "user" | "agent";
+  fromAvatarUrlOverride?: string;
+  fromType: AuthorType;
   roomId: string;
   id: string;
   text: string;
@@ -605,8 +675,12 @@ export type EventMessage = {
   sources?: EventMessage[];
   deletedTs?: number;
   deletedByName?: string;
+  deletedByType?: AuthorType;
+  deletedById?: string;
   editedTs?: number;
   editedByName?: string;
+  editedByType?: AuthorType;
+  editedById?: string;
 };
 
 export type EventNotificationMessage = {
@@ -620,7 +694,7 @@ export type EventNotificationMessage = {
   fromId: string;
   fromName: string;
   fromAvatarUrl: string;
-  fromType: "User" | "Agent";
+  fromType: AuthorType;
   roomId: string;
   id: string;
   text: string;
@@ -655,6 +729,8 @@ export type EventCustomer = {
   name: string;
   updatedTs: number;
   createdTs: number;
+  lastMessageAt: number | null;
+  usersCount: number | null;
 };
 
 export type EventAgent = {
@@ -662,6 +738,7 @@ export type EventAgent = {
   msgType: "Event.Agent";
   id: string;
   email: string;
+  name: string;
   role: "owner" | "admin" | "agent" | "reader" | "app";
   imageUrl: string;
   createdTs: number;
@@ -710,6 +787,12 @@ export type EventRoom = {
   tags?: Tag[];
   status: RoomStatus; // deprecated
   remove?: boolean;
+  resolved: boolean;
+  resolvedAt: number | null;
+  resolvedByAgentId: string | null;
+  resolvedTil: number | null;
+  lastMessage: EventMessage | null;
+  createdBy: Actor | null;
 };
 
 export type IssueLabel = {
@@ -723,6 +806,7 @@ export type EventIssue = {
   type: KnownIssueTrackerIntegration;
   title: string;
   integrationId: string;
+  integrationProjectId: string;
   id: string;
   number: string;
   url: string;
@@ -735,6 +819,8 @@ export type EventIssue = {
 export type EventAuthorEmail = {
   email: string;
 };
+
+export type AuthorType = "user" | "agent" | "app";
 
 export type RosterSectionId =
   | "ARCHIVED"
@@ -752,6 +838,7 @@ export type EventRosterSection = {
   name: string;
   id: RosterSectionId;
   pos: number;
+  unresolvedCount: number;
   unreadCount: number;
   mentionsCount: number;
   count: number;
@@ -764,7 +851,7 @@ export type EventRosterRoom = {
   msgId?: string;
   msgType: "Event.RosterRoom";
   room: EventRoom;
-  badge: EventBadge;
+  badge: EventBadge | null;
   sections: EventRosterSectionPosition;
 };
 
@@ -786,10 +873,12 @@ export declare type Attachment = {
   thumbnail?: {
     url: string;
     height: number;
+    thumbnailDataUrl?: string;
     width: number;
     original_width: number;
     original_height: number;
   };
+  fileExpirationTs: number;
   fileUrl: string;
   downloadUrl: string;
   fileSize: number;
@@ -798,7 +887,17 @@ export declare type Attachment = {
 export type Customer = {
   id: string;
   name: string;
+  helpdeskId: string;
+  workspaceId: string;
+  externalUid: string;
   deletedTs?: string;
+  lastMessageAt: number | null;
+  usersCount: number | null;
+  insertedAt: number;
+  deletedAt: number;
+  createdTs: number;
+  domains?: string[];
+  crmLinks?: any[];
 };
 
 export type EventTag = {
@@ -814,15 +913,20 @@ export type EventUser = {
   msgType: "Event.User";
   userId: string;
   imageUrl: string;
+  name: string;
+  email: string;
+  createdTs: number;
 };
 
-export type RoomMember = {
+export type Actor = {
   id: string;
   type: "agent" | "user";
   imageUrl: string;
   name: string;
   email: string;
 };
+
+export type RoomMember = Actor;
 
 export const MetaTypes = ["issue_tracker", "issue", "status"];
 export type MetaType = typeof MetaTypes[number];
@@ -851,6 +955,7 @@ export type Tag = {
   meta_entity_url?: string;
   meta_entity_name?: string;
   meta_entity_id?: string;
+  meta_entity_parent_id?: string;
 };
 
 export type Helpdesk = {

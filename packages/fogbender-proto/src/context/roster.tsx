@@ -2,23 +2,27 @@ import { atom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
-import {
+import type {
   EventRoom,
   EventTag,
+  EventUser,
   IntegrationCreateIssue,
+  IntegrationCreateIssueWithForward,
   IntegrationForwardToIssue,
+  IntegrationLabelIssue,
   RoomCreate,
   RoomArchive,
   RoomUnarchive,
   UserUpdate,
   SearchRoster,
+  StreamGet,
 } from "../schema";
 
-import { Room } from "./sharedRoster";
+import type { Room } from "./sharedRoster";
 import { Author, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import { extractEventTag } from "../utils/castTypes";
+import { extractEventRoom, extractEventTag, extractEventUser } from "../utils/castTypes";
 import { eventRoomToRoom } from "../utils/counterpart";
 
 export type { Room } from "./sharedRoster";
@@ -31,7 +35,7 @@ export function useAuthorEmail(author: Author) {
   const { serverCall } = useWs();
   const [email, setEmail] = React.useState<string>();
   React.useEffect(() => {
-    if (email === undefined) {
+    if (email === undefined && ["agent", "user"].includes(author.type)) {
       serverCall({
         msgType: "Search.AuthorEmail",
         authorId: author.id,
@@ -62,8 +66,21 @@ export const useRoster = ({
   roomId?: string;
 }) => {
   const { sharedRoster, serverCall, userAvatarUrl } = useWs();
-  const { roster, roomById, roomByName, badges, customers, seenRoster, setSeenRoster } =
-    sharedRoster;
+  const {
+    roster: fullRoster,
+    roomById,
+    badges,
+    customers,
+    seenRoster,
+    setSeenRoster,
+  } = sharedRoster;
+
+  const [roster, setRoster] = React.useState([] as Room[]);
+
+  React.useMemo(
+    () => setRoster(helpdeskId ? fullRoster.filter(x => x.helpdeskId === helpdeskId) : fullRoster),
+    [fullRoster]
+  );
 
   /*
     API calls work independently for each hook
@@ -142,22 +159,39 @@ export const useRoster = ({
     [serverCall]
   );
 
-  const createIssue = React.useCallback(
+  const createIssueWithForward = React.useCallback(
     (
       params: Pick<
-        IntegrationCreateIssue,
+        IntegrationCreateIssueWithForward,
         "integrationProjectId" | "title" | "linkRoomId" | "linkStartMessageId" | "linkEndMessageId"
       >
     ) =>
       workspaceId !== undefined
-        ? serverCall<IntegrationCreateIssue>({
-            msgType: "Integration.CreateIssue",
+        ? serverCall<IntegrationCreateIssueWithForward>({
+            msgType: "Integration.CreateIssueWithForward",
             workspaceId,
             integrationProjectId: params.integrationProjectId,
             title: params.title,
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
             linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
+  );
+
+  const createIssue = React.useCallback(
+    (params: Pick<IntegrationCreateIssue, "integrationProjectId" | "title" | "roomId">) =>
+      workspaceId !== undefined
+        ? serverCall<IntegrationCreateIssue>({
+            msgType: "Integration.CreateIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            title: params.title,
+            roomId: params.roomId,
           }).then(x => {
             console.assert(x.msgType === "Integration.Ok");
             return x;
@@ -186,6 +220,22 @@ export const useRoster = ({
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
             linkEndMessageId: params.linkEndMessageId,
+          }).then(x => {
+            console.assert(x.msgType === "Integration.Ok");
+            return x;
+          })
+        : null,
+    [serverCall, workspaceId]
+  );
+
+  const labelIssue = React.useCallback(
+    (params: Pick<IntegrationLabelIssue, "integrationProjectId" | "issueId">) =>
+      workspaceId !== undefined
+        ? serverCall<IntegrationLabelIssue>({
+            msgType: "Integration.LabelIssue",
+            workspaceId,
+            integrationProjectId: params.integrationProjectId,
+            issueId: params.issueId,
           }).then(x => {
             console.assert(x.msgType === "Integration.Ok");
             return x;
@@ -285,7 +335,6 @@ export const useRoster = ({
     roster,
     seenRoster,
     roomById,
-    roomByName,
     filteredRoster,
     filteredRooms,
     filteredDialogs,
@@ -296,7 +345,9 @@ export const useRoster = ({
     unarchiveRoom,
     updateUser,
     createIssue,
+    createIssueWithForward,
     forwardToIssue,
+    labelIssue,
     customers,
     badges,
     roomsByTags,
@@ -422,4 +473,133 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
   }, [userId, serverCall]);
 
   return { tags, helpdeskTags: helpdesk?.tags || [] };
+};
+
+export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+
+  const [rooms, setRooms] = React.useState<EventRoom[]>([]);
+
+  const updateRooms = React.useCallback(
+    (roomsIn: EventRoom[]) => {
+      let newRooms = rooms;
+      roomsIn.forEach(room => {
+        newRooms = newRooms.filter(x => x.id !== room.id);
+        newRooms.push(room);
+      });
+      setRooms(newRooms);
+    },
+    [rooms]
+  );
+
+  React.useEffect(() => {
+    if (helpdeskId && lastIncomingMessage?.msgType === "Event.Room") {
+      updateRooms([lastIncomingMessage]);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (helpdeskId && token) {
+      const topic = `helpdesk/${helpdeskId}/rooms`;
+      serverCall<StreamGet>({
+        msgType: "Stream.Get",
+        limit: 100,
+        topic,
+      })
+        .then(x => {
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
+          updateRooms(extractEventRoom(x.items));
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [helpdeskId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (helpdeskId && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `helpdesk/${helpdeskId}/rooms`,
+        }).then(x => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [helpdeskId, serverCall]);
+
+  return { rooms };
+};
+
+export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
+  const { token, serverCall, lastIncomingMessage } = useWs();
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  const [users, setUsers] = React.useState<EventUser[]>([]);
+
+  const updateUsers = React.useCallback(
+    (usersIn: EventUser[]) => {
+      let newUsers = users;
+      usersIn.forEach(user => {
+        newUsers = newUsers.filter(x => x.userId !== user.userId);
+        newUsers.push(user);
+      });
+      setUsers(newUsers);
+    },
+    [users]
+  );
+
+  React.useEffect(() => {
+    if (helpdeskId && lastIncomingMessage?.msgType === "Event.User") {
+      updateUsers([lastIncomingMessage]);
+    }
+  }, [lastIncomingMessage]);
+
+  React.useEffect(() => {
+    if (helpdeskId && token) {
+      const topic = `helpdesk/${helpdeskId}/users`;
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(rejectIfUnmounted)
+        .then(x => {
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
+          updateUsers(extractEventUser(x.items));
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [helpdeskId, token, serverCall]);
+
+  React.useEffect(() => {
+    return () => {
+      if (helpdeskId && token) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: `helpdesk/${helpdeskId}/users`,
+        }).then(x => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [helpdeskId, serverCall]);
+
+  return { users };
 };

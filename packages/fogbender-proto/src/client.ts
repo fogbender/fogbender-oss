@@ -1,5 +1,5 @@
-import { Env } from "./config";
-import { AnyToken } from "./schema";
+import type { Env } from "./config";
+import type { AnyToken } from "./schema";
 
 export type ErrorType = "error" | "warning" | "other";
 export type ErrorKind = "server_stopped_responding" | "other";
