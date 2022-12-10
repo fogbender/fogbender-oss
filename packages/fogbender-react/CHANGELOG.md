@@ -1,5 +1,11 @@
 # fogbender-react
 
+## 0.2.11
+
+### Patch Changes
+
+- 245e317: update types for react to 17 (it will not with 18 yet)
+
 ## 0.2.10
 
 ### Patch Changes
