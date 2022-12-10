@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import type { AppCommand } from '../utils/app-command';
-import { loadIntegrations } from '../utils/integrations';
-import prompts from 'prompts';
-import color from 'kleur';
-import { getPackageManager, panic } from '../utils/utils';
-import { updateApp } from './update-app';
-import type { IntegrationData, UpdateAppResult } from '../types';
-import { relative } from 'node:path';
-import { logSuccessFooter, logNextStep } from '../utils/log';
-import { runInPkg, startSpinner } from '../utils/install-deps';
+import { relative } from "node:path";
+import prompts from "prompts";
+import color from "kleur";
+import type { AppCommand } from "../utils/app-command";
+import { loadIntegrations } from "../utils/integrations";
+import { getPackageManager, panic } from "../utils/utils";
+import type { IntegrationData, UpdateAppResult } from "../types";
+import { logSuccessFooter, logNextStep } from "../utils/log";
+import { runInPkg, startSpinner } from "../utils/install-deps";
+import { updateApp } from "./update-app";
 
 export async function runAddInteractive(app: AppCommand, id: string | undefined) {
   console.log(``);
@@ -19,9 +19,9 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
   const integrations = await loadIntegrations();
   let integration: IntegrationData | undefined;
 
-  if (typeof id === 'string') {
+  if (typeof id === "string") {
     // cli passed a flag with the integration id to add
-    integration = integrations.find((i) => i.id === id);
+    integration = integrations.find(i => i.id === id);
     if (!integration) {
       throw new Error(`Invalid integration: ${id}`);
     }
@@ -36,19 +36,19 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
     console.log(``);
 
     const integrationChoices = [
-      ...integrations.filter((i) => i.type === 'adaptor'),
-      ...integrations.filter((i) => i.type === 'feature'),
-    ].map((f) => {
+      ...integrations.filter(i => i.type === "adaptor"),
+      ...integrations.filter(i => i.type === "feature"),
+    ].map(f => {
       return { title: f.name, value: f.id };
     });
 
     const integrationAnswer = await prompts(
       {
-        type: 'select',
-        name: 'featureType',
+        type: "select",
+        name: "featureType",
         message: `What integration would you like to add?`,
         choices: integrationChoices,
-        hint: '(use ↓↑ arrows, hit enter)',
+        hint: "(use ↓↑ arrows, hit enter)",
       },
       {
         onCancel: () => {
@@ -59,7 +59,7 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
     );
     console.log(``);
 
-    integration = integrations.find((i) => i.id === integrationAnswer.featureType);
+    integration = integrations.find(i => i.id === integrationAnswer.featureType);
 
     if (!integration) {
       throw new Error(`Invalid integration: ${id}`);
@@ -89,7 +89,7 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
     const postInstall = result.integration.pkgJson.__qwik__?.postInstall;
     if (postInstall) {
       const spinner = startSpinner(`Running post install script: ${postInstall}`);
-      await runInPkg(pkgManager, postInstall.split(' '), app.rootDir);
+      await runInPkg(pkgManager, postInstall.split(" "), app.rootDir);
       spinner.succeed();
     }
     logUpdateAppCommitResult(result);
@@ -97,9 +97,9 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
 }
 
 async function logUpdateAppResult(pkgManager: string, result: UpdateAppResult) {
-  const modifyFiles = result.updates.files.filter((f) => f.type === 'modify');
-  const overwriteFiles = result.updates.files.filter((f) => f.type === 'overwrite');
-  const createFiles = result.updates.files.filter((f) => f.type === 'create');
+  const modifyFiles = result.updates.files.filter(f => f.type === "modify");
+  const overwriteFiles = result.updates.files.filter(f => f.type === "overwrite");
+  const createFiles = result.updates.files.filter(f => f.type === "create");
   const installDepNames = Object.keys(result.updates.installedDeps);
   const installDeps = installDepNames.length > 0;
 
@@ -150,10 +150,10 @@ async function logUpdateAppResult(pkgManager: string, result: UpdateAppResult) {
   if (installDeps) {
     console.log(
       `💾 ${color.cyan(
-        `Install ${pkgManager} dependenc${installDepNames.length > 1 ? 'ies' : 'y'}:`
+        `Install ${pkgManager} dependenc${installDepNames.length > 1 ? "ies" : "y"}:`
       )}`
     );
-    installDepNames.forEach((depName) => {
+    installDepNames.forEach(depName => {
       console.log(`   - ${depName} ${result.updates.installedDeps[depName]}`);
     });
     console.log(``);
@@ -161,16 +161,16 @@ async function logUpdateAppResult(pkgManager: string, result: UpdateAppResult) {
 
   const commitAnswer = await prompts(
     {
-      type: 'select',
-      name: 'commit',
+      type: "select",
+      name: "commit",
       message: `Ready to apply the ${color.bold(
         color.magenta(result.integration.id)
       )} updates to your app?`,
       choices: [
-        { title: 'Yes looks good, finish update!', value: true },
-        { title: 'Nope, cancel update', value: false },
+        { title: "Yes looks good, finish update!", value: true },
+        { title: "Nope, cancel update", value: false },
       ],
-      hint: ' ',
+      hint: " ",
     },
     {
       onCancel: () => {

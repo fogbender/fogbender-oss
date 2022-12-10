@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import color from 'kleur';
-import { AppCommand } from './utils/app-command';
-import { runAddCommand } from './add/run-add-command';
-import { panic, pmRunCmd } from './utils/utils';
-import { runBuildCommand } from './build/run-build-command';
+import color from "kleur";
+import { AppCommand } from "./utils/app-command";
+import { runAddCommand } from "./add/run-add-command";
+import { panic, pmRunCmd } from "./utils/utils";
+import { runBuildCommand } from "./build/run-build-command";
 
 export async function runCli() {
   try {
     const app = new AppCommand({
-      rootDir: '',
+      rootDir: "",
       cwd: process.cwd(),
       args: process.argv.slice(2),
     });
@@ -20,26 +20,26 @@ export async function runCli() {
 
 async function runCommand(app: AppCommand) {
   switch (app.task) {
-    case 'add': {
+    case "add": {
       await runAddCommand(app);
       return;
     }
-    case 'build': {
+    case "build": {
       await runBuildCommand(app);
       return;
     }
-    case 'help': {
+    case "help": {
       printHelp();
       return;
     }
-    case 'version': {
+    case "version": {
       printVersion();
       return;
     }
   }
 
-  if (typeof app.task === 'string') {
-    console.log(color.red(`Unrecognized qwik command: ${app.task}`) + '\n');
+  if (typeof app.task === "string") {
+    console.log(color.red(`Unrecognized qwik command: ${app.task}`) + "\n");
   }
 
   await printHelp();

@@ -1,16 +1,16 @@
-import type { FsUpdates, UpdateAppOptions, UpdateAppResult } from '../types';
-import { dirname } from 'node:path';
-import fs from 'node:fs';
-import { panic } from '../utils/utils';
-import { loadIntegrations } from '../utils/integrations';
-import { installDeps, startSpinner } from '../utils/install-deps';
-import { mergeIntegrationDir } from './update-files';
-import { updateViteConfigs } from './update-vite-config';
-import color from 'kleur';
+import { dirname } from "node:path";
+import fs from "node:fs";
+import color from "kleur";
+import type { FsUpdates, UpdateAppOptions, UpdateAppResult } from "../types";
+import { panic } from "../utils/utils";
+import { loadIntegrations } from "../utils/integrations";
+import { installDeps, startSpinner } from "../utils/install-deps";
+import { mergeIntegrationDir } from "./update-files";
+import { updateViteConfigs } from "./update-vite-config";
 
 export async function updateApp(pkgManager: string, opts: UpdateAppOptions) {
   const integrations = await loadIntegrations();
-  const integration = integrations.find((s) => s.id === opts.integration);
+  const integration = integrations.find(s => s.id === opts.integration);
   if (!integration) {
     throw new Error(`Unable to find integration "${opts.integration}"`);
   }
@@ -37,12 +37,12 @@ export async function updateApp(pkgManager: string, opts: UpdateAppOptions) {
     const isInstallingDeps = Object.keys(fileUpdates.installedDeps).length > 0;
 
     const spinner = showSpinner
-      ? startSpinner(`Updating app${isInstallingDeps ? ' and installing dependencies' : ''}...`)
+      ? startSpinner(`Updating app${isInstallingDeps ? " and installing dependencies" : ""}...`)
       : null;
 
     let passed = true;
     try {
-      const dirs = new Set(fileUpdates.files.map((f) => dirname(f.path)));
+      const dirs = new Set(fileUpdates.files.map(f => dirname(f.path)));
       for (const dir of Array.from(dirs)) {
         try {
           fs.mkdirSync(dir, { recursive: true });
@@ -52,7 +52,7 @@ export async function updateApp(pkgManager: string, opts: UpdateAppOptions) {
       }
 
       const fsWrites = Promise.all(
-        fileUpdates.files.map(async (f) => {
+        fileUpdates.files.map(async f => {
           await fs.promises.writeFile(f.path, f.content);
         })
       );

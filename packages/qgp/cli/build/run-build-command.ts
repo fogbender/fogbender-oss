@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import color from 'kleur';
-import type { AppCommand } from '../utils/app-command';
 import { execaCommand } from 'execa';
+import type { AppCommand } from '../utils/app-command';
 import { getPackageManager, pmRunCmd } from '../utils/utils';
 interface Step {
   title: string;

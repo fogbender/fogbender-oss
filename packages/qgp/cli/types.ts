@@ -1,4 +1,4 @@
-import type { AppCommand } from './utils/app-command';
+import type { AppCommand } from "./utils/app-command";
 
 export interface CreateAppOptions {
   starterId: string;
@@ -26,7 +26,7 @@ export interface FsUpdates {
   files: {
     path: string;
     content: string | Buffer;
-    type: 'create' | 'overwrite' | 'modify';
+    type: "create" | "overwrite" | "modify";
   }[];
   installedDeps: { [dep: string]: string };
 }
@@ -42,7 +42,7 @@ export interface IntegrationData {
   viteConfig?: ViteConfigUpdates;
 }
 
-export type IntegrationType = 'app' | 'feature' | 'adaptor';
+export type IntegrationType = "app" | "feature" | "adaptor";
 
 export interface Feature {
   id: string;

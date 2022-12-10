@@ -10,8 +10,8 @@ import type {
   SourceFile,
   Statement,
   TransformerFactory,
-} from 'typescript';
-import type { EnsureImport, ViteConfigUpdates } from '../types';
+} from "typescript";
+import type { EnsureImport, ViteConfigUpdates } from "../types";
 
 export function updateViteConfig(ts: TypeScript, sourceText: string, updates?: ViteConfigUpdates) {
   if (
@@ -23,7 +23,7 @@ export function updateViteConfig(ts: TypeScript, sourceText: string, updates?: V
     return null;
   }
 
-  sourceText = transformSource(ts, sourceText, () => (tsSourceFile) => {
+  sourceText = transformSource(ts, sourceText, () => tsSourceFile => {
     if (updates.imports) {
       for (const importData of updates.imports) {
         tsSourceFile = ensureImport(ts, tsSourceFile, importData);
@@ -36,7 +36,7 @@ export function updateViteConfig(ts: TypeScript, sourceText: string, updates?: V
       if (ts.isExportAssignment(s) && s.expression && ts.isCallExpression(s.expression)) {
         if (
           ts.isIdentifier(s.expression.expression) &&
-          s.expression.expression.text === 'defineConfig' &&
+          s.expression.expression.text === "defineConfig" &&
           (updates.viteConfig || updates.qwikViteConfig || updates.vitePlugins)
         ) {
           statements.push(
@@ -62,11 +62,11 @@ export function updateViteConfig(ts: TypeScript, sourceText: string, updates?: V
 function ensureImport(ts: TypeScript, tsSourceFile: SourceFile, importData: EnsureImport) {
   if (importData && importData.importPath) {
     if (Array.isArray(importData.namedImports)) {
-      importData.namedImports.forEach((namedImport) => {
+      importData.namedImports.forEach(namedImport => {
         tsSourceFile = ensureNamedImport(ts, tsSourceFile, namedImport, importData.importPath);
       });
     }
-    if (typeof importData.defaultImport === 'string') {
+    if (typeof importData.defaultImport === "string") {
       tsSourceFile = ensureDefaultImport(
         ts,
         tsSourceFile,
@@ -121,14 +121,14 @@ function findNamedImport(
   namedImport: string,
   importPath: string
 ) {
-  return findImportDeclarations(ts, tsSourceFile).find((n) => {
+  return findImportDeclarations(ts, tsSourceFile).find(n => {
     if (n.importClause && n.moduleSpecifier && ts.isStringLiteral(n.moduleSpecifier)) {
       if (n.moduleSpecifier.text !== importPath) {
         return false;
       }
       const namedImports = n.importClause.namedBindings;
       if (namedImports && ts.isNamedImports(namedImports) && namedImports.elements) {
-        return namedImports.elements.some((namedImportElement) => {
+        return namedImports.elements.some(namedImportElement => {
           if (ts.isImportSpecifier(namedImportElement)) {
             const importName = namedImportElement.name;
             if (importName && ts.isIdentifier(importName)) {
@@ -149,7 +149,7 @@ function findDefaultImport(
 
   importPath: string
 ) {
-  return findImportDeclarations(ts, tsSourceFile).find((n) => {
+  return findImportDeclarations(ts, tsSourceFile).find(n => {
     if (n.importClause && n.moduleSpecifier) {
       const modulePath = n.moduleSpecifier;
       if (ts.isStringLiteral(modulePath) && modulePath.text === importPath) {
@@ -201,7 +201,7 @@ function appendImports(
       }
     }
 
-    if (typeof namedImport === 'string') {
+    if (typeof namedImport === "string") {
       const identifier = ts.factory.createIdentifier(namedImport);
       const importSpecifier = ts.factory.createImportSpecifier(false, undefined, identifier);
       existingNamedImports.push(importSpecifier);
@@ -214,7 +214,7 @@ function appendImports(
     });
 
     let defaultIdentifier = n.importClause ? n.importClause.name : undefined;
-    if (typeof defaultImport === 'string') {
+    if (typeof defaultImport === "string") {
       defaultIdentifier = ts.factory.createIdentifier(defaultImport);
     }
 
@@ -237,11 +237,11 @@ function appendImports(
     let defaultIdentifier: Identifier = undefined as any;
     let namedBindings: NamedImports = undefined as any;
 
-    if (typeof defaultImport === 'string') {
+    if (typeof defaultImport === "string") {
       defaultIdentifier = ts.factory.createIdentifier(defaultImport);
     }
 
-    if (typeof namedImport === 'string') {
+    if (typeof namedImport === "string") {
       namedBindings = ts.factory.createNamedImports([
         ts.factory.createImportSpecifier(
           false,
@@ -270,7 +270,7 @@ function findLastImportIndex(ts: TypeScript, tsSourceFile: SourceFile) {
     if (ts.isImportDeclaration(s)) {
       return i;
     }
-    if (ts.isStringLiteral(s) && s.text === 'use strict') {
+    if (ts.isStringLiteral(s) && s.text === "use strict") {
       return i;
     }
   }
@@ -355,7 +355,7 @@ function updatePlugins(ts: TypeScript, obj: ObjectLiteralExpression, updates: Vi
 
   for (const p of obj.properties) {
     if (ts.isPropertyAssignment(p)) {
-      if (p.name && ts.isIdentifier(p.name) && p.name.text === 'plugins') {
+      if (p.name && ts.isIdentifier(p.name) && p.name.text === "plugins") {
         if (ts.isArrayLiteralExpression(p.initializer)) {
           properties.push(
             ts.factory.updatePropertyAssignment(
@@ -394,7 +394,7 @@ function updatePluginsArray(
     for (let i = 0; i < elms.length; i++) {
       const elm = elms[i];
       if (ts.isCallExpression(elm) && ts.isIdentifier(elm.expression)) {
-        if (elm.expression.escapedText === 'qwikVite') {
+        if (elm.expression.escapedText === "qwikVite") {
           elms[i] = updateQwikCityPlugin(ts, elm, updates.qwikViteConfig);
         }
       }
@@ -405,10 +405,10 @@ function updatePluginsArray(
 }
 
 function createPluginCall(ts: TypeScript, vitePlugin: string) {
-  if (typeof vitePlugin === 'string') {
+  if (typeof vitePlugin === "string") {
     const tmp = ts.createSourceFile(
-      'tmp.ts',
-      'export default ' + vitePlugin,
+      "tmp.ts",
+      "export default " + vitePlugin,
       ts.ScriptTarget.Latest
     );
     for (const s of tmp.statements) {
@@ -443,8 +443,8 @@ function updateObjectLiteralExpression(
   updateObj: { [propName: string]: string }
 ) {
   for (const [propName, value] of Object.entries(updateObj)) {
-    if (typeof value === 'string') {
-      const tmp = ts.createSourceFile('tmp.ts', 'export default ' + value, ts.ScriptTarget.Latest);
+    if (typeof value === "string") {
+      const tmp = ts.createSourceFile("tmp.ts", "export default " + value, ts.ScriptTarget.Latest);
 
       for (const s of tmp.statements) {
         if (ts.isExportAssignment(s)) {
@@ -472,7 +472,7 @@ function updateObjectLiteralExpression(
 }
 
 function transformSource(ts: TypeScript, sourceText: string, transformer: TransformerFactory<any>) {
-  const t = ts.transform(ts.createSourceFile('/tmp.ts', sourceText, ts.ScriptTarget.Latest), [
+  const t = ts.transform(ts.createSourceFile("/tmp.ts", sourceText, ts.ScriptTarget.Latest), [
     transformer,
   ]);
 
@@ -485,4 +485,4 @@ function transformSource(ts: TypeScript, sourceText: string, transformer: Transf
   return p.printFile(t.transformed[0]);
 }
 
-type TypeScript = typeof import('typescript');
+type TypeScript = typeof import("typescript");

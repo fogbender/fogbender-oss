@@ -1,36 +1,36 @@
-import color from 'kleur';
-import fs from 'node:fs';
-import ora from 'ora';
-import os from 'node:os';
-import path from 'node:path';
-import spawn from 'cross-spawn';
-import type { ChildProcess } from 'node:child_process';
-import type { IntegrationData } from '../types';
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import type { ChildProcess } from "node:child_process";
+import spawn from "cross-spawn";
+import ora from "ora";
+import color from "kleur";
+import type { IntegrationData } from "../types";
 
 export function installDeps(pkgManager: string, dir: string) {
-  return runCommand(pkgManager, ['install'], dir);
+  return runCommand(pkgManager, ["install"], dir);
 }
 
 export function runInPkg(pkgManager: string, args: string[], cwd: string) {
-  const cmd = pkgManager === 'npm' ? 'npx' : pkgManager;
+  const cmd = pkgManager === "npm" ? "npx" : pkgManager;
   return runCommand(cmd, args, cwd);
 }
 
 export function runCommand(cmd: string, args: string[], cwd: string) {
   let installChild: ChildProcess;
 
-  const install = new Promise<boolean>((resolve) => {
+  const install = new Promise<boolean>(resolve => {
     try {
       installChild = spawn(cmd, args, {
         cwd,
-        stdio: 'ignore',
+        stdio: "ignore",
       });
 
-      installChild.on('error', () => {
+      installChild.on("error", () => {
         resolve(false);
       });
 
-      installChild.on('close', (code) => {
+      installChild.on("close", code => {
         if (code === 0) {
           resolve(true);
         } else {
@@ -44,7 +44,7 @@ export function runCommand(cmd: string, args: string[], cwd: string) {
 
   const abort = async () => {
     if (installChild) {
-      installChild.kill('SIGINT');
+      installChild.kill("SIGINT");
     }
   };
 
@@ -69,30 +69,30 @@ export function backgroundInstallDeps(pkgManager: string, baseApp: IntegrationDa
       try {
         const installed = await install;
         if (installed) {
-          const tmpNodeModules = path.join(tmpInstallDir, 'node_modules');
-          const appNodeModules = path.join(outDir, 'node_modules');
+          const tmpNodeModules = path.join(tmpInstallDir, "node_modules");
+          const appNodeModules = path.join(outDir, "node_modules");
           await fs.promises.rename(tmpNodeModules, appNodeModules);
 
           try {
             await fs.promises.rename(
-              path.join(tmpInstallDir, 'package-lock.json'),
-              path.join(outDir, 'package-lock.json')
+              path.join(tmpInstallDir, "package-lock.json"),
+              path.join(outDir, "package-lock.json")
             );
           } catch (e) {
             //
           }
           try {
             await fs.promises.rename(
-              path.join(tmpInstallDir, 'yarn.lock'),
-              path.join(outDir, 'yarn.lock')
+              path.join(tmpInstallDir, "yarn.lock"),
+              path.join(outDir, "yarn.lock")
             );
           } catch (e) {
             //
           }
           try {
             await fs.promises.rename(
-              path.join(tmpInstallDir, 'pnpm-lock.yaml'),
-              path.join(outDir, 'pnpm-lock.yaml')
+              path.join(tmpInstallDir, "pnpm-lock.yaml"),
+              path.join(outDir, "pnpm-lock.yaml")
             );
           } catch (e) {
             //
@@ -125,7 +125,7 @@ export function backgroundInstallDeps(pkgManager: string, baseApp: IntegrationDa
 
 function setupTmpInstall(baseApp: IntegrationData) {
   const tmpId =
-    'create-qwik-' +
+    "create-qwik-" +
     Math.round(Math.random() * Number.MAX_SAFE_INTEGER)
       .toString(36)
       .toLowerCase();
@@ -137,8 +137,8 @@ function setupTmpInstall(baseApp: IntegrationData) {
     console.error(`\n❌ ${color.red(String(e))}\n`);
   }
 
-  const basePkgJson = path.join(baseApp.dir, 'package.json');
-  const tmpPkgJson = path.join(tmpInstallDir, 'package.json');
+  const basePkgJson = path.join(baseApp.dir, "package.json");
+  const tmpPkgJson = path.join(tmpInstallDir, "package.json");
   fs.copyFileSync(basePkgJson, tmpPkgJson);
 
   return { tmpInstallDir };
