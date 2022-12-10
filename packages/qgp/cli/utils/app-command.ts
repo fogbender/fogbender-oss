@@ -7,7 +7,33 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { PackageJSON } from "../../../../../scripts/util";
+
+/**
+ * Interface for package.json
+ */
+export interface PackageJSON {
+  name: string;
+  version: string;
+  dependencies?: { [pkgName: string]: string };
+  devDependencies?: { [pkgName: string]: string };
+  description?: string;
+  scripts?: { [scriptName: string]: string };
+  license?: string;
+  main: string;
+  module?: string;
+  types: string;
+  type?: string;
+  files?: string[];
+  exports?: { [key: string]: any };
+  contributors?: { [key: string]: string }[];
+  homepage?: string;
+  repository?: { [key: string]: string };
+  bugs?: { [key: string]: string };
+  keywords?: string[];
+  engines?: { [key: string]: string };
+  private?: boolean;
+  [key: string]: any;
+}
 
 export class AppCommand {
   args: string[];

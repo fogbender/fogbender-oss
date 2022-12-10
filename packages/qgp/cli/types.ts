@@ -81,6 +81,14 @@ export interface IntegrationPackageJson {
   qwik?: string;
   types?: string;
   type?: string;
+  __qgp__?: {
+    displayName?: string;
+    nextSteps?: NextSteps;
+    docs?: string[];
+    priority: number;
+    postInstall?: string;
+    viteConfig?: ViteConfigUpdates;
+  };
   __qwik__?: {
     displayName?: string;
     nextSteps?: NextSteps;
