@@ -10,7 +10,6 @@ import color from "kleur";
 import { AppCommand } from "./utils/app-command";
 import { runAddCommand } from "./add/run-add-command";
 import { panic, pmRunCmd } from "./utils/utils";
-import { runBuildCommand } from "./build/run-build-command";
 
 export async function runCli() {
   try {
@@ -29,10 +28,6 @@ async function runCommand(app: AppCommand) {
   switch (app.task) {
     case "add": {
       await runAddCommand(app);
-      return;
-    }
-    case "build": {
-      await runBuildCommand(app);
       return;
     }
     case "help": {
