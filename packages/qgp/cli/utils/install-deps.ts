@@ -1,3 +1,10 @@
+/*!
+ * Original code by BuilderIO
+ * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
+ *
+ * Credits to the BuilderIO:
+ * https://github.com/BuilderIO/qwik/blob/main/packages/qwik/src/cli/utils/install-deps.ts
+ */
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";

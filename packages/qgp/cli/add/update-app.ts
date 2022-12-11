@@ -1,3 +1,10 @@
+/*!
+ * Original code by BuilderIO
+ * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
+ *
+ * Credits to the BuilderIO:
+ * https://github.com/BuilderIO/qwik/blob/main/packages/qwik/src/cli/add/update-app.ts
+ */
 import { dirname } from "node:path";
 import fs from "node:fs";
 import color from "kleur";

@@ -1,3 +1,10 @@
+/*!
+ * Original code by BuilderIO
+ * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
+ *
+ * Credits to the BuilderIO:
+ * https://github.com/BuilderIO/qwik/blob/main/packages/qwik/src/cli/add/update-vite-config.ts
+ */
 import fs from "fs";
 import { join } from "path";
 import type { Options } from "prettier";

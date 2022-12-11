@@ -1,3 +1,10 @@
+/*!
+ * Original code by BuilderIO
+ * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
+ *
+ * Credits to the BuilderIO:
+ * https://github.com/BuilderIO/qwik/blob/main/packages/qwik/src/cli/code-mod/code-mod.unit.ts
+ */
 import { test } from "uvu";
 import { match } from "uvu/assert";
 import ts from "typescript";

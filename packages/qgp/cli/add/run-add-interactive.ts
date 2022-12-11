@@ -1,4 +1,11 @@
 /* eslint-disable no-console */
+/*!
+ * Original code by BuilderIO
+ * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
+ *
+ * Credits to the BuilderIO:
+ * https://github.com/BuilderIO/qwik/blob/main/packages/qwik/src/cli/add/run-add-interactive.ts
+ */
 import { relative } from "node:path";
 import prompts from "prompts";
 import color from "kleur";
