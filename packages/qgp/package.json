@@ -1,0 +1,60 @@
+{
+  "name": "qgp",
+  "version": "0.0.6",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Quark-gluon plasma is the hottest frameworks in Astrophysics",
+  "author": "JLarky",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/qgp"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "source": "src/index.ts",
+  "bin": {
+    "qgp": "dist/bin.js"
+  },
+  "files": [
+    "templates",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup-node src/bin.ts src/index.ts --format cjs,esm --dts --clean",
+    "watch": "yarn build --watch src",
+    "dev": "vitest dev",
+    "lint": "eslint --ext .ts,.js,.mjs,.cjs . || true",
+    "test": "yarn lint && vitest run --coverage"
+  },
+  "dependencies": {
+    "pathe": "^1.0.0",
+    "vite": "*",
+    "vite-plugin-env-compatible": "^1.1.1",
+    "vite-tsconfig-paths": "^3.6.0"
+  },
+  "peerDependencies": {
+    "astro": "*"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@vitest/coverage-c8": "^0.25.3",
+    "eslint": "^8.28.0",
+    "ora": "^6.1.2",
+    "tsup": "^6.5.0",
+    "typescript": "^4.9.3",
+    "vitest": "^0.25.3",
+    "which-pm-runs": "^1.1.0"
+  }
+}
