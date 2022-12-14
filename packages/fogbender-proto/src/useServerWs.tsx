@@ -174,10 +174,18 @@ export function useServerWs(
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
                 onWrongToken(token);
+              } else {
+                onError("error", "other", new Error("Failed to authenticate " + JSON.stringify(r)));
               }
             } else if (r.msgType === "Error.Fatal") {
               if ("code" in r && r.code === 409) {
                 onWrongToken(token);
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Fatal error while authenticating " + JSON.stringify(r))
+                );
               }
             }
           },
