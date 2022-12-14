@@ -2,6 +2,8 @@ import React from "react";
 import type { EventRoom } from "../schema";
 import type { ServerCall } from "../useServerWs";
 
+export type RoomByIdWhy = "badge" | "other";
+
 export function useRoomResolver(
   fogSessionId: string | undefined,
   serverCall: ServerCall,
@@ -15,7 +17,7 @@ export function useRoomResolver(
     (
       action:
         | "token_change"
-        | { type: "roomById"; roomId: string; room: { id: string } | undefined }
+        | { type: "roomById"; roomId: string; room: { id: string } | undefined; why: RoomByIdWhy }
     ) => {
       if (action === "token_change") {
         resolveById.current.clear();
@@ -28,6 +30,31 @@ export function useRoomResolver(
         } else if (!has) {
           // room is not resolved yet, and we have a connection
           resolveById.current.add(roomId);
+          if (action.why === "badge") {
+            // we can't resolve badges with Roster.GetRooms or we will see #739
+            queueMicrotask(() => {
+              setSideEffects(
+                sideEffects =>
+                  new Map(
+                    sideEffects.set(roomId, () => {
+                      serverCall({ msgType: "Search.Room", roomId }).then(
+                        x => {
+                          if (x.msgType !== "Search.Ok") {
+                            console.error(x);
+                            return;
+                          }
+                          onRoomRef.current(x.items);
+                        },
+                        err => {
+                          console.error("failed to resolve", err);
+                        }
+                      );
+                    })
+                  )
+              );
+            });
+            return;
+          }
           queueMicrotask(() => {
             setSideEffects(
               sideEffects =>

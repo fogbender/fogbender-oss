@@ -22,8 +22,9 @@ import {
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
 import type { useServerWs } from "../useServerWs";
-import { useRoomResolver } from "./useRoomResolver";
+import { useRoomResolver, RoomByIdWhy } from "./useRoomResolver";
 import { useConnectRosterSections } from "./rosterSections";
+import { useAtom } from "jotai";
 
 export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
@@ -83,13 +84,15 @@ export const useSharedRoster = ({
     dispatch("token_change");
   }, [token, workspaceId, fogSessionId]);
 
+  const [rosterSections] = useAtom(rosterSectionsAtom);
+
   const roomById = React.useCallback(
-    (id: string) => {
+    (id: string, why: RoomByIdWhy = "other") => {
       const room = rawRoster.find(r => r.id === id);
-      dispatch({ type: "roomById", roomId: id, room });
+      dispatch({ type: "roomById", roomId: id, room, why });
       return room;
     },
-    [rawRoster]
+    [rawRoster, dispatch, rosterSections]
   );
 
   const updateBadge = React.useCallback(
@@ -101,7 +104,7 @@ export const useSharedRoster = ({
           enoughBadges.current++;
         }
         if (enoughBadges.current < 10) {
-          roomById(b.roomId);
+          roomById(b.roomId, "badge");
         }
       }
       setBadges(x => {
