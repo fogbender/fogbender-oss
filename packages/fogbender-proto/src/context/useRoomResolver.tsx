@@ -2,7 +2,7 @@ import React from "react";
 import type { EventRoom } from "../schema";
 import type { ServerCall } from "../useServerWs";
 
-export type RoomByIdWhy = "badge" | "other";
+export type RoomByIdWhy = "badge" | "favicon" | "other";
 
 export function useRoomResolver(
   fogSessionId: string | undefined,
@@ -30,7 +30,7 @@ export function useRoomResolver(
         } else if (!has) {
           // room is not resolved yet, and we have a connection
           resolveById.current.add(roomId);
-          if (action.why === "badge") {
+          if (action.why === "badge" || action.why === "favicon") {
             // we can't resolve badges with Roster.GetRooms or we will see #739
             queueMicrotask(() => {
               setSideEffects(
