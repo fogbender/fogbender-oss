@@ -43,7 +43,7 @@ export function useRoomResolver(
                       serverCall({ msgType: "Roster.GetRooms", roomIds: [roomId], topic }).then(
                         x => {
                           if (x.msgType !== "Roster.GetOk") {
-                            console.error(x);
+                            console.error("failed to resolve", roomId, x);
                             return;
                           }
                           onRoomRef.current(x.items.map(i => i.room));
