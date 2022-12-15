@@ -1,5 +1,5 @@
 import React from "react";
-import type { EventRoom } from "../schema";
+import type { EventRoom, EventRosterRoom } from "../schema";
 import type { ServerCall } from "../useServerWs";
 
 export type RoomByIdWhy = "badge" | "favicon" | "other";
@@ -10,7 +10,9 @@ export function useRoomResolver(
   workspaceId: string | undefined,
   helpdeskId: string | undefined
 ) {
-  const onRoomRef = React.useRef<(roomsIn: EventRoom[]) => void>(() => {});
+  const onRoomRef = React.useRef<(roomsIn: EventRoom[], rosterRooms: EventRosterRoom[]) => void>(
+    () => {}
+  );
   const [sideEffects, setSideEffects] = React.useState(new Map<string, () => void>());
   const resolveById = React.useRef(new Set<string>());
   const dispatch = React.useCallback(
@@ -43,7 +45,7 @@ export function useRoomResolver(
                             console.error(x);
                             return;
                           }
-                          onRoomRef.current(x.items);
+                          onRoomRef.current(x.items, []);
                         },
                         err => {
                           console.error("failed to resolve", err);
@@ -73,7 +75,10 @@ export function useRoomResolver(
                             console.error("failed to resolve", roomId, x);
                             return;
                           }
-                          onRoomRef.current(x.items.map(i => i.room));
+                          onRoomRef.current(
+                            x.items.map(i => i.room),
+                            x.items
+                          );
                         },
                         err => {
                           console.error("failed to resolve", err);
