@@ -86,7 +86,6 @@ export const useSharedRoster = ({
     dispatch("token_change");
   }, [token, workspaceId, fogSessionId]);
 
-  const [rosterSections] = useAtom(rosterSectionsAtom);
   const [, dispatchRosterSections] = useAtom(rosterSectionsActionsAtom);
 
   const roomById = React.useCallback(
@@ -95,7 +94,7 @@ export const useSharedRoster = ({
       dispatch({ type: "roomById", roomId: id, room, why });
       return room;
     },
-    [rawRoster, dispatch, rosterSections]
+    [rawRoster, dispatch]
   );
 
   const updateBadge = React.useCallback(
