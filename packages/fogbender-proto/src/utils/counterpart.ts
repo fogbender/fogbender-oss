@@ -22,5 +22,5 @@ export const calculateCounterpart = (e: EventRoom, ourUserId?: string) => {
 };
 
 export const eventRoomToRoom = (e: EventRoom, ourUserId: string) => {
-  return { ...e, counterpart: calculateCounterpart(e, ourUserId) };
+  return { _meta: "roomT" as const, ...e, counterpart: calculateCounterpart(e, ourUserId) };
 };

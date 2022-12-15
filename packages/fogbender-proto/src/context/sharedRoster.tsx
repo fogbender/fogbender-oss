@@ -27,6 +27,7 @@ import { useConnectRosterSections } from "./rosterSections";
 import { useAtom } from "jotai";
 
 export type Room = EventRoom & {
+  _meta: "roomT";
   counterpart?: RoomMember; // when type === "dialog"
 };
 
