@@ -6,6 +6,7 @@ import type {
   EventBadge,
   EventCustomer,
   EventRoom,
+  EventRosterRoom,
   EventSeen,
   EventUser,
   RoomMember,
@@ -86,6 +87,7 @@ export const useSharedRoster = ({
   }, [token, workspaceId, fogSessionId]);
 
   const [rosterSections] = useAtom(rosterSectionsAtom);
+  const [, dispatchRosterSections] = useAtom(rosterSectionsActionsAtom);
 
   const roomById = React.useCallback(
     (id: string, why: RoomByIdWhy = "other") => {
@@ -163,8 +165,11 @@ export const useSharedRoster = ({
   }, [fogSessionId, userId, badgesPrevCursor, badgesLoaded, updateBadge, serverCall]);
 
   const updateRoster = React.useCallback(
-    (roomsIn: EventRoom[]) => {
-      if (userId) {
+    (roomsIn: EventRoom[], rosterRooms: EventRosterRoom[]) => {
+      if (rosterRooms.length > 0) {
+        dispatchRosterSections({ action: "update_roster", rosterRooms });
+      }
+      if (userId && roomsIn.length > 0) {
         setRawRoster(roster => {
           let newRoster = roster;
           roomsIn.forEach(room => {
@@ -260,7 +265,7 @@ export const useSharedRoster = ({
         console.assert(x.msgType === "Stream.GetOk");
         if (x.msgType === "Stream.GetOk") {
           const items = extractEventRoom(x.items);
-          updateRoster(items);
+          updateRoster(items, []);
           setOldestRoomTs(Math.min(...items.map(x => x.createdTs), oldestRoomTs || Infinity));
           const noMoreRooms = items.length === 0;
           if (noMoreRooms || enoughRooms.current) {
@@ -355,7 +360,7 @@ export const useSharedRoster = ({
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
-      updateRoster([lastIncomingMessage]);
+      updateRoster([lastIncomingMessage], []);
     } else if (lastIncomingMessage?.msgType === "Event.Badge") {
       updateBadge(lastIncomingMessage);
     } else if (lastIncomingMessage?.msgType === "Event.Customer") {

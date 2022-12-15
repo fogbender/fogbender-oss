@@ -63,11 +63,17 @@ function handleRosterSectionsUpdate(
   return needsSort ? new Map(Array.from(data.entries()).sort((a, b) => a[1].pos - b[1].pos)) : data;
 }
 
-export type RosterSectionActions = {
-  action: "load";
-  sectionId: RosterSectionId;
-  done: () => {};
-};
+export type RosterSectionActions =
+  | {
+      action: "load";
+      sectionId: RosterSectionId;
+      done: () => {};
+    }
+  | {
+      action: "update_roster";
+      rosterRooms: EventRosterRoom[];
+      done?: () => void;
+    };
 
 function handleRosterRoomEvent(
   data: Map<string, EventRosterSectionWithRooms>,
@@ -116,6 +122,12 @@ export const useConnectRosterSections = (
             }
           })
           .finally(done);
+      } else if (command.action === "update_roster") {
+        let newRosterSections = new Map(get(rosterSectionsAtom));
+        command.rosterRooms.forEach(rosterRoom => {
+          newRosterSections = handleRosterRoomEvent(newRosterSections, rosterRoom);
+        });
+        set(rosterSectionsAtom, newRosterSections);
       }
     });
 
