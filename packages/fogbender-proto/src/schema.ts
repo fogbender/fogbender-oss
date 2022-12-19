@@ -884,6 +884,32 @@ export declare type Attachment = {
   fileSize: number;
 };
 
+export type CustomerCrm = {
+  crmRemoteAccountId: string;
+  crmAccountId: string;
+  crmId: string;
+  crmRemoteId: string;
+  crmType: string;
+};
+
+export type CustomerCrmData = {
+  addresses: string[];
+  description: string;
+  id: string;
+  industry: string;
+  name: string;
+  number_of_employees: number;
+  owner: string;
+  phone_numbers: string[];
+  remote_id: string;
+  website: string;
+};
+
+export type CrmData = {
+  crm: CustomerCrm;
+  data: CustomerCrmData;
+};
+
 export type Customer = {
   id: string;
   name: string;
@@ -897,7 +923,10 @@ export type Customer = {
   deletedAt: number;
   createdTs: number;
   domains?: string[];
+  domainMatches?: string[];
   crmLinks?: any[];
+  crms?: CustomerCrm[];
+  crmData?: CrmData[];
 };
 
 export type EventTag = {
