@@ -559,6 +559,7 @@ export type SearchCustomers = {
   msgType: "Search.Customers";
   workspaceId: string;
   term: string;
+  customerIds?: string[];
   limit?: number;
 };
 
