@@ -204,6 +204,13 @@ type SharedChannelAssociation = {
   helpdesk_id: string;
 };
 
+export type Prompt = {
+  id: string;
+  index: number;
+  command: string;
+  instruction: string;
+};
+
 export type Integration = {
   id: string;
   workspace_id: string;
@@ -225,6 +232,7 @@ export type Integration = {
   aggressive_ticketing?: boolean;
   jira_url?: string;
   shared_channel_helpdesk_associations?: SharedChannelAssociation[];
+  prompts?: Prompt[];
 };
 
 export type IntegrationCreateIssue = {
