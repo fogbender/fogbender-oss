@@ -817,6 +817,7 @@ export type EventRoom = {
   resolvedTil: number | null;
   lastMessage: EventMessage | null;
   createdBy: Actor | null;
+  commands: string[];
 };
 
 export type IssueLabel = {
