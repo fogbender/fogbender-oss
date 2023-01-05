@@ -96,6 +96,7 @@ export type APISchema = {
   EventUserEVT: RPC<undefined, EventUser>;
   EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
+  AiSummarize: RPC<AiSummarize, AiOk>;
 };
 
 export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
@@ -647,6 +648,21 @@ export type PingPing = {
 export type PingPong = {
   msgId: string;
   msgType: "Ping.Pong";
+};
+
+export type AiSummarize = {
+  msgId?: string;
+  msgType: "Ai.Summarize";
+  roomId: string;
+  startMessageId: string;
+  endMessageId: string;
+  maxWords: number;
+};
+
+export type AiOk = {
+  msgId: string;
+  msgType: "Ai.Ok";
+  response: string[];
 };
 
 // BEGIN events
