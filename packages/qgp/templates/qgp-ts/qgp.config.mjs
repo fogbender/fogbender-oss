@@ -19,7 +19,4 @@ export default defineVite(common, {
       overlay: { initialIsOpen: false },
     }),
   ],
-  define: {
-    "global": "window",
-  },
 });
