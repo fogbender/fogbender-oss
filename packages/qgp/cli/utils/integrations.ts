@@ -59,8 +59,8 @@ export async function loadIntegrations() {
               type: "feature",
               dir,
               pkgJson,
-              docs: pkgJson.__qwik__?.docs ?? [],
-              priority: pkgJson?.__qwik__?.priority ?? 0,
+              docs: pkgJson.__qgp__?.docs ?? [],
+              priority: pkgJson?.__qgp__?.priority ?? 0,
             };
             console.log(integration);
             loadingIntegrations.push(integration);

@@ -44,7 +44,7 @@ export function cleanPackageJson(srcPkg: IntegrationPackageJson) {
   Object.keys(cleanedPkg).forEach(prop => {
     delete (srcPkg as any)[prop];
   });
-  delete srcPkg.__qwik__;
+  delete srcPkg.__qgp__;
 
   const sortedKeys = Object.keys(srcPkg).sort();
   for (const key of sortedKeys) {

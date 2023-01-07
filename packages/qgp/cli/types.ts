@@ -89,7 +89,7 @@ export interface IntegrationPackageJson {
     postInstall?: string;
     viteConfig?: ViteConfigUpdates;
   };
-  __qwik__?: {
+  __qgp__?: {
     displayName?: string;
     nextSteps?: NextSteps;
     docs?: string[];

@@ -12,5 +12,16 @@
     "@vitejs/plugin-react": "*",
     "typescript": "*",
     "vite-plugin-checker": "*"
+  },
+  "__qgp__": {
+    "displayName": "qgp-ts (adds start-qgp script that uses vite)",
+    "nextSteps": {
+      "title": "What's next?",
+      "lines": [
+        "- make sure to rename your existing .ts files to .tsx",
+        "- try running `npm run start-qgp`"
+      ]
+    },
+    "priority": 11
   }
 }

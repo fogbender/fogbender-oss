@@ -12,7 +12,4 @@ export const common = defineCommon({
 
 export default defineVite(common, {
   plugins: [react()],
-  define: {
-    "global": "window",
-  },
 });

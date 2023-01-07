@@ -18,7 +18,7 @@ export async function updateViteConfigs(
   rootDir: string
 ) {
   try {
-    const viteConfig = integration.pkgJson.__qwik__?.viteConfig;
+    const viteConfig = integration.pkgJson.__qgp__?.viteConfig;
     if (viteConfig) {
       const viteConfigPath = join(rootDir, "vite.config.ts");
       const destContent = await fs.promises.readFile(viteConfigPath, "utf-8");
