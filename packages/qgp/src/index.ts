@@ -10,6 +10,7 @@ export function testFunction(name: string) {
 }
 
 export type QgpConfig<T extends UserConfig> = {
+  skipReactAppEnv?: boolean;
   skipEnvCompatible?: boolean;
   skipTsconfigPaths?: boolean;
   vite: T;
@@ -24,6 +25,9 @@ export function defineCommon<T extends UserConfig>(config: QgpConfig<T>): T {
     plugins.push(tsconfigPaths());
   }
   const userConfig: UserConfig = { plugins };
+  if (!config.skipReactAppEnv) {
+    userConfig.envPrefix = "REACT_APP_";
+  }
   const conf = mergeConfig(config.vite, userConfig);
   return conf as T;
 }
