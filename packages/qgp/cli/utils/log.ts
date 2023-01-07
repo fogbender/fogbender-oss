@@ -17,9 +17,8 @@ export function logSuccessFooter(docs: string[]) {
     });
   }
   console.log(``);
-  console.log(`💬 ${color.cyan("Questions? Start the conversation at:")}`);
-  console.log(`   https://qwik.builder.io/chat`);
-  console.log(`   https://twitter.com/QwikDev`);
+  console.log(`💬 ${color.cyan("Questions?")}`);
+  console.log(`   https://twitter.com/JLarky`);
   console.log(``);
 }
 
