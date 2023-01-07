@@ -93,7 +93,7 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
   const commit = await logUpdateAppResult(pkgManager, result);
   if (commit) {
     await result.commit(true);
-    const postInstall = result.integration.pkgJson.__qwik__?.postInstall;
+    const postInstall = result.integration.pkgJson.__qgp__?.postInstall;
     if (postInstall) {
       const spinner = startSpinner(`Running post install script: ${postInstall}`);
       await runInPkg(pkgManager, postInstall.split(" "), app.rootDir);
@@ -199,6 +199,6 @@ function logUpdateAppCommitResult(result: UpdateAppResult) {
   );
   console.log(``);
   logSuccessFooter(result.integration.docs);
-  const nextSteps = result.integration.pkgJson.__qwik__?.nextSteps;
+  const nextSteps = result.integration.pkgJson.__qgp__?.nextSteps;
   logNextStep(nextSteps);
 }
