@@ -21,6 +21,6 @@
   },
   "__qgp__": {
     "displayName": "Astro (production ready site generator)",
-    "priority": -2
+    "priority": 2
   }
 }

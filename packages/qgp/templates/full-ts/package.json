@@ -26,6 +26,6 @@
   },
   "__qgp__": {
     "displayName": "Full QGP Example based on CRA",
-    "priority": -3
+    "priority": 3
   }
 }
