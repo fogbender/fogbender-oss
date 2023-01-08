@@ -49,7 +49,6 @@ export async function loadIntegrations() {
           const dir = join(integrationsDir, integrationsDirName);
 
           const dirItems = await fs.promises.readdir(dir);
-          console.log(integrationsDirName, dirItems);
           const stat = await fs.promises.stat(dir);
           if (stat.isDirectory()) {
             const pkgJson = await readPackageJson(dir);
@@ -62,7 +61,6 @@ export async function loadIntegrations() {
               docs: pkgJson.__qgp__?.docs ?? [],
               priority: pkgJson?.__qgp__?.priority ?? 0,
             };
-            console.log(integration);
             loadingIntegrations.push(integration);
           }
         }
