@@ -9,19 +9,17 @@
     "start-qgp": "vite --config qgp.config.mjs"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "*",
-    "typescript": "*",
-    "vite-plugin-checker": "*"
+    "@vitejs/plugin-react": "^3.0.0"
   },
   "__qgp__": {
-    "displayName": "qgp-ts (adds start-qgp script that uses vite)",
+    "displayName": "qgp-js (adds start-qgp script for vite powered HMR, no type checking)",
     "nextSteps": {
       "title": "What's next?",
       "lines": [
-        "- make sure to rename your existing .ts files to .tsx",
+        "- make sure to rename your existing .js files to .jsx",
         "- try running `npm run start-qgp`"
       ]
     },
-    "priority": 11
+    "priority": 10
   }
 }

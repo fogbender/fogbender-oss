@@ -1,5 +1,5 @@
 {
-  "name": "@example/basics",
+  "name": "@example/astro",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -20,7 +20,15 @@
     "react-dom": "^18.2.0"
   },
   "__qgp__": {
-    "displayName": "Astro (production ready site generator)",
-    "priority": -2
+    "displayName": "astro (adds build command for production)",
+    "nextSteps": {
+      "title": "What's next?",
+      "lines": [
+        "- `npm run dev` and http://localhost:3000/astro",
+        "- `npm run build` and `npm run preview`",
+        "- keep in mind production build is stored inside `dist` folder instead of `build`"
+      ]
+    },
+    "priority": 20
   }
 }

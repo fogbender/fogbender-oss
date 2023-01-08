@@ -1,12 +1,9 @@
 ---
 import Layout from "../layouts/SPA-layout.astro";
-import { App } from "../components/ReactSPA";
+import { App } from "../qgp/react";
+import "../index.css";
 ---
 
 <Layout title="">
-  <script>
-    window.global = window;
-    window.process = window.process || { env: import.meta.env || { NODE_ENV: "production" } };
-  </script>
   <App client:only="react" />
 </Layout>

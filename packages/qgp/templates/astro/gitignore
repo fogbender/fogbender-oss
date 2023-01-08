@@ -1,0 +1,3 @@
+# astro build output
+dist/
+.output/
