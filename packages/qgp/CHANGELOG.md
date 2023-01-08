@@ -1,5 +1,11 @@
 # qgp
 
+## 0.0.10
+
+### Patch Changes
+
+- 921fdaf: add `npx qgp create`
+
 ## 0.0.9
 
 ### Patch Changes
