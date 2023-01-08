@@ -104,9 +104,12 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
 }
 
 async function logUpdateAppResult(pkgManager: string, result: UpdateAppResult) {
-  const modifyFiles = result.updates.files.filter(f => f.type === "modify");
-  const overwriteFiles = result.updates.files.filter(f => f.type === "overwrite");
-  const createFiles = result.updates.files.filter(f => f.type === "create");
+  const sortedFiles = result.updates.files.sort((a, b) => {
+    return a.path.localeCompare(b.path);
+  });
+  const modifyFiles = sortedFiles.filter(f => f.type === "modify");
+  const overwriteFiles = sortedFiles.filter(f => f.type === "overwrite");
+  const createFiles = sortedFiles.filter(f => f.type === "create");
   const installDepNames = Object.keys(result.updates.installedDeps);
   const installDeps = installDepNames.length > 0;
 
