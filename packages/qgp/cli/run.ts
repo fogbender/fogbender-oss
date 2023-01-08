@@ -9,6 +9,7 @@
 import color from "kleur";
 import { AppCommand } from "./utils/app-command";
 import { runAddCommand } from "./add/run-add-command";
+import { runCreateCommand } from "./create/run-create-command";
 import { panic, pmRunCmd } from "./utils/utils";
 
 export async function runCli() {
@@ -26,8 +27,11 @@ export async function runCli() {
 
 async function runCommand(app: AppCommand) {
   switch (app.task) {
+    case "create": {
+      await runCreateCommand(app);
+      return;
+    }
     case "add": {
-      console.log(app.args);
       await runAddCommand(app);
       return;
     }
@@ -54,6 +58,11 @@ function printHelp() {
   console.log(``);
   console.log(color.bgMagenta(` QGP Help `));
   console.log(``);
+  console.log(
+    `  ${pmRun} qgp ${color.cyan(`create`)}         ${color.dim(
+      `Create a new QGP app from a template`
+    )}`
+  );
   console.log(
     `  ${pmRun} qgp ${color.cyan(`add`)}            ${color.dim(`Add an integration to this app`)}`
   );
