@@ -1,5 +1,6 @@
 {
-  "name": "qgp-vite",
+  "name": "qgp-vite-js",
+  "description": "Add vite powered HMR to your existing CRA project (no type checking)",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

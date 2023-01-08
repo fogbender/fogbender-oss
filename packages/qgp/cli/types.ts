@@ -50,7 +50,11 @@ export interface IntegrationData {
   viteConfig?: ViteConfigUpdates;
 }
 
-export type IntegrationType = "app" | "feature" | "adaptor";
+// app means full app template
+// astro means that you are using astro and want to add qgp
+// cra means that you have cra and want to add qgp, astro or qgp+astro
+// vite means that you are using vite and want to add astro
+export type IntegrationType = "app" | "feature" | "adaptor" | "astro" | "cra" | "vite";
 
 export interface Feature {
   id: string;

@@ -1,5 +1,6 @@
 {
   "name": "@example/astro",
+  "description": "Add Astro to your existing CRA project",
   "type": "module",
   "version": "0.0.1",
   "private": true,
