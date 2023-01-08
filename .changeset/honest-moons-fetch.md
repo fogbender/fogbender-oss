@@ -1,5 +1,0 @@
----
-"qgp": patch
----
-
-update instructions
