@@ -86,14 +86,7 @@ export interface IntegrationPackageJson {
   types?: string;
   type?: string;
   __qgp__?: {
-    displayName?: string;
-    nextSteps?: NextSteps;
-    docs?: string[];
-    priority: number;
-    postInstall?: string;
-    viteConfig?: ViteConfigUpdates;
-  };
-  __qgp__?: {
+    type?: IntegrationType;
     displayName?: string;
     nextSteps?: NextSteps;
     docs?: string[];
