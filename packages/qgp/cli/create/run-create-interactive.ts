@@ -15,9 +15,9 @@ import { getPackageManager, panic } from "../utils/utils";
 import type { IntegrationData, UpdateAppResult } from "../types";
 import { logSuccessFooter, logNextStep } from "../utils/log";
 import { runInPkg, startSpinner } from "../utils/install-deps";
-import { updateApp } from "./update-app";
+import { updateApp } from "../add/update-app";
 
-export async function runAddInteractive(app: AppCommand, id: string | undefined) {
+export async function runCreateInteractive(app: AppCommand, id: string | undefined) {
   console.log(``);
   console.clear();
   console.log(``);
@@ -39,17 +39,12 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
     console.log(``);
   } else {
     // use interactive cli to choose which integration to add
-    console.log(`🦋 ${color.bgCyan(` Add Integration `)}`);
+    console.log(`🦋 ${color.bgCyan(` Use template `)}`);
     console.log(``);
-    console.log(
-      `Apply these integrations to your existing CRA (create-react-app) app. You can start with either one, but astro, then qgp is recommended at the moment.`
-    );
+    console.log(`Create a new app with one of the following templates.`);
     console.log(``);
 
-    const integrationChoices = [
-      ...integrations.filter(i => i.type === "adaptor"),
-      ...integrations.filter(i => i.type === "cra"),
-    ].map(f => {
+    const integrationChoices = [...integrations.filter(i => i.type === "app")].map(f => {
       return { title: f.name, value: f.id };
     });
 
@@ -57,7 +52,7 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
       {
         type: "select",
         name: "featureType",
-        message: `What integration would you like to add?`,
+        message: `Select template:`,
         choices: integrationChoices,
         hint: "(use ↓↑ arrows, hit enter)",
       },

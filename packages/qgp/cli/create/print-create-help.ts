@@ -12,22 +12,15 @@ import { pmRunCmd } from "../utils/utils";
 
 export async function printAddHelp() {
   const integrations = await loadIntegrations();
-  const cra = integrations.filter(i => i.type === "cra");
-  // const app = integrations.filter(i => i.type === "app");
+  const app = integrations.filter(i => i.type === "app");
   const pmRun = pmRunCmd();
 
   console.log(``);
-  console.log(`${pmRun} qwik ${color.magenta(`add`)} [integration]`);
+  console.log(`${pmRun} qwik ${color.magenta(`create`)} [template]`);
   console.log(``);
 
-  // console.log(`  ${color.cyan("Starter templates")}`);
-  // for (const s of app) {
-  //   console.log(`    ${s.id}  ${color.dim(s.pkgJson.description)}`);
-  // }
-  // console.log(``);
-
-  console.log(`  ${color.cyan("CRA integrations")}`);
-  for (const s of cra) {
+  console.log(`  ${color.cyan("Starter templates")}`);
+  for (const s of app) {
     console.log(`    ${s.id}  ${color.dim(s.pkgJson.description)}`);
   }
   console.log(``);

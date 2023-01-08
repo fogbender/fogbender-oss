@@ -55,7 +55,7 @@ export async function loadIntegrations() {
             const integration: IntegrationData = {
               id: integrationsDirName,
               name: pkgJson.__qgp__?.displayName ?? dashToTitlelCase(integrationsDirName),
-              type: "feature",
+              type: pkgJson.__qgp__?.type || "cra",
               dir,
               pkgJson,
               docs: pkgJson.__qgp__?.docs ?? [],
