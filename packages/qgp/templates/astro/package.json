@@ -29,6 +29,6 @@
         "- keep in mind production build is stored inside `dist` folder instead of `build`"
       ]
     },
-    "priority": 3
+    "priority": 20
   }
 }

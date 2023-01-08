@@ -41,6 +41,10 @@ export async function runAddInteractive(app: AppCommand, id: string | undefined)
     // use interactive cli to choose which integration to add
     console.log(`🦋 ${color.bgCyan(` Add Integration `)}`);
     console.log(``);
+    console.log(
+      `Apply these integrations to your existing CRA (create-react-app) app. You can start with either one, but astro, then qgp is recommended at the moment.`
+    );
+    console.log(``);
 
     const integrationChoices = [
       ...integrations.filter(i => i.type === "adaptor"),
