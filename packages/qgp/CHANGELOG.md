@@ -1,5 +1,12 @@
 # qgp
 
+## 0.0.9
+
+### Patch Changes
+
+- aabfe59: update instructions
+- d3881dc: update astro template
+
 ## 0.0.8
 
 ### Patch Changes
