@@ -18,7 +18,6 @@
     "nextSteps": {
       "title": "What's next?",
       "lines": [
-        "- make sure to rename your existing .ts files to .tsx",
         "- try running `npm run start-qgp`"
       ]
     },
