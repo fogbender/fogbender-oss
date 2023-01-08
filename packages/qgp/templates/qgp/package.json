@@ -14,7 +14,7 @@
     "vite-plugin-checker": "*"
   },
   "__qgp__": {
-    "displayName": "qgp-ts (adds start-qgp script for vite powered HMR)",
+    "displayName": "qgp (adds start-qgp script for vite powered HMR)",
     "nextSteps": {
       "title": "What's next?",
       "lines": [

@@ -12,7 +12,7 @@
     "@vitejs/plugin-react": "^3.0.0"
   },
   "__qgp__": {
-    "displayName": "qgp (adds start-qgp script for vite powered HMR, no type checking)",
+    "displayName": "qgp-js (adds start-qgp script for vite powered HMR, no type checking)",
     "nextSteps": {
       "title": "What's next?",
       "lines": [
