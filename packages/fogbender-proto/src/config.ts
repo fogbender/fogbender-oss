@@ -8,13 +8,13 @@ const config = {
     serverApiUrl: "https://api.fogbender-test.com/api",
   },
   dev: {
-    serverApiUrl: process.env.REACT_APP_API_SERVER_URL
-      ? process.env.REACT_APP_API_SERVER_URL + "/api"
+    serverApiUrl: process.env.PUBLIC_API_SERVER_URL
+      ? process.env.PUBLIC_API_SERVER_URL + "/api"
       : "http://localhost:8000/api",
   },
 };
 
-const defaultEnvValue = process.env.REACT_APP_DEFAULT_ENV;
+const defaultEnvValue = process.env.PUBLIC_DEFAULT_ENV;
 
 export const defaultEnv =
   defaultEnvValue === "prod" ? "prod" : defaultEnvValue === "staging" ? "staging" : "dev";
@@ -41,16 +41,16 @@ export function getServerWsUrl(env?: Env, client?: Client) {
 }
 
 export function getVersion(env?: Env) {
-  const { REACT_APP_SHA, REACT_APP_BRANCH, REACT_APP_VERSION } = process.env;
-  const version = REACT_APP_VERSION || "0.0.0";
-  const sha = (REACT_APP_SHA || "00000000").substring(0, 8);
+  const { PUBLIC_SHA, PUBLIC_BRANCH, PUBLIC_VERSION } = process.env;
+  const version = PUBLIC_VERSION || "0.0.0";
+  const sha = (PUBLIC_SHA || "00000000").substring(0, 8);
   const niceVersion = `${version}-${sha}`;
   const meta: string[] = [defaultEnv];
   if (env && defaultEnv !== env) {
     meta.unshift(env);
   }
-  if (REACT_APP_BRANCH) {
-    meta.push(REACT_APP_BRANCH);
+  if (PUBLIC_BRANCH) {
+    meta.push(PUBLIC_BRANCH);
   }
   const debugVersion = `${version}-${sha} (${meta.join(", ")})`;
   return { version, niceVersion, debugVersion };
