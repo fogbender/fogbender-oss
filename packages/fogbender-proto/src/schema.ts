@@ -941,6 +941,7 @@ export type Customer = {
   name: string;
   helpdeskId: string;
   workspaceId: string;
+  vendorId: string;
   externalUid: string;
   deletedTs?: string;
   lastMessageAt: number | null;
