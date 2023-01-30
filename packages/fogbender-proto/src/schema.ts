@@ -53,6 +53,7 @@ export type APISchema = {
   IntegrationCreateIssueWithForwardRPC: RPC<IntegrationCreateIssueWithForward, IntegrationOk>;
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
   IntegrationLabelIssueRPC: RPC<IntegrationLabelIssue, IntegrationOk>;
+  IntegrationIssueInfoRPC: RPC<IntegrationIssueInfo, IntegrationOk>;
   StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
@@ -275,11 +276,20 @@ export type IntegrationLabelIssue = {
   issueId: string;
 };
 
+export type IntegrationIssueInfo = {
+  msgId?: string;
+  msgType: "Integration.IssueInfo";
+  workspaceId: string;
+  integrationProjectId: string;
+  issueId: string;
+};
+
 export type IntegrationOk = {
   msgId: string;
   msgType: "Integration.Ok";
   issueId?: string;
   issueTag?: string;
+  issue?: EventIssue;
 };
 
 export type StreamSub = {
