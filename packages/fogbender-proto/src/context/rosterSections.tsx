@@ -93,6 +93,12 @@ export const useConnectRosterSections = (
   workspaceId?: string,
   helpdeskId?: string
 ) => {
+  const topic = workspaceId
+    ? `workspace/${workspaceId}/roster`
+    : helpdeskId
+    ? `helpdesk/${helpdeskId}/roster`
+    : undefined;
+
   const { serverCall, lastIncomingMessage } = ws;
   const {
     //
@@ -109,7 +115,7 @@ export const useConnectRosterSections = (
         const start = 1 + (get(rosterSectionsAtom).get(sectionId)?.rooms?.length || 0);
         serverCall<RosterGetRange>({
           msgType: "Roster.GetRange",
-          topic: `workspace/${workspaceId}/roster`,
+          topic: topic || "",
           sectionId: sectionId,
           startPos: start,
           limit: 30,
@@ -156,13 +162,13 @@ export const useConnectRosterSections = (
     if (!fogSessionId) {
       return;
     }
-    if (!workspaceId) {
+    if (!topic) {
       return;
     }
 
     serverCall<RosterSub>({
       msgType: "Roster.Sub",
-      topic: `workspace/${workspaceId}/roster`,
+      topic,
       limit: 10,
     }).then(x => {
       console.assert(x.msgType === "Roster.SubOk");
