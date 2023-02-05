@@ -985,7 +985,7 @@ export type Actor = {
 export type RoomMember = Actor;
 
 export const MetaTypes = ["issue_tracker", "issue", "status"];
-export type MetaType = typeof MetaTypes[number];
+export type MetaType = (typeof MetaTypes)[number];
 
 export const KnownIssueTrackerIntegrations = [
   "gitlab",
@@ -996,10 +996,10 @@ export const KnownIssueTrackerIntegrations = [
   "height",
   "trello",
 ];
-export type KnownIssueTrackerIntegration = typeof KnownIssueTrackerIntegrations[number];
+export type KnownIssueTrackerIntegration = (typeof KnownIssueTrackerIntegrations)[number];
 
 export const KnownCommsIntegrations = ["slack", "msteams", "slack-customer"];
-export type KnownCommsIntegration = typeof KnownCommsIntegrations[number];
+export type KnownCommsIntegration = (typeof KnownCommsIntegrations)[number];
 
 export type Tag = {
   id: string;
