@@ -99,6 +99,8 @@ export type APISchema = {
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
   AiSummarize: RPC<AiSummarize, AiOk>;
   AiSuggest: RPC<AiSuggest, AiOk>;
+  UpdateSettingsRPC: RPC<UpdateSettings, AuthorSettingsOk>;
+  GetSettingsRPC: RPC<GetSettings, AuthorSettingsOk>;
 };
 
 export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
@@ -126,6 +128,25 @@ export type Error<Type> = {
 };
 
 export type FatalError = Error<"Error.Fatal">;
+
+export type UpdateSettings = {
+  msgId?: string;
+  msgType: "Author.UpdateSettings";
+  period: number;
+  enabled: boolean;
+};
+
+export type GetSettings = {
+  msgId?: string;
+  msgType: "Author.GetSettings";
+  workspaceId: string;
+};
+
+export type AuthorSettingsOk = {
+  msgId: string;
+  msgType: "Author.Ok";
+  settings?: { [id: string]: string | number };
+};
 
 export type RoomClose = {
   msgId?: string;
