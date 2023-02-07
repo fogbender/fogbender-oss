@@ -139,7 +139,7 @@ export type UpdateSettings = {
 export type GetSettings = {
   msgId?: string;
   msgType: "Author.GetSettings";
-  workspaceId: string;
+  workspaceId?: string | null;
 };
 
 export type AuthorSettingsOk = {
