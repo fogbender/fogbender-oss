@@ -329,7 +329,7 @@ function FloatingSvgOpened() {
           />
         </g>
       </g>
-      <path d="m67.34 73-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <path d="m67.34 73-7 7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <defs>
         <filter
           id="a"
@@ -363,9 +363,9 @@ function FloatingCloseButton() {
       <path
         d="m3.333 3.333 9.334 9.334M3.333 12.667l9.334-9.334"
         stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
