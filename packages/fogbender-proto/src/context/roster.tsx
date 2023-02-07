@@ -15,7 +15,6 @@ import type {
   RoomUnarchive,
   UserUpdate,
   SearchRoster,
-  StreamGet,
 } from "../schema";
 
 import type { Room } from "./sharedRoster";
@@ -492,6 +491,23 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
     [rooms]
   );
 
+  const getRooms = React.useCallback(
+    async (topic: string, before: number | undefined) =>
+      await serverCall({
+        msgType: "Stream.Get",
+        topic,
+        before,
+      })
+        .then(x => {
+          if (x["msgType"] !== "Stream.GetOk") {
+            throw x;
+          }
+          return extractEventRoom(x["items"]);
+        })
+        .catch(() => {}),
+    [serverCall]
+  );
+
   React.useEffect(() => {
     if (helpdeskId && lastIncomingMessage?.msgType === "Event.Room") {
       updateRooms([lastIncomingMessage]);
@@ -501,6 +517,31 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
   React.useEffect(() => {
     if (helpdeskId && token) {
       const topic = `helpdesk/${helpdeskId}/rooms`;
+
+      const fetchData = async (
+        before: number | undefined,
+        allRooms: EventRoom[]
+      ): Promise<EventRoom[]> => {
+        return await getRooms(topic, before).then(rooms => {
+          if (rooms) {
+            const minTs = Math.min(...rooms.map(r => r.createdTs));
+
+            if (minTs !== Infinity && rooms) {
+              return fetchData(minTs, allRooms.concat(rooms));
+            } else {
+              return allRooms;
+            }
+          } else {
+            return allRooms;
+          }
+        });
+      };
+
+      fetchData(undefined, []).then(rooms => {
+        updateRooms(rooms);
+      });
+
+      /*
       serverCall<StreamGet>({
         msgType: "Stream.Get",
         limit: 100,
@@ -513,6 +554,7 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
           updateRooms(extractEventRoom(x.items));
         })
         .catch(() => {});
+      */
 
       serverCall({
         msgType: "Stream.Sub",
@@ -541,7 +583,6 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
 
 export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
   const { token, serverCall, lastIncomingMessage } = useWs();
-  const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [users, setUsers] = React.useState<EventUser[]>([]);
 
@@ -563,21 +604,49 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
     }
   }, [lastIncomingMessage]);
 
+  const getUsers = React.useCallback(
+    async (topic: string, before: number | undefined) =>
+      await serverCall({
+        msgType: "Stream.Get",
+        topic,
+        before,
+      })
+        .then(x => {
+          if (x["msgType"] !== "Stream.GetOk") {
+            throw x;
+          }
+          return extractEventUser(x["items"]);
+        })
+        .catch(() => {}),
+    [serverCall]
+  );
+
   React.useEffect(() => {
     if (helpdeskId && token) {
       const topic = `helpdesk/${helpdeskId}/users`;
-      serverCall({
-        msgType: "Stream.Get",
-        topic,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          if (x.msgType !== "Stream.GetOk") {
-            throw x;
+
+      const fetchData = async (
+        before: number | undefined,
+        allUsers: EventUser[]
+      ): Promise<EventUser[]> => {
+        return await getUsers(topic, before).then(users => {
+          if (users) {
+            const minTs = Math.min(...users.map(u => u.createdTs));
+
+            if (minTs !== Infinity && users) {
+              return fetchData(minTs, allUsers.concat(users));
+            } else {
+              return allUsers;
+            }
+          } else {
+            return allUsers;
           }
-          updateUsers(extractEventUser(x.items));
-        })
-        .catch(() => {});
+        });
+      };
+
+      fetchData(undefined, []).then(users => {
+        updateUsers(users);
+      });
 
       serverCall({
         msgType: "Stream.Sub",
@@ -586,7 +655,7 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [helpdeskId, token, serverCall]);
+  }, [helpdeskId, token, serverCall, getUsers]);
 
   React.useEffect(() => {
     return () => {
