@@ -15,6 +15,7 @@ import type {
   RoomUnarchive,
   UserUpdate,
   SearchRoster,
+  StreamGet,
 } from "../schema";
 
 import type { Room } from "./sharedRoster";
@@ -493,16 +494,16 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
 
   const getRooms = React.useCallback(
     async (topic: string, before: number | undefined) =>
-      await serverCall({
+      await serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
         before,
       })
         .then(x => {
-          if (x["msgType"] !== "Stream.GetOk") {
+          if (x.msgType !== "Stream.GetOk") {
             throw x;
           }
-          return extractEventRoom(x["items"]);
+          return extractEventRoom(x.items);
         })
         .catch(() => {}),
     [serverCall]
@@ -606,16 +607,16 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
 
   const getUsers = React.useCallback(
     async (topic: string, before: number | undefined) =>
-      await serverCall({
+      await serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
         before,
       })
         .then(x => {
-          if (x["msgType"] !== "Stream.GetOk") {
+          if (x.msgType !== "Stream.GetOk") {
             throw x;
           }
-          return extractEventUser(x["items"]);
+          return extractEventUser(x.items);
         })
         .catch(() => {}),
     [serverCall]
