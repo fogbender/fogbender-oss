@@ -542,21 +542,6 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
         updateRooms(rooms);
       });
 
-      /*
-      serverCall<StreamGet>({
-        msgType: "Stream.Get",
-        limit: 100,
-        topic,
-      })
-        .then(x => {
-          if (x.msgType !== "Stream.GetOk") {
-            throw x;
-          }
-          updateRooms(extractEventRoom(x.items));
-        })
-        .catch(() => {});
-      */
-
       serverCall({
         msgType: "Stream.Sub",
         topic,
