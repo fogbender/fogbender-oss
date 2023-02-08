@@ -479,6 +479,7 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
   const { token, serverCall, lastIncomingMessage } = useWs();
 
   const [rooms, setRooms] = React.useState<EventRoom[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
   const updateRooms = React.useCallback(
     (roomsIn: EventRoom[]) => {
@@ -497,6 +498,7 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
       await serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
+        limit: 100,
         before,
       })
         .then(x => {
@@ -547,8 +549,11 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
         });
       };
 
+      setLoading(true);
+
       fetchData(undefined, []).then(rooms => {
         updateRooms(rooms);
+        setLoading(false);
       });
 
       serverCall({
@@ -573,13 +578,14 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
     };
   }, [helpdeskId, serverCall]);
 
-  return { rooms };
+  return { rooms, loading };
 };
 
 export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
   const { token, serverCall, lastIncomingMessage } = useWs();
 
   const [users, setUsers] = React.useState<EventUser[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
   const updateUsers = React.useCallback(
     (usersIn: EventUser[]) => {
@@ -648,8 +654,11 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
         });
       };
 
+      setLoading(true);
+
       fetchData(undefined, []).then(users => {
         updateUsers(users);
+        setLoading(false);
       });
 
       serverCall({
@@ -674,5 +683,5 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
     };
   }, [helpdeskId, serverCall]);
 
-  return { users };
+  return { users, loading };
 };
