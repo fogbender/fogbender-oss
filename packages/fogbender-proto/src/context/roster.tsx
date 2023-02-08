@@ -599,6 +599,15 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
     }
   }, [lastIncomingMessage]);
 
+  const isMounted = React.useRef(false);
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const getUsers = React.useCallback(
     async (topic: string, before: number | undefined) =>
       await serverCall<StreamGet>({
@@ -628,7 +637,7 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
           if (users) {
             const minTs = Math.min(...users.map(u => u.createdTs));
 
-            if (minTs !== Infinity && users) {
+            if (minTs !== Infinity && users && isMounted.current) {
               return fetchData(minTs, allUsers.concat(users));
             } else {
               return allUsers;
