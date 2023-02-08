@@ -515,6 +515,15 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
     }
   }, [lastIncomingMessage]);
 
+  const isMounted = React.useRef(false);
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   React.useEffect(() => {
     if (helpdeskId && token) {
       const topic = `helpdesk/${helpdeskId}/rooms`;
@@ -527,7 +536,7 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
           if (rooms) {
             const minTs = Math.min(...rooms.map(r => r.createdTs));
 
-            if (minTs !== Infinity && rooms) {
+            if (minTs !== Infinity && rooms && isMounted.current) {
               return fetchData(minTs, allRooms.concat(rooms));
             } else {
               return allRooms;
