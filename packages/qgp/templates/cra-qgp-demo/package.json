@@ -1,0 +1,34 @@
+{
+  "name": "cra-qgp-demo",
+  "description": "Add Astro and Vite to existing CRA project",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@astrojs/react": "^1.2.2",
+    "@vitejs/plugin-react": "^3.0.0",
+    "astro": "^2.0.0",
+    "qgp": "*",
+    "vite-plugin-checker": "^0.5.5"
+  },
+  "scripts": {
+    "astro": "astro",
+    "dev1": "astro dev",
+    "build1": "astro build",
+    "preview": "astro preview",
+    "dev2": "vite --config qgp.config.mjs",
+    "build2": "vite build --config qgp.config.mjs"
+  },
+  "devDependencies": {},
+  "__qgp__": {
+    "displayName": "cra-qgp-demo (adds astro and vite to existing CRA project)",
+    "nextSteps": {
+      "title": "What's next?",
+      "lines": [
+        "- make sure to rename your existing .js files to .jsx",
+        "- try running `npm run start-qgp`"
+      ]
+    },
+    "priority": 10
+  }
+}
