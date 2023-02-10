@@ -1,5 +1,11 @@
 # qgp
 
+## 0.0.11
+
+### Patch Changes
+
+- fa66f14: add cra-qgp-demo template
+
 ## 0.0.10
 
 ### Patch Changes
