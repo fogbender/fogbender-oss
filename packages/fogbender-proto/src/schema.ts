@@ -517,6 +517,7 @@ export type SearchRoster = {
   mentionRoomId?: string;
   type?: "dialog";
   term?: string;
+  termFields?: string[];
   tagIds?: string[];
   tagNames?: string[];
 };
