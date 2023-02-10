@@ -25,8 +25,14 @@
     "nextSteps": {
       "title": "What's next?",
       "lines": [
-        "- make sure to rename your existing .js files to .jsx",
-        "- try running `npm run start-qgp`"
+        "CRA:",
+        "  - `npm start` and http://localhost:3000",
+        "",
+        "Astro:",
+        "  - `npm run dev1` and http://localhost:3000",
+        "",
+        "Vite:",
+        "  - `npm run dev2` and http://localhost:3000"
       ]
     },
     "priority": 10
