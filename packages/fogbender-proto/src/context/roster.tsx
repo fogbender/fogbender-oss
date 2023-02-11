@@ -290,6 +290,7 @@ export const useRoster = ({
         msgType: "Search.Roster",
         workspaceId,
         term: rosterFilter,
+        termFields: ["rname", "cname", "message", "aname"],
       }).then(x => {
         if (x.msgType !== "Search.Ok") {
           throw x;
