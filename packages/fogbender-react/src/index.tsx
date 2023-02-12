@@ -39,13 +39,13 @@ export const FogbenderSimpleWidget: React.FC<{
   );
 };
 
-export const FogbenderWidget: React.FC = () => {
+export const FogbenderWidget = () => {
   const divRef = React.useRef<HTMLDivElement>(null);
   useRenderIframe(divRef, false);
   return <div ref={divRef} />;
 };
 
-export const FogbenderHeadlessWidget: React.FC = () => {
+export const FogbenderHeadlessWidget = () => {
   const divRef = React.useRef<HTMLDivElement>(null);
   useRenderIframe(divRef, true);
   return <div ref={divRef} />;
@@ -93,7 +93,7 @@ const useCreateFloatingWidget = ({
   );
 };
 
-export const FogbenderUnreadBadge: React.FC = React.memo(() => {
+export const FogbenderUnreadBadge = React.memo(() => {
   const divRef = React.useRef<HTMLDivElement>(null);
   useRenderUnreadBadge(divRef);
   return <div ref={divRef} />;
