@@ -98,6 +98,7 @@ export type APISchema = {
   EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
   AiSummarize: RPC<AiSummarize, AiOk>;
+  AiSuggest: RPC<AiSuggest, AiOk>;
 };
 
 export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
@@ -669,6 +670,14 @@ export type AiSummarize = {
   startMessageId: string;
   endMessageId: string;
   maxWords: number;
+};
+
+export type AiSuggest = {
+  msgId?: string;
+  msgType: "Ai.Suggest";
+  roomId: string;
+  startMessageId: string;
+  endMessageId: string;
 };
 
 export type AiOk = {
