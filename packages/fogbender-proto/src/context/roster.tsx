@@ -485,10 +485,12 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
   const updateRooms = React.useCallback(
     (roomsIn: EventRoom[]) => {
       let newRooms = rooms;
-      roomsIn.forEach(room => {
-        newRooms = newRooms.filter(x => x.id !== room.id);
-        newRooms.push(room);
-      });
+      roomsIn
+        .filter(r => r.type !== "dialog")
+        .forEach(room => {
+          newRooms = newRooms.filter(x => x.id !== room.id);
+          newRooms.push(room);
+        });
       setRooms(newRooms);
     },
     [rooms]
