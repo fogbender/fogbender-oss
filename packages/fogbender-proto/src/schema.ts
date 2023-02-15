@@ -134,6 +134,7 @@ export type UpdateSettings = {
   msgType: "Author.UpdateSettings";
   period: number;
   enabled: boolean;
+  workspaceId?: string | null;
 };
 
 export type GetSettings = {
