@@ -28,7 +28,7 @@ export function renderUnreadBadge(
     return (
       <button
         onClick={openWindow}
-        class={tw`hidden min-w-1rem min-h-1rem items-center justify-center bg-brand-red-500 rounded-full text-white text-2xs font-bold leading-none`}
+        class={tw`min-w-1rem min-h-1rem bg-brand-red-500 text-2xs hidden items-center justify-center rounded-full font-bold leading-none text-white`}
         style={{
           display: !unreadCounter() || unreadCounter() === 0 ? "none" : "flex",
         }}
