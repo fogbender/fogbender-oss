@@ -214,6 +214,7 @@ export const useRoster = ({
         IntegrationForwardToIssue,
         | "integrationProjectId"
         | "issueId"
+        | "issueTitle"
         | "linkRoomId"
         | "linkStartMessageId"
         | "linkEndMessageId"
@@ -225,6 +226,7 @@ export const useRoster = ({
             workspaceId,
             integrationProjectId: params.integrationProjectId,
             issueId: params.issueId,
+            issueTitle: params.issueTitle,
             linkRoomId: params.linkRoomId,
             linkStartMessageId: params.linkStartMessageId,
             linkEndMessageId: params.linkEndMessageId,
@@ -582,7 +584,10 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
         .filter(r => r.type !== "dialog")
         .forEach(room => {
           newRooms = newRooms.filter(x => x.id !== room.id);
-          newRooms.push(room);
+
+          if (room.helpdeskId === helpdeskId) {
+            newRooms.push(room);
+          }
         });
       setRooms(newRooms);
     },
@@ -689,7 +694,10 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
       let newUsers = users;
       usersIn.forEach(user => {
         newUsers = newUsers.filter(x => x.userId !== user.userId);
-        newUsers.push(user);
+
+        if (user.helpdeskId === helpdeskId) {
+          newUsers.push(user);
+        }
       });
       setUsers(newUsers);
     },
