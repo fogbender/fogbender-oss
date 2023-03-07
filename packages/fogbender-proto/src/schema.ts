@@ -292,6 +292,7 @@ export type IntegrationForwardToIssue = {
   workspaceId: string;
   integrationProjectId: string;
   issueId: string;
+  issueTitle: string;
   linkRoomId: string;
   linkStartMessageId: string;
   linkEndMessageId: string;
@@ -1075,6 +1076,7 @@ export type EventUser = {
   name: string;
   email: string;
   createdTs: number;
+  helpdeskId: string;
 };
 
 export type Actor = {
@@ -1121,6 +1123,7 @@ export type Tag = {
   meta_entity_name?: string;
   meta_entity_id?: string;
   meta_entity_parent_id?: string;
+  meta_state?: string;
 };
 
 export type Helpdesk = {
