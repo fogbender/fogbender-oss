@@ -1,5 +1,7 @@
 import type { Client } from "./client";
 
+const { PUBLIC_DEFAULT_ENV: defaultEnvValue, PUBLIC_API_SERVER_URL: serverApiUrl } = process.env;
+
 const config = {
   prod: {
     serverApiUrl: "https://api.fogbender.com/api",
@@ -8,13 +10,9 @@ const config = {
     serverApiUrl: "https://api.fogbender-test.com/api",
   },
   dev: {
-    serverApiUrl: process.env.PUBLIC_API_SERVER_URL
-      ? process.env.PUBLIC_API_SERVER_URL + "/api"
-      : "http://localhost:8000/api",
+    serverApiUrl: serverApiUrl ? serverApiUrl + "/api" : "http://localhost:8000/api",
   },
 };
-
-const defaultEnvValue = process.env.PUBLIC_DEFAULT_ENV;
 
 export const defaultEnv =
   defaultEnvValue === "prod" ? "prod" : defaultEnvValue === "staging" ? "staging" : "dev";
