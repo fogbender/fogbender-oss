@@ -217,7 +217,7 @@ export type Prompt = {
 export type Integration = {
   id: string;
   workspace_id: string;
-  type: KnownIssueTrackerIntegration | KnownCommsIntegration;
+  type: KnownIssueTrackerIntegration | KnownCommsIntegration | KnownIncidentResponseIntegrations;
   userInfo?: {
     email: string;
     pictureUrl: string;
@@ -1021,13 +1021,19 @@ export type KnownIssueTrackerIntegration = (typeof KnownIssueTrackerIntegrations
 export const KnownCommsIntegrations = ["slack", "msteams", "slack-customer"];
 export type KnownCommsIntegration = (typeof KnownCommsIntegrations)[number];
 
+export const KnownIncidentResponseIntegrations = ["pagerduty"];
+export type KnownIncidentResponseIntegrations = (typeof KnownIncidentResponseIntegrations)[number];
+
 export type Tag = {
   id: string;
   name: string;
   workspaceId?: string;
   title?: string;
   meta_type?: MetaType;
-  meta_entity_type?: KnownIssueTrackerIntegration | KnownCommsIntegration;
+  meta_entity_type?:
+    | KnownIssueTrackerIntegration
+    | KnownCommsIntegration
+    | KnownIncidentResponseIntegrations;
   meta_entity_url?: string;
   meta_entity_name?: string;
   meta_entity_id?: string;
