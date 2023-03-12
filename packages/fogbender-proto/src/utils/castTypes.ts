@@ -1,4 +1,5 @@
 import type {
+  EventAgentGroup,
   EventRoom,
   EventMessage,
   EventBadge,
@@ -47,6 +48,8 @@ const isEventTyping = (x: ExtendsMessage<EventTyping>): x is EventTyping =>
   x.msgType === "Event.Typing";
 export const isEventUser = (x: ExtendsMessage<EventUser>): x is EventUser =>
   x.msgType === "Event.User";
+const isEventAgentGroup = (x: ExtendsMessage<EventAgentGroup>): x is EventAgentGroup =>
+  x.msgType === "Event.AgentGroup";
 
 export function extractEventRoom(items: ExtendsMessage<EventRoom>[]) {
   return extract(items, isEventRoom);
@@ -78,4 +81,8 @@ export function extractEventTyping(items: ExtendsMessage<EventTyping>[]) {
 
 export function extractEventUser(items: ExtendsMessage<EventUser>[]) {
   return extract(items, isEventUser);
+}
+
+export function extractEventAgentGroup(items: ExtendsMessage<EventAgentGroup>[]) {
+  return extract(items, isEventAgentGroup);
 }

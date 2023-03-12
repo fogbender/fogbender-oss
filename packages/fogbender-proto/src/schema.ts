@@ -97,6 +97,7 @@ export type APISchema = {
   EventUserEVT: RPC<undefined, EventUser>;
   EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
+  EventAgentGroupEVT: RPC<undefined, EventAgentGroup>;
   AiSummarize: RPC<AiSummarize, AiOk>;
   AiSuggest: RPC<AiSuggest, AiOk>;
   UpdateSettingsRPC: RPC<UpdateSettings, AuthorSettingsOk>;
@@ -1066,5 +1067,13 @@ export type Helpdesk = {
   id: string;
   tags: Tag[];
   vendorName: string;
+};
+
+export type EventAgentGroup = {
+  msgId?: string;
+  msgType: "Event.AgentGroup";
+  name: string;
+  vendorId: string;
+  agents: EventAgent[];
 };
 // END nested types
