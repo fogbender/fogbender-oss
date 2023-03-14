@@ -54,6 +54,8 @@ export type APISchema = {
   IntegrationForwardToIssueRPC: RPC<IntegrationForwardToIssue, IntegrationOk>;
   IntegrationLabelIssueRPC: RPC<IntegrationLabelIssue, IntegrationOk>;
   IntegrationIssueInfoRPC: RPC<IntegrationIssueInfo, IntegrationOk>;
+  IntegrationCloseIssueRPC: RPC<IntegrationCloseIssue, IntegrationOk>;
+  IntegrationReopenIssueRPC: RPC<IntegrationReopenIssue, IntegrationOk>;
   StreamSubRPC: RPC<StreamSub, StreamError | StreamSubOk<EventStreamSubRPC>>;
   StreamUnSubRPC: RPC<StreamUnSub, StreamUnSubOk>;
   StreamGetRPC: RPC<StreamGet, StreamGetOk<EventStreamGetRPC>>;
@@ -309,6 +311,24 @@ export type IntegrationIssueInfo = {
   workspaceId: string;
   integrationProjectId: string;
   issueId: string;
+};
+
+export type IntegrationCloseIssue = {
+  msgId?: string;
+  msgType: "Integration.CloseIssue";
+  workspaceId: string;
+  integrationProjectId: string;
+  issueId: string;
+  roomId: string;
+};
+
+export type IntegrationReopenIssue = {
+  msgId?: string;
+  msgType: "Integration.ReopenIssue";
+  workspaceId: string;
+  integrationProjectId: string;
+  issueId: string;
+  roomId: string;
 };
 
 export type IntegrationOk = {
