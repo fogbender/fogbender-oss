@@ -12,6 +12,7 @@ import type {
 } from "../schema";
 
 import type { useServerWs } from "../useServerWs";
+import { invariant } from "../utils/invariant";
 
 function forEach<T extends Record<any, any>>(
   o: T,
@@ -121,11 +122,11 @@ export const useConnectRosterSections = (
           limit: 30,
         })
           .then(x => {
-            console.assert(x.msgType === "Roster.GetOk");
-            if (x.msgType === "Roster.GetOk") {
-              const rosterSections = get(rosterSectionsAtom);
-              set(rosterSectionsAtom, handleRosterSectionsUpdate(new Map(rosterSections), x.items));
-            }
+            invariant(x.msgType === "Roster.GetOk", "", () =>
+              console.error("failed to get roster range", topic, command, start, x)
+            );
+            const rosterSections = get(rosterSectionsAtom);
+            set(rosterSectionsAtom, handleRosterSectionsUpdate(new Map(rosterSections), x.items));
           })
           .finally(done);
       } else if (command.action === "update_roster") {

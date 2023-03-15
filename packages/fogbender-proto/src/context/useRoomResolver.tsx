@@ -1,6 +1,7 @@
 import React from "react";
 import type { EventRoom, EventRosterRoom } from "../schema";
 import type { ServerCall } from "../useServerWs";
+import { invariant } from "../utils/invariant";
 
 export type RoomByIdWhy = "badge" | "favicon" | "other";
 
@@ -71,10 +72,12 @@ export function useRoomResolver(
                     if (topic) {
                       serverCall({ msgType: "Roster.GetRooms", roomIds: [roomId], topic }).then(
                         x => {
-                          if (x.msgType !== "Roster.GetOk") {
-                            console.error("failed to resolve", roomId, x);
-                            return;
-                          }
+                          invariant(
+                            x.msgType === "Roster.GetOk",
+                            `failed to resolve room ${roomId}`,
+                            () => console.error("failed to resolve", roomId, topic, x)
+                          );
+
                           onRoomRef.current(
                             x.items.map(i => i.room),
                             x.items
