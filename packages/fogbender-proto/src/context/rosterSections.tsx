@@ -44,6 +44,7 @@ function handleRosterSectionsUpdate(
           name: section.id,
           pos: section.pos,
           msgType: "Event.RosterSection",
+          view: item.view,
           count: 0,
           unreadCount: 0,
           unresolvedCount: 0,
@@ -68,6 +69,7 @@ export type RosterSectionActions =
   | {
       action: "load";
       sectionId: RosterSectionId;
+      view: string;
       done: () => {};
     }
   | {
@@ -118,6 +120,7 @@ export const useConnectRosterSections = (
           msgType: "Roster.GetRange",
           topic: topic || "",
           sectionId: sectionId,
+          view: command.view,
           startPos: start,
           limit: 30,
         })

@@ -407,6 +407,7 @@ export type RosterGetRange = {
   msgType: "Roster.GetRange";
   topic: string;
   sectionId: string;
+  view: string;
   startPos: number;
   limit: number;
 };
@@ -906,6 +907,7 @@ export type RosterSectionId =
 export type EventRosterSection = {
   msgId?: string;
   msgType: "Event.RosterSection";
+  view: string;
   name: string;
   id: RosterSectionId;
   pos: number;
@@ -921,6 +923,7 @@ export type EventRosterSectionPosition = Record<RosterSectionId, number>;
 export type EventRosterRoom = {
   msgId?: string;
   msgType: "Event.RosterRoom";
+  view: string;
   room: EventRoom;
   badge: EventBadge | null;
   sections: EventRosterSectionPosition;
