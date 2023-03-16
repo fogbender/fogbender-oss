@@ -259,6 +259,7 @@ export type Integration = {
   jira_url?: string;
   shared_channel_helpdesk_associations?: SharedChannelAssociation[];
   prompts?: Prompt[];
+  agent_group?: string;
 };
 
 export type IntegrationCreateIssue = {
