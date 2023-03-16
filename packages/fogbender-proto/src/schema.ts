@@ -910,7 +910,7 @@ export type EventRosterSection = {
   view: string;
   name: string;
   id: RosterSectionId;
-  pos: number;
+  pos: 0;
   unresolvedCount: number;
   unreadCount: number;
   mentionsCount: number;

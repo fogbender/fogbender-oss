@@ -42,7 +42,7 @@ function handleRosterSectionsUpdate(
         const sectionItem = data.get(section.id) || {
           id: section.id,
           name: section.id,
-          pos: section.pos,
+          pos: 0,
           msgType: "Event.RosterSection",
           view: item.view,
           count: 0,
