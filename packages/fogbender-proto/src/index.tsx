@@ -10,4 +10,5 @@ export * from "./context/useRosterSections";
 export * from "./context/ws";
 export * from "./context/useSearchHistory";
 export * from "./utils/castTypes";
+export * from "./utils/invariant";
 export { calculateCounterpart } from "./utils/counterpart";
