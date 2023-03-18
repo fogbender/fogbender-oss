@@ -915,6 +915,8 @@ export type EventRosterSection = {
   unreadCount: number;
   mentionsCount: number;
   count: number;
+  entityType?: "CUSTOMER" | "TAG";
+  entity?: { id: string; name: string };
 };
 
 // Record<id, pos>
