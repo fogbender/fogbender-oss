@@ -25,7 +25,7 @@ import { eventRoomToRoom } from "../utils/counterpart";
 import type { useServerWs } from "../useServerWs";
 import { useRoomResolver, RoomByIdWhy } from "./useRoomResolver";
 import { useConnectRosterSections } from "./rosterSections";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 export type Room = EventRoom & {
   _meta: "roomT";
@@ -49,7 +49,8 @@ export const useSharedRoster = ({
   helpdeskId?: string;
   userId?: string;
 }) => {
-  const { serverCall, lastIncomingMessage } = ws;
+  const { serverCall, lastIncomingMessageAtom } = ws;
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
   const { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily } =
     useConnectRosterSections(ws, fogSessionId, workspaceId, helpdeskId);
   const rejectIfUnmounted = useRejectIfUnmounted();

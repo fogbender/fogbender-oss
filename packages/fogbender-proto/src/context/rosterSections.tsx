@@ -1,5 +1,5 @@
 import React from "react";
-import { atom } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { atomFamily, useUpdateAtom } from "jotai/utils";
 
 import type {
@@ -129,7 +129,8 @@ export const useConnectRosterSections = (
     ? `helpdesk/${helpdeskId}/roster`
     : undefined;
 
-  const { serverCall, lastIncomingMessage } = ws;
+  const { serverCall, lastIncomingMessageAtom } = ws;
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
   const {
     //
     rosterSectionsActionsAtom,

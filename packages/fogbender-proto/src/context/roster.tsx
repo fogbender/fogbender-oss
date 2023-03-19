@@ -20,7 +20,7 @@ import type {
 } from "../schema";
 
 import type { Room } from "./sharedRoster";
-import { Author, useLastIncomingMessage, useSharedRoster, useWs, useWsCalls } from "./ws";
+import { Author, useSharedRoster, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import {
@@ -30,6 +30,7 @@ import {
   extractEventAgentGroup,
 } from "../utils/castTypes";
 import { eventRoomToRoom } from "../utils/counterpart";
+import { useLastIncomingMessage } from "./useLastIncomingMessage";
 
 export type { Room } from "./sharedRoster";
 

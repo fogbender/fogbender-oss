@@ -1,4 +1,6 @@
 import { serialize } from "bson";
+import { atom } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
@@ -96,6 +98,14 @@ export function useServerWs(
     }
     return undefined;
   }, [lastJsonMessage, token]);
+
+  const lastIncomingMessageAtom = React.useState(() => atom(lastIncomingMessage))[0];
+  {
+    const setLastIncomingMessage = useUpdateAtom(lastIncomingMessageAtom);
+    React.useEffect(() => {
+      setLastIncomingMessage(lastIncomingMessage);
+    }, [lastIncomingMessage]);
+  }
 
   const flushQueue = React.useCallback(() => {
     queue.current.forEach(m => {
@@ -336,7 +346,7 @@ export function useServerWs(
   });
   return {
     serverCall,
-    lastIncomingMessage,
+    lastIncomingMessageAtom,
     respondToMessage,
     helpdesk,
     isConnected,
