@@ -24,7 +24,7 @@ import throttle from "lodash.throttle";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
-import { useSharedRoster } from "./sharedRoster";
+import { useSharedRoster as useSharedRosterInternal } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import type { Client } from "../client";
@@ -103,11 +103,29 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
 });
 
 export type WsContextType = ReturnType<typeof useProviderValue>;
+export type InternalType = ReturnType<typeof useProviderValueInternal>;
 
 const WsContext = React.createContext<WsContextType | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(
+function useProviderValue(value: InternalType) {
+  return React.useMemo(() => {
+    return value as Omit<InternalType, "lastIncomingMessage" | "sharedRoster">;
+  }, [
+    value.helpdeskId,
+    value.fogSessionId,
+    value.userId,
+    value.lastIncomingMessage,
+    value.sharedRoster,
+    value.token,
+    value.workspaceId,
+    value.userAvatarUrl,
+    value.helpdeskId,
+    value.agentRole,
+  ]);
+}
+
+function useProviderValueInternal(
   token: AnyToken | undefined,
   workspaceId?: string,
   client?: Client,
@@ -140,7 +158,7 @@ function useProviderValue(
     }
   }, [token, userId, fogSessionId]);
   const ws = useServerWs(providerClient, token, isIdle, suspendConnection);
-  const sharedRoster = useSharedRoster({
+  const sharedRoster = useSharedRosterInternal({
     ws,
     token,
     fogSessionId,
@@ -177,7 +195,8 @@ export const WsProvider: React.FC<{
   suspendConnection?: boolean;
   children?: React.ReactNode;
 }> = ({ token, workspaceId, client, isIdle, suspendConnection, ...props }) => {
-  const value = useProviderValue(token, workspaceId, client, isIdle, suspendConnection);
+  const internal = useProviderValueInternal(token, workspaceId, client, isIdle, suspendConnection);
+  const value = useProviderValue(internal);
   return <WsContext.Provider value={value} {...props} />;
 };
 
@@ -479,6 +498,18 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
   };
 };
 
+export const useLastIncomingMessage = () => {
+  // @ts-ignore
+  const { lastIncomingMessage } = useWs();
+  return lastIncomingMessage as InternalType["lastIncomingMessage"];
+};
+
+export const useSharedRoster = () => {
+  // @ts-ignore
+  const { sharedRoster } = useWs();
+  return sharedRoster as InternalType["sharedRoster"];
+};
+
 export const useRoomHistory = ({
   userId,
   roomId,
@@ -488,7 +519,8 @@ export const useRoomHistory = ({
   roomId: string;
   aroundId: string | undefined;
 }) => {
-  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { fogSessionId, serverCall } = useWs();
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -898,7 +930,8 @@ export const useRoomTyping = ({
   userId: string | undefined;
   roomId: string;
 }) => {
-  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { fogSessionId, serverCall } = useWs();
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -972,7 +1005,8 @@ export const useRoomTyping = ({
 };
 
 export const useNotifications = ({ userId }: { userId: string | undefined }) => {
-  const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { fogSessionId, serverCall } = useWs();
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
   React.useEffect(() => {

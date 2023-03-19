@@ -20,7 +20,7 @@ import type {
 } from "../schema";
 
 import type { Room } from "./sharedRoster";
-import { Author, useWs, useWsCalls } from "./ws";
+import { Author, useLastIncomingMessage, useSharedRoster, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import {
@@ -71,7 +71,8 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const { sharedRoster, serverCall, userAvatarUrl } = useWs();
+  const sharedRoster = useSharedRoster();
+  const { serverCall, userAvatarUrl } = useWs();
   const {
     roster: fullRoster,
     roomById,
@@ -369,7 +370,8 @@ export const useRoomMembers = ({
   roomId: string;
   userId: string | undefined;
 }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { token, serverCall } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
   const [rooms, setRooms] = useImmer<Room[]>([]);
   const [roomUpdate, setRoomUpdate] = useImmer<EventRoom | undefined>(undefined);
@@ -416,7 +418,8 @@ export const useRoomMembers = ({
 };
 
 export const useUserTags = ({ userId }: { userId: string | undefined }) => {
-  const { token, serverCall, lastIncomingMessage, helpdesk } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { token, serverCall, helpdesk } = useWs();
   const rejectIfUnmounted = useRejectIfUnmounted();
 
   const [tags, setTags] = React.useState<{ id: string; name: string }[]>([]);
@@ -483,7 +486,8 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
 };
 
 export const useAgentGroups = ({ vendorId }: { vendorId: string }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { token, serverCall } = useWs();
 
   const [groups, setGroups] = React.useState<EventAgentGroup[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -564,7 +568,8 @@ export const useAgentGroups = ({ vendorId }: { vendorId: string }) => {
 };
 
 export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { token, serverCall } = useWs();
 
   const [rooms, setRooms] = React.useState<EventRoom[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -672,7 +677,8 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
 };
 
 export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
-  const { token, serverCall, lastIncomingMessage } = useWs();
+  const lastIncomingMessage = useLastIncomingMessage();
+  const { token, serverCall } = useWs();
 
   const [users, setUsers] = React.useState<EventUser[]>([]);
   const [loading, setLoading] = React.useState(false);
