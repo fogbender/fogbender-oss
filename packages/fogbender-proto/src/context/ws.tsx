@@ -21,6 +21,7 @@ import type {
   EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
+import { useAtomValue } from "jotai";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
@@ -115,7 +116,6 @@ function useProviderValue(value: InternalType) {
     value.helpdeskId,
     value.fogSessionId,
     value.userId,
-    value.lastIncomingMessage,
     value.sharedRoster,
     value.token,
     value.workspaceId,
@@ -168,7 +168,7 @@ function useProviderValueInternal(
   });
   return {
     serverCall: ws.serverCall,
-    lastIncomingMessage: ws.lastIncomingMessage,
+    lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
     respondToMessage: ws.respondToMessage,
     helpdesk: ws.helpdesk,
     isConnected: ws.isConnected,
@@ -498,12 +498,6 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
   };
 };
 
-export const useLastIncomingMessage = () => {
-  // @ts-ignore
-  const { lastIncomingMessage } = useWs();
-  return lastIncomingMessage as InternalType["lastIncomingMessage"];
-};
-
 export const useSharedRoster = () => {
   // @ts-ignore
   const { sharedRoster } = useWs();
@@ -519,8 +513,8 @@ export const useRoomHistory = ({
   roomId: string;
   aroundId: string | undefined;
 }) => {
-  const lastIncomingMessage = useLastIncomingMessage();
-  const { fogSessionId, serverCall } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessageAtom } = useWs();
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -930,8 +924,8 @@ export const useRoomTyping = ({
   userId: string | undefined;
   roomId: string;
 }) => {
-  const lastIncomingMessage = useLastIncomingMessage();
-  const { fogSessionId, serverCall } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessageAtom } = useWs();
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
 
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -1005,8 +999,8 @@ export const useRoomTyping = ({
 };
 
 export const useNotifications = ({ userId }: { userId: string | undefined }) => {
-  const lastIncomingMessage = useLastIncomingMessage();
-  const { fogSessionId, serverCall } = useWs();
+  const { fogSessionId, serverCall, lastIncomingMessageAtom } = useWs();
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
 
   React.useEffect(() => {
