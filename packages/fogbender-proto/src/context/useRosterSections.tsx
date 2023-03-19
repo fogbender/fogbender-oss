@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
 
-import { useWs } from "./ws";
+import { useSharedRoster } from "./ws";
 
 export function useRosterSections() {
-  const { sharedRoster } = useWs();
+  const sharedRoster = useSharedRoster();
   const { rosterSectionsAtom, rosterSectionsActionsAtom } = sharedRoster;
   const [rosterSections] = useAtom(rosterSectionsAtom);
   const [, dispatch] = useAtom(rosterSectionsActionsAtom);
@@ -11,7 +11,7 @@ export function useRosterSections() {
 }
 
 export function useRosterRoom(roomId: string) {
-  const { sharedRoster } = useWs();
+  const sharedRoster = useSharedRoster();
   const { rosterRoomFamily, rosterSectionsActionsAtom } = sharedRoster;
   const [rosterRoom] = useAtom(rosterRoomFamily(roomId));
   const [, dispatch] = useAtom(rosterSectionsActionsAtom);
