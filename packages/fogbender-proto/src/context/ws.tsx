@@ -105,9 +105,9 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
   fromAvatarUrlOverride: message.fromAvatarUrlOverride,
 });
 
-export type WsContext = ReturnType<typeof useProviderValue>;
+export type WsContextType = ReturnType<typeof useProviderValue>;
 
-const WsContext = React.createContext<WsContext | undefined>(undefined);
+const WsContext = React.createContext<WsContextType | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
 function useProviderValue(
