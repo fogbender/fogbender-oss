@@ -1,6 +1,7 @@
 import { serialize } from "bson";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
+import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
 import type { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
@@ -68,20 +69,19 @@ export function useServerWs(
   const connect = !suspendConnection && !(token === undefined || wrongToken.current);
   const {
     sendMessage: sendMessageOrig,
-    lastMessage,
+    lastJsonMessage,
     readyState,
     getWebSocket,
   } = useWebSocket(socketUrl, opts, connect);
   ready.current = readyState;
 
   const lastIncomingMessage = React.useMemo(() => {
-    if (token !== undefined && lastMessage !== null) {
-      let message: FogSchema["inbound"] | undefined;
-      try {
-        message = JSON.parse(lastMessage.data);
-      } catch (e) {
-        onError("error", "other", new Error("Failed to parse incoming data"), e as Error);
-      }
+    if (lastJsonMessage === UNPARSABLE_JSON_OBJECT) {
+      onError("error", "other", new Error("Failed to parse incoming data"));
+      return;
+    }
+    if (token !== undefined && lastJsonMessage !== null) {
+      const message = lastJsonMessage as FogSchema["inbound"] | undefined;
       if (message) {
         if (!isServerEvent(message)) {
           const x = inFlight.current.get(message.msgId);
@@ -95,7 +95,7 @@ export function useServerWs(
       }
     }
     return undefined;
-  }, [lastMessage, token]);
+  }, [lastJsonMessage, token]);
 
   const flushQueue = React.useCallback(() => {
     queue.current.forEach(m => {
