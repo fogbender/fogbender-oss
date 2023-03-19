@@ -21,7 +21,8 @@ import type {
   EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
-import { useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
+import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
@@ -111,12 +112,11 @@ WsContext.displayName = "WsContext";
 
 function useProviderValue(value: InternalType) {
   return React.useMemo(() => {
-    return value as Omit<InternalType, "lastIncomingMessage" | "sharedRoster">;
+    return value;
   }, [
     value.helpdeskId,
     value.fogSessionId,
     value.userId,
-    value.sharedRoster,
     value.token,
     value.workspaceId,
     value.userAvatarUrl,
@@ -158,6 +158,7 @@ function useProviderValueInternal(
     }
   }, [token, userId, fogSessionId]);
   const ws = useServerWs(providerClient, token, isIdle, suspendConnection);
+  // shared roster
   const sharedRoster = useSharedRosterInternal({
     ws,
     token,
@@ -166,9 +167,17 @@ function useProviderValueInternal(
     helpdeskId,
     userId,
   });
+  const sharedRosterAtom = React.useState(() => atom(sharedRoster))[0];
+  {
+    const setSharedRoster = useUpdateAtom(sharedRosterAtom);
+    React.useEffect(() => {
+      setSharedRoster(sharedRoster);
+    }, [sharedRoster, setSharedRoster]);
+  }
   return {
     serverCall: ws.serverCall,
     lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
+    sharedRosterAtom,
     respondToMessage: ws.respondToMessage,
     helpdesk: ws.helpdesk,
     isConnected: ws.isConnected,
@@ -176,7 +185,6 @@ function useProviderValueInternal(
     isTokenWrong: ws.isTokenWrong,
     isAgent: ws.isAgent,
     avatarLibraryUrl: ws.avatarLibraryUrl,
-    sharedRoster,
     token,
     fogSessionId,
     userId,
@@ -499,9 +507,8 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
 };
 
 export const useSharedRoster = () => {
-  // @ts-ignore
-  const { sharedRoster } = useWs();
-  return sharedRoster as InternalType["sharedRoster"];
+  const { sharedRosterAtom } = useWs();
+  return useAtomValue(sharedRosterAtom);
 };
 
 export const useRoomHistory = ({
