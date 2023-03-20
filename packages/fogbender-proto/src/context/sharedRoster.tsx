@@ -99,20 +99,24 @@ export const useSharedRoster = ({
     [rawRoster, dispatch]
   );
 
-  const updateBadge = React.useCallback(
-    (b: EventBadge) => {
-      // rooms that are higher in the roster will have unread counter or recent messages
-      if (b.count || b.lastRoomMessage?.createdTs) {
-        // TODO: once we have big enough roster we should probably load only rooms that have unread messages
-        if (!b.count) {
-          enoughBadges.current++;
+  const updateBadges = React.useCallback(
+    (badges: EventBadge[]) => {
+      badges.forEach(b => {
+        // rooms that are higher in the roster will have unread counter or recent messages
+        if (b.count || b.lastRoomMessage?.createdTs) {
+          // TODO: once we have big enough roster we should probably load only rooms that have unread messages
+          if (!b.count) {
+            enoughBadges.current++;
+          }
+          if (enoughBadges.current < 10) {
+            roomById(b.roomId, "badge");
+          }
         }
-        if (enoughBadges.current < 10) {
-          roomById(b.roomId, "badge");
-        }
-      }
+      });
       setBadges(x => {
-        x[b.roomId] = b;
+        badges.forEach(b => {
+          x[b.roomId] = b;
+        });
       });
     },
     [setBadges]
@@ -152,9 +156,7 @@ export const useSharedRoster = ({
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
             const items = extractEventBadge(x.items);
-            items.forEach(b => {
-              updateBadge(b);
-            });
+            updateBadges(items);
             if (items.length === 0) {
               setBadgesLoaded(true);
             }
@@ -163,7 +165,7 @@ export const useSharedRoster = ({
         })
         .catch(() => {});
     }
-  }, [fogSessionId, userId, badgesPrevCursor, badgesLoaded, updateBadge, serverCall]);
+  }, [fogSessionId, userId, badgesPrevCursor, badgesLoaded, updateBadges, serverCall]);
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[], rosterRooms: EventRosterRoom[]) => {
@@ -363,7 +365,7 @@ export const useSharedRoster = ({
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage], []);
     } else if (lastIncomingMessage?.msgType === "Event.Badge") {
-      updateBadge(lastIncomingMessage);
+      updateBadges([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Customer") {
       updateCustomers([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Seen") {
@@ -371,7 +373,7 @@ export const useSharedRoster = ({
     } else if (lastIncomingMessage?.msgType === "Event.User") {
       updateUserAvatarUrlInRoster(lastIncomingMessage);
     }
-  }, [lastIncomingMessage, updateRoster, updateBadge]);
+  }, [lastIncomingMessage, updateRoster, updateBadges]);
 
   const roster = React.useMemo(() => {
     const newRoster = rawRoster
