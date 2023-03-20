@@ -302,7 +302,11 @@ export const useSharedRoster = ({
           console.assert(x.msgType === "Stream.GetOk");
           if (x.msgType === "Stream.GetOk") {
             const seen = extractEventSeen(x.items);
-            seen.forEach(x => setSeenRoster(r => ({ ...r, [x.roomId]: x })));
+            setSeenRoster(r => {
+              seen.forEach(x => {
+                r[x.roomId] = x;
+              });
+            });
           }
         })
         .catch(() => {});
