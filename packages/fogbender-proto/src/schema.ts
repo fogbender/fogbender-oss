@@ -863,6 +863,7 @@ export type EventRoom = {
   lastMessage: EventMessage | null;
   createdBy: Actor | null;
   commands: string[];
+  defaultGroupAssignment: string | null;
 };
 
 export type IssueLabel = {
