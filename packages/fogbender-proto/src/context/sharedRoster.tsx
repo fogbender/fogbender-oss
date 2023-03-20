@@ -32,6 +32,8 @@ export type Room = EventRoom & {
   counterpart?: RoomMember; // when type === "dialog"
 };
 
+const emptyRoster: Room[] = [];
+
 export const useSharedRoster = ({
   ws,
   token,
@@ -372,7 +374,7 @@ export const useSharedRoster = ({
   }, [lastIncomingMessage, updateRoster, updateBadge]);
 
   const roster = React.useMemo(() => {
-    return rawRoster
+    const newRoster = rawRoster
       .concat()
       .filter(x => !workspaceId || x.workspaceId === workspaceId)
       .sort((a, b) => {
@@ -390,6 +392,10 @@ export const useSharedRoster = ({
         }
       })
       .reverse();
+    if (newRoster.length === 0) {
+      return emptyRoster;
+    }
+    return newRoster;
   }, [rawRoster, badges, workspaceId]);
 
   return React.useMemo(() => {
