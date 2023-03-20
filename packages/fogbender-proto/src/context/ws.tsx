@@ -168,7 +168,6 @@ function useProviderValue(
     helpdeskId,
     workspaceId,
     userAvatarUrl,
-    isIdle,
     agentRole: ws.agentRole,
   };
 }
