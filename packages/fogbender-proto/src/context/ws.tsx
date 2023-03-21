@@ -1,6 +1,5 @@
 import type {
   AnyToken,
-  EventAgent,
   EventIssue,
   EventMessage,
   EventNotificationMessage,
@@ -22,8 +21,6 @@ import type {
   EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
-import { atom } from "jotai";
-import { useImmerAtom } from "jotai/immer";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
@@ -973,33 +970,10 @@ export const useRoomTyping = ({
 
   return { typingNames, updateTyping };
 };
-function useImmer<T>(initialValue: T) {
-  return useImmerAtom(React.useRef(atom(initialValue)).current);
-}
 
 export const useNotifications = ({ userId }: { userId: string | undefined }) => {
   const { fogSessionId, serverCall, lastIncomingMessage } = useWs();
   const [notification, setNotification] = React.useState<EventNotificationMessage>();
-
-  const [agents, setAgents] = useImmer<EventAgent[]>([]);
-
-  const updateAgent = React.useCallback(
-    (a: EventAgent) => {
-      setAgents(x => {
-        const index = x.findIndex(y => y.id === a.id);
-        if (index !== -1) {
-          if (!a.deletedById) {
-            x[index] = a;
-          } else {
-            x.splice(index, 1);
-          }
-        } else {
-          x.push(a);
-        }
-      });
-    },
-    [setAgents]
-  );
 
   React.useEffect(() => {
     // TODO maybe there's a better way to tell users and agents apart?
@@ -1013,7 +987,7 @@ export const useNotifications = ({ userId }: { userId: string | undefined }) => 
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, updateAgent, userId, serverCall]);
+  }, [fogSessionId, userId, serverCall]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -1024,7 +998,7 @@ export const useNotifications = ({ userId }: { userId: string | undefined }) => 
     }
   }, [fogSessionId, setNotification, lastIncomingMessage]);
 
-  return { agents, notification, lastIncomingMessage };
+  return { notification, lastIncomingMessage };
 };
 
 export const useIssues = ({ workspaceId }: { workspaceId?: string }) => {
