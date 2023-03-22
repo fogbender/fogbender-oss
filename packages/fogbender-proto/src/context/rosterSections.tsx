@@ -23,6 +23,17 @@ function forEach<T extends Record<any, any>>(
 
 type EventRosterSectionWithRooms = EventRosterSection & { rooms?: EventRosterRoom[] };
 
+const defaultSectionsOrder = [
+  "PINNED",
+  "ASSIGNED TO ME", // agent only
+  "ASSIGNED", // agent only
+  "PRIVATE", // user only
+  "OPEN", // agent only
+  "INBOX", // user only
+  "DIRECT",
+  "ARCHIVED",
+];
+
 function handleRosterSectionsUpdate(
   data: Map<string, EventRosterSectionWithRooms>,
   newUpdates: EventRoster[]
@@ -31,8 +42,9 @@ function handleRosterSectionsUpdate(
   newUpdates.forEach(item => {
     if (item.msgType === "Event.RosterSection") {
       const old = data.get(item.id);
-      if (!needsSort) {
-        needsSort = item.pos !== old?.pos;
+      if (!needsSort && old === undefined) {
+        // it needs to be sorted if it's a new section, otherwise it will end up at the bottom
+        needsSort = true;
       }
       data.set(item.id, { ...old, ...item });
     }
@@ -62,7 +74,18 @@ function handleRosterSectionsUpdate(
     }
   });
 
-  return needsSort ? new Map(Array.from(data.entries()).sort((a, b) => a[1].pos - b[1].pos)) : data;
+  return needsSort
+    ? new Map(
+        Array.from(data.entries()).sort(([a], [b]) => {
+          const aPos = defaultSectionsOrder.indexOf(a);
+          const bPos = defaultSectionsOrder.indexOf(b);
+          if (aPos === -1 || bPos === -1) {
+            console.warn("unknown section position", aPos, bPos, a, b);
+          }
+          return aPos - bPos;
+        })
+      )
+    : data;
 }
 
 export type RosterSectionActions =
