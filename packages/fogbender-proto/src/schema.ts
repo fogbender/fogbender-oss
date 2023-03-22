@@ -1112,7 +1112,7 @@ export type KnownIncidentResponseIntegrations = (typeof KnownIncidentResponseInt
 export type Tag = {
   id: string;
   name: string;
-  workspaceId?: string;
+  workspace_id?: string;
   title?: string;
   meta_type?: MetaType;
   meta_entity_type?:
