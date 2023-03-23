@@ -138,7 +138,7 @@ export const useConnectRosterSections = (
     const rosterSectionsActionsAtom = atom(null, (get, set, command: RosterSectionActions) => {
       if (command.action === "load") {
         const { sectionId, done } = command;
-        const start = 1 + (get(rosterSectionsAtom).get(sectionId)?.rooms?.length || 0);
+        const start = calculateStartPos(get(rosterSectionsAtom).get(sectionId));
         serverCall<RosterGetRange>({
           msgType: "Roster.GetRange",
           topic: topic || "",
@@ -221,3 +221,29 @@ export const useConnectRosterSections = (
 
   return { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily };
 };
+
+function calculateStartPos(section?: EventRosterSectionWithRooms) {
+  if (!section || !section.rooms) {
+    return 1;
+  }
+  const rooms = section.rooms;
+  for (let i = 0; i < rooms.length; i++) {
+    const pos = i + 1;
+    const has = rooms.some(x => x?.sections[section.id] === pos);
+    if (!has) {
+      return pos;
+    }
+  }
+  return rooms.length + 1;
+}
+
+const memo = new Map<string, [EventRosterSectionWithRooms, number]>();
+export function calculateStartPosMemo(section: EventRosterSectionWithRooms) {
+  const old = memo.get(section.id);
+  if (old && old[0] === section) {
+    return old[1];
+  }
+  const pos = calculateStartPos(section);
+  memo.set(section.id, [section, pos]);
+  return pos;
+}
