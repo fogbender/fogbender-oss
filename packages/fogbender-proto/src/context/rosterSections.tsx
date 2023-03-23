@@ -38,12 +38,12 @@ function handleRosterSectionsUpdate(
   data: Map<string, EventRosterSectionWithRooms>,
   newUpdates: EventRoster[]
 ) {
+  // it needs to be sorted if it's a new section, otherwise it will end up at the bottom
   let needsSort = false;
   newUpdates.forEach(item => {
     if (item.msgType === "Event.RosterSection") {
       const old = data.get(item.id);
       if (!needsSort && old === undefined) {
-        // it needs to be sorted if it's a new section, otherwise it will end up at the bottom
         needsSort = true;
       }
       data.set(item.id, { ...old, ...item });
@@ -51,7 +51,11 @@ function handleRosterSectionsUpdate(
     if (item.msgType === "Event.RosterRoom") {
       forEach(item.sections, ([id, pos]) => {
         const section = { id, pos: pos - 1 };
-        const sectionItem = data.get(section.id) || {
+        const old = data.get(section.id);
+        if (!needsSort && old === undefined) {
+          needsSort = true;
+        }
+        const sectionItem = old || {
           id: section.id,
           name: section.id,
           pos: 0,
