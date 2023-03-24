@@ -155,7 +155,7 @@ export const useConnectRosterSections = (
   const {
     //
     rosterSectionsActionsAtom,
-    rosterViewSectionsAtom: rosterSectionsAtom,
+    rosterViewSectionsAtom,
     rosterRoomFamily,
   } = React.useMemo(() => {
     // this is slightly silly, we have to do two atoms instead of one
@@ -219,7 +219,7 @@ export const useConnectRosterSections = (
       rosterRoomFamily,
     };
   }, []);
-  const setRosterViewSections = useUpdateAtom(rosterSectionsAtom);
+  const setRosterViewSections = useUpdateAtom(rosterViewSectionsAtom);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -255,7 +255,11 @@ export const useConnectRosterSections = (
     }
   }, [lastIncomingMessage]);
 
-  return { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily };
+  return {
+    rosterViewSectionsAtom,
+    rosterSectionsActionsAtom,
+    rosterRoomFamily,
+  };
 };
 
 function calculateStartPos(section?: EventRosterSectionWithRooms) {
