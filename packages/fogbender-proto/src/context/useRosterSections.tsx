@@ -9,14 +9,15 @@ const emptyMap = new Map() as RosterSections;
 
 export function useRosterSections(viewId = "main") {
   const sharedRoster = useSharedRoster();
-  const { rosterViewSectionsAtom, rosterSectionsActionsAtom } = sharedRoster;
+  const { isRosterReadyAtom, rosterViewSectionsAtom, rosterSectionsActionsAtom } = sharedRoster;
   const mainRosterSectionsAtom = selectAtom(
     rosterViewSectionsAtom,
     React.useCallback(atom => atom.get(viewId) ?? emptyMap, [viewId])
   );
+  const isRosterReady = useAtomValue(isRosterReadyAtom);
   const rosterSections = useAtomValue(mainRosterSectionsAtom);
   const dispatch = useUpdateAtom(rosterSectionsActionsAtom);
-  return { rosterSections, dispatch };
+  return { isRosterReady, rosterSections, dispatch };
 }
 
 export function useRosterRoom(roomId: string) {
