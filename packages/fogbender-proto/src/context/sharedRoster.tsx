@@ -34,7 +34,7 @@ export type Room = EventRoom & {
 
 const emptyRoster: Room[] = [];
 
-export const useSharedRoster = ({
+export const useSharedRosterInternal = ({
   ws,
   token,
   fogSessionId,

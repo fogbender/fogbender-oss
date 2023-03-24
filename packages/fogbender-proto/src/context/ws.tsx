@@ -26,7 +26,7 @@ import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
-import { useSharedRoster as useSharedRosterInternal } from "./sharedRoster";
+import { useSharedRosterInternal } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import type { Client } from "../client";
