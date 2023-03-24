@@ -51,7 +51,7 @@ export const useSharedRosterInternal = ({
 }) => {
   const { serverCall, lastIncomingMessageAtom } = ws;
   const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
-  const { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily } =
+  const { rosterViewSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily } =
     useConnectRosterSections(ws, fogSessionId, workspaceId, helpdeskId);
   const rejectIfUnmounted = useRejectIfUnmounted();
 
@@ -413,7 +413,7 @@ export const useSharedRosterInternal = ({
       customers,
       seenRoster,
       setSeenRoster,
-      rosterSectionsAtom,
+      rosterViewSectionsAtom,
       rosterSectionsActionsAtom,
       rosterRoomFamily,
     };
