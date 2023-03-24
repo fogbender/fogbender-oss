@@ -92,6 +92,25 @@ function handleRosterSectionsUpdate(
     : data;
 }
 
+function handleRosterViewSectionsUpdate(
+  data: Map<string, Map<string, EventRosterSectionWithRooms>>,
+  newUpdates: EventRoster[]
+) {
+  const updatesPerView = new Map<string, EventRoster[]>();
+  newUpdates.forEach(item => {
+    const array = updatesPerView.get(item.view) || [];
+    array.push(item);
+    updatesPerView.set(item.view, array);
+  });
+
+  updatesPerView.forEach((updates, view) => {
+    let newRosterSections = new Map(data.get(view));
+    newRosterSections = handleRosterSectionsUpdate(newRosterSections, updates);
+    data.set(view, newRosterSections);
+  });
+  return data;
+}
+
 export type RosterSectionActions =
   | {
       action: "load";
@@ -106,15 +125,17 @@ export type RosterSectionActions =
     };
 
 function handleRosterRoomEvent(
-  data: Map<string, EventRosterSectionWithRooms>,
+  data: Map<string, Map<string, EventRosterSectionWithRooms>>,
   rosterRoomEvent: EventRosterRoom
 ) {
-  data.forEach(section => {
-    if (!rosterRoomEvent.sections[section.id]) {
-      section.rooms = section.rooms?.filter(x => x.room.id !== rosterRoomEvent.room.id);
-    }
+  data.forEach(view => {
+    view.forEach(section => {
+      if (!rosterRoomEvent.sections[section.id]) {
+        section.rooms = section.rooms?.filter(x => x.room.id !== rosterRoomEvent.room.id);
+      }
+    });
   });
-  return handleRosterSectionsUpdate(data, [rosterRoomEvent]);
+  return handleRosterViewSectionsUpdate(data, [rosterRoomEvent]);
 }
 
 export const useConnectRosterSections = (
@@ -134,16 +155,18 @@ export const useConnectRosterSections = (
   const {
     //
     rosterSectionsActionsAtom,
-    rosterSectionsAtom,
+    rosterViewSectionsAtom: rosterSectionsAtom,
     rosterRoomFamily,
   } = React.useMemo(() => {
     // this is slightly silly, we have to do two atoms instead of one
     // because of some kind of typescript and jotai bug
-    const rosterSectionsAtom = atom(new Map<string, EventRosterSectionWithRooms>());
+    const rosterViewSectionsAtom = atom(
+      new Map([["main", new Map<string, EventRosterSectionWithRooms>()]])
+    );
     const rosterSectionsActionsAtom = atom(null, (get, set, command: RosterSectionActions) => {
       if (command.action === "load") {
-        const start = calculateStartPos(get(rosterSectionsAtom).get(sectionId));
         const { sectionId, done, view } = command;
+        const start = calculateStartPos(get(rosterViewSectionsAtom).get(view)?.get(sectionId));
         serverCall<RosterGetRange>({
           msgType: "Roster.GetRange",
           topic: topic || "",
@@ -156,22 +179,26 @@ export const useConnectRosterSections = (
             invariant(x.msgType === "Roster.GetOk", "", () =>
               console.error("failed to get roster range", topic, command, start, x)
             );
-            const rosterSections = get(rosterSectionsAtom);
-            set(rosterSectionsAtom, handleRosterSectionsUpdate(new Map(rosterSections), x.items));
+            const rosterViews = get(rosterViewSectionsAtom);
+            set(
+              rosterViewSectionsAtom,
+              handleRosterViewSectionsUpdate(new Map(rosterViews), x.items)
+            );
           })
           .finally(done);
       } else if (command.action === "update_roster") {
-        let newRosterSections = new Map(get(rosterSectionsAtom));
+        let newRosterSections = new Map(get(rosterViewSectionsAtom));
         command.rosterRooms.forEach(rosterRoom => {
           newRosterSections = handleRosterRoomEvent(newRosterSections, rosterRoom);
         });
-        set(rosterSectionsAtom, newRosterSections);
+        set(rosterViewSectionsAtom, newRosterSections);
       }
     });
 
     const rosterRoomFamily = atomFamily((roomId: string) =>
       atom(get => {
-        const rosterSections = get(rosterSectionsAtom);
+        // main always exists
+        const rosterSections = get(rosterViewSectionsAtom).get("main")!;
         for (const [, section] of Array.from(rosterSections)) {
           if (section.rooms) {
             for (const room of section.rooms) {
@@ -186,9 +213,13 @@ export const useConnectRosterSections = (
       })
     );
 
-    return { rosterSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily };
+    return {
+      rosterViewSectionsAtom,
+      rosterSectionsActionsAtom,
+      rosterRoomFamily,
+    };
   }, []);
-  const setRosterSections = useUpdateAtom(rosterSectionsAtom);
+  const setRosterViewSections = useUpdateAtom(rosterSectionsAtom);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -205,8 +236,8 @@ export const useConnectRosterSections = (
     }).then(x => {
       console.assert(x.msgType === "Roster.SubOk");
       if (x.msgType === "Roster.SubOk") {
-        setRosterSections(rosterSections =>
-          handleRosterSectionsUpdate(new Map(rosterSections), x.items)
+        setRosterViewSections(rosterViewSections =>
+          handleRosterViewSectionsUpdate(new Map(rosterViewSections), x.items)
         );
       }
     });
@@ -214,12 +245,12 @@ export const useConnectRosterSections = (
 
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.RosterSection") {
-      setRosterSections(rosterSections =>
-        handleRosterSectionsUpdate(new Map(rosterSections), [lastIncomingMessage])
+      setRosterViewSections(rosterViewSections =>
+        handleRosterViewSectionsUpdate(new Map(rosterViewSections), [lastIncomingMessage])
       );
     } else if (lastIncomingMessage?.msgType === "Event.RosterRoom") {
-      setRosterSections(rosterSections =>
-        handleRosterRoomEvent(new Map(rosterSections), lastIncomingMessage)
+      setRosterViewSections(rosterViewSections =>
+        handleRosterRoomEvent(new Map(rosterViewSections), lastIncomingMessage)
       );
     }
   }, [lastIncomingMessage]);
