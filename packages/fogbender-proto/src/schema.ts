@@ -1089,7 +1089,7 @@ export type Actor = {
 
 export type RoomMember = Actor;
 
-export const MetaTypes = ["issue_tracker", "issue", "status"];
+export const MetaTypes = ["issue_tracker", "issue"];
 export type MetaType = (typeof MetaTypes)[number];
 
 export const KnownIssueTrackerIntegrations = [
