@@ -1,15 +1,19 @@
 import { useAtom } from "jotai";
 import { selectAtom } from "jotai/utils";
+import React from "react";
+import type { RosterSections } from "./rosterSections";
 
 import { useSharedRoster } from "./ws";
 
-const selectMain = <T,>(views: Map<string, T>) => views.get("main")!;
+const emptyMap = new Map() as RosterSections;
 
-// for main view
-export function useRosterSections() {
+export function useRosterSections(viewId = "main") {
   const sharedRoster = useSharedRoster();
   const { rosterViewSectionsAtom, rosterSectionsActionsAtom } = sharedRoster;
-  const mainRosterSectionsAtom = selectAtom(rosterViewSectionsAtom, selectMain);
+  const mainRosterSectionsAtom = selectAtom(
+    rosterViewSectionsAtom,
+    React.useCallback(atom => atom.get(viewId) ?? emptyMap, [viewId])
+  );
   const [rosterSections] = useAtom(mainRosterSectionsAtom);
   const [, dispatch] = useAtom(rosterSectionsActionsAtom);
   return { rosterSections, dispatch };
