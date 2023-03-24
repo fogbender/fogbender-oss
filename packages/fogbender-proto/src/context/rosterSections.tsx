@@ -22,6 +22,7 @@ function forEach<T extends Record<any, any>>(
 }
 
 type EventRosterSectionWithRooms = EventRosterSection & { rooms?: EventRosterRoom[] };
+export type RosterSections = Map<string, EventRosterSectionWithRooms>;
 
 const defaultSectionsOrder = [
   "PINNED",
@@ -122,6 +123,10 @@ export type RosterSectionActions =
       action: "update_roster";
       rosterRooms: EventRosterRoom[];
       done?: () => void;
+    }
+  | {
+      action: "reset_view";
+      items: EventRoster[];
     };
 
 function handleRosterRoomEvent(
@@ -154,10 +159,12 @@ export const useConnectRosterSections = (
   const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
   const {
     //
+    isRosterReadyAtom,
     rosterSectionsActionsAtom,
     rosterViewSectionsAtom,
     rosterRoomFamily,
   } = React.useMemo(() => {
+    const isRosterReadyAtom = atom(false);
     // this is slightly silly, we have to do two atoms instead of one
     // because of some kind of typescript and jotai bug
     const rosterViewSectionsAtom = atom(
@@ -192,6 +199,10 @@ export const useConnectRosterSections = (
           newRosterSections = handleRosterRoomEvent(newRosterSections, rosterRoom);
         });
         set(rosterViewSectionsAtom, newRosterSections);
+      } else if (command.action === "reset_view") {
+        setRosterViewSections(rosterViewSections =>
+          handleRosterViewSectionsUpdate(new Map(rosterViewSections), command.items)
+        );
       }
     });
 
@@ -214,12 +225,18 @@ export const useConnectRosterSections = (
     );
 
     return {
+      isRosterReadyAtom,
       rosterViewSectionsAtom,
       rosterSectionsActionsAtom,
       rosterRoomFamily,
     };
   }, []);
   const setRosterViewSections = useUpdateAtom(rosterViewSectionsAtom);
+  const setIsRosterReady = useUpdateAtom(isRosterReadyAtom);
+
+  React.useEffect(() => {
+    setIsRosterReady(false);
+  }, [fogSessionId]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -236,6 +253,7 @@ export const useConnectRosterSections = (
     }).then(x => {
       console.assert(x.msgType === "Roster.SubOk");
       if (x.msgType === "Roster.SubOk") {
+        setIsRosterReady(true);
         setRosterViewSections(rosterViewSections =>
           handleRosterViewSectionsUpdate(new Map(rosterViewSections), x.items)
         );
@@ -256,6 +274,7 @@ export const useConnectRosterSections = (
   }, [lastIncomingMessage]);
 
   return {
+    isRosterReadyAtom,
     rosterViewSectionsAtom,
     rosterSectionsActionsAtom,
     rosterRoomFamily,
