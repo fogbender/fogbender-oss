@@ -61,6 +61,8 @@ export type APISchema = {
   RosterUnSubRPC: RPC<RosterUnSub, RosterError | RosterUnSubOk>;
   RosterGetRPC: RPC<RosterGetRange, RosterError | RosterGetOk<EventRosterRoom>>;
   RosterGetRoomsRPC: RPC<RosterGetRooms, RosterError | RosterGetOk<EventRosterRoom>>;
+  RosterOpenViewRPC: RPC<RosterOpenView, RosterError | RosterOpenViewOk<EventRoster>>;
+  RosterCloseViewRPC: RPC<RosterCloseView, RosterError | RosterCloseViewOk>;
   MessageCreateRPC: RPC<MessageCreate, MessageOk>;
   MessageCreateManyRPC: RPC<MessageCreateMany, MessageOk>;
   MessageUpdateRPC: RPC<MessageUpdate, MessageOk>;
@@ -424,6 +426,37 @@ export type RosterGetOk<Item> = {
   msgType: "Roster.GetOk";
   topic: string;
   items: Item[];
+};
+
+export type RosterOpenView = {
+  msgId?: string;
+  msgType: "Roster.OpenView";
+  topic: string;
+  sections: string[];
+  view: string;
+  filters?: { focused?: boolean };
+};
+
+export type RosterOpenViewOk<Item> = {
+  msgId: string;
+  msgType: "Roster.OpenViewOk";
+  topic: string;
+  view: string;
+  items: Item[];
+};
+
+export type RosterCloseView = {
+  msgId?: string;
+  msgType: "Roster.CloseView";
+  topic: string;
+  view: string;
+};
+
+export type RosterCloseViewOk = {
+  msgId: string;
+  msgType: "Roster.CloseViewOk";
+  topic: string;
+  view: string;
 };
 
 export type Mention = {
