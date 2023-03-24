@@ -142,13 +142,13 @@ export const useConnectRosterSections = (
     const rosterSectionsAtom = atom(new Map<string, EventRosterSectionWithRooms>());
     const rosterSectionsActionsAtom = atom(null, (get, set, command: RosterSectionActions) => {
       if (command.action === "load") {
-        const { sectionId, done } = command;
         const start = calculateStartPos(get(rosterSectionsAtom).get(sectionId));
+        const { sectionId, done, view } = command;
         serverCall<RosterGetRange>({
           msgType: "Roster.GetRange",
           topic: topic || "",
           sectionId: sectionId,
-          view: command.view,
+          view,
           startPos: start,
           limit: 30,
         })
