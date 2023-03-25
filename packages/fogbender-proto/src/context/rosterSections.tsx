@@ -84,8 +84,11 @@ function handleRosterSectionsUpdate(
         Array.from(data.entries()).sort(([a], [b]) => {
           const aPos = defaultSectionsOrder.indexOf(a);
           const bPos = defaultSectionsOrder.indexOf(b);
-          if (aPos === -1 || bPos === -1) {
-            console.warn("unknown section position", aPos, bPos, a, b);
+          if (aPos === -1 && !a.startsWith("CUSTOMER:")) {
+            console.warn("unknown section position", aPos, a);
+          }
+          if (bPos === -1 && !b.startsWith("CUSTOMER:")) {
+            console.warn("unknown section position", bPos, b);
           }
           return aPos - bPos;
         })
