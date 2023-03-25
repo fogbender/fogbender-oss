@@ -105,28 +105,11 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
 });
 
 export type WsContextType = ReturnType<typeof useProviderValue>;
-export type InternalType = ReturnType<typeof useProviderValueInternal>;
 
 const WsContext = React.createContext<WsContextType | undefined>(undefined);
 WsContext.displayName = "WsContext";
 
-function useProviderValue(value: InternalType) {
-  return React.useMemo(() => {
-    return value;
-  }, [
-    value.helpdeskId,
-    value.fogSessionId,
-    value.isConnected,
-    value.userId,
-    value.token,
-    value.workspaceId,
-    value.userAvatarUrl,
-    value.helpdeskId,
-    value.agentRole,
-  ]);
-}
-
-function useProviderValueInternal(
+function useProviderValue(
   token: AnyToken | undefined,
   workspaceId?: string,
   client?: Client,
@@ -175,25 +158,46 @@ function useProviderValueInternal(
       setSharedRoster(sharedRoster);
     }, [sharedRoster, setSharedRoster]);
   }
-  return {
-    serverCall: ws.serverCall,
-    lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
+
+  return React.useMemo(() => {
+    return {
+      serverCall: ws.serverCall,
+      lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
+      sharedRosterAtom,
+      respondToMessage: ws.respondToMessage,
+      helpdesk: ws.helpdesk,
+      isConnected: ws.isConnected,
+      isAuthenticated: ws.isAuthenticated,
+      isTokenWrong: ws.isTokenWrong,
+      isAgent: ws.isAgent,
+      avatarLibraryUrl: ws.avatarLibraryUrl,
+      token,
+      fogSessionId,
+      userId,
+      helpdeskId,
+      workspaceId,
+      userAvatarUrl,
+      agentRole: ws.agentRole,
+    };
+  }, [
+    ws.serverCall,
+    ws.lastIncomingMessageAtom,
     sharedRosterAtom,
-    respondToMessage: ws.respondToMessage,
-    helpdesk: ws.helpdesk,
-    isConnected: ws.isConnected,
-    isAuthenticated: ws.isAuthenticated,
-    isTokenWrong: ws.isTokenWrong,
-    isAgent: ws.isAgent,
-    avatarLibraryUrl: ws.avatarLibraryUrl,
+    ws.respondToMessage,
+    ws.helpdesk,
+    ws.isConnected,
+    ws.isAuthenticated,
+    ws.isTokenWrong,
+    ws.isAgent,
+    ws.avatarLibraryUrl,
     token,
     fogSessionId,
     userId,
     helpdeskId,
     workspaceId,
     userAvatarUrl,
-    agentRole: ws.agentRole,
-  };
+    ws.agentRole,
+  ]);
 }
 
 export const WsProvider: React.FC<{
@@ -204,8 +208,7 @@ export const WsProvider: React.FC<{
   suspendConnection?: boolean;
   children?: React.ReactNode;
 }> = ({ token, workspaceId, client, isIdle, suspendConnection, ...props }) => {
-  const internal = useProviderValueInternal(token, workspaceId, client, isIdle, suspendConnection);
-  const value = useProviderValue(internal);
+  const value = useProviderValue(token, workspaceId, client, isIdle, suspendConnection);
   return <WsContext.Provider value={value} {...props} />;
 };
 
