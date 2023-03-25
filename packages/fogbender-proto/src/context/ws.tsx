@@ -116,6 +116,7 @@ function useProviderValue(value: InternalType) {
   }, [
     value.helpdeskId,
     value.fogSessionId,
+    value.isConnected,
     value.userId,
     value.token,
     value.workspaceId,
