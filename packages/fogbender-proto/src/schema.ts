@@ -455,7 +455,8 @@ export type RosterOpenView = {
   topic: string;
   sections: string[];
   view: string;
-  filters?: { focused?: boolean };
+  limit?: number;
+  filters?: { focused?: boolean; customerIds?: string[] };
 };
 
 export type RosterOpenViewOk<Item> = {
