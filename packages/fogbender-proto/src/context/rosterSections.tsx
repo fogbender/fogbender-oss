@@ -82,6 +82,7 @@ function handleRosterSectionsUpdate(
   return needsSort
     ? new Map(
         Array.from(data.entries()).sort(([a], [b]) => {
+          console.log(a, b);
           const aPos = defaultSectionsOrder.indexOf(a);
           const bPos = defaultSectionsOrder.indexOf(b);
           if (aPos === -1 && !a.startsWith("CUSTOMER:")) {
@@ -90,7 +91,13 @@ function handleRosterSectionsUpdate(
           if (bPos === -1 && !b.startsWith("CUSTOMER:")) {
             console.warn("unknown section position", bPos, b);
           }
-          return aPos - bPos;
+          if (a.startsWith("TAG:") && !b.startsWith("TAG:")) {
+            return 1;
+          } else if (!a.startsWith("TAG:") && b.startsWith("TAG:")) {
+            return -1;
+          } else {
+            return aPos - bPos;
+          }
         })
       )
     : data;
