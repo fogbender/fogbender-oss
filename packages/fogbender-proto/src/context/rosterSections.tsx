@@ -32,6 +32,7 @@ const defaultSectionsOrder = [
   "OPEN", // agent only
   "INBOX", // user only
   "DIRECT",
+  "CLOSED",
   "ARCHIVED",
 ];
 
