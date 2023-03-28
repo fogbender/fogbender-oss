@@ -51,7 +51,6 @@ function handleRosterSectionsUpdate(
       }
       data.set(item.id, { ...old, ...item });
     }
-    console.log(item);
     if (item.msgType === "Event.RosterRoom") {
       forEach(item.sections, ([id, pos]) => {
         const section = { id, pos: pos - 1 };
@@ -85,7 +84,6 @@ function handleRosterSectionsUpdate(
   return needsSort
     ? new Map(
         Array.from(data.entries()).sort(([a], [b]) => {
-          console.log(a, b);
           const aPos = defaultSectionsOrder.findIndex(x =>
             a.startsWith("TAG:") ? x.startsWith("TAG:") : x.startsWith(a)
           );
