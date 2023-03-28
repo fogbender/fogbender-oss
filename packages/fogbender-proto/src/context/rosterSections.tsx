@@ -33,6 +33,7 @@ const defaultSectionsOrder = [
   "INBOX", // user only
   "TAG:",
   "DIRECT",
+  "NEW",
   "CLOSED",
   "ARCHIVED",
 ];
