@@ -31,6 +31,7 @@ const defaultSectionsOrder = [
   "PRIVATE", // user only
   "OPEN", // agent only
   "INBOX", // user only
+  "TAG:",
   "DIRECT",
   "CLOSED",
   "ARCHIVED",
@@ -50,6 +51,7 @@ function handleRosterSectionsUpdate(
       }
       data.set(item.id, { ...old, ...item });
     }
+    console.log(item);
     if (item.msgType === "Event.RosterRoom") {
       forEach(item.sections, ([id, pos]) => {
         const section = { id, pos: pos - 1 };
@@ -84,21 +86,20 @@ function handleRosterSectionsUpdate(
     ? new Map(
         Array.from(data.entries()).sort(([a], [b]) => {
           console.log(a, b);
-          const aPos = defaultSectionsOrder.indexOf(a);
-          const bPos = defaultSectionsOrder.indexOf(b);
+          const aPos = defaultSectionsOrder.findIndex(x =>
+            a.startsWith("TAG:") ? x.startsWith("TAG:") : x.startsWith(a)
+          );
+          const bPos = defaultSectionsOrder.findIndex(x =>
+            b.startsWith("TAG:") ? x.startsWith("TAG:") : x.startsWith(b)
+          );
           if (aPos === -1 && !a.startsWith("CUSTOMER:")) {
             console.warn("unknown section position", aPos, a);
           }
           if (bPos === -1 && !b.startsWith("CUSTOMER:")) {
             console.warn("unknown section position", bPos, b);
           }
-          if (a.startsWith("TAG:") && !b.startsWith("TAG:")) {
-            return 1;
-          } else if (!a.startsWith("TAG:") && b.startsWith("TAG:")) {
-            return -1;
-          } else {
-            return aPos - bPos;
-          }
+
+          return aPos - bPos;
         })
       )
     : data;
