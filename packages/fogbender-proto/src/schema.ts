@@ -264,6 +264,7 @@ export type Integration = {
   shared_channel_helpdesk_associations?: SharedChannelAssociation[];
   prompts?: Prompt[];
   agent_group?: string;
+  schedule_name?: string;
 };
 
 export type IntegrationCreateIssue = {
