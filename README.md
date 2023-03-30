@@ -22,7 +22,7 @@ This repository contains the source code of **Fogbender packages** published to 
   Widget on your website
 - [fogbender-vue](https://www.npmjs.com/package/fogbender-react) - experimental Vue wrapper for `fogbender` to embed
   the Fogbender Widget on your website
-- [fogbender-element](https://www.npmjs.com/package/fogbender-element) - experimental web components wrapper for `fogbender`
+- [fogbender-element](https://www.npmjs.com/package/fogbender-element) - Web Components wrapper for `fogbender`
   to embed the Fogbender Widget on your website
 
 ## Examples
