@@ -1032,7 +1032,7 @@ export type CustomerCrmData = {
   name: string;
   number_of_employees: number;
   owner: string;
-  phone_numbers: string[];
+  phone_numbers: { phone_number: string }[];
   remote_id: string;
   website: string;
 };
