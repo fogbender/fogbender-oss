@@ -631,17 +631,14 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
         allRooms: EventRoom[]
       ): Promise<EventRoom[]> => {
         return await getRooms(topic, before).then(rooms => {
-          if (rooms) {
+          if (rooms?.length) {
             const minTs = Math.min(...rooms.map(r => r.createdTs));
 
             if (minTs !== Infinity && rooms && isMounted.current) {
               return fetchData(minTs, allRooms.concat(rooms));
-            } else {
-              return allRooms;
             }
-          } else {
-            return allRooms;
           }
+          return allRooms;
         });
       };
 
@@ -740,17 +737,13 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
         allUsers: EventUser[]
       ): Promise<EventUser[]> => {
         return await getUsers(topic, before).then(users => {
-          if (users) {
+          if (users?.length) {
             const minTs = Math.min(...users.map(u => u.createdTs));
-
             if (minTs !== Infinity && users && isMounted.current) {
               return fetchData(minTs, allUsers.concat(users));
-            } else {
-              return allUsers;
             }
-          } else {
-            return allUsers;
           }
+          return allUsers;
         });
       };
 
