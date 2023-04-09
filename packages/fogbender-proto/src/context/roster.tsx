@@ -492,14 +492,16 @@ export const useAgentGroups = ({ vendorId }: { vendorId: string }) => {
 
   const updateGroups = React.useCallback(
     (groupsIn: EventAgentGroup[]) => {
-      let newGroups = groups;
-      groupsIn
-        .filter(g => g.vendorId === vendorId)
-        .forEach(group => {
-          newGroups = newGroups.filter(x => x.name !== group.name);
-          newGroups.push(group);
-        });
-      setGroups(newGroups);
+      setGroups(groups => {
+        let newGroups = [...groups];
+        groupsIn
+          .filter(g => g.vendorId === vendorId)
+          .forEach(group => {
+            newGroups = newGroups.filter(x => x.name !== group.name);
+            newGroups.push(group);
+          });
+        return newGroups;
+      });
     },
     [groups]
   );
@@ -574,17 +576,18 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
 
   const updateRooms = React.useCallback(
     (roomsIn: EventRoom[]) => {
-      let newRooms = rooms;
-      roomsIn
-        .filter(r => r.type !== "dialog")
-        .forEach(room => {
-          newRooms = newRooms.filter(x => x.id !== room.id);
-
-          if (room.helpdeskId === helpdeskId) {
-            newRooms.push(room);
-          }
-        });
-      setRooms(newRooms);
+      setRooms(rooms => {
+        let newRooms = [...rooms];
+        roomsIn
+          .filter(r => r.type !== "dialog")
+          .forEach(room => {
+            newRooms = newRooms.filter(x => x.id !== room.id);
+            if (room.helpdeskId === helpdeskId) {
+              newRooms.push(room);
+            }
+          });
+        return newRooms;
+      });
     },
     [rooms]
   );
@@ -683,15 +686,17 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
 
   const updateUsers = React.useCallback(
     (usersIn: EventUser[]) => {
-      let newUsers = users;
-      usersIn.forEach(user => {
-        newUsers = newUsers.filter(x => x.userId !== user.userId);
+      setUsers(users => {
+        let newUsers = [...users];
+        usersIn.forEach(user => {
+          newUsers = newUsers.filter(x => x.userId !== user.userId);
 
-        if (user.helpdeskId === helpdeskId) {
-          newUsers.push(user);
-        }
+          if (user.helpdeskId === helpdeskId) {
+            newUsers.push(user);
+          }
+        });
+        return users;
       });
-      setUsers(newUsers);
     },
     [users]
   );
