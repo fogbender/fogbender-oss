@@ -75,9 +75,9 @@ export const useRoster = ({
   const sharedRoster = useSharedRoster();
   const { serverCall, userAvatarUrl } = useWs();
   const {
+    //
     roster: fullRoster,
     roomById,
-    badges,
     customers,
     seenRoster,
     setSeenRoster,
@@ -360,7 +360,6 @@ export const useRoster = ({
     forwardToIssue,
     labelIssue,
     customers,
-    badges,
     roomsByTags,
     userAvatarUrl,
   };
