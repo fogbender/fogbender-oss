@@ -73,7 +73,7 @@ export const useRoster = ({
   roomId?: string;
 }) => {
   const sharedRoster = useSharedRoster();
-  const { serverCall, userAvatarUrl } = useWs();
+  const { serverCall } = useWs();
   const {
     //
     roster: fullRoster,
@@ -361,7 +361,6 @@ export const useRoster = ({
     labelIssue,
     customers,
     roomsByTags,
-    userAvatarUrl,
   };
 };
 
