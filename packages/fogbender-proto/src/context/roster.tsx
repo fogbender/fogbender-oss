@@ -257,10 +257,6 @@ export const useRoster = ({
 
   const [rosterFilter, setRosterFilter] = React.useState<string>();
   const [filteredRoster, setFilteredRoster] = React.useState([] as Room[]);
-  const filteredRooms = React.useMemo(
-    () => filteredRoster.filter(x => x.type !== "dialog"),
-    [filteredRoster]
-  );
   const filteredDialogs = React.useMemo(
     () => filteredRoster.filter(x => x.type === "dialog"),
     [filteredRoster]
@@ -343,7 +339,6 @@ export const useRoster = ({
     roster,
     roomById,
     filteredRoster,
-    filteredRooms,
     filteredDialogs,
     setRosterFilter,
     createRoom,
