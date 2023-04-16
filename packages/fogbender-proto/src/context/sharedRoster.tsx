@@ -7,19 +7,13 @@ import type {
   EventCustomer,
   EventRoom,
   EventRosterRoom,
-  EventSeen,
   EventUser,
   RoomMember,
   StreamGet,
   StreamSub,
 } from "../schema";
 
-import {
-  extractEventBadge,
-  extractEventCustomer,
-  extractEventRoom,
-  extractEventSeen,
-} from "../utils/castTypes";
+import { extractEventBadge, extractEventCustomer, extractEventRoom } from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
 import type { useServerWs } from "../useServerWs";
@@ -58,7 +52,6 @@ export const useSharedRosterInternal = ({
   const [rawRoster, setRawRoster] = useImmer<Room[]>([]);
   const [rosterLoaded, setRosterLoaded] = React.useState(false);
   const [oldestRoomTs, setOldestRoomTs] = React.useState(Infinity);
-  const [seenRoster, setSeenRoster] = useImmer<{ [key: string]: EventSeen }>({});
   const [badges, setBadges] = useImmer<{ [key: string]: EventBadge }>({});
   const [badgesLoaded, setBadgesLoaded] = React.useState(false);
   const [badgesPrevCursor, setBadgesPrevCursor] = React.useState<string>();
@@ -78,7 +71,6 @@ export const useSharedRosterInternal = ({
     setRawRoster(() => []);
     setRosterLoaded(false);
     setOldestRoomTs(Infinity);
-    setSeenRoster(() => ({}));
     setBadges(() => ({}));
     setBadgesLoaded(false);
     setBadgesPrevCursor(undefined);
@@ -293,24 +285,6 @@ export const useSharedRosterInternal = ({
       }).then(x => {
         console.assert(x.msgType === "Stream.SubOk");
       });
-
-      serverCall({
-        msgType: "Stream.Get",
-        topic,
-      })
-        .then(rejectIfUnmounted)
-        .then(x => {
-          console.assert(x.msgType === "Stream.GetOk");
-          if (x.msgType === "Stream.GetOk") {
-            const seen = extractEventSeen(x.items);
-            setSeenRoster(r => {
-              seen.forEach(x => {
-                r[x.roomId] = x;
-              });
-            });
-          }
-        })
-        .catch(() => {});
     }
   }, [fogSessionId, userId, serverCall]);
 
@@ -373,8 +347,6 @@ export const useSharedRosterInternal = ({
       updateBadges([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.Customer") {
       updateCustomers([lastIncomingMessage]);
-    } else if (lastIncomingMessage?.msgType === "Event.Seen") {
-      setSeenRoster(r => ({ ...r, [lastIncomingMessage.roomId]: lastIncomingMessage }));
     } else if (lastIncomingMessage?.msgType === "Event.User") {
       updateUserAvatarUrlInRoster(lastIncomingMessage);
     }
@@ -411,12 +383,10 @@ export const useSharedRosterInternal = ({
       roomById,
       badges,
       customers,
-      seenRoster,
-      setSeenRoster,
       isRosterReadyAtom,
       rosterViewSectionsAtom,
       rosterSectionsActionsAtom,
       rosterRoomFamily,
     };
-  }, [roster, roomById, badges, customers, seenRoster, setSeenRoster]);
+  }, [roster, roomById, badges, customers]);
 };

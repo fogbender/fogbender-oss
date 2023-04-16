@@ -79,8 +79,6 @@ export const useRoster = ({
     roster: fullRoster,
     roomById,
     customers,
-    seenRoster,
-    setSeenRoster,
   } = sharedRoster;
 
   const [roster, setRoster] = React.useState([] as Room[]);
@@ -124,7 +122,6 @@ export const useRoster = ({
         linkEndMessageId: params.linkEndMessageId,
       }).then(x => {
         console.assert(x.msgType === "Room.Ok");
-        setSeenRoster(roster => ({ ...roster, [Date.now() * 1000]: x }));
         return x;
       }),
     [serverCall]
@@ -344,7 +341,6 @@ export const useRoster = ({
 
   return {
     roster,
-    seenRoster,
     roomById,
     filteredRoster,
     filteredRooms,
