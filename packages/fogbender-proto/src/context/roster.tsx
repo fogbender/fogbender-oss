@@ -77,7 +77,6 @@ export const useRoster = ({
   const {
     //
     roster: fullRoster,
-    roomById,
   } = sharedRoster;
 
   const [roster, setRoster] = React.useState([] as Room[]);
@@ -336,7 +335,6 @@ export const useRoster = ({
 
   return {
     roster,
-    roomById,
     filteredRoster,
     filteredDialogs,
     setRosterFilter,
