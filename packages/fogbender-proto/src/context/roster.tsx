@@ -78,7 +78,6 @@ export const useRoster = ({
     //
     roster: fullRoster,
     roomById,
-    customers,
   } = sharedRoster;
 
   const [roster, setRoster] = React.useState([] as Room[]);
@@ -314,7 +313,7 @@ export const useRoster = ({
     } else if (userId && !rosterFilter) {
       setFilteredRoster(filterNotMonolog(roster.map(y => eventRoomToRoom(y, userId))));
     }
-  }, [userId, roster, customers, rosterFilter, serverCall]);
+  }, [userId, roster, rosterFilter, serverCall]);
 
   const roomsByTags = React.useCallback(
     (tagIds: string[]) =>
@@ -350,7 +349,6 @@ export const useRoster = ({
     createIssueWithForward,
     forwardToIssue,
     labelIssue,
-    customers,
     roomsByTags,
   };
 };
