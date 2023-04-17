@@ -334,7 +334,6 @@ export const useRoster = ({
   );
 
   return {
-    roster,
     filteredRoster,
     filteredDialogs,
     setRosterFilter,
