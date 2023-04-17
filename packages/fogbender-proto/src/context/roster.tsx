@@ -279,12 +279,8 @@ export const useRoster = ({
   userId?: string;
   roomId?: string;
 }) => {
-  const sharedRoster = useSharedRoster();
+  const { roster: fullRoster } = useSharedRoster();
   const { serverCall } = useWs();
-  const {
-    //
-    roster: fullRoster,
-  } = sharedRoster;
 
   const [roster, setRoster] = React.useState([] as Room[]);
 
