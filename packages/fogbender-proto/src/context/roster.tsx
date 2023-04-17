@@ -61,30 +61,16 @@ export function useAuthorEmail(author: Author) {
   return email;
 }
 
-export const useRoster = ({
+export const useRosterActions = ({
   workspaceId,
   helpdeskId,
-  userId,
   roomId, // for mentions
 }: {
   workspaceId?: string;
   helpdeskId?: string;
-  userId?: string;
   roomId?: string;
 }) => {
-  const sharedRoster = useSharedRoster();
   const { serverCall } = useWs();
-  const {
-    //
-    roster: fullRoster,
-  } = sharedRoster;
-
-  const [roster, setRoster] = React.useState([] as Room[]);
-
-  React.useMemo(
-    () => setRoster(helpdeskId ? fullRoster.filter(x => x.helpdeskId === helpdeskId) : fullRoster),
-    [fullRoster]
-  );
 
   /*
     API calls work independently for each hook
@@ -249,6 +235,64 @@ export const useRoster = ({
     [serverCall, workspaceId]
   );
 
+  const roomsByTags = React.useCallback(
+    (tagIds: string[]) =>
+      serverCall<SearchRoster>({
+        msgType: "Search.Roster",
+        workspaceId,
+        helpdeskId,
+        mentionRoomId: roomId,
+        tagIds,
+      }).then(x => {
+        console.assert(x.msgType === "Search.Ok");
+        if (x.msgType === "Search.Ok") {
+          return x.items;
+        } else {
+          return [];
+        }
+      }),
+    [serverCall]
+  );
+
+  return {
+    createRoom,
+    updateRoom,
+    archiveRoom,
+    unarchiveRoom,
+    updateUser,
+    createIssue,
+    createIssueWithForward,
+    forwardToIssue,
+    labelIssue,
+    roomsByTags,
+  };
+};
+
+export const useRoster = ({
+  workspaceId,
+  helpdeskId,
+  userId,
+  roomId, // for mentions
+}: {
+  workspaceId?: string;
+  helpdeskId?: string;
+  userId?: string;
+  roomId?: string;
+}) => {
+  const sharedRoster = useSharedRoster();
+  const { serverCall } = useWs();
+  const {
+    //
+    roster: fullRoster,
+  } = sharedRoster;
+
+  const [roster, setRoster] = React.useState([] as Room[]);
+
+  React.useMemo(
+    () => setRoster(helpdeskId ? fullRoster.filter(x => x.helpdeskId === helpdeskId) : fullRoster),
+    [fullRoster]
+  );
+
   /*
     Search roster -- works independently for each hook
   */
@@ -314,39 +358,10 @@ export const useRoster = ({
     }
   }, [userId, roster, rosterFilter, serverCall]);
 
-  const roomsByTags = React.useCallback(
-    (tagIds: string[]) =>
-      serverCall<SearchRoster>({
-        msgType: "Search.Roster",
-        workspaceId,
-        helpdeskId,
-        mentionRoomId: roomId,
-        tagIds,
-      }).then(x => {
-        console.assert(x.msgType === "Search.Ok");
-        if (x.msgType === "Search.Ok") {
-          return x.items;
-        } else {
-          return [];
-        }
-      }),
-    [serverCall]
-  );
-
   return {
     filteredRoster,
     filteredDialogs,
     setRosterFilter,
-    createRoom,
-    updateRoom,
-    archiveRoom,
-    unarchiveRoom,
-    updateUser,
-    createIssue,
-    createIssueWithForward,
-    forwardToIssue,
-    labelIssue,
-    roomsByTags,
   };
 };
 
