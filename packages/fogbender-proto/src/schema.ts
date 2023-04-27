@@ -918,6 +918,7 @@ export type EventRoom = {
   resolvedByAgentId: string | null;
   resolvedTil: number | null;
   lastMessage: EventMessage | null;
+  relevantMessage: EventMessage | null;
   createdBy: Actor | null;
   commands: string[];
   defaultGroupAssignment: string | null;
