@@ -778,7 +778,7 @@ export type EventMessage = {
   helpdeskId: string;
   customerId: string;
   fromId: string;
-  fromName: string;
+  fromName: string | null;
   fromNameOverride: string | null;
   fromAvatarUrl: string;
   fromAvatarUrlOverride?: string;

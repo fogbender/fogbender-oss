@@ -77,7 +77,7 @@ export const convertEventMessageToMessage = (message: EventMessage): Message => 
   clientId: message.clientId,
   author: {
     id: message.fromId,
-    name: message.fromName,
+    name: message.fromName || "",
     type: message.fromType,
     avatarUrl: message.fromAvatarUrl,
   },
@@ -480,7 +480,7 @@ const useHistoryStore = (initialHistoryMode?: HistoryMode) => {
       messagesByTarget[targetMessageId].push({
         id,
         clientId,
-        author: { id: fromId, name: fromName, type: fromType, avatarUrl: fromAvatarUrl },
+        author: { id: fromId, name: fromName || "", type: fromType, avatarUrl: fromAvatarUrl },
         createdTs: createdTs || Date.now(),
         updatedTs: updatedTs || Date.now(),
         parsed: text,
