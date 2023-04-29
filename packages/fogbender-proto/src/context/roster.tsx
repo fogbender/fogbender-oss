@@ -490,21 +490,18 @@ export const useAgentGroups = ({ vendorId }: { vendorId: string }) => {
   const [groups, setGroups] = React.useState<EventAgentGroup[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const updateGroups = React.useCallback(
-    (groupsIn: EventAgentGroup[]) => {
-      setGroups(groups => {
-        let newGroups = [...groups];
-        groupsIn
-          .filter(g => g.vendorId === vendorId)
-          .forEach(group => {
-            newGroups = newGroups.filter(x => x.name !== group.name);
-            newGroups.push(group);
-          });
-        return newGroups;
-      });
-    },
-    [groups]
-  );
+  const updateGroups = React.useCallback((groupsIn: EventAgentGroup[]) => {
+    setGroups(groups => {
+      let newGroups = [...groups];
+      groupsIn
+        .filter(g => g.vendorId === vendorId)
+        .forEach(group => {
+          newGroups = newGroups.filter(x => x.name !== group.name);
+          newGroups.push(group);
+        });
+      return newGroups;
+    });
+  }, []);
 
   React.useEffect(() => {
     if (vendorId && lastIncomingMessage?.msgType === "Event.AgentGroup") {
@@ -574,23 +571,20 @@ export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefine
   const [rooms, setRooms] = React.useState<EventRoom[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const updateRooms = React.useCallback(
-    (roomsIn: EventRoom[]) => {
-      setRooms(rooms => {
-        let newRooms = [...rooms];
-        roomsIn
-          .filter(r => r.type !== "dialog")
-          .forEach(room => {
-            newRooms = newRooms.filter(x => x.id !== room.id);
-            if (room.helpdeskId === helpdeskId) {
-              newRooms.push(room);
-            }
-          });
-        return newRooms;
-      });
-    },
-    [rooms]
-  );
+  const updateRooms = React.useCallback((roomsIn: EventRoom[]) => {
+    setRooms(rooms => {
+      let newRooms = [...rooms];
+      roomsIn
+        .filter(r => r.type !== "dialog")
+        .forEach(room => {
+          newRooms = newRooms.filter(x => x.id !== room.id);
+          if (room.helpdeskId === helpdeskId) {
+            newRooms.push(room);
+          }
+        });
+      return newRooms;
+    });
+  }, []);
 
   const getRooms = React.useCallback(
     async (topic: string, before: number | undefined) =>
@@ -684,22 +678,19 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
   const [users, setUsers] = React.useState<EventUser[]>([]);
   const [loading, setLoading] = React.useState(false);
 
-  const updateUsers = React.useCallback(
-    (usersIn: EventUser[]) => {
-      setUsers(users => {
-        let newUsers = [...users];
-        usersIn.forEach(user => {
-          newUsers = newUsers.filter(x => x.userId !== user.userId);
+  const updateUsers = React.useCallback((usersIn: EventUser[]) => {
+    setUsers(users => {
+      let newUsers = [...users];
+      usersIn.forEach(user => {
+        newUsers = newUsers.filter(x => x.userId !== user.userId);
 
-          if (user.helpdeskId === helpdeskId) {
-            newUsers.push(user);
-          }
-        });
-        return users;
+        if (user.helpdeskId === helpdeskId) {
+          newUsers.push(user);
+        }
       });
-    },
-    [users]
-  );
+      return users;
+    });
+  }, []);
 
   React.useEffect(() => {
     if (helpdeskId && lastIncomingMessage?.msgType === "Event.User") {
