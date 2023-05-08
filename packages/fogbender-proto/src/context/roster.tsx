@@ -688,7 +688,7 @@ export const useHelpdeskUsers = ({ helpdeskId }: { helpdeskId: string | undefine
           newUsers.push(user);
         }
       });
-      return users;
+      return newUsers;
     });
   }, []);
 
