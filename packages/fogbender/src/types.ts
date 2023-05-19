@@ -63,6 +63,8 @@ export interface Fogbender {
     rootEl: HTMLElement;
     headless?: boolean;
     disableFit?: boolean;
+    cssWidth?: string;
+    cssHeight?: string;
     onBadges?: (badges: Badge[]) => void;
   }): Promise<() => void>;
   createFloatingWidget(opts?: {
