@@ -159,6 +159,18 @@ function useProviderValue(
     }, [sharedRoster, setSharedRoster]);
   }
 
+  const lastIncomingMessage = useAtomValue(ws.lastIncomingMessageAtom);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+
+    if (lastIncomingMessage?.msgType === "Event.User") {
+      setUserAvatarUrl(lastIncomingMessage.imageUrl);
+    }
+  }, [fogSessionId, lastIncomingMessage]);
+
   return React.useMemo(() => {
     return {
       serverCall: ws.serverCall,
