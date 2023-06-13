@@ -71,10 +71,6 @@ export function getServerUrl(env?: Env) {
   return getConfig(env).dashboardUrl;
 }
 
-export function submitEmailUrl(env?: Env) {
-  return getConfig(env).dashboardUrl + "/api/submit_email_form";
-}
-
 export function googleLoginUrl(env?: Env) {
   return getConfig(env).dashboardUrl + "/auth/google";
 }
