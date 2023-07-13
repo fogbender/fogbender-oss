@@ -597,7 +597,7 @@ export type SearchRoster = {
   workspaceId?: string;
   helpdeskId?: string;
   mentionRoomId?: string;
-  type?: "dialog";
+  type?: "dialog" | "public";
   term?: string;
   termFields?: string[];
   tagIds?: string[];
