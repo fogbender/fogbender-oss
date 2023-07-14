@@ -1,5 +1,12 @@
 # fogbender
 
+## 0.2.2
+
+### Patch Changes
+
+- c6a7b13: Fix SVG attrs
+- 81f0eda: yarn fix
+
 ## 0.2.1
 
 ### Patch Changes

@@ -168,7 +168,7 @@ export function useServerWs(
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
       if ("widgetId" in token) {
         const clone = { ...token };
-        clone.versions = { ...clone.versions, "fogbender-proto": "0.14.6" };
+        clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
         serverCall({
           ...clone,
           msgType: "Auth.User",

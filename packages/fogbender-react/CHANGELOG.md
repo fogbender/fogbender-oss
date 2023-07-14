@@ -1,5 +1,14 @@
 # fogbender-react
 
+## 0.2.12
+
+### Patch Changes
+
+- 8b15dac: remove `: React.FC`
+- Updated dependencies [c6a7b13]
+- Updated dependencies [81f0eda]
+  - fogbender@0.2.2
+
 ## 0.2.11
 
 ### Patch Changes
