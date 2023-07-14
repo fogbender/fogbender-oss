@@ -16,7 +16,7 @@ on:
 
 jobs:
   semgrep:
-    # User definable name of this GitHub Actions job.
+    # User-definable name of this GitHub Actions job:
     name: semgrep/ci
     # If you are self-hosting, change the following `runs-on` value:
     runs-on: ubuntu-latest
@@ -34,7 +34,5 @@ jobs:
       # Run the "semgrep ci" command on the command line of the docker image.
       - run: semgrep ci
         env:
-          # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
-          # Generate a token from Semgrep Cloud Platform > Settings
-          # and add it to your GitHub secrets.
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          # Add the rules that Semgrep uses by setting the SEMGREP_RULES environment variable.
+          SEMGREP_RULES: p/default # more at semgrep.dev/explore
