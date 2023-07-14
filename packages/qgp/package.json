@@ -48,7 +48,7 @@
     "astro": "*"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@vitest/coverage-c8": "^0.25.3",
     "eslint": "^8.28.0",
     "ora": "^6.1.2",
