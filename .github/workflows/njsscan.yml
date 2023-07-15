@@ -13,6 +13,6 @@ jobs:
         uses: actions/checkout@v3
       - name: nodejsscan scan
         id: njsscan
-        uses: ajinabraham/njsscan-action@master
+        uses: ajinabraham/njsscan-action@74e5a58c1edb363b84c9ddd626b0e22f038ac09e
         with:
           args: "."
