@@ -69,6 +69,8 @@ export function renderIframe(
     iFrame.style.top = "-100px";
   }
 
+  // we already check the origin, so it seems like false positive
+  // nosemgrep: javascript.browser.security.insufficient-postmessage-origin-validation.insufficient-postmessage-origin-validation
   window.addEventListener("message", e => {
     if (e.origin !== url) {
       return;
