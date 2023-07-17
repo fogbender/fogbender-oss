@@ -34,6 +34,8 @@ export function getServerApiUrl(env?: Env, client?: Client) {
 
 export function getServerWsUrl(env?: Env, client?: Client) {
   const serverApiUrl = getServerApiUrl(env, client);
+  // we need to have "ws" support for localhost
+  // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
   const wsPath = serverApiUrl.replace("https://", "wss://").replace("http://", "ws://");
   return `${wsPath}/ws/v2`;
 }
