@@ -7,6 +7,13 @@ export const resourceName = (name: string) => {
   return `${project}-${stack}-${name}`;
 };
 
+export const resourceTags = () => {
+  return {
+    "user:Project": pulumi.getProject(),
+    "user:Stack": pulumi.getStack(),
+  }
+};
+
 export const assumeRolePolicy = JSON.stringify({
   Version: "2012-10-17",
   Statement: [

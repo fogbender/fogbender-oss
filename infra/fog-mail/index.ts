@@ -2,7 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 import * as cloud from "@pulumi/cloud";
-import { resourceName } from "../lib/utils";
+import { resourceName, resourceTags } from "../lib/utils";
 
 const accountId = aws.getCallerIdentity({}).then(current => current.accountId);
 
@@ -43,14 +43,18 @@ const s3Messages = new aws.s3.Bucket(resourceName("s3-messages"), {
   versioning: {
     enabled: true,
   },
+  tags: resourceTags()
 });
 
 const queue = new aws.sqs.Queue(resourceName("sqs"), {
   contentBasedDeduplication: false,
   fifoQueue: false,
+  tags: resourceTags()
 });
 
-const snsTopic = new aws.sns.Topic(resourceName("sns"), {});
+const snsTopic = new aws.sns.Topic(resourceName("sns"), {
+  tags: resourceTags()
+});
 
 // see https://docs.aws.amazon.com/ses/latest/dg/receiving-email-permissions.html
 const allowSESBucketPolicy = new aws.s3.BucketPolicy(resourceName("ses-s3-policy"), {

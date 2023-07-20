@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
-import { resourceName, assumeRolePolicy } from "../lib/utils";
+import { resourceName, resourceTags, assumeRolePolicy } from "../lib/utils";
 
 const config = new pulumi.Config();
 const stack = pulumi.getStack();
@@ -28,6 +28,7 @@ const key = new aws.kms.Key(resourceName("key"), {
   deletionWindowInDays: 10,
   description: `KMS key for ${stack} env secrets`,
   policy: JSON.stringify(keyPolicy),
+  tags: resourceTags(),
 });
 
 const alias = new aws.kms.Alias(`alias/${stack}-encryption-key`, {
