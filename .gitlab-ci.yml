@@ -8,6 +8,7 @@ stages:
   - format
   - bump
   - deploy
+  - github_sync
 
 build:
   stage: build
@@ -40,6 +41,20 @@ writing:
     - git ls-files -z | xargs -0 sed -i -e 's/\[VERIFY\]/\[CHANGE THIS\]/g'
     - echo UGxlYXNlIGZpeCB0aGUgY29weSBhbmQgcmVtb3ZlIFtWRVJJRlldIG1hcmtzIGZyb20gdGhlIHRleHQK | base64 -d
     - git diff --quiet || (git diff; exit 1)
+
+# Sync to GitHub on merge to main branch
+sync_to_github:
+  stage: github_sync
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'
+      allow_failure: true
+  script:
+    - echo Syncing to GitHub...
+    - ps -p $SSH_AGENT_PID > /dev/null || eval `ssh-agent -s`
+    - echo "$GITHUB_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - git remote add github git@github.com:fogbender/fogbender.git || true
+    - "[[ -f ~/.ssh/known_hosts ]] || ssh-keyscan github.com >> ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts"
+    - git push github HEAD:refs/heads/"$CI_COMMIT_BRANCH"
 
 # Automatically bump only on merge commits to master with server changes
 bump:
