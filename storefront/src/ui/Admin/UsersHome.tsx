@@ -1,7 +1,9 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
+import dayjs from "dayjs";
 import {
   Avatar,
+  ConfirmDialog,
   Customer,
   FilterInput,
   Icons,
@@ -16,7 +18,7 @@ import { useMutation, useQuery } from "react-query";
 
 import { getServerUrl } from "../../config";
 import { User } from "../../redux/adminApi";
-import { queryClient, queryKeys } from "../client";
+import { apiServer, queryClient, queryKeys } from "../client";
 
 import { Tags } from "./CustomerDetails";
 
@@ -53,14 +55,14 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
       const f = usersFilter.toLowerCase();
       return users.filter(
         u =>
-          u.id.includes(f) ||
+          (!u.deleted_at && u.id.includes(f)) ||
           u.name.toLowerCase().includes(f) ||
           u.email.toLowerCase().includes(f) ||
           u.external_uid.toLowerCase().includes(f) ||
           u.tags.find(t => t.name.toLowerCase().includes(f))
       );
     }
-    return users;
+    return (users || []).filter(u => !u.deleted_at);
   }, [users, usersFilter]);
 
   const [tagsFilter, setTagsFilter] = React.useState<string>();
@@ -70,7 +72,7 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
         t => t.name.toLowerCase().includes(tagsFilter.toLowerCase()) && !t.name.startsWith(":")
       );
     }
-    return workspaceTags;
+    return (workspaceTags || []).filter(t => !t.name.startsWith(":"));
   }, [workspaceTags, tagsFilter]);
 
   const [addTagMode, setAddTagMode] = React.useState(false);
@@ -141,6 +143,8 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
 
   const thClassName = "p-1 pb-3 text-left align-middle";
 
+  const [userToDelete, setUserToDelete] = React.useState<User>();
+
   return (
     <div className="relative">
       <h3 className="fog:text-header3">Users</h3>
@@ -174,6 +178,7 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
                   selectedUsersIds={selectedUsersIds}
                   setAddTagMode={setAddTagMode}
                   toggleUser={toggleUser}
+                  setUserToDelete={setUserToDelete}
                 />
               ))}
             {loadingUsers && (
@@ -185,14 +190,22 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
         </table>
       </div>
       {addTagMode && (
-        <CreateTag
+        <ApplyTagsModal
           tagsFilter={tagsFilter}
           filteredTags={filteredTags}
           selectedTagsIds={selectedTagsIds}
           toggleTag={toggleTag}
           applyTags={applyTags}
           setAddTagMode={setAddTagMode}
-          setFilteredTag={setTagsFilter}
+          setTagsFilter={setTagsFilter}
+        />
+      )}
+      {userToDelete && (
+        <DeleteUserModal
+          isOpen={true}
+          onClose={() => setUserToDelete(undefined)}
+          user={userToDelete}
+          helpdeskId={customer.helpdeskId}
         />
       )}
     </div>
@@ -205,7 +218,8 @@ const UserRow: React.FC<{
   selectedUsersIds: string[];
   setAddTagMode: (value: boolean) => void;
   toggleUser: (userId: string) => void;
-}> = ({ user, customer, selectedUsersIds, toggleUser, setAddTagMode }) => {
+  setUserToDelete: (user: User) => void;
+}> = ({ user, customer, selectedUsersIds, toggleUser, setAddTagMode, setUserToDelete }) => {
   const removeUserTagsMutation = useMutation(
     (params: { tagToRemove: string }) => {
       const { tagToRemove } = params;
@@ -225,18 +239,14 @@ const UserRow: React.FC<{
   );
 
   return (
-    <tr
-      key={user.id}
-      className="cursor-pointer hover:bg-gray-100"
-      onClick={() => toggleUser(user.id)}
-    >
+    <tr key={user.id} className="cursor-pointer group" onClick={() => toggleUser(user.id)}>
       <td className="p-1 align-middle">
-        <div className="flex items-center text-blue-500">
+        <div className="flex items-center text-blue-500 group-hover:text-red-500">
           {selectedUsersIds.includes(user.id) ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
         </div>
       </td>
       <td className="p-1 align-middle">
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-2 group-hover:underline">
           <Avatar size={32} url={user.avatar_url} name={user.name} />
           {user.name}
         </div>
@@ -263,35 +273,47 @@ const UserRow: React.FC<{
             </ThinButton>
           </span>
           {!user?.tags.length && (
-            <span className="font-body font-semibold text-gray-300 text-xs">No Tags</span>
+            <span className="font-body font-semibold text-gray-300 text-xs">No tags</span>
           )}
+        </span>
+      </td>
+      <td className="p-1 align-middle">
+        <span
+          title="Remove"
+          className="text-gray-500 hover:text-red-500 cursor-pointer flex items-center justify-end"
+          onClick={e => {
+            e.stopPropagation();
+            setUserToDelete(user);
+          }}
+        >
+          <Icons.Trash className="w-5" />
         </span>
       </td>
     </tr>
   );
 };
 
-const CreateTag = ({
+const ApplyTagsModal = ({
   tagsFilter,
   filteredTags,
   selectedTagsIds,
   applyTags,
   toggleTag,
   setAddTagMode,
-  setFilteredTag,
+  setTagsFilter,
 }: {
   tagsFilter: string | undefined;
   filteredTags: Tag[] | undefined;
   selectedTagsIds: string[];
   applyTags: () => void;
   setAddTagMode: (value: boolean) => void;
-  setFilteredTag: (s: string | undefined) => void;
+  setTagsFilter: (s: string | undefined) => void;
   toggleTag: (tagId: string) => void;
 }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <Modal onClose={() => setAddTagMode(false)}>
-      <h2 className="fog:text-header2">Create Tag</h2>
+      <h2 className="mb-4 fog:text-header2">Apply tags</h2>
       <Combobox multiple={true} value={[]}>
         <div className="-mt-2 px-2">
           <div className={classNames("flex border-b items-center")}>
@@ -303,14 +325,15 @@ const CreateTag = ({
               className={
                 "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm"
               }
-              placeholder="Search Tags"
+              placeholder="Search tags"
               onChange={evt => {
-                setFilteredTag(evt.target.value);
+                setTagsFilter(evt.target.value);
               }}
             />
           </div>
         </div>
         <Combobox.Options
+          static={true}
           onFocus={() => {
             inputRef.current?.focus();
           }}
@@ -346,9 +369,55 @@ const CreateTag = ({
       </Combobox>
       {!!selectedTagsIds.length && (
         <div className="flex justify-end">
-          <ThickButton onClick={applyTags}>Apply tags</ThickButton>
+          <ThickButton onClick={applyTags}>Apply</ThickButton>
         </div>
       )}
     </Modal>
+  );
+};
+
+const DeleteUserModal = ({
+  isOpen,
+  onClose,
+  user,
+  helpdeskId,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  user: User;
+  helpdeskId: string;
+}) => {
+  const [error] = React.useState<string>();
+  const deleteUserMutation = useMutation({
+    mutationFn: () => {
+      return apiServer.url(`/api/helpdesks/${helpdeskId}/users/${user.id}`).delete().text();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKeys.users(helpdeskId));
+      onClose();
+    },
+  });
+
+  return (
+    <>
+      {isOpen && (
+        <ConfirmDialog
+          title="Delete user?"
+          buttonTitle="Delete"
+          onClose={onClose}
+          onDelete={() => deleteUserMutation.mutate()}
+          loading={deleteUserMutation.isLoading}
+          error={error}
+        >
+          <Avatar size={32} url={user.avatar_url} name={user.name} />
+          <div>
+            <div className="text-sm">{user.email}</div>
+            <div className="text-xs text-gray-500">
+              Created {dayjs(user.inserted_at).format("YYYY-MM-DD")}
+            </div>
+          </div>
+        </ConfirmDialog>
+      )}
+    </>
   );
 };

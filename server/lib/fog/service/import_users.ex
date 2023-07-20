@@ -253,6 +253,11 @@ defmodule Fog.Service.ImportUsers do
           m
       end
     end)
+    |> Enum.map(fn m ->
+      m
+      |> Map.put(:deleted_at, nil)
+      |> Map.put(:deleted_by_agent_id, nil)
+    end)
   end
 
   defp to_downcased_binary(s) when is_binary(s) do
