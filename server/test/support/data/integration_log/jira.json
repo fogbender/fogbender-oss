@@ -1,0 +1,233 @@
+ {
+  "user": {
+    "self": "https://alan217.atlassian.net/rest/api/2/user?accountId=6259b8ba3bf0f00070185202",
+    "active": true,
+    "timeZone": "Asia/Karachi",
+    "accountId": "6259b8ba3bf0f00070185202",
+    "avatarUrls": {
+      "16x16": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+      "24x24": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+      "32x32": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+      "48x48": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png"
+    },
+    "accountType": "atlassian",
+    "displayName": "Fogbender Software"
+  },
+  "issue": {
+    "id": "10100",
+    "key": "AT0-40",
+    "url": "https://alan217.atlassian.net/browse/AT0-40",
+    "self": "https://alan217.atlassian.net/rest/api/2/10100",
+    "fields": {
+      "votes": {
+        "self": "https://alan217.atlassian.net/rest/api/2/issue/AT0-40/votes",
+        "votes": 0,
+        "hasVoted": false
+      },
+      "labels": [
+        "fogbender"
+      ],
+      "status": {
+        "id": "10003",
+        "name": "To Do",
+        "self": "https://alan217.atlassian.net/rest/api/2/status/10003",
+        "iconUrl": "https://alan217.atlassian.net/",
+        "description": "",
+        "statusCategory": {
+          "id": 2,
+          "key": "new",
+          "name": "New",
+          "self": "https://alan217.atlassian.net/rest/api/2/statuscategory/2",
+          "colorName": "blue-gray"
+        }
+      },
+      "created": "2022-05-09T21:22:15.325+0500",
+      "creator": {
+        "self": "https://alan217.atlassian.net/rest/api/2/user?accountId=6259b8ba3bf0f00070185202",
+        "active": true,
+        "timeZone": "Asia/Karachi",
+        "accountId": "6259b8ba3bf0f00070185202",
+        "avatarUrls": {
+          "16x16": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "24x24": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "32x32": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "48x48": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png"
+        },
+        "accountType": "atlassian",
+        "displayName": "Fogbender Software"
+      },
+      "duedate": null,
+      "project": {
+        "id": "10001",
+        "key": "AT0",
+        "name": "Andrei Test 00",
+        "self": "https://alan217.atlassian.net/rest/api/2/project/10001",
+        "avatarUrls": {
+          "16x16": "https://alan217.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10414?size=xsmall",
+          "24x24": "https://alan217.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10414?size=small",
+          "32x32": "https://alan217.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10414?size=medium",
+          "48x48": "https://alan217.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10414"
+        },
+        "simplified": false,
+        "projectTypeKey": "software"
+      },
+      "summary": "add a way to mark companies as acquired",
+      "updated": "2022-05-09T21:22:15.325+0500",
+      "watches": {
+        "self": "https://alan217.atlassian.net/rest/api/2/issue/AT0-40/watchers",
+        "isWatching": true,
+        "watchCount": 0
+      },
+      "assignee": null,
+      "priority": {
+        "id": "3",
+        "name": "Medium",
+        "self": "https://alan217.atlassian.net/rest/api/2/priority/3",
+        "iconUrl": "https://alan217.atlassian.net/images/icons/priorities/medium.svg"
+      },
+      "progress": {
+        "total": 0,
+        "progress": 0
+      },
+      "reporter": {
+        "self": "https://alan217.atlassian.net/rest/api/2/user?accountId=6259b8ba3bf0f00070185202",
+        "active": true,
+        "timeZone": "Asia/Karachi",
+        "accountId": "6259b8ba3bf0f00070185202",
+        "avatarUrls": {
+          "16x16": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "24x24": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "32x32": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png",
+          "48x48": "https://secure.gravatar.com/avatar/93d7862afd4f6428165b40093147793c?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FFS-0.png"
+        },
+        "accountType": "atlassian",
+        "displayName": "Fogbender Software"
+      },
+      "security": null,
+      "subtasks": [],
+      "versions": [],
+      "issuetype": {
+        "id": "10005",
+        "name": "Task",
+        "self": "https://alan217.atlassian.net/rest/api/2/issuetype/10005",
+        "iconUrl": "https://alan217.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium",
+        "subtask": false,
+        "avatarId": 10318,
+        "description": "A small, distinct piece of work.",
+        "hierarchyLevel": 0
+      },
+      "timespent": null,
+      "workratio": -1,
+      "attachment": [],
+      "components": [],
+      "issuelinks": [],
+      "lastViewed": null,
+      "resolution": null,
+      "description": "New issue from [*CorpsDash*|https://fogbender-test.com/admin/vendor/v00310412561264676864/workspace/w00310412606764486656/chat/r00310412842207547392/m00311535027596824576]\n\n- [*Marina Stevens*|mailto:marina+stevens+adidas@example.test1] on {{2022-05-09 16:08:58Z}}: hello, it would be great to mark companies as acquired\n\n- [*Calvin J Watson*|mailto:fbr.calvin.watson@gmail.com] on {{2022-05-09 16:11:51Z}}: hey this is a great idea\n\n- [*Andrei Soroker*|mailto:andrei@fogbender.com] on {{2022-05-09 16:21:45Z}}: hello, let's file a ticket for this\n",
+      "environment": null,
+      "fixVersions": [],
+      "timeestimate": null,
+      "timetracking": {},
+      "resolutiondate": null,
+      "issuerestriction": {
+        "shouldDisplay": false,
+        "issuerestrictions": {}
+      },
+      "aggregateprogress": {
+        "total": 0,
+        "progress": 0
+      },
+      "customfield_10000": "{}",
+      "customfield_10001": null,
+      "customfield_10002": null,
+      "customfield_10003": null,
+      "customfield_10004": null,
+      "customfield_10005": null,
+      "customfield_10006": null,
+      "customfield_10007": null,
+      "customfield_10008": null,
+      "customfield_10009": null,
+      "customfield_10010": null,
+      "customfield_10014": null,
+      "customfield_10015": null,
+      "customfield_10016": null,
+      "customfield_10017": null,
+      "customfield_10018": {
+        "showField": false,
+        "nonEditableReason": {
+          "reason": "PLUGIN_LICENSE_ERROR",
+          "message": "The Parent Link is only available to Jira Premium users."
+        },
+        "hasEpicLinkFieldDependency": false
+      },
+      "customfield_10019": "0|i0005b:",
+      "customfield_10020": null,
+      "customfield_10021": null,
+      "customfield_10022": null,
+      "customfield_10023": null,
+      "customfield_10024": null,
+      "customfield_10025": null,
+      "customfield_10029": [],
+      "aggregatetimespent": null,
+      "timeoriginalestimate": null,
+      "aggregatetimeestimate": null,
+      "statuscategorychangedate": "2022-05-09T21:22:15.673+0500",
+      "aggregatetimeoriginalestimate": null
+    }
+  },
+  "changelog": {
+    "id": "10125",
+    "items": [
+      {
+        "to": null,
+        "from": null,
+        "field": "description",
+        "fieldId": "description",
+        "toString": "New issue from [*CorpsDash*|https://fogbender-test.com/admin/vendor/v00310412561264676864/workspace/w00310412606764486656/chat/r00310412842207547392/m00311535027596824576]\n\n- [*Marina Stevens*|mailto:marina+stevens+adidas@example.test1] on {{2022-05-09 16:08:58Z}}: hello, it would be great to mark companies as acquired\n\n- [*Calvin J Watson*|mailto:fbr.calvin.watson@gmail.com] on {{2022-05-09 16:11:51Z}}: hey this is a great idea\n\n- [*Andrei Soroker*|mailto:andrei@fogbender.com] on {{2022-05-09 16:21:45Z}}: hello, let's file a ticket for this\n",
+        "fieldtype": "jira",
+        "fromString": null
+      },
+      {
+        "to": "3",
+        "from": null,
+        "field": "priority",
+        "fieldId": "priority",
+        "toString": "Medium",
+        "fieldtype": "jira",
+        "fromString": null
+      },
+      {
+        "to": "6259b8ba3bf0f00070185202",
+        "from": null,
+        "field": "reporter",
+        "fieldId": "reporter",
+        "toString": "Fogbender Software",
+        "fieldtype": "jira",
+        "fromString": null,
+        "tmpToAccountId": "6259b8ba3bf0f00070185202",
+        "tmpFromAccountId": null
+      },
+      {
+        "to": "10003",
+        "from": null,
+        "field": "Status",
+        "fieldId": "status",
+        "toString": "To Do",
+        "fieldtype": "jira",
+        "fromString": null
+      },
+      {
+        "to": null,
+        "from": null,
+        "field": "summary",
+        "fieldId": "summary",
+        "toString": "add a way to mark companies as acquired",
+        "fieldtype": "jira",
+        "fromString": null
+      }
+    ]
+  },
+  "timestamp": 1652113335554,
+  "webhookEvent": "jira:issue_created",
+  "issue_event_type_name": "issue_created"
+}

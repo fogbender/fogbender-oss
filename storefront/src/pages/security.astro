@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/main.astro";
+import Page from "../layouts/Page.astro";
+import PageTitle from "../ui/landing/PageTitle.astro";
+
+const title = "Security Commitment";
+---
+
+<Layout meta={{ title }}>
+  <Page>
+    <PageTitle title={title} />
+    <div class="max-w-[51rem] flex flex-col gap-4">
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">Our commitment to your security</p>
+        <p class="font-prompt text-lg font-light">
+          At Fogbender, we hold true to our unwavering pledge to safeguarding your operational
+          reckonings and holdings, fortifying the very core of your business. The mantle of
+          cybersecurity rests heavy on our shoulders, and we marshal cutting-edge technologies and
+          resolute measures to stave off the rapacious hands of unauthorized intrusion, breaches,
+          and deceitful machinations.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Moreover, we set forth in educating our denizens and patrons in the sacred ways of secure
+          conduct. A band of resolute experts diligently patrols our bastion, engaging in frequent
+          reckonings of menace and erecting staunch bulwarks to thwart any lurking perils that may
+          rear their sinister visage. We invest unyieldingly in the alchemy of advanced encryption
+          arts, the rites of multi-factor authentication, and the safeguarded systems of online
+          communication, all for the noble cause of furnishing you with an unassailable and secure
+          customer aid sojourn.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Your trust and confidence serve as the keystone of our endeavors, and with firm resolve,
+          we stand as sentinels, steadfast in our dedication to upholding the zenith of
+          cybersecurity, that you may know tranquility in your soul. Should you seek wisdom in the
+          ways of self-preservation or for the protection of your enterprise, encompassing the
+          arcana of computer safety and the tenets of security best practices, we beckon you to
+          converse with us, reaching us at security@fogbender.com.
+        </p>
+      </div>
+    </div>
+  </Page>
+</Layout>

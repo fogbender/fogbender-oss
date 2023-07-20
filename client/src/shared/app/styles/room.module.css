@@ -1,0 +1,5 @@
+/* TODO: remove once we use tailwind 3 and we can replace it with z-[1] */
+
+.z-1 {
+  z-index: 1;
+}

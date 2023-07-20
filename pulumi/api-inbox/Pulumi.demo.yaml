@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  cloud:provider: aws
+  api-inbox:apiStackRef: fogbender/api/test
+  api-inbox:mailDomain: mail-demo.fogbender-test.com

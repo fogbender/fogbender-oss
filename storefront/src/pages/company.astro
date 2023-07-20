@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/main.astro";
+import Page from "../layouts/Page.astro";
+import PageTitle from "../ui/landing/PageTitle.astro";
+
+const title = "Company";
+const commonClass = "text-lg font-light leading-9";
+---
+
+<Layout meta={{ title }}>
+  <Page>
+    <PageTitle title={title} />
+    <div class="max-w-[51rem]">
+      <div class="px-10 font-prompt xl:px-0 max-w-3xl flex flex-col gap-6">
+        <p class={commonClass}>
+          Founded in 2020, Fogbender Software, Inc. is a Delaware C corporation headquartered in
+          Oakland, California and operated by a fully-remote crew of industry veterans.
+        </p>
+        <p class={commonClass}>
+          Fogbender is on a mission to streamline communication between B2B vendor and customer
+          teams with the help of an innovative messaging platform and deep integrations with
+          developer-facing issue trackers and LLMs.
+        </p>
+        <p class={commonClass}>
+          720 Peralta St.<br />
+          Oakland, CA<br />
+          94607
+          <br />
+          +14152903979<br />
+          <a href="mailto:hello@fogbender.com" target="_blank">hello@fogbender.com</a>
+        </p>
+      </div>
+    </div>
+  </Page>
+</Layout>

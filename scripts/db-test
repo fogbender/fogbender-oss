@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+
+exec -a "$0" scripts/db-remote test db-test.fogbender.net api-test.fogbender.net 55432  "$@"

@@ -1,0 +1,173 @@
+---
+import * as Icons from "./Icons";
+import Hamburger from "./Hamburger.astro";
+import { blogUrl } from "../../pages/blog.astro";
+import Sidebar from "./Sidebar.astro";
+
+const activeCl = "border-black";
+const defaultCl = "border inline-flex border-transparent text-sm rounded-lg py-2 px-4";
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.replace(".html", "").slice(1); // remove the first "/" and .html from the end in prod
+const commonPaddingClass = "px-4 md:px-8 lg:max-xl:px-20 xl:px-5";
+const isBlogPath = currentPath.includes("blog");
+
+const links = [
+  { path: "/admin", name: "Get started" },
+  { path: "/pricing", name: "Pricing" },
+  { path: "/faq", name: "FAQ" },
+  { path: blogUrl, name: "Blog" },
+];
+---
+
+<header class="contents">
+  <div
+    class:list={[
+      commonPaddingClass,
+      "bg-white top-0 w-full z-10 lg:pt-14 mx-auto pt-3 flex items-end justify-between",
+    ]}
+  >
+    <a
+      id="logo-link"
+      class="flex space-x-3 items-end"
+      aria-hidden="true"
+      tabindex="-1"
+      href="/"
+      class="block sm:hidden"
+    >
+      <Icons.Logo className="w-16 h-20" />
+    </a>
+  </div>
+  <div id="navbar" class="font-body sticky top-0 z-10">
+    <nav
+      class:list={[
+        "flex relative py-4 flex-row mx-auto justify-between sm:flex-col sm:space-y-3 bg-white will-change-auto transition duration-700 ease-in-out",
+        commonPaddingClass,
+      ]}
+      aria-label="Global"
+    >
+      <div class="font-body navbar-row flex w-full items-center justify-between bg-white">
+        <a
+          id="small-logo-link"
+          href="/"
+          aria-hidden="true"
+          tabindex="-1"
+          class="absolute top-3 opacity-0 transition-opacity duration-300 md:max-lg:left-[28px] lg:max-xl:left-[80px]"
+        >
+          <Icons.Logo className="w-9 h-11" />
+        </a>
+        <div class="flex items-center md:space-x-6 lg:space-x-12">
+          <div class="logo-title">
+            <a
+              id="title-link"
+              href="/"
+              class="block text-4xl outline-offset-4 transition duration-300"
+            >
+              <Icons.FogbenderText />
+            </a>
+          </div>
+          <div class="hidden md:block lg:space-x-6">
+            {
+              links.map(link => {
+                const pathToCompare = link.path.slice(1);
+                const isAdminPath = pathToCompare == "admin";
+                const isActivePath =
+                  pathToCompare === "blog" ? isBlogPath : pathToCompare === currentPath;
+                return (
+                  <a
+                    href={link.path}
+                    class:list={[
+                      defaultCl,
+                      isActivePath
+                        ? activeCl
+                        : [
+                            isAdminPath
+                              ? "hover:text-blue-500 shadow-[-1px_9px_14px_rgba(126,12,245,0.1),9px_-1px_14px_rgba(255,115,21,0.1),-8px_-7px_14px_rgba(254,52,110,0.1)]"
+                              : "hover:border-gray-200",
+                          ],
+                      isAdminPath && "md:max-lg:mr-1",
+                    ]}
+                  >
+                    {link.name}
+                  </a>
+                );
+              })
+            }
+          </div>
+        </div>
+        <div class="hidden space-x-2 text-sm md:block lg:space-x-6">
+          <a
+            class:list={[defaultCl, "px-1 min-[800px]:px-3 lg:px-4 hover:border-gray-200"]}
+            href="/admin">Sign&nbsp;in</a
+          >
+          <a
+            class:list={[defaultCl, "px-1 min-[800px]:px-3 lg:px-4 hover:border-gray-200"]}
+            href="/signup">Sign&nbsp;up</a
+          >
+        </div>
+        <Hamburger className="md:hidden" />
+      </div>
+    </nav>
+  </div>
+  <Sidebar />
+</header>
+
+<script>
+  const smallLogo = document.querySelector("#small-logo-link")!;
+  const navbar = document.querySelector("#navbar")!;
+  const titleLink = document.querySelector("#title-link")!;
+
+  const borderClass = ["border-b", "border-gray-200"];
+
+  const logoStartPoint = 60;
+
+  let prevScrollPos = 0;
+  let navbarTop = 94; // top - padding
+
+  const modifyHeader = (scrollTop: number) => {
+    if (scrollTop > logoStartPoint) {
+      if (scrollTop >= prevScrollPos) {
+        navbar.classList.add(...borderClass);
+      }
+    }
+    if (scrollTop < logoStartPoint && scrollTop <= prevScrollPos) {
+      navbar.classList.remove(...borderClass);
+    }
+    if (scrollTop >= navbarTop) {
+      smallLogo.classList.add("opacity-100");
+      smallLogo.classList.remove("opacity-0");
+      titleLink.classList.add("scale-75", "translate-x-5");
+    } else {
+      navbar.classList.add("sm:space-y-3");
+    }
+    if (scrollTop < navbarTop) {
+      smallLogo.classList.add("opacity-0");
+      smallLogo.classList.remove("opacity-100");
+      titleLink.classList.remove("scale-75", "translate-x-5");
+    }
+  };
+
+  window.onload = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    modifyHeader(scrollTop);
+  };
+
+  window.onscroll = () => {
+    const clientWidth = document.documentElement.clientWidth;
+    if (clientWidth > 1024) {
+      navbarTop = 136; //
+    }
+    requestAnimationFrame(() => {
+      const scrollTop = document.documentElement.scrollTop;
+      modifyHeader(scrollTop);
+      prevScrollPos = scrollTop;
+    });
+  };
+  window.addEventListener("resize", () => {
+    const clientWidth = document.documentElement.clientWidth;
+    const scrollTop = document.documentElement.scrollTop;
+    if (clientWidth > 768 && clientWidth < 1024) {
+      navbarTop = 94;
+    }
+    modifyHeader(scrollTop);
+  });
+</script>

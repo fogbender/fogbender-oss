@@ -1,0 +1,33 @@
+rec {
+  FOG_ENV = "prod";
+  FOG_IP = "0.0.0.0";
+  FOG_PORT = "8000";
+  FOG_STOREFRONT_URL = "https://fogbender.com";
+  FOG_API_DOMAIN = "api.fogbender.com";
+  FOG_API_URL = "https://${FOG_API_DOMAIN}";
+  FOG_CLIENT_URL = "https://client.fogbender.com";
+  PG_PORT = "5432";
+  PG_HOST = "db-prod.fogbender.net";
+  PG_USER = "fogbender";
+  PG_DB = "fogbender";
+  INBOX_SQS_URL = "https://sqs.us-east-1.amazonaws.com/863191199317/fog-mail-prod-sqs-bee06b2";
+  INBOX_DOMAIN = "mail.fogbender.com";
+  SES_SOURCE = "Fogbender <noreply@email.fogbender.com>";
+  SES_REGION = "us-east-1";
+  S3_FILE_UPLOAD_BUCKET = "fog-api-prod-s3-file-upload-2c59c84";
+  S3_FILE_UPLOAD_REGION = "us-west-1";
+  COGNITO_REGION = "us-west-1";
+  COGNITO_USER_POOL_ID = "us-west-1_qZyr62u9e";
+  COGNITO_CLIENT_ID = "3a681nuu5reah56mn0dahl94i1";
+  FOG_LOG_LEVEL = "info";
+  FOG_EMAIL_DIGEST_JOB_SCHEDULE = "0";
+  FOG_EMAIL_DIGEST_JOB_BATCH = "1000";
+  FOG_EMAIL_RECEIVE_JOB_SCHEDULE = "0"; #every 10 sec
+  HEIGHT_REDIRECT_URI = "${FOG_API_URL}/oauth/height";
+  SLACK_REDIRECT_URI = "${FOG_API_URL}/oauth/slack";
+  MSTEAMS_NOTIFICATION_URL = "${FOG_API_URL}/hook/msteams";
+  MSTEAMS_RENEW_SUBSCRIPTIONS_JOB_SCHEDULE="0 */30"; # every 30 minutes
+  SLACK_CUST_REDIRECT_URI="${FOG_API_URL}/oauth/slack-customer";
+  CRM_NOTE_BUCKET_DURATION_SECONDS="3600";
+  PAGERDUTY_REDIRECT_URI="${FOG_API_URL}/oauth/pagerduty";
+}

@@ -1,0 +1,68 @@
+{
+  "data": {
+    "gid": "1202178119666088",
+    "name": "usage graph missing",
+    "tags": [
+      {
+        "gid": "1202013749168090",
+        "name": "fogbender",
+        "resource_type": "tag"
+      }
+    ],
+    "liked": false,
+    "likes": [],
+    "notes": "New issue from **[CorpsDash](https://fogbender-test.com/admin/vendor/v00302814447586512896/workspace/w00302814507451813888/chat/r00302815561744650240/m00306478038009253888)**\n\n\n\n\n* **[Marina Stevens](mailto:marina+stevens+adidas@example.test1)** on `2022-04-25 17:14:18Z`: <br/>  hey, where is the usage graph?<br/>\n\n\n\n* **[Calvin J Watson](mailto:fbr.calvin.watson@gmail.com)** on `2022-04-25 17:15:51Z`: <br/>  hey, it's missing!<br/>\n\n\n\n* **[Andrei Soroker](mailto:andrei@fogbender.com)** on `2022-04-25 17:17:31Z`: <br/>  hello, looks like a bug<br/>\n\n\n\n* **[Andrei Soroker](mailto:andrei@fogbender.com)** on `2022-04-25 17:17:35Z`: <br/>  let's file an issue<br/>\n",
+    "due_at": null,
+    "due_on": null,
+    "hearts": [],
+    "parent": null,
+    "hearted": false,
+    "assignee": null,
+    "projects": [
+      {
+        "gid": "1202110424646494",
+        "name": "Andrei Test",
+        "resource_type": "project"
+      }
+    ],
+    "start_at": null,
+    "start_on": null,
+    "completed": false,
+    "followers": [
+      {
+        "gid": "1201846047930353",
+        "name": "Andrei Test+00",
+        "resource_type": "user"
+      }
+    ],
+    "num_likes": 0,
+    "workspace": {
+      "gid": "1201846082530863",
+      "name": "977584389699655.gpcqy5.asanatest1.us",
+      "resource_type": "workspace"
+    },
+    "created_at": "2022-04-25T17:18:08.254Z",
+    "num_hearts": 0,
+    "memberships": [
+      {
+        "project": {
+          "gid": "1202110424646494",
+          "name": "Andrei Test",
+          "resource_type": "project"
+        },
+        "section": {
+          "gid": "1202110424646495",
+          "name": "Untitled section",
+          "resource_type": "section"
+        }
+      }
+    ],
+    "modified_at": "2022-04-25T17:18:08.254Z",
+    "completed_at": null,
+    "custom_fields": [],
+    "permalink_url": "https://app.asana.com/0/1202110424646494/1202178119666088",
+    "resource_type": "task",
+    "assignee_status": "upcoming",
+    "resource_subtype": "default_task"
+  }
+}

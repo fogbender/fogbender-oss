@@ -1,0 +1,79 @@
+---
+import Joe from "./assets/joe.png";
+import William from "./assets/william.png";
+import Madhu from "./assets/madhu.png";
+import Javier from "./assets/javier.png";
+
+import Testimonial, { TestimonialProps } from "./Testimonial.astro";
+
+interface Testimonial {
+  icon: string;
+  authorName: string;
+  authorImage: ImageMetadata;
+  authorTitle: string;
+  companyName: string;
+  companyUrl: string;
+  companyDescription: string;
+  text: string;
+}
+
+const testimonials: TestimonialProps[] = [
+  {
+    icon: "Hydra",
+    authorName: "Joe Sciarrino",
+    authorImage: Joe,
+    authorTitle: "CEO",
+    companyName: "Hydra",
+    companyUrl: "https://hydra.so",
+    companyDescription: "The everyone data warehouse",
+    text: "Our support team, which assists developer teams, is grateful for the presence of Fogbender in our lives. The software's streamlined processes and technical sophistication make our jobs much easier and more efficient.",
+  },
+  {
+    icon: "JumpWire",
+    authorName: "William Huba",
+    authorImage: William,
+    authorTitle: "CTO",
+    companyName: "JumpWire",
+    companyUrl: "https://jumpwire.ai",
+    companyDescription: "Easily encrypt your sensitive data with no code changes",
+    text: "If you're looking for a customer support tool that can handle the technical demands of supporting developer teams, look no further than Fogbender. Its powerful features and intuitive design have been a game-changer for our company.",
+  },
+  {
+    icon: "Data Pipes",
+    authorName: "Madhusoodhanan KM",
+    authorImage: Madhu,
+    authorTitle: "Senior Engineer",
+    companyName: "Data Pipes",
+    companyUrl: "https://datapipes.io",
+    companyDescription: "A Cloud Native Data Management Platform",
+    text: "As a support team for developer teams, we can't imagine our work without the help of Fogbender. Its comprehensive tools, combined with a user-friendly interface, make providing top-notch support to our customers a breeze.",
+  },
+  {
+    icon: "Mayan",
+    authorName: "Javier Garcia",
+    authorImage: Javier,
+    authorTitle: "CTO",
+    companyName: "Mayan",
+    companyUrl: "https://www.mayan.co",
+    companyDescription: "Advanced automation software to grow your Amazon FBA business",
+    text: "Fogbender has been a game-changer for our support team. Handling developer inquiries can be complex, but with Fogbender, we're able to resolve issues with ease and efficiency. The platform is user-friendly, and the team at Fogbender is always there to help us troubleshoot any challenges we may encounter. Our customers are happy and so are we!",
+  },
+];
+---
+
+<div
+  class:list={[
+    "font-prompt mb-28 text-2xl sm:text-4xl md:text-5xl lg:text-7xl text-center border-b border-gray-200 !leading-[0px] !sm:leading-[0px] !md:leading-[0px] !lg:leading-[0px] w-full",
+  ]}
+>
+  <span class="bg-white px-3 font-[100] uppercase tracking-widest md:px-8">Customer &#10084</span>
+</div>
+
+<!-- Testimonials -->
+<div class="font-prompt my-12 flex w-full flex-col space-y-16">
+  {
+    testimonials.map(testimonial => {
+      return <Testimonial {...testimonial} />;
+    })
+  }
+</div>

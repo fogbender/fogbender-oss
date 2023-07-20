@@ -1,0 +1,130 @@
+/* purgecss start ignore */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+
+html {
+  @apply font-body;
+}
+
+html.rem-is-15px {
+  font-size: 15px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+a {
+  @apply underline;
+}
+
+/* TODO: remove after TW 3 release */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/*
+** Tagline
+*/
+
+.toggle-checkbox:checked {
+  @apply: right-0 border-gray-600;
+  right: 0;
+  border-color: rgb(37, 99, 235);
+}
+.toggle-checkbox:checked + .toggle-label {
+  @apply: bg-gray-600;
+  background-color: rgb(28, 42, 54);
+}
+
+@tailwind utilities;
+
+::-webkit-resizer {
+  display: none;
+}
+
+.calendly-inline-widget {
+  height: 1000px;
+}
+
+@screen tiny {
+  .fbr-subscribe {
+    width: 100%;
+  }
+  #top {
+    width: 100%;
+  }
+}
+
+@screen sm {
+  .calendly-inline-widget {
+    height: 1000px;
+  }
+  .fbr-subscribe {
+    width: 600px;
+  }
+  #top {
+    width: 100%;
+  }
+}
+
+@screen md {
+  .calendly-inline-widget {
+    height: 1000px;
+  }
+  .fbr-subscribe {
+    width: 680px;
+  }
+  #top {
+    width: 90%;
+  }
+}
+
+@screen lg {
+  .calendly-inline-widget {
+    height: 700px;
+  }
+  .fbr-subscribe {
+    width: 800px;
+  }
+  .fbr-cover {
+    max-width: 95%;
+  }
+  #top {
+    width: 80%;
+  }
+}
+
+@screen xl {
+  .calendly-inline-widget {
+    height: 700px;
+  }
+  .fbr-subscribe {
+    width: 800px;
+  }
+  #top {
+    width: 80%;
+    max-width: 1440px;
+  }
+}
+
+@screen 2xl {
+  .calendly-inline-widget {
+    height: 700px;
+  }
+  .fbr-subscribe {
+    width: 800px;
+  }
+  #top {
+    width: 80%;
+    max-width: 1440px;
+  }
+}
+
+html pre code.hljs {
+  @apply overflow-visible bg-transparent p-0 text-black;
+}

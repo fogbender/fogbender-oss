@@ -1,0 +1,4 @@
+@import "fogbender-client/src/shared/styles/fonts.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

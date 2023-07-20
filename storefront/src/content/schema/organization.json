@@ -1,0 +1,43 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Fogbender",
+  "legalName": "Fogbender Software, Inc.",
+  "url": "https://fogbender.com/",
+  "sameAs": [
+    "https://twitter.com/fogbender",
+    "https://www.linkedin.com/company/fogbender",
+    "https://www.ycombinator.com/companies/fogbender"
+  ],
+  "email": "mailto:hello@fogbender.com",
+  "logo": "https://fogbender.com/logo192.png",
+  "foundingDate": "2020",
+  "founders": [
+    {
+      "@type": "Person",
+      "name": "Andrei Soroker",
+      "jobTitle": "CEO at Fogbender",
+      "sameAs": ["https://www.linkedin.com/in/soroker"]
+    },
+    {
+      "@type": "Person",
+      "name": "Yaroslav Lapin",
+      "jobTitle": "VP of Engineering at Fogbender",
+      "sameAs": ["https://www.linkedin.com/in/jlarky"]
+    },
+    {
+      "@type": "Person",
+      "name": "Mikl Kurkov",
+      "jobTitle": "CTO at Fogbender",
+      "sameAs": ["https://www.linkedin.com/in/mkurkov"]
+    }
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "720 Peralta St.",
+    "addressLocality": "Oakland, California",
+    "addressRegion": "CA",
+    "postalCode": "94607",
+    "addressCountry": "USA"
+  }
+}

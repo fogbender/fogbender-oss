@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  fog-mail:domain: fogbender.com
+  fog-mail:host: mail
+  fog-mail:s3LogBucket: fogbender-s3-logging

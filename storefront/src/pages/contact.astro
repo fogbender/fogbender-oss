@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/main.astro";
+import Page from "../layouts/Page.astro";
+import Picture from "../ui/landing/Picture.astro";
+import localImage from "../assets/test-image.webp";
+import PageTitle from "../ui/landing/PageTitle.astro";
+
+const title = "Contact";
+---
+
+<Layout meta={{ title }}>
+  <Page>
+    <PageTitle title={title} />
+    <div class="max-w-[51rem]">
+      <Picture src={localImage} loading="eager" alt="contact" />
+      <div>
+        <p class="font-prompt text-lg font-light leading-9">
+          Not all chatbots are created equal. There are many factors in which bots can vary, but one
+          of the biggest differences is whether or not a bot is equipped with Natural Language
+          Processing or NPL. Natural Language Processing is a way for computer programs to converse
+          with people in a language and format that people understand. This involves features
+          including natural language understanding (understanding what the user is saying), natural
+          language processing (replying to the user in a logical way), and sentiment analysis (the
+          ability to understand the user’s tone and intent).
+        </p>
+      </div>
+    </div>
+  </Page>
+</Layout>

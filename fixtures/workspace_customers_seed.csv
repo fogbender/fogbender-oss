@@ -1,0 +1,36 @@
+customer_name,customer_id,user_name,user_email,user_id
+Acme,abc123,Bob,bob@acme.test,123
+Acme,abc123,John,john@acme.test,124
+Fox,001,Alice,alice@fox.test,aa0
+Fox,001,Marina,marina@fox.test,aa1
+"Chickens, Inc",customer-101,Carrie,carrie@chickens-inc.test,8
+"Boomtown",c423,Rajiv Smith,rsmith@boomtown.fyi,u194
+"Plain Jane's",z0,Alice,alice@plainjanes.net,pj0
+"Papenhausen Hardware",z1,Alice,alice@papenhausen.net,ph0
+"Papenhausen Hardware",z1,Bob,bob@papenhausen.net,ph1
+"Action Camera",z2,Alice,alice@actioncamera.net,ac0
+"Starbucks on West Portal",z3,Alice,alice@startbucksonwestportal.net,sb0
+"Peets on West Portal",z4,Alice,alice@peets.net,pts0
+"Home Savings of America",z5,Alice,alice@homesavings.net,hsoa0
+"West Portal Cinema",z6,Alice,alice@wpcinema.net,wpc0
+"Kalefornia",z7,Alice,alice@kalefornia.net,kf0
+"Fresca",z8,Alice,alice@fresca.net,f0
+"McCarthy's Irish Bar",z9,Alice,alice@mccarthys.net,mcc0
+"Rain Tree Cafe",z10,Alice,alice@raintree.net,rt0
+"Goat Hill Pizza",z11,Alice,alice@goathill.net,gh0
+"Ballast Coffee",z12,Alice,alice@ballast.net,bc0
+"Venezia Upholstery",z13,Alice,alice@veneziaupholstery.net,vu0
+"Fuji Sushi",z14,Alice,alice@fujisushi.net,fs0
+"First Republic Bank",z15,Alice,alice@firstrepublic.net,fr0
+"Orexi",z16,Alice,alice@orexi.net,or0
+"Squat & Gobble",z17,Alice,alice@squatngobble.net,sg0
+"Eazy Freezy",z18,Alice,alice@eazyfreezy.net,ef0
+"Walkershaw Clothing",z19,Alice,alice@walkershaw.net,ws0
+"Spiazzo Ristorante",z20,Alice,alice@spiazzo.net,sr0
+"Roti Indian Bistro",z21,Alice,alice@rotiindian.net,ri0
+"Supercuts",z22,Alice,alice@supercuts.net,sc0
+"Goodwill Boutique",z21,Alice,alice@goodwill.net,gw0
+"West Portal Shoe Service",z22,Alice,alice@wpshoe.net,wpss0
+"Simply Bella",z23,Alice,alice@simplybella.net,sb0
+"Lux Nails",z24,Alice,alice@luxnails.net,ln0
+"Lux Nails",z24,Andrei Soroker,soroker@gmail.com,ln1

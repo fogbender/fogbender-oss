@@ -1,0 +1,296 @@
+32 derivations with active advisories
+12 derivations left out due to whitelisting
+
+------------------------------------------------------------------------
+avahi-0.8
+
+/nix/store/xwsz16rb6535agvqj98yvpiv1w8kmagp-avahi-0.8.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-26720    7.8      avahi-daemon-check-dns.sh in the Debian avahi package through 0.8-4 is executed as root via /etc/network/if-up.d/avahi-daemon, and allows a local attacker to cause a denial of service or create arbitrary empty files via a symlink attack on files under /run/avahi-daemon. NOTE: this only affects the packaging for Debian GNU/Linux (used indirectly by SUSE), not the upstream Avahi product.
+https://nvd.nist.gov/vuln/detail/CVE-2021-3468     5.5      A flaw was found in avahi in versions 0.6 up to 0.8. The event used to signal the termination of the client connection on the avahi Unix socket is not correctly handled in the client_work function, allowing a local attacker to trigger an infinite loop. The highest threat from this vulnerability is to the availability of the avahi service, which becomes unresponsive after this flaw is triggered.
+
+------------------------------------------------------------------------
+bind-9.18.16
+
+/nix/store/gy1sdbmmz1b8q174038b5sp8z0ha2yin-bind-9.18.16.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-6470     7.5      There had existed in one of the ISC BIND libraries a bug in a function that was used by dhcpd when operating in DHCPv6 mode. There was also a bug in dhcpd relating to the use of this function per its documentation, but the bug in the library function prevented this from causing any harm. All releases of dhcpd from ISC contain copies of this, and other, BIND libraries in combinations that have been tested prior to release and are known to not present issues like this. Some third-party packagers of ISC software have modified the dhcpd source, BIND source, or version matchup in ways that create the crash potential. Based on reports available to ISC, the crash probability is large and no analysis has been done on how, or even if, the probability can be manipulated by an attacker. Affects: Builds of dhcpd versions prior to version 4.4.1 when using BIND versions 9.11.2 or later, or BIND versions with specific bug fixes backported to them. ISC does not have access to comprehensive version lists for all repackagings of dhcpd that are vulnerable. In particular, builds from other vendors may also be affected. Operators are advised to consult their vendor documentation.
+
+------------------------------------------------------------------------
+cairo-1.16.0
+
+/nix/store/ky6lhs4i0wbk2sbgjvd30g2zp3m3gmzs-cairo-1.16.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-6461     6.5      An issue was discovered in cairo 1.16.0. There is an assertion problem in the function _cairo_arc_in_direction in the file cairo-arc.c.
+https://nvd.nist.gov/vuln/detail/CVE-2019-6462     6.5      An issue was discovered in cairo 1.16.0. There is an infinite loop in the function _arc_error_normalized in the file cairo-arc.c, related to _arc_max_angle_for_tolerance_normalized.
+
+------------------------------------------------------------------------
+cups-2.4.6
+
+/nix/store/dpdc7pjjwk9mvwjv0rv9yfkbzffj5x3f-cups-2.4.6.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2022-26691    6.7      A logic issue was addressed with improved state management. This issue is fixed in Security Update 2022-003 Catalina, macOS Monterey 12.3, macOS Big Sur 11.6.5. An application may be able to gain elevated privileges.
+
+------------------------------------------------------------------------
+dbus-1
+
+/nix/store/d1zhlk8ypzgidsp3zqflrdz1lkaklvml-dbus-1.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-12749    7.1      dbus before 1.10.28, 1.12.x before 1.12.16, and 1.13.x before 1.13.12, as used in DBusServer in Canonical Upstart in Ubuntu 14.04 (and in some, less common, uses of dbus-daemon), allows cookie spoofing because of symlink mishandling in the reference implementation of DBUS_COOKIE_SHA1 in the libdbus library. (This only affects the DBUS_COOKIE_SHA1 authentication mechanism.) A malicious client with write access to its own home directory could manipulate a ~/.dbus-keyrings symlink to cause a DBusServer with a different uid to read and write in unintended locations. In the worst case, this could result in the DBusServer reusing a cookie that is known to the malicious client, and treating that cookie as evidence that a subsequent client connection came from an attacker-chosen uid, allowing authentication bypass.
+
+------------------------------------------------------------------------
+djvulibre-3.5.28
+
+/nix/store/vcadns8skkh8kglf6lxkpkdp33z342hb-djvulibre-3.5.28.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-3500     7.8      A flaw was found in djvulibre-3.5.28 and earlier. A Stack overflow in function DJVU::DjVuDocument::get_djvu_file() via crafted djvu file may lead to application crash and other consequences.
+https://nvd.nist.gov/vuln/detail/CVE-2021-32490    7.8      A flaw was found in djvulibre-3.5.28 and earlier. An out of bounds write in function DJVU::filter_bv() via crafted djvu file may lead to application crash and other consequences.
+https://nvd.nist.gov/vuln/detail/CVE-2021-32491    7.8      A flaw was found in djvulibre-3.5.28 and earlier. An integer overflow in function render() in tools/ddjvu via crafted djvu file may lead to application crash and other consequences.
+https://nvd.nist.gov/vuln/detail/CVE-2021-32492    7.8      A flaw was found in djvulibre-3.5.28 and earlier. An out of bounds read in function DJVU::DataPool::has_data() via crafted djvu file may lead to application crash and other consequences.
+https://nvd.nist.gov/vuln/detail/CVE-2021-32493    7.8      A flaw was found in djvulibre-3.5.28 and earlier. A heap buffer overflow in function DJVU::GBitmap::decode() via crafted djvu file may lead to application crash and other consequences.
+
+------------------------------------------------------------------------
+flex-2.6.4
+
+/nix/store/nfjjxhap4jy20sfbvdsp3q2biql6m6bd-flex-2.6.4.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-6293     5.5      An issue was discovered in the function mark_beginning_as_normal in nfa.c in flex 2.6.4. There is a stack exhaustion problem caused by the mark_beginning_as_normal function making recursive calls to itself in certain scenarios involving lots of '*' characters. Remote attackers could leverage this vulnerability to cause a denial-of-service.
+
+------------------------------------------------------------------------
+fuse-2.9.9
+
+/nix/store/w8dc75x9bvpqg45j25fqrj6q38c0q2r6-fuse-2.9.9.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-14860    6.5      It was found that the Syndesis configuration for Cross-Origin Resource Sharing was set to allow all origins. An attacker could use this lack of protection to conduct phishing attacks and further access unauthorized information.
+https://nvd.nist.gov/vuln/detail/CVE-2019-14900    6.5      A flaw was found in Hibernate ORM in versions before 5.3.18, 5.4.18 and 5.5.0.Beta1. A SQL injection in the implementation of the JPA Criteria API can permit unsanitized literals when a literal is used in the SELECT or GROUP BY parts of the query. This flaw could allow an attacker to access unauthorized information or possibly conduct further attacks.
+
+------------------------------------------------------------------------
+fuse-2.9.9-closefrom-glibc-2-34.patch?id=8a970396fca7aca2d5a761b8e7a8242f1eef14c9
+
+/nix/store/99g2z7nw0psm2naxx6hl69k5bq15b6f7-fuse-2.9.9-closefrom-glibc-2-34.patch?id=8a970396fca7aca2d5a761b8e7a8242f1eef14c9.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-14860    6.5      It was found that the Syndesis configuration for Cross-Origin Resource Sharing was set to allow all origins. An attacker could use this lack of protection to conduct phishing attacks and further access unauthorized information.
+https://nvd.nist.gov/vuln/detail/CVE-2019-14900    6.5      A flaw was found in Hibernate ORM in versions before 5.3.18, 5.4.18 and 5.5.0.Beta1. A SQL injection in the implementation of the JPA Criteria API can permit unsanitized literals when a literal is used in the SELECT or GROUP BY parts of the query. This flaw could allow an attacker to access unauthorized information or possibly conduct further attacks.
+
+------------------------------------------------------------------------
+fuse-3.11.0
+
+/nix/store/fzcmpxgy2apq8ds5ngwm7mxvx2i273by-fuse-3.11.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-14860    6.5      It was found that the Syndesis configuration for Cross-Origin Resource Sharing was set to allow all origins. An attacker could use this lack of protection to conduct phishing attacks and further access unauthorized information.
+https://nvd.nist.gov/vuln/detail/CVE-2019-14900    6.5      A flaw was found in Hibernate ORM in versions before 5.3.18, 5.4.18 and 5.5.0.Beta1. A SQL injection in the implementation of the JPA Criteria API can permit unsanitized literals when a literal is used in the SELECT or GROUP BY parts of the query. This flaw could allow an attacker to access unauthorized information or possibly conduct further attacks.
+
+------------------------------------------------------------------------
+git-2.40.1
+
+/nix/store/lv7np9jw8610siwwkyppj37jkvf1kpz6-git-2.40.1.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2022-36882    8.8      A cross-site request forgery (CSRF) vulnerability in Jenkins Git Plugin 4.11.3 and earlier allows attackers to trigger builds of jobs configured to use an attacker-specified Git repository and to cause them to check out an attacker-specified commit.
+https://nvd.nist.gov/vuln/detail/CVE-2022-30947    7.5      Jenkins Git Plugin 4.11.1 and earlier allows attackers able to configure pipelines to check out some SCM repositories stored on the Jenkins controller's file system using local paths as SCM URLs, obtaining limited information about other projects' SCM contents.
+https://nvd.nist.gov/vuln/detail/CVE-2022-30948    7.5      Jenkins Mercurial Plugin 2.16 and earlier allows attackers able to configure pipelines to check out some SCM repositories stored on the Jenkins controller's file system using local paths as SCM URLs, obtaining limited information about other projects' SCM contents.
+https://nvd.nist.gov/vuln/detail/CVE-2022-36883    7.5      A missing permission check in Jenkins Git Plugin 4.11.3 and earlier allows unauthenticated attackers to trigger builds of jobs configured to use an attacker-specified Git repository and to cause them to check out an attacker-specified commit.
+https://nvd.nist.gov/vuln/detail/CVE-2022-38663    6.5      Jenkins Git Plugin 4.11.4 and earlier does not properly mask (i.e., replace with asterisks) credentials in the build log provided by the Git Username and Password (`gitUsernamePassword`) credentials binding.
+https://nvd.nist.gov/vuln/detail/CVE-2018-1000182  6.4      A server-side request forgery vulnerability exists in Jenkins Git Plugin 3.9.0 and older in AssemblaWeb.java, GitBlitRepositoryBrowser.java, Gitiles.java, TFS2013GitRepositoryBrowser.java, ViewGitWeb.java that allows attackers with Overall/Read access to cause Jenkins to send a GET request to a specified URL.
+https://nvd.nist.gov/vuln/detail/CVE-2021-21684    6.1      Jenkins Git Plugin 4.8.2 and earlier does not escape the Git SHA-1 checksum parameters provided to commit notifications when displaying them in a build cause, resulting in a stored cross-site scripting (XSS) vulnerability.
+https://nvd.nist.gov/vuln/detail/CVE-2020-2136     5.4      Jenkins Git Plugin 4.2.0 and earlier does not escape the error message for the repository URL for Microsoft TFS field form validation, resulting in a stored cross-site scripting vulnerability.
+https://nvd.nist.gov/vuln/detail/CVE-2018-1000110  5.3      An improper authorization vulnerability exists in Jenkins Git Plugin version 3.7.0 and earlier in GitStatus.java that allows an attacker with network access to obtain a list of nodes and users.
+https://nvd.nist.gov/vuln/detail/CVE-2022-30949    5.3      Jenkins REPO Plugin 1.14.0 and earlier allows attackers able to configure pipelines to check out some SCM repositories stored on the Jenkins controller's file system using local paths as SCM URLs, obtaining limited information about other projects' SCM contents.
+https://nvd.nist.gov/vuln/detail/CVE-2022-36884    5.3      The webhook endpoint in Jenkins Git Plugin 4.11.3 and earlier provide unauthenticated attackers information about the existence of jobs configured to use an attacker-specified Git repository.
+https://nvd.nist.gov/vuln/detail/CVE-2019-1003010  4.3      A cross-site request forgery vulnerability exists in Jenkins Git Plugin 3.9.1 and earlier in src/main/java/hudson/plugins/git/GitTagAction.java that allows attackers to create a Git tag in a workspace and attach corresponding metadata to a build record.
+
+------------------------------------------------------------------------
+go-1.17.13-linux-amd64-bootstrap
+
+/nix/store/z3jfdq5dfvnjrc2cd8b073kyblkymr31-go-1.17.13-linux-amd64-bootstrap.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-24538    9.8      Templates do not properly consider backticks (`) as Javascript string delimiters, and do not escape them as expected. Backticks are used, since ES6, for JS template literals. If a template contains a Go template action within a Javascript template literal, the contents of the action can be used to terminate the literal, injecting arbitrary Javascript code into the Go template. As ES6 template literals are rather complex, and themselves can do string interpolation, the decision was made to simply disallow Go template actions from being used inside of them (e.g. "var a = {{.}}"), since there is no obviously safe way to allow this behavior. This takes the same approach as github.com/google/safehtml. With fix, Template.Parse returns an Error when it encounters templates like this, with an ErrorCode of value 12. This ErrorCode is currently unexported, but will be exported in the release of Go 1.21. Users who rely on the previous behavior can re-enable it using the GODEBUG flag jstmpllitinterp=1, with the caveat that backticks will now be escaped. This should be used with caution.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24540    9.8      Not all valid JavaScript whitespace characters are considered to be whitespace. Templates containing whitespace characters outside of the character set "\t\n\f\r\u0020\u2028\u2029" in JavaScript contexts that also contain actions may not be properly sanitized during execution.
+https://nvd.nist.gov/vuln/detail/CVE-2023-29402    9.8      The go command may generate unexpected code at build time when using cgo. This may result in unexpected behavior when running a go program which uses cgo. This may occur when running an untrusted module which contains directories with newline characters in their names. Modules which are retrieved using the go command, i.e. via "go get", are not affected (modules retrieved using GOPATH-mode, i.e. GO111MODULE=off, may be affected).
+https://nvd.nist.gov/vuln/detail/CVE-2023-29404    9.8      The go command may execute arbitrary code at build time when using cgo. This may occur when running "go get" on a malicious module, or when running any other command which builds untrusted code. This is can by triggered by linker flags, specified via a "#cgo LDFLAGS" directive. The arguments for a number of flags which are non-optional are incorrectly considered optional, allowing disallowed flags to be smuggled through the LDFLAGS sanitization. This affects usage of both the gc and gccgo compilers.
+https://nvd.nist.gov/vuln/detail/CVE-2023-29405    9.8      The go command may execute arbitrary code at build time when using cgo. This may occur when running "go get" on a malicious module, or when running any other command which builds untrusted code. This is can by triggered by linker flags, specified via a "#cgo LDFLAGS" directive. Flags containing embedded spaces are mishandled, allowing disallowed flags to be smuggled through the LDFLAGS sanitization by including them in the argument of another flag. This only affects usage of the gccgo compiler.
+https://nvd.nist.gov/vuln/detail/CVE-2023-29403    7.8      On Unix platforms, the Go runtime does not behave differently when a binary is run with the setuid/setgid bits. This can be dangerous in certain cases, such as when dumping memory state, or assuming the status of standard i/o file descriptors. If a setuid/setgid binary is executed with standard I/O file descriptors closed, opening any files can result in unexpected content being read or written with elevated privileges. Similarly, if a setuid/setgid program is terminated, either via panic or signal, it may leak the contents of its registers.
+https://nvd.nist.gov/vuln/detail/CVE-2022-2879     7.5      Reader.Read does not set a limit on the maximum size of file headers. A maliciously crafted archive could cause Read to allocate unbounded amounts of memory, potentially causing resource exhaustion or panics. After fix, Reader.Read limits the maximum size of header blocks to 1 MiB.
+https://nvd.nist.gov/vuln/detail/CVE-2022-2880     7.5      Requests forwarded by ReverseProxy include the raw query parameters from the inbound request, including unparsable parameters rejected by net/http. This could permit query parameter smuggling when a Go proxy forwards a parameter with an unparsable value. After fix, ReverseProxy sanitizes the query parameters in the forwarded query when the outbound request's Form field is set after the ReverseProxy. Director function returns, indicating that the proxy has parsed the query parameters. Proxies which do not parse query parameters continue to forward the original query parameters unchanged.
+https://nvd.nist.gov/vuln/detail/CVE-2022-27664    7.5      In net/http in Go before 1.18.6 and 1.19.x before 1.19.1, attackers can cause a denial of service because an HTTP/2 connection can hang during closing if shutdown were preempted by a fatal error.
+https://nvd.nist.gov/vuln/detail/CVE-2022-41715    7.5      Programs which compile regular expressions from untrusted sources may be vulnerable to memory exhaustion or denial of service. The parsed regexp representation is linear in the size of the input, but in some cases the constant factor can be as high as 40,000, making relatively small regexps consume much larger amounts of memory. After fix, each regexp being parsed is limited to a 256 MB memory footprint. Regular expressions whose representation would use more space than that are rejected. Normal use of regular expressions is unaffected.
+https://nvd.nist.gov/vuln/detail/CVE-2022-41716    7.5      Due to unsanitized NUL values, attackers may be able to maliciously set environment variables on Windows. In syscall.StartProcess and os/exec.Cmd, invalid environment variable values containing NUL values are not properly checked for. A malicious environment variable value can exploit this behavior to set a value for a different environment variable. For example, the environment variable string "A=B\x00C=D" sets the variables "A=B" and "C=D".
+https://nvd.nist.gov/vuln/detail/CVE-2022-41720    7.5      On Windows, restricted files can be accessed via os.DirFS and http.Dir. The os.DirFS function and http.Dir type provide access to a tree of files rooted at a given directory. These functions permit access to Windows device files under that root. For example, os.DirFS("C:/tmp").Open("COM1") opens the COM1 device. Both os.DirFS and http.Dir only provide read-only filesystem access. In addition, on Windows, an os.DirFS for the directory (the root of the current drive) can permit a maliciously crafted path to escape from the drive and access any path on the system. With fix applied, the behavior of os.DirFS("") has changed. Previously, an empty root was treated equivalently to "/", so os.DirFS("").Open("tmp") would open the path "/tmp". This now returns an error.
+https://nvd.nist.gov/vuln/detail/CVE-2022-41722    7.5      A path traversal vulnerability exists in filepath.Clean on Windows. On Windows, the filepath.Clean function could transform an invalid path such as "a/../c:/b" into the valid path "c:\b". This transformation of a relative (if invalid) path into an absolute path could enable a directory traversal attack. After fix, the filepath.Clean function transforms this path into the relative (but still invalid) path ".\c:\b".
+https://nvd.nist.gov/vuln/detail/CVE-2022-41723    7.5      A maliciously crafted HTTP/2 stream could cause excessive CPU consumption in the HPACK decoder, sufficient to cause a denial of service from a small number of small requests.
+https://nvd.nist.gov/vuln/detail/CVE-2022-41724    7.5      Large handshake records may cause panics in crypto/tls. Both clients and servers may send large TLS handshake records which cause servers and clients, respectively, to panic when attempting to construct responses. This affects all TLS 1.3 clients, TLS 1.2 clients which explicitly enable session resumption (by setting Config.ClientSessionCache to a non-nil value), and TLS 1.3 servers which request client certificates (by setting Config.ClientAuth >= RequestClientCert).
+https://nvd.nist.gov/vuln/detail/CVE-2022-41725    7.5      A denial of service is possible from excessive resource consumption in net/http and mime/multipart. Multipart form parsing with mime/multipart.Reader.ReadForm can consume largely unlimited amounts of memory and disk files. This also affects form parsing in the net/http package with the Request methods FormFile, FormValue, ParseMultipartForm, and PostFormValue. ReadForm takes a maxMemory parameter, and is documented as storing "up to maxMemory bytes +10MB (reserved for non-file parts) in memory". File parts which cannot be stored in memory are stored on disk in temporary files. The unconfigurable 10MB reserved for non-file parts is excessively large and can potentially open a denial of service vector on its own. However, ReadForm did not properly account for all memory consumed by a parsed form, such as map entry overhead, part names, and MIME headers, permitting a maliciously crafted form to consume well over 10MB. In addition, ReadForm contained no limit on the number of disk files created, permitting a relatively small request body to create a large number of disk temporary files. With fix, ReadForm now properly accounts for various forms of memory overhead, and should now stay within its documented limit of 10MB + maxMemory bytes of memory consumption. Users should still be aware that this limit is high and may still be hazardous. In addition, ReadForm now creates at most one on-disk temporary file, combining multiple form parts into a single temporary file. The mime/multipart.File interface type's documentation states, "If stored on disk, the File's underlying concrete type will be an *os.File.". This is no longer the case when a form contains more than one file part, due to this coalescing of parts into a single file. The previous behavior of using distinct files for each form part may be reenabled with the environment variable GODEBUG=multipartfiles=distinct. Users should be aware that multipart.ReadForm and the http.Request methods that call it do not limit the amount of disk consumed by temporary files. Callers can limit the size of form data with http.MaxBytesReader.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24534    7.5      HTTP and MIME header parsing can allocate large amounts of memory, even when parsing small inputs, potentially leading to a denial of service. Certain unusual patterns of input data can cause the common function used to parse HTTP and MIME headers to allocate substantially more memory than required to hold the parsed headers. An attacker can exploit this behavior to cause an HTTP server to allocate large amounts of memory from a small request, potentially leading to memory exhaustion and a denial of service. With fix, header parsing now correctly allocates only the memory required to hold parsed headers.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24536    7.5      Multipart form parsing can consume large amounts of CPU and memory when processing form inputs containing very large numbers of parts. This stems from several causes: 1. mime/multipart.Reader.ReadForm limits the total memory a parsed multipart form can consume. ReadForm can undercount the amount of memory consumed, leading it to accept larger inputs than intended. 2. Limiting total memory does not account for increased pressure on the garbage collector from large numbers of small allocations in forms with many parts. 3. ReadForm can allocate a large number of short-lived buffers, further increasing pressure on the garbage collector. The combination of these factors can permit an attacker to cause an program that parses multipart forms to consume large amounts of CPU and memory, potentially resulting in a denial of service. This affects programs that use mime/multipart.Reader.ReadForm, as well as form parsing in the net/http package with the Request methods FormFile, FormValue, ParseMultipartForm, and PostFormValue. With fix, ReadForm now does a better job of estimating the memory consumption of parsed forms, and performs many fewer short-lived allocations. In addition, the fixed mime/multipart.Reader imposes the following limits on the size of parsed forms: 1. Forms parsed with ReadForm may contain no more than 1000 parts. This limit may be adjusted with the environment variable GODEBUG=multipartmaxparts=. 2. Form parts parsed with NextPart and NextRawPart may contain no more than 10,000 header fields. In addition, forms parsed with ReadForm may contain no more than 10,000 header fields across all parts. This limit may be adjusted with the environment variable GODEBUG=multipartmaxheaders=.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24537    7.5      Calling any of the Parse functions on Go source code which contains //line directives with very large line numbers can cause an infinite loop due to integer overflow.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24539    7.3      Angle brackets (<>) are not considered dangerous characters when inserted into CSS contexts. Templates containing multiple actions separated by a '/' character can result in unexpectedly closing the CSS context and allowing for injection of unexpected HTML, if executed with untrusted input.
+https://nvd.nist.gov/vuln/detail/CVE-2023-29400    7.3      Templates containing actions in unquoted HTML attributes (e.g. "attr={{.}}") executed with empty input can result in output with unexpected results when parsed due to HTML normalization rules. This may allow injection of arbitrary attributes into tags.
+https://nvd.nist.gov/vuln/detail/CVE-2022-41717    5.3      An attacker can cause excessive memory growth in a Go server accepting HTTP/2 requests. HTTP/2 server connections contain a cache of HTTP header keys sent by the client. While the total number of entries in this cache is capped, an attacker sending very large keys can cause the server to allocate approximately 64 MiB per open connection.
+https://nvd.nist.gov/vuln/detail/CVE-2023-24532    5.3      The ScalarMult and ScalarBaseMult methods of the P256 Curve may return an incorrect result if called with some specific unreduced scalars (a scalar larger than the order of the curve). This does not impact usages of crypto/ecdsa or crypto/ecdh.
+
+------------------------------------------------------------------------
+libarchive-3.6.2
+
+/nix/store/8xyx16nqikp0bp8kfkkr4dkhcibj5hrg-libarchive-3.6.2.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-30571    5.3      Libarchive through 3.6.2 can cause directories to have world-writable permissions. The umask() call inside archive_write_disk_posix.c changes the umask of the whole process for a very short period of time; a race condition with another thread can lead to a permanent umask 0 setting. Such a race condition could lead to implicit directory creation with permissions 0777 (without the sticky bit), which means that any low-privileged local user can delete and rename files inside those directories.
+
+------------------------------------------------------------------------
+libjpeg-turbo-2.1.5.1
+
+/nix/store/0gmssypc06w6x8fnrarkgz553357dykd-libjpeg-turbo-2.1.5.1.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-2804     6.5      A heap-based buffer overflow issue was discovered in libjpeg-turbo in h2v2_merged_upsample_internal() function of jdmrgext.c file. The vulnerability can only be exploited with 12-bit data precision for which the range of the sample data type exceeds the valid sample range, hence, an attacker could craft a 12-bit lossless JPEG image that contains out-of-range 12-bit samples. An application attempting to decompress such image using merged upsampling would lead to segmentation fault or buffer overflows, causing an application to crash.
+
+------------------------------------------------------------------------
+libmad-0.15.1b
+
+/nix/store/jc79nldydrsrmavnbsbak22fd9ylhzwy-libmad-0.15.1b.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2018-7263     9.8      The mad_decoder_run() function in decoder.c in Underbit libmad through 0.15.1b allows remote attackers to cause a denial of service (SIGABRT because of double free or corruption) or possibly have unspecified other impact via a crafted file. NOTE: this may overlap CVE-2017-11552.
+
+------------------------------------------------------------------------
+libraw-0.21.1
+
+/nix/store/hs8bc8m4cxwjndgq3w92zgkdqrh8swdv-libraw-0.21.1.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-1729     6.5      A flaw was found in LibRaw. A heap-buffer-overflow in raw2image_ex() caused by a maliciously crafted file may lead to an application crash.
+
+------------------------------------------------------------------------
+linux-pam-1.5.2
+
+/nix/store/fiar46vbhg4pr9l3lilv81jvfx5fhp8m-linux-pam-1.5.2.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2022-28321    9.8      The Linux-PAM package before 1.5.2-6.1 for openSUSE Tumbleweed allows authentication bypass for SSH logins. The pam_access.so module doesn't correctly restrict login if a user tries to connect from an IP address that is not resolvable via DNS. In such conditions, a user with denied access to a machine can still get access. NOTE: the relevance of this issue is largely limited to openSUSE Tumbleweed and openSUSE Factory; it does not affect Linux-PAM upstream.
+
+------------------------------------------------------------------------
+mercurial-6.4.3
+
+/nix/store/dgdq78f6d7qj550cpk9rs7qp3d7k39jc-mercurial-6.4.3.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2022-43410    5.3      Jenkins Mercurial Plugin 1251.va_b_121f184902 and earlier provides information about which jobs were triggered or scheduled for polling through its webhook endpoint, including jobs the user has no permission to access.
+
+------------------------------------------------------------------------
+ninja-1.11.1
+
+/nix/store/n005r5g6a64zrr9b52h27axkmmanjpw7-ninja-1.11.1.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-4336     9.8      A vulnerability was found in ITRS Group monitor-ninja up to 2021.11.1. It has been rated as critical. Affected by this issue is some unknown functionality of the file modules/reports/models/scheduled_reports.php. The manipulation leads to sql injection. Upgrading to version 2021.11.30 is able to address this issue. The name of the patch is 6da9080faec9bca1ca5342386c0421dca0a6c0cc. It is recommended to upgrade the affected component. The identifier of this vulnerability is VDB-230084.
+
+------------------------------------------------------------------------
+openexr-2.5.8
+
+/nix/store/p0mc7hvjbl7qnvlfr0g6y6508f3f4qj0-openexr-2.5.8.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-23169    8.8      A heap-buffer overflow was found in the copyIntoFrameBuffer function of OpenEXR in versions before 3.0.1. An attacker could use this flaw to execute arbitrary code with the permissions of the user running the application compiled against OpenEXR.
+https://nvd.nist.gov/vuln/detail/CVE-2021-3598     5.5      There's a flaw in OpenEXR's ImfDeepScanLineInputFile functionality in versions prior to 3.0.5. An attacker who is able to submit a crafted file to an application linked with OpenEXR could cause an out-of-bounds read. The greatest risk from this flaw is to application availability.
+https://nvd.nist.gov/vuln/detail/CVE-2021-3605     5.5      There's a flaw in OpenEXR's rleUncompress functionality in versions prior to 3.0.5. An attacker who is able to submit a crafted file to an application linked with OpenEXR could cause an out-of-bounds read. The greatest risk from this flaw is to application availability.
+https://nvd.nist.gov/vuln/detail/CVE-2021-23215    5.5      An integer overflow leading to a heap-buffer overflow was found in the DwaCompressor of OpenEXR in versions before 3.0.1. An attacker could use this flaw to crash an application compiled with OpenEXR.
+https://nvd.nist.gov/vuln/detail/CVE-2021-26260    5.5      An integer overflow leading to a heap-buffer overflow was found in the DwaCompressor of OpenEXR in versions before 3.0.1. An attacker could use this flaw to crash an application compiled with OpenEXR. This is a different flaw from CVE-2021-23215.
+https://nvd.nist.gov/vuln/detail/CVE-2021-26945    5.5      An integer overflow leading to a heap-buffer overflow was found in OpenEXR in versions before 3.0.1. An attacker could use this flaw to crash an application compiled with OpenEXR.
+
+------------------------------------------------------------------------
+patch-2.7.6
+
+/nix/store/g91jc9f6d49hx3gzjr2z26xrcd3d29kf-patch-2.7.6.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2019-20633    5.5      GNU patch through 2.7.6 contains a free(p_line[p_end]) Double Free vulnerability in the function another_hunk in pch.c that can cause a denial of service via a crafted patch file. NOTE: this issue exists because of an incomplete fix for CVE-2018-6952.
+
+------------------------------------------------------------------------
+perl-5.36.0
+
+/nix/store/64x9gq686276yhblizmi3sr4sv26s218-perl-5.36.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-31486    8.1      HTTP::Tiny before 0.083, a Perl core module since 5.13.9 and available standalone on CPAN, has an insecure default TLS configuration where users must opt in to verify certificates.
+
+------------------------------------------------------------------------
+perl-5.36.0-env
+
+/nix/store/1mw7d14k9birwj4g6s2jv4b5h9c12wdh-perl-5.36.0-env.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-31486    8.1      HTTP::Tiny before 0.083, a Perl core module since 5.13.9 and available standalone on CPAN, has an insecure default TLS configuration where users must opt in to verify certificates.
+
+------------------------------------------------------------------------
+plug-1.14.0
+
+/nix/store/sm9payzjvcaw5jbc4gjw1yj95hbi0q62-plug-1.14.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2018-1000883  6.5      Elixir Plug Plug version All contains a Header Injection vulnerability in Connection that can result in Given a cookie value, Headers can be added. This attack appear to be exploitable via Crafting a value to be sent as a cookie. This vulnerability appears to have been fixed in >= 1.3.5 or ~> 1.2.5 or ~> 1.1.9 or ~> 1.0.6.
+
+------------------------------------------------------------------------
+plug-1.14.0.tar
+
+/nix/store/xy6ca0kh08fhwzy4pn5jjvjsfif4bjy0-plug-1.14.0.tar.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2018-1000883  6.5      Elixir Plug Plug version All contains a Header Injection vulnerability in Connection that can result in Given a cookie value, Headers can be added. This attack appear to be exploitable via Crafting a value to be sent as a cookie. This vulnerability appears to have been fixed in >= 1.3.5 or ~> 1.2.5 or ~> 1.1.9 or ~> 1.0.6.
+
+------------------------------------------------------------------------
+quote-1.0.20
+
+/nix/store/b0ydmp6rql0jnq281gcqnain5jsfzqr0-quote-1.0.20.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2020-16194    5.3      An Insecure Direct Object Reference (IDOR) vulnerability was found in Prestashop Opart devis < 4.0.2. Unauthenticated attackers can have access to any user's invoice and delivery address by exploiting an IDOR on the delivery_address and invoice_address fields.
+
+------------------------------------------------------------------------
+rubygems-3.4.13
+
+/nix/store/4hwgxmy6bq37cz0j2hzqxj9j4smkrcxd-rubygems-3.4.13.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2022-36073    8.8      RubyGems.org is the Ruby community gem host. A bug in password & email change confirmation code allowed an attacker to change their RubyGems.org account's email to an unowned email address. Having access to an account whose email has been changed could enable an attacker to save API keys for that account, and when a legitimate user attempts to create an account with their email (and has to reset password to gain access) and is granted access to other gems, the attacker would then be able to publish and yank versions of those gems. Commit number 90c9e6aac2d91518b479c51d48275c57de492d4d contains a patch for this issue.
+
+------------------------------------------------------------------------
+shadow-4.13
+
+/nix/store/07lvnwwv4xp5a1aa8fk3vmysk1rkp6rp-shadow-4.13.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-29383    3.3      In Shadow 4.13, it is possible to inject control characters into fields provided to the SUID program chfn (change finger). Although it is not possible to exploit this directly (e.g., adding a new user fails because \n is in the block list), it is possible to misrepresent the /etc/passwd file when viewed. Use of \r manipulations and Unicode characters to work around blocking of the : character make it possible to give the impression that a new user has been added. In other words, an adversary may be able to convince a system administrator to take the system offline (an indirect, social-engineered denial of service) by demonstrating that "cat /etc/passwd" shows a rogue user account.
+
+------------------------------------------------------------------------
+snappy-1.1.10
+
+/nix/store/ifpr58kaz5z5sasq8g9czz0lxyby12zd-snappy-1.1.10.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-28115    9.8      Snappy is a PHP library allowing thumbnail, snapshot or PDF generation from a url or a html page. Prior to version 1.4.2, Snappy is vulnerable to PHAR deserialization due to a lack of checking on the protocol before passing it into the `file_exists()` function. If an attacker can upload files of any type to the server he can pass in the phar:// protocol to unserialize the uploaded file and instantiate arbitrary PHP objects. This can lead to remote code execution especially when snappy is used with frameworks with documented POP chains like Laravel/Symfony vulnerable developer code. If a user can control the output file from the `generateFromHtml()` function, it will invoke deserialization. This vulnerability is capable of remote code execution if Snappy is used with frameworks or developer code with vulnerable POP chains. It has been fixed in version 1.4.2.
+
+------------------------------------------------------------------------
+unzip-6.0
+
+/nix/store/720v28cd9kqjjpni7ndpph3faqiqf31c-unzip-6.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-4217     3.3      A flaw was found in unzip. The vulnerability occurs due to improper handling of Unicode strings, which can lead to a null pointer dereference. This flaw allows an attacker to input a specially crafted zip file, leading to a crash or code execution.
+
+------------------------------------------------------------------------
+vim-9.0.1441
+
+/nix/store/np2x9krb9rkvlxrabnyxz9lx2cxmmk43-vim-9.0.1441.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2023-2609     7.8      NULL Pointer Dereference in GitHub repository vim/vim prior to 9.0.1531.
+https://nvd.nist.gov/vuln/detail/CVE-2023-2610     7.8      Integer Overflow or Wraparound in GitHub repository vim/vim prior to 9.0.1532.
+https://nvd.nist.gov/vuln/detail/CVE-2023-2426     5.5      Use of Out-of-range Pointer Offset in GitHub repository vim/vim prior to 9.0.1499.
+
+------------------------------------------------------------------------
+yasm-1.3.0
+
+/nix/store/10ammmrzzflmyj70m8ywxh8c7vs32anh-yasm-1.3.0.drv
+CVE                                                CVSSv3   Description
+https://nvd.nist.gov/vuln/detail/CVE-2021-33454    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in yasm_expr_get_intnum() in libyasm/expr.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33455    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in do_directive() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33456    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in hash() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33457    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in expand_mmac_params() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33458    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in find_cc() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33459    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in nasm_parser_directive() in modules/parsers/nasm/nasm-parse.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33460    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in if_condition() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33461    5.5      An issue was discovered in yasm version 1.3.0. There is a use-after-free in yasm_intnum_destroy() in libyasm/intnum.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33462    5.5      An issue was discovered in yasm version 1.3.0. There is a use-after-free in expr_traverse_nodes_post() in libyasm/expr.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33463    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in yasm_expr__copy_except() in libyasm/expr.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33464    5.5      An issue was discovered in yasm version 1.3.0. There is a heap-buffer-overflow in inc_fopen() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33465    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in expand_mmacro() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33466    5.5      An issue was discovered in yasm version 1.3.0. There is a NULL pointer dereference in expand_smacro() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33467    5.5      An issue was discovered in yasm version 1.3.0. There is a use-after-free in pp_getline() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2021-33468    5.5      An issue was discovered in yasm version 1.3.0. There is a use-after-free in error() in modules/preprocs/nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2023-30402    5.5      YASM v1.3.0 was discovered to contain a heap overflow via the function handle_dot_label at /nasm/nasm-token.re.
+https://nvd.nist.gov/vuln/detail/CVE-2023-31972    5.5      yasm v1.3.0 was discovered to contain a use after free via the function pp_getline at /nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2023-31973    5.5      yasm v1.3.0 was discovered to contain a use after free via the function expand_mmac_params at /nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2023-31974    5.5      yasm v1.3.0 was discovered to contain a use after free via the function error at /nasm/nasm-pp.c.
+https://nvd.nist.gov/vuln/detail/CVE-2023-31975    3.3      yasm v1.3.0 was discovered to contain a memory leak via the function yasm_intnum_copy at /libyasm/intnum.c.
+
+use --show-whitelisted to see derivations with only whitelisted CVEs

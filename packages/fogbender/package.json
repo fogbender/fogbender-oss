@@ -1,0 +1,72 @@
+{
+  "name": "fogbender",
+  "version": "0.2.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Made with create-react-library",
+  "author": "JLarky",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/server.cjs",
+  "module": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender"
+  },
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "node": {
+      "import": "./dist/server.js",
+      "require": "./dist/server.cjs"
+    },
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "source": "src/index.ts",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build-faster": "tsup --clean false",
+    "start": "run-p start:tsup start:tsc",
+    "start:tsup": "tsup --watch",
+    "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
+    "prepare": "run-s build",
+    "test": "run-s test:tsc test:lint",
+    "test:lint": "eslint .",
+    "test:tsc": "tsc --noEmit",
+    "predeploy": "cd example && yarn install && yarn run build"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.5.0",
+    "@testing-library/user-event": "^10.1.0",
+    "@types/jest": "^25.1.4",
+    "@types/node": "13.13.2",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
+    "css-element-queries": "^1.2.3",
+    "esbuild-plugin-solid": "^0.4.2",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "tsup": "^5.11.9",
+    "typescript": "^4.5.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "solid-js": "^1.2.6",
+    "twind": "^0.16.16"
+  }
+}

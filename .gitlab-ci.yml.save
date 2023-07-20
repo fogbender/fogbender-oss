@@ -1,0 +1,89 @@
+stages:
+  - build
+  - test
+  - format
+  - bump
+  - deploy
+
+build:
+  stage: build
+  script:
+    - nix-build -A fogbender.server -j auto
+
+test:
+  stage: test
+  script:
+    - nix-shell nix/test-env --run "make db-start"
+    - nix-shell nix/test-env --run "(cd server; link-deps.sh)"
+    - nix-shell nix/test-env --run "make fog-test-no-deps-check"
+  after_script:
+    - nix-shell nix/test-env --run "make db-stop"
+
+format:
+  stage: format
+  script:
+    - echo Testing format...
+    - nix-shell --run "yarn global add prettier@2.8.3"
+    - nix-shell --run "yarn fmt"
+    - nix-shell --run "cd server; mix format"
+    - echo 'Please run `nix-shell --run "make format"` if you have any problems'
+    - git diff --quiet || (git diff --stat; exit 1)
+
+writing:
+  stage: format
+  script:
+    - echo Testing copy...
+    - git ls-files -z | xargs -0 sed -i -e 's/\[VERIFY\]/\[CHANGE THIS\]/g'
+    - echo UGxlYXNlIGZpeCB0aGUgY29weSBhbmQgcmVtb3ZlIFtWRVJJRlldIG1hcmtzIGZyb20gdGhlIHRleHQK | base64 -d
+    - git diff --quiet || (git diff; exit 1)
+
+# Automatically bump only on merge commits to master with server changes
+bump:
+  stage: bump
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_TITLE =~ /^Merge branch/'
+      changes:
+        - "server/**/*"
+  script:
+    - git config user.email "${GITLAB_USER_EMAIL}"
+    - git config user.name "${GITLAB_USER_NAME}"
+    - nix-shell --run "make fog-bump"
+    - git remote set-url --push origin "git@gitlab.com:${CI_PROJECT_PATH}.git"
+    - git push origin HEAD:master --tags
+
+# Deploy to testing on new FOG-xxx tag
+testing:
+  stage: deploy
+  environment:
+    name: testing
+    url: https://fogbender-test.com
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^FOG-/
+  script:
+    - sudo -u deploy fog-deploy $(pwd) $CI_COMMIT_TAG test
+
+# Deploy to staging manually
+staging:
+  stage: deploy
+  environment:
+    name: staging
+    url: https://fogbender-stage.com
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^FOG-/
+      when: manual
+      allow_failure: true
+  script:
+    - sudo -u deploy fog-deploy $(pwd) $CI_COMMIT_TAG stage
+
+# Deploy to production manually
+production:
+  stage: deploy
+  environment:
+    name: production
+    url: https://fogbender.com
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^FOG-/
+      when: manual
+      allow_failure: true
+  script:
+    - sudo -u deploy fog-deploy $(pwd) $CI_COMMIT_TAG prod

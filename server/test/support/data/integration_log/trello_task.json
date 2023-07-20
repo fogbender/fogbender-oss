@@ -1,0 +1,72 @@
+{
+  "id": "634078ea902e04036cf629ca",
+  "badges": {
+    "attachmentsByType": {
+      "trello": {
+        "board": 0,
+        "card": 0
+      }
+    },
+    "location": false,
+    "votes": 0,
+    "viewingMemberVoted": false,
+    "subscribed": false,
+    "fogbugz": "",
+    "checkItems": 0,
+    "checkItemsChecked": 0,
+    "checkItemsEarliestDue": null,
+    "comments": 0,
+    "attachments": 0,
+    "description": true,
+    "due": null,
+    "dueComplete": false,
+    "start": null
+  },
+  "checkItemStates": [],
+  "closed": false,
+  "dueComplete": false,
+  "dateLastActivity": "2022-10-07T19:07:23.016Z",
+  "desc": "New issue from **[$Cust_Internal_273445064066207746](https://fogbender-test.com/admin/vendor/v00246286512046477312/workspace/w00273445064066207744/chat/r00366300319363108864/m00366300341228015616)**\n\n\n\n\n- **[Mikl Kurkov](mailto:mk@fogbender.com)** on `2022-10-07 19:06:46Z`: ISSUE 1\n",
+  "descData": {
+    "emoji": {}
+  },
+  "due": null,
+  "dueReminder": null,
+  "email": null,
+  "idBoard": "634077fb7479b8006b36a5e9",
+  "idChecklists": [],
+  "idList": "634078499aa7c403c25d37f6",
+  "idMembers": [],
+  "idMembersVoted": [],
+  "idShort": 3,
+  "idAttachmentCover": null,
+  "labels": [
+    {
+      "id": "6340784949cd6f00167d5fad",
+      "idBoard": "634077fb7479b8006b36a5e9",
+      "name": "fogbender",
+      "color": "purple"
+    }
+  ],
+  "idLabels": [
+    "6340784949cd6f00167d5fad"
+  ],
+  "manualCoverAttachment": false,
+  "name": "TRELLO ISSUE 1",
+  "pos": 81919,
+  "shortLink": "WKU8ZRPl",
+  "shortUrl": "https://trello.com/c/WKU8ZRPl",
+  "start": null,
+  "subscribed": false,
+  "url": "https://trello.com/c/WKU8ZRPl/3-trello-issue-1",
+  "cover": {
+    "idAttachment": null,
+    "color": null,
+    "idUploadedBackground": null,
+    "size": "normal",
+    "brightness": "dark",
+    "idPlugin": null
+  },
+  "isTemplate": false,
+  "cardRole": null
+}

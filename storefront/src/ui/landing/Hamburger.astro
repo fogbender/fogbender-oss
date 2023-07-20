@@ -1,0 +1,30 @@
+---
+import { Hamburger } from "./Icons";
+
+export type HamburgerProps = {
+  className: string;
+};
+const props = Astro.props as HamburgerProps;
+---
+
+<div class={`block ${props.className}`}>
+  <button class="sidebar-menu-button">
+    <Hamburger className="h-6 w-8" ariaLabel="Menu" />
+  </button>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll(".sidebar-menu-button");
+  buttons.forEach(button => {
+    button.addEventListener("click", e => {
+      const sidebarToggleEvent = new CustomEvent("sidebar-toggle", {
+        bubbles: true,
+        cancelable: true,
+      });
+      const cancelled = e.target?.dispatchEvent(sidebarToggleEvent);
+      if (cancelled) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>

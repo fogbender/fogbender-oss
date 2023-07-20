@@ -1,0 +1,40 @@
+---
+import Avatar from "./Avatar.astro";
+export type TestimonialProps = {
+  icon: string;
+  authorName: string;
+  authorImage: ImageMetadata;
+  authorTitle: string;
+  companyName: string;
+  companyUrl: string;
+  companyDescription: string;
+  text: string;
+};
+
+const { authorName, authorImage, authorTitle, companyName, companyUrl, companyDescription, text } =
+  Astro.props as TestimonialProps;
+---
+
+<div class="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+  <div class="flex basis-5/12 space-x-4">
+    <div>
+      <Avatar src={authorImage} name={authorName} size={120} />
+    </div>
+    <div class="flex basis-80 flex-col space-y-3">
+      <div>
+        <div>
+          <a class="hover:text-brand-red-500 text-blue-700" href={companyUrl} target="_blank">
+            {companyName}
+          </a>
+        </div>
+
+        <div class="text-base font-light text-gray-500">{companyDescription}</div>
+      </div>
+      <div>
+        <div class="text-lx font-medium">{authorName}</div>
+        <div class="text-lg font-light">{authorTitle}</div>
+      </div>
+    </div>
+  </div>
+  <div class="flex basis-7/12 font-light md:inline-block">“{text}”</div>
+</div>

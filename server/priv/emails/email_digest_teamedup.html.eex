@@ -1,0 +1,73 @@
+<%
+%Data.EmailDigest{badges: badges} = data
+to = recipient(data)
+%>
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300&display=swap" rel="stylesheet">
+      <style>
+       li {
+           color: black;
+           font-family: 'Mulish', sans-serif;
+       }
+       .copy {
+           color: black;
+           font-size: 1.2em;
+           font-family: 'Mulish', sans-serif;
+       }
+       .micro {
+           color: green;
+           font-weight: bold;
+           font-size: .7em;
+           font-family: 'Mulish', sans-serif;
+       }
+       .indented {
+           margin-left: .8em;
+       }
+       .unsub {
+           margin: 1.5em 0 0 .8em;
+       }
+      </style>
+  </head>
+
+  <body>
+    <div>
+        <img src='https://www.teamedupapp.com/assets/TeamedUp/Blue_Green.png'>
+        <div class='indented'>
+            <div class='copy'> Greetings <%= to.name %>.</div>
+            <br>
+            <div class='copy'> Below are some conversations you might have missed, </div>
+        </div>
+        <ul>
+            <%= for b <- badges do %>
+                <br>
+                <li>
+                    <a href="<%= badge_room_url(b) %>"> <%= badge_room_name(b) %> </a>
+                    <br>
+                    <%= author(b.first_unread_message).name %>: <q><%= b.first_unread_message.text %></q>
+                    <%= if b.count > 1 do %>
+                        <br>
+                        ...<%= b.count - 1 %> more messages <%= if b.mentions_count > 0 do %> with <%= b.mentions_count %> mentions<% end %>.
+                    <% end %>
+                </li>
+            <% end %>
+        </ul>
+
+        <br>
+
+        <div class='indented'>
+            <div class='copy'>Respectfully,</div>
+            <br>
+            <div class='copy'>Mike & Brad</div>
+            <div class='copy'>TeamedUp Founders</div>
+        </div>
+
+        <div class='unsub' >
+            <a class='micro' href="<%= unsubscribe_url(to) %>">click here to unsubscribe</a>
+        </div>
+  </body>
+</html>

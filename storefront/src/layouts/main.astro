@@ -1,0 +1,55 @@
+---
+import AnalyticsBody from "../ui/AnalyticsBody.astro";
+import AnalyticsHead from "../ui/AnalyticsHead.astro";
+import Nav from "../ui/landing/Nav.astro";
+import Footer from "../ui/landing/Footer.astro";
+import BaseHead from "../ui/landing/BaseHead.astro";
+import type { Props as BaseHeadProps } from "../ui/landing/BaseHead.astro";
+import "../styles/main.css";
+
+export type Props = {
+  meta: BaseHeadProps;
+  linkedData?: object;
+};
+const { meta, linkedData } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <BaseHead {...meta}>
+      <Fragment slot="preload"></Fragment>
+
+      <Fragment slot="assets"></Fragment>
+    </BaseHead>
+
+    {linkedData && <script type="application/ld+json" set:html={JSON.stringify(linkedData)} />}
+
+    <AnalyticsHead />
+
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("js");
+      });
+    </script>
+  </head>
+  <body class="relative mx-auto max-w-7xl">
+    <AnalyticsBody />
+    <Nav />
+    <main class="mx-auto px-3 md:px-8 lg:max-xl:px-20 xl:px-5">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      document.addEventListener("sidebar-toggle", () => {
+        document.body.classList.toggle("overflow-hidden");
+        document.body.classList.toggle("md:overflow-auto");
+      });
+    </script>
+    <style is:global>
+      img {
+        content-visibility: auto;
+      }
+    </style>
+  </body>
+</html>

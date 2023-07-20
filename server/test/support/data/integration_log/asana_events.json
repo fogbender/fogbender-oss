@@ -1,0 +1,21 @@
+{
+  "events": [
+    {
+      "user": {
+        "gid": "1201846047930353",
+        "resource_type": "user"
+      },
+      "action": "added",
+      "parent": {
+        "gid": "1202110424646494",
+        "resource_type": "project"
+      },
+      "resource": {
+        "gid": "1202178119666088",
+        "resource_type": "task",
+        "resource_subtype": "default_task"
+      },
+      "created_at": "2022-04-25T17:18:08.960Z"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here as no
+## effect: edit them in PO (.po) files instead.
+msgid ""
+msgstr ""
+
+#, elixir-format
+#: lib/fog/email/digest.ex:87
+msgid "one mention"
+msgid_plural "%{count} mentions"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/fog/email/digest.ex:88
+msgid "one room"
+msgid_plural "%{count} rooms"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/fog/email/digest.ex:89
+msgid "one earlier message"
+msgid_plural "%{count} earlier messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/fog/email/digest.ex:86
+msgid "one new message"
+msgid_plural "%{count} new messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/fog/email/digest.ex:90
+msgid "one unread message"
+msgid_plural "%{count} unread messages"
+msgstr[0] ""
+msgstr[1] ""

@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "name": "Jan",
+      "summary": 1200,
+      "users": 400,
+      "agents": 800
+    },
+    {
+      "name": "Feb",
+      "summary": 800,
+      "users": 100,
+      "agents": 700
+    },
+    {
+      "name": "Mar",
+      "summary": 1231,
+      "users": 1200,
+      "agents": 31
+    },
+    {
+      "name": "Apr",
+      "summary": 644,
+      "users": 400,
+      "agents": 244
+    },
+    {
+      "name": "May",
+      "summary": 21321,
+      "users": 10000,
+      "agents": 11321
+    },
+    {
+      "name": "Jun",
+      "summary": 1233,
+      "users": 233,
+      "agents": 1000
+    },
+    {
+      "name": "Jul",
+      "summary": 535,
+      "users": 50,
+      "agents": 485
+    },
+    {
+      "name": "Aug",
+      "summary": 23231,
+      "users": 20000,
+      "agents": 3231
+    },
+    {
+      "name": "Sep",
+      "summary": 1100,
+      "users": 1050,
+      "agents": 50
+    },
+    {
+      "name": "Oct",
+      "summary": 23231,
+      "users": 20000,
+      "agents": 3231
+    },
+    {
+      "name": "Nov",
+      "summary": 1233,
+      "users": 33,
+      "agents": 1200
+    },
+    {
+      "name": "Dec",
+      "summary": 31231,
+      "users": 30000,
+      "agents": 1231
+    }
+  ]
+}

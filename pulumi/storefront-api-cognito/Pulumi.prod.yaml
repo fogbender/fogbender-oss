@@ -1,0 +1,4 @@
+config:
+  aws:region: us-west-1
+  storefront-api-cognito:sourceDomain: email.fogbender.com
+  storefront-api-cognito:sourceEmail: noreply@email.fogbender.com

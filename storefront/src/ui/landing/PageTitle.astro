@@ -1,0 +1,12 @@
+---
+export type PageTitleProps = {
+  className: string;
+  title: string;
+};
+
+const { className, title } = Astro.props as PageTitleProps;
+---
+
+<div class:list={["text-5xl font-light font-prompt leading-10 mb-8 xl:mb-0", className]}>
+  <h1>{title}</h1>
+</div>

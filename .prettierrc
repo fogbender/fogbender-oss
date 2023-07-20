@@ -1,0 +1,26 @@
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "arrowParens": "avoid",
+  "quoteProps": "preserve",
+  "overrides": [
+    {
+      "files": "package.json",
+      "options": {
+        "printWidth": 9999
+      }
+    },
+    {
+      "files": [
+        "optimize-images-in-astro-with-assets-integration.md",
+        "customizing-tailwind-css-in-astro.md",
+        "storefront/src/content/blog/separate-tailwind-config-for-landing.md",
+        "storefront/src/content/blog/setting-up-tailwind-with-starlight.md"
+      ],
+      "options": {
+        "singleQuote": true
+      }
+    }
+  ]
+}

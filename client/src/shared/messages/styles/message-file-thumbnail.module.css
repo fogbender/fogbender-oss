@@ -1,0 +1,25 @@
+.play-pause:focus-visible,
+.play-pause:active {
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 12px 4px rgb(59, 130, 246);
+  outline: none;
+}
+
+.play-pause svg:focus {
+  outline: none;
+}
+
+.play-pause:focus-visible,
+.thumbnail img:focus-visible + .play-pause {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .play-pause {
+    opacity: 0;
+  }
+
+  .thumbnail:hover .play-pause {
+    opacity: 1;
+  }
+}

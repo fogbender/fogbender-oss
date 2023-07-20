@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Script solves issue when nix-shell started from another process (e.g. Emacs)
+# it splits command args by spaces. This scripts just wraps all command+args to one string arg
+# for nix-shell --run option.
+
+set -o errexit -o nounset -o pipefail
+
+path=$( dirname -- "$( readlink -f -- "$0"; )"; )
+nix-shell "$path/../shell.nix" --run "$(printf '%q ' "$@")"

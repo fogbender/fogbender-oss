@@ -1,0 +1,261 @@
+---
+import Layout from "../layouts/main.astro";
+import Page from "../layouts/Page.astro";
+import PageTitle from "../ui/landing/PageTitle.astro";
+
+const title = "FAQ";
+---
+
+<Layout meta={{ title }}>
+  <Page>
+    <PageTitle title={title} />
+    <div class="max-w-[51rem] flex flex-col gap-4">
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          Can I try Fogbender with just a couple of customers?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Yes—you can use feature flags or a similar approach to determine which customers should
+          see your existing contact form or live chat, and which ones should see the new Fogbender
+          widget. You can also load the Fogbender widget for all new accounts.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          Are you saying we have to get rid of LiveChat / Front / Intercom / Drift / MessageBird?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          No—you may still need those to handle inbound questions from unauthenticated users—this
+          includes capturing sales leads, addressing questions on Twitter and Facebook Messenger,
+          and so on.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          So, you’re adding another tool to our customer support stack?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Not necessarily—if you use Slack Connect for support, we’d replace (or integrate with)
+          those shared channels.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          If you’re using Zendesk for supporting authenticated users, we’d replace that.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          What’s the difference between B2B and B2C in terms of customer support?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          In B2C, the customer is a single individual who ages with the service (e.g., Netflix). In
+          B2B, the customer is a group of people that changes its composition over time (e.g., AWS).
+        </p>
+        <p class="font-prompt text-lg font-light">
+          In B2C, there are many accounts with low Annual Contract Value (ACV), requiring many
+          dedicated support agents able to resolve most common problems, but usually unable to
+          conduct in-depth troubleshooting (e.g., CA EDD). In B2B, there are few accounts with high
+          ACV, with support provided by a highly-skilled, relatively small team (which may include
+          R&amp;D staff and sales engineers).
+        </p>
+        <p class="font-prompt text-lg font-light">
+          B2B products tend to be complex, requiring some degree of integration work on the
+          customer’s end (e.g., Twilio, Segment, AWS). This complicates support, because the vendor
+          is not necessarily aware of all the details pertaining to a specific implementation.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          What’s the difference between Fogbender and using Slack’s Shared Channels?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          In Slack, if an agent reads a message from a customer and doesn’t respond, it’s difficult
+          for other agents to discover such “potentially dropped” conversations. Fogbender visually
+          marks all such conversations as “unresolved”, enabling other agents to save the day.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Fogbender comes with an embeddable widget that lives on your customer dashboard and uses
+          your existing user authentication for access. Slack is a separate application with
+          multiple levels of access you can’t control (account, workspace, channel).
+        </p>
+        <p class="font-prompt text-lg font-light">
+          In Fogbender, you create an equivalent of a shared channel per issue, while in Slack you’d
+          usually have a single channel with many unnamed threads.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          In Slack the “unit of work” is one message—if you use an integration with a ticketing
+          system, you can create a ticket from a single message only. Fogbender supports the
+          selection of contiguous message blocks, which makes it possible to file issues with all
+          the necessary context (including images).
+        </p>
+        <p class="font-prompt text-lg font-light">
+          A shared channel between teams A and B introduces the possibility of private 1-1 and group
+          DMs between all members of A and B, which exposes the vendor to untraceable,
+          customer-initiated out-of-band communication. Fogbender only allows vendor-initiated DMs.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          What’s the difference between Fogbender and Intercom?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Intercom’s communication model is many-to-one, where “many” is the vendor’s agents and
+          “one” is the customer end user. This works amazingly well for B2C customer support, where
+          an account consists of a single individual, or as a way of capturing sales leads— speaking
+          to an unauthenticated user exploring the vendor’s website. Fogbender’s communication model
+          is many-to-many, where a customer account also consists of a team —designed purely for
+          account-based support and is not suitable for capturing leads. That said, it could work
+          very well for discovering upsell opportunities.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          What’s the difference between Fogbender and Front?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Front’s communication model for its live chat product is the same as Intercom’s— many
+          vendor agents to one customer end user.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          However, Front’s roots are in email—it’s arguably the most evolved shared inbox product
+          out there—and email supports many-to-many communication just fine, simply because the To:
+          or Cc: lines can list the email addresses of several end user colleagues working at the
+          same company. However, this workflow assumes the end user knows whom to include on a
+          support question; Fogbender lets the end user discover the colleague that knows the answer
+          or would like to be in on the conversation.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          What’s the difference between Fogbender and Zendesk?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Zendesk Live chat’s model is the same as Intercom’s and Front’s: works great for anonymous
+          visitors or single-user accounts (e.g., Etsy), but there is no way to place several
+          colleagues in a conversation with a vendor.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Zendesk’s email-based support product, where the customer initiates a conversation with
+          the vendor by sending an email or filling out a contact form, does have some B2B support
+          with Zendesk’s Organizations feature. Organizations allow the vendor to reveal all
+          historical support data to anyone—or a subset of privileged users— belonging to an
+          organization (i.e. a B2B customer). The two main issues with this approach concern
+          privacy—users generally assume their communication with the vendor is not visible to
+          colleagues, and the fact that there is no obvious mechanism for a colleague to be notified
+          of a new question in order to have an opportunity to provide an answer in time.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          Are you saying that all currently-available customer support products are designed for
+          B2C?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Yes, and for a good reason: the most successful consumer brands have hundreds of millions
+          of users, while the most successful B2B companies may have hundreds or thousands of
+          customer accounts. It makes sense that customer support software vendors focus on the
+          needs of their biggest revenue drivers first, leaving the requirements of B2B vendors as
+          perennial product roadmap nice-to-haves.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          For more context, see our blog post <a
+            class="hover:text-brand-red-500 text-blue-700"
+            href="/blog/why-all-customer-support-tools-designed-for-btc"
+            target="_blank">Why are all customer support tools designed for B2C?</a
+          >.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">
+          Why would colleagues help each other out with a vendor’s product?
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Colleagues already help each other out with products their companies have licensed—
+          partially because it’s human nature, partially because it’s their job. These conversations
+          are almost always internal—not visible to the vendor—not because they have to be, but
+          because vendors don’t generally furnish customers with platforms that facilitate product
+          discussions.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          The most obvious counter-argument here is the growing prevalence of Slack Connect and
+          Shared Channels in vendor-customer relationships.
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">Why isn’t this a just a Slack app?</p>
+        <p class="font-prompt text-lg font-light">
+          Team-to-team (B2B) support should be the default support method, meaning it must be
+          available on the vendor’s support page—this is hard to do with Slack.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          There is no easy way to select a group of messages in Slack to formalize a description of
+          a problem or a solution to one—this makes it difficult to segment conversations and causes
+          integrations with third-party ticketing systems lose context.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Slack enables all participants of a shared channel to participate in out-of-band private
+          conversations, which defeats the purpose of team-to-team customer support.
+        </p>
+        <p class="font-prompt text-lg font-light">Some vendors and customers don’t use Slack.</p>
+        <p class="font-prompt text-lg font-light">
+          However, note that Fogbender does come with two Slack integrations:
+          <div class="flex flex-col gap-4">
+            <span>
+              - The Fogbender (Agent) Slack integration allows the vendor’s team to respond to
+              messages arriving to Fogbender from Slack, and to associate existing shared channels
+              with customers in Fogbender.
+            </span>
+            <span>
+              - The Fogbender (Customer) Slack integration allows a customer’s team to receive
+              support in a dedicated Slack channel, in addition to the web widget.
+            </span>
+          </div>
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">Why doesn’t Fogbender have threads?</p>
+        <p class="font-prompt text-lg font-light">
+          Threads are either named or anonymous sub-rooms that contain a flat (non-threaded) list of
+          replies to a single message in a named room (channel, group, etc—depending on the
+          platform). Threads are helpful in busy spaces, where a conversation that spans more than a
+          few moments has a high likelihood of getting trampled by another, making it very difficult
+          to both maintain context in real time and follow the train of thought while catching up
+          later. Threads also help minimize noise in channels with many members: while top level
+          messages always trigger notifications, one must explicilty opt in to receive notifications
+          from each thread.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          This context-saving convenience comes at a price, however. For one, the simplicity of an
+          IRC/ICQ/SMS-style messaging experience—where a room is just a stream of time-sorted
+          messages—is sacrificed in favor of a fairly complex structure where, in the extreme, the
+          reader is required to expand every top-level message to follow the conversation.
+          Additionally, threads pose quite a challenge with respect to notifications: being
+          mentioned in multiple (unnamed) threads across several channels may set up the recipient
+          for a bit of an archeological dig.
+        </p>
+        <p class="font-prompt text-lg font-light">
+          Since Fogbender is not intended to have individual rooms that are continuously used by
+          large groups of people, the likelihood of conversations constantly overlapping one another
+          is low, and notifications are handled by agent assignments. That said, Fogbender does come
+          with two features that should serve as a sufficient alternative to threads:
+        </p>
+        <p class="font-prompt text-lg font-light">
+          &bull; Replies to messages in the same room—very similar to WhatsApp and Telegram, but
+          with the added ability to reply to several messages at once;
+        </p>
+        <p class="font-prompt text-lg font-light">
+          &bull; Forwarding a contiguous block of messages to an existing or a new room. (The latter
+          form can be thought of as "named thread support", but the intention is to make it easier
+          to categorize a group of messages as something important{" "}
+          <i>post-writing</i>, as opposed to helping with noise overload when responding.)
+        </p>
+      </div>
+      <div class="flex flex-col gap-4 mb-4">
+        <p class="font-prompt text-xl font-medium">I still have questions</p>
+        <p class="font-prompt text-lg font-light">
+          Book a demo with us and we’ll answer all your questions, walk you through the solution,
+          and if you’d like, help you get started over a video call.
+        </p>
+      </div>
+    </div>
+  </Page>
+</Layout>

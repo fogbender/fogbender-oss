@@ -1,0 +1,15 @@
+{
+  "name": "fog-infra",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^5.41.0",
+    "@pulumi/awsx": "^1.0.0",
+    "@pulumi/cloud": "^0.30.1",
+    "@pulumi/cloud-aws": "^0.30.1",
+    "@pulumi/pulumi": "^3.68.0"
+  }
+}

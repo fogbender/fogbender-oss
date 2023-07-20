@@ -1,0 +1,8 @@
+config:
+  aws:region: us-west-1
+  cloud-aws:acmCertificateARN: arn:aws:acm:us-west-1:863191199317:certificate/3feafef4-bad8-4320-aab4-f6cc4e29ff02
+  cloud-aws:useFargate: "true"
+  cloud:provider: aws
+  server:dbPassword:
+    secure: AAABAO4+a2iuUsm+BVGJ6aoeleMdL+vDzqXMfmI71GHWbK8YkyzLxlTrB0zzlU2NjuHn/dqj0rjyekc3VH4tRZES7/ZAn7Ss
+  server:domainName: fogbender.com

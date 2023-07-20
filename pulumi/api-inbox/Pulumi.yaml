@@ -1,0 +1,3 @@
+name: api-inbox
+runtime: nodejs
+description: Api inbox processing infrastructure

@@ -1,0 +1,45 @@
+display_information:
+  name: Fogbender Customer-TEST
+  description: Customer support system for API-first companies
+  background_color: "#523b52"
+  long_description: Fogbender provides a way to embed a shared channel (team-to-team) support experience in your customer dashboard. The Fogbender Slack integration lets your team respond to customers from Slack.
+features:
+  bot_user:
+    display_name: Fogbender Customer-TEST
+    always_online: false
+oauth_config:
+  redirect_urls:
+    - https://api.fogbender-test.com/oauth/slack
+  scopes:
+    user:
+      - identity.basic
+      - identity.email
+      - identity.avatar
+      - identity.team
+    bot:
+      - channels:history
+      - channels:manage
+      - channels:read
+      - chat:write
+      - chat:write.customize
+      - files:read
+      - groups:read
+      - metadata.message:read
+      - reactions:read
+      - reactions:write
+      - users:read
+      - users:read.email
+      - files:write
+settings:
+  event_subscriptions:
+    request_url: https://api.fogbender-test.com/hook/slack
+    bot_events:
+      - file_created
+      - member_joined_channel
+      - member_left_channel
+      - message.channels
+      - reaction_added
+      - reaction_removed
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

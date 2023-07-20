@@ -1,0 +1,8 @@
+config:
+  aws:region: us-west-1
+  fog-service:netStack: fogbender-software/fog-net/admin
+  fog-service:kmsStack: fogbender-software/fog-kms/admin
+  fog-service:portalDomain: fogbender.com
+  fog-service:portalHost: portal
+  fog-service:ciDomain: fogbender.net
+  fog-service:ciHost: ci

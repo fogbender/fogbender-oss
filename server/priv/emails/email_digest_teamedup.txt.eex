@@ -1,0 +1,20 @@
+<%
+%Data.EmailDigest{badges: badges} = data
+to = recipient(data)
+%>
+Greetings <%= to.name %>.
+
+Below are some conversations you might have missed,
+
+<%= for b <- badges do %>
+    <%= badge_room_name(b) %> (<%= badge_room_url(b) %>)
+
+    <%= author(b.first_unread_message).name %>: <%= b.first_unread_message.text %>
+    <%= if b.count > 1 do %> ...<%= b.count - 1 %> more messages<%= if b.mentions_count > 0 do %> with <%= b.mentions_count %> mentions<% end %>.<% end %>
+
+<% end %>
+
+Respectfully,
+
+Mike & Brad
+TeamedUp Founders

@@ -1,0 +1,48 @@
+<%
+%Data.EmailDigest{badges: badges} = data
+to = recipient(data)
+unread_count = badges |> Enum.map(& &1.count) |> Enum.sum()
+mentions_count = badges |> Enum.map(& &1.mentions_count) |> Enum.sum()
+rooms_count = length(badges)
+badges_no_messages = badges |> Enum.filter(& &1.room.messages == [])
+unread_no_messages = badges_no_messages |> Enum.map(& &1.count) |> Enum.sum()
+mentions_no_messages = badges_no_messages |> Enum.map(& &1.mentions_count) |> Enum.sum()
+rooms_no_messages = length(badges_no_messages)
+%>
+Hello, <%= to.name %>,
+<br>
+You have <%= t_new_messages(unread_count)%><%= if mentions_count > 0 do %> and <%= t_mentions(mentions_count)%><% end %>
+in <%= t_rooms(rooms_count)%>:
+<ul>
+    <%= for b <- badges, b.room.messages != [] do %>
+        <br><br>
+        <li>
+            <bold><%= content_tag :a, badge_room_name(b), href: link_room_name(data, b) %></bold>
+            <%= if data.to_type == "agent" do %> (<%= Fog.Utils.customer_name(b.room.customer) %>) <% end %>
+            -
+            <%= content_tag :a, "Click to respond", href: link_room_name(data, b) %>
+            <br><br>
+            <%= if b.count > length(b.room.messages) do %>
+                ...<%= t_earlier_messages(b.count - length(b.room.messages)) %><%= if b.mentions_count > 0 do %> with <%= t_mentions(b.mentions_count) %><% end %>
+                <br><br>
+            <% end %>
+            <%= for m <- b.room.messages do %>
+                <strong><%= author_name(m) %></strong>: <%= message_text(m, "<br>") %>
+                <br><br>
+            <% end %>
+        </li>
+    <% end %>
+    <%= if rooms_no_messages > 0 do %>
+        <br><br>
+        ...<%= t_more_rooms(rooms_no_messages) %> with <%= t_unread_messages(unread_no_messages) %><%= if mentions_no_messages > 0 do %> and <%= t_mentions(mentions_no_messages) %><% end %>
+    <% end %>
+</ul>
+<br><br><br>
+
+--<br>
+<%= if data.to_type == "agent" do
+  "Fogbender Team"
+else
+  "#{data.vendor.name} Support"
+end
+%>

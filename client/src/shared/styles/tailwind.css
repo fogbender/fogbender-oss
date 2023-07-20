@@ -1,0 +1,335 @@
+/* purgecss start ignore */
+
+@import "./fonts.css";
+
+/* Used to detect in JavaScript if apps have loaded styles or not. */
+:root {
+  --reach-dialog: 1;
+}
+
+/* Typography */
+
+.fog\:text-header1 {
+  @apply font-admin;
+  @apply font-bold;
+  @apply text-6xl;
+  @apply leading-normal;
+}
+
+.fog\:text-header2 {
+  @apply font-admin;
+  @apply font-bold;
+  @apply text-4xl;
+  @apply leading-normal;
+}
+
+.fog\:text-header3 {
+  @apply font-admin;
+  @apply font-normal;
+  @apply text-2xl;
+  @apply leading-normal;
+}
+
+.fog\:text-body-l {
+  @apply font-body;
+  @apply text-base;
+  @apply leading-snug;
+}
+
+.fog\:text-body-m {
+  @apply font-body;
+  @apply text-sm;
+}
+
+.fog\:text-body-s {
+  @apply font-body;
+  @apply text-xs;
+}
+
+.fog\:text-body-xs {
+  @apply font-body;
+  @apply text-2xs;
+}
+
+.fog\:text-caption-xl {
+  @apply font-body;
+  @apply font-semibold;
+  @apply text-base;
+  @apply leading-snug;
+}
+
+.fog\:text-caption-l {
+  @apply font-body;
+  @apply font-semibold;
+  @apply text-sm;
+}
+
+.fog\:text-caption-m {
+  @apply font-body;
+  @apply font-semibold;
+  @apply text-xs;
+}
+
+.fog\:text-caption-s {
+  @apply font-body;
+  @apply font-bold;
+  @apply text-2xs;
+}
+
+.fog\:text-caption-xs {
+  @apply font-body;
+  @apply font-bold;
+  @apply text-3xs;
+}
+
+.fog\:text-button-m {
+  @apply font-semibold;
+  @apply text-base;
+}
+
+.fog\:text-button-s {
+  @apply font-semibold;
+  @apply text-xs;
+}
+
+.fog\:text-chat-username-m {
+  @apply font-semibold;
+  @apply text-sm;
+}
+
+.fog\:text-chat-username-s {
+  @apply font-semibold;
+  @apply text-xs;
+}
+
+.fog\:text-link {
+  @apply text-blue-700;
+  @apply cursor-pointer;
+}
+.fog\:text-link:hover {
+  @apply text-brand-red-500;
+}
+
+.fog\:text-ghost-link {
+  @apply text-blue-500;
+  @apply cursor-pointer;
+}
+.fog\:text-ghost-link:hover {
+  @apply text-blue-700;
+}
+
+.fog\:icon-link {
+  @apply text-gray-500;
+  @apply cursor-pointer;
+}
+.fog\:icon-link:hover {
+  @apply text-red-500;
+}
+
+/* Decoration */
+
+.fog\:box-link {
+  @apply border-blue-700;
+}
+.fog\:box-link:hover {
+  @apply border-brand-red-500;
+}
+
+.fog\:box-ghost-link {
+  @apply border-blue-500;
+}
+.fog\:box-ghost-link:hover {
+  @apply border-blue-700;
+}
+
+.fog\:box-shadow {
+  box-shadow: 0px 6px 20px rgba(19, 29, 118, 0.07);
+}
+.fog\:box-shadow-s {
+  box-shadow: 0px 3px 10px 0px rgba(19, 29, 118, 0.1);
+}
+.fog\:box-shadow-m {
+  box-shadow: 0px 6px 20px rgba(19, 29, 118, 0.07);
+}
+.fog\:box-shadow-m-green {
+  box-shadow: 0px 6px 20px rgba(16, 185, 129, 0.2);
+}
+.fog\:box-shadow-m-brand-orange {
+  box-shadow: 0px 6px 20px rgba(255, 115, 21, 0.2);
+}
+
+.fog\:chat-message p + p {
+  @apply mt-2;
+}
+
+.fog\:chat-message a {
+  @apply fog:text-link;
+  @apply no-underline;
+}
+
+.fog\:chat-message b {
+  @apply font-semibold;
+}
+
+.fog\:chat-message code {
+  @apply !py-0.5;
+  @apply rounded;
+  @apply bg-gray-900;
+  @apply !text-gray-100;
+}
+
+.fog\:chat-message code.inline {
+  @apply bg-white;
+  @apply !text-brand-red-500;
+}
+
+.fog\:chat-message blockquote {
+  @apply ml-2;
+  @apply border-l-5;
+  @apply border-gray-100;
+  @apply pl-2;
+}
+
+.fog\:chat-message pre {
+  @apply overflow-x-auto;
+  @apply rounded-md;
+  @apply bg-gray-800;
+  @apply text-gray-100;
+  @apply pl-1.5;
+}
+
+.fog\:chat-message pre code {
+  @apply block;
+  @apply rounded-none;
+  @apply bg-transparent;
+}
+
+.fog\:chat-message .mention {
+  @apply font-medium;
+}
+
+.fog\:chat-message .my-mention {
+  @apply px-1;
+  @apply py-0.5;
+  @apply bg-yellow-100;
+  @apply font-medium;
+}
+
+.fog\:message-preview * {
+  display: inline;
+}
+.fog\:message-preview br {
+  content: " ";
+  padding: 0 2px;
+}
+
+/* Scrollbars */
+
+.fbr-scrollbar {
+  scrollbar-gutter: stable;
+}
+
+.fbr-scrollbar.fbr-scrollbar-no-gutter {
+  scrollbar-gutter: initial;
+}
+
+.fbr-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.fbr-scrollbar::-webkit-scrollbar-track {
+  @apply bg-white;
+  @apply bg-opacity-60;
+  @apply rounded-full;
+}
+
+.fbr-scrollbar::-webkit-scrollbar-thumb {
+  width: 5px;
+  height: 5px;
+  border: 1px solid transparent;
+  @apply bg-gray-300;
+  @apply rounded-full;
+  @apply bg-clip-content;
+}
+
+.fbr-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+textarea.fbr-scrollbar {
+  scrollbar-gutter: initial;
+}
+
+.fbr-placeholder-truncate::placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fbr-placeholder-truncate:placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+.carousel .slide img {
+  pointer-events: all;
+}
+.carousel-root .carousel .slide {
+  @apply bg-transparent;
+}
+
+.react-grid-layout > .react-grid-item > .react-resizable-handle {
+  @apply w-4;
+  @apply h-4;
+  @apply bg-none;
+  @apply transform;
+  @apply origin-bottom-right;
+  @apply scale-150;
+  @apply z-10;
+}
+.react-grid-layout > .react-grid-item > .react-resizable-handle::after {
+  display: none;
+}
+
+/* TODO: remove once we have tailwind 3 */
+.snap-mandatory {
+  --tw-scroll-snap-strictness: mandatory;
+}
+
+.snap-x {
+  scroll-snap-type: x var(--tw-scroll-snap-strictness);
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+/* tailwind-scrollbar-hide */
+.scrollbar-hide {
+  /* IE and Edge */
+  -ms-overflow-style: none;
+
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+/* Safari and Chrome */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.fog\:chat-message ul {
+  @apply list-disc;
+  @apply ml-6;
+}
+
+.fog\:chat-message ol {
+  @apply list-decimal;
+  @apply ml-6;
+}
+
+/* purgecss end ignore */

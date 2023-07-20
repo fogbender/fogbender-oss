@@ -1,0 +1,3 @@
+name: storefront-api-cognito
+runtime: nodejs
+description: AWS Cognito pool to sign in into storefront

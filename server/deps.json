@@ -1,0 +1,894 @@
+{
+  "bamboo": {
+    "builder": "mix",
+    "deps": {
+      "hackney": false,
+      "jason": true,
+      "mime": false,
+      "plug": false
+    },
+    "fetcher": "hex",
+    "name": "bamboo",
+    "pkg": "bamboo",
+    "sha256": "sha256-jDsUun0vQMtL4EEo7R4q/wbZHZQT04uvtK/M/6Ot5Pw=",
+    "version": "2.2.0"
+  },
+  "bamboo_ses": {
+    "builder": "mix",
+    "deps": {
+      "bamboo": false,
+      "ex_aws_ses": false,
+      "jason": false,
+      "mail": false
+    },
+    "fetcher": "hex",
+    "name": "bamboo_ses",
+    "pkg": "bamboo_ses",
+    "sha256": "sha256-DXZfL3NBOHvHmJ2xK/jPtzURArke1qs0XE6Js7zn+1o=",
+    "version": "0.2.1"
+  },
+  "blake2": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "blake2",
+    "pkg": "blake2",
+    "sha256": "sha256-6fQSDRY7oU2GMEGV5QdF+hhIPmrSvpTIZK5Em73WoYk=",
+    "version": "1.0.4"
+  },
+  "briefly": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "briefly",
+    "pkg": "briefly",
+    "sha256": "sha256-xuv4/D3NSVDdEMA+lT+09VOovPD/TIxA1xVCQ0zX4EY=",
+    "version": "0.3.0"
+  },
+  "bypass": {
+    "builder": "mix",
+    "deps": {
+      "plug": false,
+      "plug_cowboy": false,
+      "ranch": false
+    },
+    "fetcher": "hex",
+    "name": "bypass",
+    "pkg": "bypass",
+    "sha256": "sha256-2bXfj6W3pu+gg4Tpu+z+TOYcd9KKQoL3ngLx73jZa4A=",
+    "version": "2.1.0"
+  },
+  "certifi": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "certifi",
+    "pkg": "certifi",
+    "sha256": "sha256-Jm2ka9sG1sbTX955m8so022YXUJK18CLW7SPW1zdRkE=",
+    "version": "2.9.0"
+  },
+  "combine": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "combine",
+    "pkg": "combine",
+    "sha256": "sha256-Gx28F5AHMHZYDQ0dZOQuriNmWD567NRV0SFbDRbyRRs=",
+    "version": "0.10.0"
+  },
+  "configparser_ex": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "configparser_ex",
+    "pkg": "configparser_ex",
+    "sha256": "sha256-AubRpVk2GgY8unt1vD6y1q1+YnMMVRzEcDVB/RHmXls=",
+    "version": "4.0.0"
+  },
+  "connection": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "connection",
+    "pkg": "connection",
+    "sha256": "sha256-ciwesKQY++kbp71ZpH4oAIoYnUfjfg57uFWFoBayhpw=",
+    "version": "1.1.0"
+  },
+  "corsica": {
+    "builder": "mix",
+    "deps": {
+      "plug": false
+    },
+    "fetcher": "hex",
+    "name": "corsica",
+    "pkg": "corsica",
+    "sha256": "sha256-gVazoUoRSjRiYocTM6kxoXZrJZe1a/mU/Py2VEOjSK0=",
+    "version": "1.1.3"
+  },
+  "cowboy": {
+    "builder": "rebar3",
+    "deps": {
+      "cowlib": false,
+      "ranch": false
+    },
+    "fetcher": "hex",
+    "name": "cowboy",
+    "pkg": "cowboy",
+    "sha256": "sha256-LHKfk0tOGqFJr/iC9XxjcsFTmaINVPZcjWe+9YMCG94=",
+    "version": "2.9.0"
+  },
+  "cowboy_telemetry": {
+    "builder": "rebar3",
+    "deps": {
+      "cowboy": false,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "cowboy_telemetry",
+    "pkg": "cowboy_telemetry",
+    "sha256": "sha256-Om79M2YTDquEyjcsvUp9PDqXvfz7SREjOwNdEXBj8K8=",
+    "version": "0.3.1"
+  },
+  "cowlib": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "cowlib",
+    "pkg": "cowlib",
+    "sha256": "sha256-Kz6doLIcRWV1Gm1JAcING0zCXLt/1Q2R0qtt0oe8hqk=",
+    "version": "2.11.0"
+  },
+  "crontab": {
+    "builder": "mix",
+    "deps": {
+      "ecto": true
+    },
+    "fetcher": "hex",
+    "name": "crontab",
+    "pkg": "crontab",
+    "sha256": "sha256-1nRBvsmJZA46+5ThI/RaK8QtduApiMlhOIXcPQHPcIU=",
+    "version": "1.1.13"
+  },
+  "csv": {
+    "builder": "mix",
+    "deps": {
+      "parallel_stream": false
+    },
+    "fetcher": "hex",
+    "name": "csv",
+    "pkg": "csv",
+    "sha256": "sha256-VFCJOKxn4nlmsQ70lgbjrVmV1mXX/CaI77PqsTB8kHk=",
+    "version": "2.4.1"
+  },
+  "cyanide": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "cyanide",
+    "pkg": "cyanide",
+    "sha256": "sha256-dKiWD73jR8dvg9/trek4g5tzl3ABX4fdcku6Snys3ZY=",
+    "version": "1.0.0"
+  },
+  "db_connection": {
+    "builder": "mix",
+    "deps": {
+      "connection": false,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "db_connection",
+    "pkg": "db_connection",
+    "sha256": "sha256-wSfBWw+mz7Mu7QdGXgXabIFbAyUI1O18EWEihx33PBI=",
+    "version": "2.4.3"
+  },
+  "decimal": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "decimal",
+    "pkg": "decimal",
+    "sha256": "sha256-NGZunFXeqBAT532dhzcP5stikdHvMvRqFgAjCx1E9Xc=",
+    "version": "2.0.0"
+  },
+  "earmark": {
+    "builder": "mix",
+    "deps": {
+      "earmark_parser": false
+    },
+    "fetcher": "hex",
+    "name": "earmark",
+    "pkg": "earmark",
+    "sha256": "sha256-kLEG89rYWxM7ENfWKBZ8iCRhI/0c7LRVfYPSHsnmVQQ=",
+    "version": "1.4.34"
+  },
+  "earmark_parser": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "earmark_parser",
+    "pkg": "earmark_parser",
+    "sha256": "sha256-O1OFwtNrBHPQsgaSe4QTQ9Ja2xT5XwEQBiUGswDNWhs=",
+    "version": "1.4.30"
+  },
+  "ecto": {
+    "builder": "mix",
+    "deps": {
+      "decimal": false,
+      "jason": true,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "ecto",
+    "pkg": "ecto",
+    "sha256": "sha256-3l+YjBQqOqTsGLhaTsNKI5C2WyTwI4XBFEJS/2/47nU=",
+    "version": "3.9.4"
+  },
+  "ecto_sql": {
+    "builder": "mix",
+    "deps": {
+      "db_connection": false,
+      "ecto": false,
+      "myxql": true,
+      "postgrex": true,
+      "tds": true,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "ecto_sql",
+    "pkg": "ecto_sql",
+    "sha256": "sha256-qPP3IAc7ixrEyXi+Jfp5YO1/1EmXQgwwSkouIAtZZFM=",
+    "version": "3.9.0"
+  },
+  "elixir_make": {
+    "builder": "mix",
+    "deps": {
+      "castore": true
+    },
+    "fetcher": "hex",
+    "name": "elixir_make",
+    "pkg": "elixir_make",
+    "sha256": "sha256-JK2j45lq2+0foCTKFJle8ro9DRe2eLDz8rH2bmzisnQ=",
+    "version": "0.7.3"
+  },
+  "ex_aws": {
+    "builder": "mix",
+    "deps": {
+      "configparser_ex": true,
+      "hackney": true,
+      "jason": true,
+      "jsx": true,
+      "sweet_xml": true
+    },
+    "fetcher": "hex",
+    "name": "ex_aws",
+    "pkg": "ex_aws",
+    "sha256": "sha256-Pmx3ZwPJB2AB++H3wElTXwQssq+g0svTtHy8TpKsDRA=",
+    "version": "2.1.9"
+  },
+  "ex_aws_s3": {
+    "builder": "mix",
+    "deps": {
+      "ex_aws": false,
+      "sweet_xml": true
+    },
+    "fetcher": "hex",
+    "name": "ex_aws_s3",
+    "pkg": "ex_aws_s3",
+    "sha256": "sha256-JYUyICbfT+3l4bFDt82ZDu8VhRFTt0rE5Mb8gFi1uhg=",
+    "version": "2.3.1"
+  },
+  "ex_aws_ses": {
+    "builder": "mix",
+    "deps": {
+      "ex_aws": false
+    },
+    "fetcher": "hex",
+    "name": "ex_aws_ses",
+    "pkg": "ex_aws_ses",
+    "sha256": "sha256-tnZbtcobDLySjQyFKfiC4R3hsDmDtKcAdVe1nLC5rnk=",
+    "version": "2.3.0"
+  },
+  "ex_aws_sqs": {
+    "builder": "mix",
+    "deps": {
+      "ex_aws": false,
+      "hackney": true,
+      "jason": true,
+      "saxy": true,
+      "sweet_xml": true
+    },
+    "fetcher": "hex",
+    "name": "ex_aws_sqs",
+    "pkg": "ex_aws_sqs",
+    "sha256": "sha256-R9j8Kf071vSR0keKDUMdvYjD4c0ZkhSMBkxS9q3KL/Q=",
+    "version": "3.3.1"
+  },
+  "ex_crypto": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "git",
+    "name": "ex_crypto",
+    "rev": "0915c274503f9fc6d6f5fab8c98467e7414cf8fc",
+    "sha256": "sha256-brbbSoJyIOl3BaBqHlpUHP6P0H8UjbbCp7Yc/OrMbWw=",
+    "url": "https://github.com/ntrepid8/ex_crypto.git",
+    "version": "git"
+  },
+  "exmoji": {
+    "builder": "mix",
+    "deps": {
+      "jason": false
+    },
+    "fetcher": "hex",
+    "name": "exmoji",
+    "pkg": "exmoji",
+    "sha256": "sha256-BIpFJuXwMUMiq5h2qXUG6asDoYzITxvCaChVFzjyWfo=",
+    "version": "0.3.0"
+  },
+  "exsync": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "git",
+    "name": "exsync",
+    "rev": "45ff38ec7e6af9ad3a4fda50bf295da8864360b9",
+    "sha256": "sha256-94lCv2GqRY+4a2SnVcD1JY8VpPwJqGWR275mU0LSTfM=",
+    "url": "https://github.com/mkurkov/exsync.git",
+    "version": "git"
+  },
+  "fast_html": {
+    "builder": "mix",
+    "deps": {
+      "elixir_make": false,
+      "nimble_pool": false
+    },
+    "fetcher": "hex",
+    "name": "fast_html",
+    "pkg": "fast_html",
+    "sha256": "sha256-YF9PSClEPBQSdpTrq7aBd4cSzuy0Rw7DKqMQEjMOZQY=",
+    "version": "2.0.5"
+  },
+  "file_system": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "file_system",
+    "pkg": "file_system",
+    "sha256": "sha256-QRle2/tWKlk3Ju2js+ixA6MJtzOtJfPWQrpJaWv3Fdw=",
+    "version": "0.2.10"
+  },
+  "floki": {
+    "builder": "mix",
+    "deps": {
+      "html_entities": false
+    },
+    "fetcher": "hex",
+    "name": "floki",
+    "pkg": "floki",
+    "sha256": "sha256-RhA1/RJfE/3zDyQ8haCx5Qr77Idsvxzu/m/d0ubXEsY=",
+    "version": "0.33.1"
+  },
+  "gen_stage": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "gen_stage",
+    "pkg": "gen_stage",
+    "sha256": "sha256-w+QJkscudNnE7aFtdRW/MsnntjToJ6sRCR//MpD3tQM=",
+    "version": "1.2.0"
+  },
+  "gettext": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "gettext",
+    "pkg": "gettext",
+    "sha256": "sha256-EMZWwJErgpmtupsGHAaUdRHj8QmrDRi0SoZqRJjnciI=",
+    "version": "0.19.1"
+  },
+  "hackney": {
+    "builder": "rebar3",
+    "deps": {
+      "certifi": false,
+      "idna": false,
+      "metrics": false,
+      "mimerl": false,
+      "parse_trans": false,
+      "ssl_verify_fun": false,
+      "unicode_util_compat": false
+    },
+    "fetcher": "hex",
+    "name": "hackney",
+    "pkg": "hackney",
+    "sha256": "sha256-pOza/0QpfptYlK5JnpoHDqGIjISv3R/Zt7K8OElQEo4=",
+    "version": "1.18.1"
+  },
+  "hkdf": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "git",
+    "name": "hkdf",
+    "rev": "76261c4885035fcf73753183f169289afd27b81c",
+    "sha256": "sha256-mEbIaMmOrWjD6ULBh5No0XylrUr0AN16tBKlQqMtC80=",
+    "url": "https://github.com/mkurkov/hkdf.git",
+    "version": "git"
+  },
+  "html_entities": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "html_entities",
+    "pkg": "html_entities",
+    "sha256": "sha256-xTujkEA0hWFWI7lTHpdpbwdu1BXo2AWLHbqigYH0/cw=",
+    "version": "0.5.2"
+  },
+  "httpoison": {
+    "builder": "mix",
+    "deps": {
+      "hackney": false
+    },
+    "fetcher": "hex",
+    "name": "httpoison",
+    "pkg": "httpoison",
+    "sha256": "sha256-K7NQ0mly4wyW4sp0oar4KT1h0HQv8X8B4Cef7xFZmSE=",
+    "version": "1.8.2"
+  },
+  "iconv": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "iconv",
+    "pkg": "iconv",
+    "sha256": "sha256-vLN9UtokFh8sK+65I0ti52VikZFJzC/A01N6wM71uXc=",
+    "version": "1.0.13"
+  },
+  "idna": {
+    "builder": "rebar3",
+    "deps": {
+      "unicode_util_compat": false
+    },
+    "fetcher": "hex",
+    "name": "idna",
+    "pkg": "idna",
+    "sha256": "sha256-kjdut4lEEu0ZrEdeSob3tBPBufu1vRbczVeTQVeUTOo=",
+    "version": "6.1.1"
+  },
+  "jason": {
+    "builder": "mix",
+    "deps": {
+      "decimal": true
+    },
+    "fetcher": "hex",
+    "name": "jason",
+    "pkg": "jason",
+    "sha256": "sha256-eaN5EIWyoPdDygTOwPe+JkQ3OHedCTAuATGPl724ISE=",
+    "version": "1.4.0"
+  },
+  "joken": {
+    "builder": "mix",
+    "deps": {
+      "jose": false
+    },
+    "fetcher": "hex",
+    "name": "joken",
+    "pkg": "joken",
+    "sha256": "sha256-1Px8cDESst7cT57CFIVsOgcQjEg18PF0o2lSHyicmNE=",
+    "version": "2.4.1"
+  },
+  "joken_jwks": {
+    "builder": "mix",
+    "deps": {
+      "hackney": false,
+      "jason": false,
+      "joken": false,
+      "tesla": false
+    },
+    "fetcher": "hex",
+    "name": "joken_jwks",
+    "pkg": "joken_jwks",
+    "sha256": "sha256-3m7B791dF8k3594eqJkny3hZBtDxacIfmg0QcJ7+h1U=",
+    "version": "1.1.0"
+  },
+  "jose": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "jose",
+    "pkg": "jose",
+    "sha256": "sha256-3NOyFbr+Aup8WyPa/T64Bipc2PLZBP2cqjI9NwNKs4Q=",
+    "version": "1.11.5"
+  },
+  "libsalty2": {
+    "builder": "mix",
+    "deps": {
+      "elixir_make": false
+    },
+    "fetcher": "hex",
+    "name": "libsalty2",
+    "pkg": "libsalty2",
+    "sha256": "sha256-n3f3yIbPRjkq+UvnGyMOmqEaA/h+dhnY9rYW4JL370I=",
+    "version": "0.2.1"
+  },
+  "linkify": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "linkify",
+    "pkg": "linkify",
+    "sha256": "sha256-jXGsaQIY2JUskMvrY8uMwzc4uyMNilbUh9lEfypeq4Y=",
+    "version": "0.5.2"
+  },
+  "mail": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "mail",
+    "pkg": "mail",
+    "sha256": "sha256-kys5j6nGn98pDX/2MXWCbg8eJEFNWwdjuwCirPxsa/U=",
+    "version": "0.2.3"
+  },
+  "metrics": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "metrics",
+    "pkg": "metrics",
+    "sha256": "sha256-abCa3dxPdKQHFq5U0UD5O+sPuJeNhjbq3tDDG28JnxY=",
+    "version": "1.0.1"
+  },
+  "mime": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "git",
+    "name": "mime",
+    "rev": "a86f09f0e374cf0a4f338bd063eafd896b3dba5e",
+    "sha256": "sha256-bHFVL70f7C15tcjsrXkF6W9Q9fC14oRuKOvXthaY48E=",
+    "url": "https://github.com/mkurkov/mime.git",
+    "version": "git"
+  },
+  "mimerl": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "mimerl",
+    "pkg": "mimerl",
+    "sha256": "sha256-8nhYVlCqWBmGJkY46/aY+LsZ3yl/Zq2RsYkQ38bhkyM=",
+    "version": "1.2.0"
+  },
+  "mix_test_watch": {
+    "builder": "mix",
+    "deps": {
+      "file_system": false
+    },
+    "fetcher": "hex",
+    "name": "mix_test_watch",
+    "pkg": "mix_test_watch",
+    "sha256": "sha256-UraxxHbLtw/YmcpTlFBkgvEuX2sNas/535XH8eCBLsM=",
+    "version": "1.1.0"
+  },
+  "mogrify": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "mogrify",
+    "pkg": "mogrify",
+    "sha256": "sha256-InjSRfBwVuo7WG6YgB6TNpUUcGb6TPVj9VLBtPD/itk=",
+    "version": "0.8.0"
+  },
+  "neuron": {
+    "builder": "mix",
+    "deps": {
+      "httpoison": false,
+      "jason": true
+    },
+    "fetcher": "hex",
+    "name": "neuron",
+    "pkg": "neuron",
+    "sha256": "sha256-dZcwjiLjT3esqtuuPaY5dO3J5AQe9/cVTUXOgMDjPQA=",
+    "version": "5.0.0"
+  },
+  "nimble_pool": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "nimble_pool",
+    "pkg": "nimble_pool",
+    "sha256": "sha256-HHFQVQldPycFxOI2wYthhCCjVJDalBSf+LWAohRPZT8=",
+    "version": "0.2.6"
+  },
+  "oauth2": {
+    "builder": "mix",
+    "deps": {
+      "hackney": false
+    },
+    "fetcher": "hex",
+    "name": "oauth2",
+    "pkg": "oauth2",
+    "sha256": "sha256-xk4g1NEFvNvL4DFw+1MNDt3Do+axNah1KKIsiuz3TFI=",
+    "version": "2.0.1"
+  },
+  "parallel_stream": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "parallel_stream",
+    "pkg": "parallel_stream",
+    "sha256": "sha256-Y5suh0nhG4e560LyrTJdFhwXCzmyiKyNBMTzH48II+s=",
+    "version": "1.0.6"
+  },
+  "parse_trans": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "parse_trans",
+    "pkg": "parse_trans",
+    "sha256": "sha256-B82Vd4hfVjYtQU6MTE5r3xDUOodnq7ktJMvoskxUiIs=",
+    "version": "3.3.1"
+  },
+  "parsey": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "parsey",
+    "pkg": "parsey",
+    "sha256": "sha256-SXE0NeEe4Xx1MpL69AvrVwUdY0M5pHv+IBTh6QEm6a8=",
+    "version": "0.0.3"
+  },
+  "paseto": {
+    "builder": "mix",
+    "deps": {
+      "blake2": false,
+      "hkdf": false,
+      "libsalty2": false
+    },
+    "fetcher": "hex",
+    "name": "paseto",
+    "pkg": "paseto",
+    "sha256": "sha256-y5E5W64KBhPzM9k0pDY4HOu19vKe29IHvYH/HMB9d2Y=",
+    "version": "1.3.1"
+  },
+  "phoenix_html": {
+    "builder": "mix",
+    "deps": {
+      "plug": true
+    },
+    "fetcher": "hex",
+    "name": "phoenix_html",
+    "pkg": "phoenix_html",
+    "sha256": "sha256-zhf9PPgVsu2HQRQHPnQ1B3BLH1KIuwPDBKd0WEhe/Is=",
+    "version": "3.0.4"
+  },
+  "plug": {
+    "builder": "mix",
+    "deps": {
+      "mime": false,
+      "plug_crypto": false,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "plug",
+    "pkg": "plug",
+    "sha256": "sha256-vwIEMsfU/rezrxagwnAUVcu7uV5baGYTLLCesMKa3BQ=",
+    "version": "1.14.0"
+  },
+  "plug_cowboy": {
+    "builder": "mix",
+    "deps": {
+      "cowboy": false,
+      "cowboy_telemetry": false,
+      "plug": false
+    },
+    "fetcher": "hex",
+    "name": "plug_cowboy",
+    "pkg": "plug_cowboy",
+    "sha256": "sha256-6m6H93TIYI1gyNNAIqfQc712gKCgE/BJ/GK/Ne/qEEQ=",
+    "version": "2.5.2"
+  },
+  "plug_crypto": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "plug_crypto",
+    "pkg": "plug_crypto",
+    "sha256": "sha256-tWcgmcatXCAsRfWkA/IaNBEkfxZOSo+rBW5c2KKQ9KI=",
+    "version": "1.2.3"
+  },
+  "poison": {
+    "builder": "mix",
+    "deps": {
+      "decimal": true
+    },
+    "fetcher": "hex",
+    "name": "poison",
+    "pkg": "poison",
+    "sha256": "sha256-EdxhF8UBuAxip1lPlB0EOYKhvQWhGEKAwNkWbrTY0/w=",
+    "version": "5.0.0"
+  },
+  "postgrex": {
+    "builder": "mix",
+    "deps": {
+      "connection": false,
+      "db_connection": false,
+      "decimal": false,
+      "jason": true,
+      "table": true
+    },
+    "fetcher": "hex",
+    "name": "postgrex",
+    "pkg": "postgrex",
+    "sha256": "sha256-7erWOdxuiCYYwB2PyJEhTEgauaN4jf443V43/R1fsug=",
+    "version": "0.16.5"
+  },
+  "quantum": {
+    "builder": "mix",
+    "deps": {
+      "crontab": false,
+      "gen_stage": false,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "quantum",
+    "pkg": "quantum",
+    "sha256": "sha256-0OtklX09xJyO1zDMIgMQgzQiZJZTWWW436Pz289DD4c=",
+    "version": "3.4.0"
+  },
+  "ranch": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "ranch",
+    "pkg": "ranch",
+    "sha256": "sha256-SfvP02gvqx9dEJNRthJXZ22hov2+KVkEF21eUhot3+U=",
+    "version": "1.8.0"
+  },
+  "recon": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "recon",
+    "pkg": "recon",
+    "sha256": "sha256-LHUjyN7pHf9B9rPWPLor1J620v5b8e7A33+H614jDhw=",
+    "version": "2.5.2"
+  },
+  "simple_markdown": {
+    "builder": "mix",
+    "deps": {
+      "html_entities": false,
+      "parsey": false
+    },
+    "fetcher": "hex",
+    "name": "simple_markdown",
+    "pkg": "simple_markdown",
+    "sha256": "sha256-UNtM8X6woq1xR5x6OFlUxfyoKIfjqU3SaBlGBYbPId8=",
+    "version": "0.8.2"
+  },
+  "snowflake": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "snowflake",
+    "pkg": "snowflake",
+    "sha256": "sha256-utsH67CJpc/3N3OCl1E9s5YnYLEP4rFYrjvr8LTVvhM=",
+    "version": "1.0.4"
+  },
+  "ssl_verify_fun": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "ssl_verify_fun",
+    "pkg": "ssl_verify_fun",
+    "sha256": "sha256-vbDSRx9FPIj/OQjnaG+G+b4yfQZcwewW+kVAGX6gRoA=",
+    "version": "1.1.6"
+  },
+  "sweet_xml": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "sweet_xml",
+    "pkg": "sweet_xml",
+    "sha256": "sha256-aJTmihIPRUU02ZBF6jMl93QOpxJgvDFfguKXMdVwpug=",
+    "version": "0.7.2"
+  },
+  "syn": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "syn",
+    "pkg": "syn",
+    "sha256": "sha256-fze1MGB0bX5EVcvLqSwGyxe6bilLm1XAdk9We9ohhJQ=",
+    "version": "2.1.4"
+  },
+  "telemetry": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "telemetry",
+    "pkg": "telemetry",
+    "sha256": "sha256-63K4Nl/9pb7WimINHaiFJeMmy4KnXuYTVPwkuER2gEE=",
+    "version": "0.4.3"
+  },
+  "tesla": {
+    "builder": "mix",
+    "deps": {
+      "castore": true,
+      "exjsx": true,
+      "fuse": true,
+      "gun": true,
+      "hackney": true,
+      "ibrowse": true,
+      "jason": true,
+      "mime": false,
+      "mint": true,
+      "poison": true,
+      "telemetry": true
+    },
+    "fetcher": "hex",
+    "name": "tesla",
+    "pkg": "tesla",
+    "sha256": "sha256-JkjxwnYQL5JQKZ4Le1fzBxxngnNJ2Rc/NMKBdWobEkw=",
+    "version": "1.3.3"
+  },
+  "timex": {
+    "builder": "mix",
+    "deps": {
+      "combine": false,
+      "gettext": false,
+      "tzdata": false
+    },
+    "fetcher": "hex",
+    "name": "timex",
+    "pkg": "timex",
+    "sha256": "sha256-opYyf3nLHseVuJZpjFbmYu1yEMyesx8Ks2XrOmLixYk=",
+    "version": "3.7.6"
+  },
+  "tzdata": {
+    "builder": "mix",
+    "deps": {
+      "hackney": false
+    },
+    "fetcher": "hex",
+    "name": "tzdata",
+    "pkg": "tzdata",
+    "sha256": "sha256-ppzsg1Lq/NLhmN6iijQRO2D9xstX61rWXBApKmuol4c=",
+    "version": "1.1.1"
+  },
+  "ueberauth": {
+    "builder": "mix",
+    "deps": {
+      "plug": false
+    },
+    "fetcher": "hex",
+    "name": "ueberauth",
+    "pkg": "ueberauth",
+    "sha256": "sha256-LvrZAi6UmDTxbMUs2TUWUEnYH6npJWkPkQNcLktY2QU=",
+    "version": "0.7.0"
+  },
+  "ueberauth_google": {
+    "builder": "mix",
+    "deps": {
+      "oauth2": false,
+      "ueberauth": false
+    },
+    "fetcher": "hex",
+    "name": "ueberauth_google",
+    "pkg": "ueberauth_google",
+    "sha256": "sha256-t5n1R9J5u4NuH3A5/J+7Op0AimleKiW9Br/+WRoWi6E=",
+    "version": "0.10.1"
+  },
+  "unicode_util_compat": {
+    "builder": "rebar3",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "unicode_util_compat",
+    "pkg": "unicode_util_compat",
+    "sha256": "sha256-Je7m1n32GWDPanlCOVZlmbCeF+Zo03ACR7xJhjgVJSE=",
+    "version": "0.7.0"
+  },
+  "zbang": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "zbang",
+    "pkg": "zbang",
+    "sha256": "sha256-yTVG3JCFt1fGGdC5R+ByJ4hHbgGvkwph9nH03z42ZlQ=",
+    "version": "1.1.1"
+  }
+}

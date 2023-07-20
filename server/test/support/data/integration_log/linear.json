@@ -1,0 +1,72 @@
+{
+  "url": "https://linear.app/jumpwire/issue/JW-573/track-signup-referrals",
+  "data": {
+    "id": "084184ae-77dd-42f1-ae8a-27a72e54af08",
+    "team": {
+      "id": "4a3ed6df-06bb-444d-b070-c19c0f1291b6",
+      "key": "JW",
+      "name": "JumpWire"
+    },
+    "cycle": {
+      "id": "26a317ae-5b29-4630-8480-e67fef1b9da2",
+      "name": "Q3 Cycle 7",
+      "endsAt": "2022-10-11T04:00:00.000Z",
+      "number": 41,
+      "startsAt": "2022-09-27T04:00:00.000Z"
+    },
+    "state": {
+      "id": "f0d37c54-2207-4262-8e5f-e580a062cf60",
+      "name": "In Review",
+      "type": "started",
+      "color": "#0f783c"
+    },
+    "title": "Track signup referrals",
+    "labels": [
+      {
+        "id": "0caf961f-8983-426b-b768-462634ddba04",
+        "name": "fogbender",
+        "color": "#0f7488"
+      },
+      {
+        "id": "85d0bed2-40ee-43f7-b631-7afc396d778c",
+        "name": "type: task",
+        "color": "#bec2c8"
+      }
+    ],
+    "number": 573,
+    "teamId": "4a3ed6df-06bb-444d-b070-c19c0f1291b6",
+    "cycleId": "26a317ae-5b29-4630-8480-e67fef1b9da2",
+    "stateId": "f0d37c54-2207-4262-8e5f-e580a062cf60",
+    "assignee": {
+      "id": "71a79b08-de69-45ee-8c17-1284914d4685",
+      "name": "William Huba"
+    },
+    "labelIds": [
+      "0caf961f-8983-426b-b768-462634ddba04",
+      "85d0bed2-40ee-43f7-b631-7afc396d778c"
+    ],
+    "priority": 0,
+    "createdAt": "2022-10-05T15:00:06.649Z",
+    "creatorId": "71a79b08-de69-45ee-8c17-1284914d4685",
+    "sortOrder": -34561,
+    "startedAt": "2022-10-05T15:00:06.732Z",
+    "updatedAt": "2022-10-05T15:52:20.303Z",
+    "assigneeId": "71a79b08-de69-45ee-8c17-1284914d4685",
+    "boardOrder": 0,
+    "description": "For partner programs (SecureFrame et al) we'll provide referral links and will need to keep track of anyone that signs up using that link.",
+    "priorityLabel": "No priority",
+    "subscriberIds": [
+      "71a79b08-de69-45ee-8c17-1284914d4685"
+    ],
+    "previousIdentifiers": []
+  },
+  "type": "Issue",
+  "action": "update",
+  "createdAt": "2022-10-05T15:52:20.303Z",
+  "updatedFrom": {
+    "stateId_IGNORE": "0b14b55c-d822-4385-9f6b-b6670ca09bb8",
+    "sortOrder": -32310,
+    "updatedAt": "2022-10-05T15:00:06.649Z"
+  },
+  "organizationId": "3dfdf85c-3042-4191-86e7-94c2ba47ca59"
+}

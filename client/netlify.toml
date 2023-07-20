@@ -1,0 +1,26 @@
+# Sometimes it sticks :)
+[build]
+  ignore = "printenv CACHED_COMMIT_REF; [[ $CACHED_COMMIT_REF != $COMMIT_REF ]] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./"
+  command = "PUBLIC_VERSION=$(node -p \"require('./package.json').version\") PUBLIC_SHA=$COMMIT_REF PUBLIC_BRANCH=$HEAD yarn build-client"
+  publish = "dist"
+
+# any environment
+[build.environment]
+  PUBLIC_GTM_ID="GTM-NSXTRCD"
+  PUBLIC_SEGMENT_SOURCE_ID="a6B6PkdZlNFgMTIzMC0ruJiStExzd9BE"
+  PUBLIC_DEFAULT_ENV="staging"
+  NODE_VERSION="v18.12.1"
+
+[context.production-client.environment]
+  PUBLIC_DEFAULT_ENV="prod"
+  PUBLIC_SEGMENT_SOURCE_ID="36dNZpZKRaGcXxxSU9NV86FSkbMcuew4"
+
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[dev]
+  command = "PORT=3000 yarn start"

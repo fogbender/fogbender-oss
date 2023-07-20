@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  client:domainName: fogbender-test.com
+  client:netlifyDomain: staging-client--fb-client.netlify.app
+  client:betaDomain: master--fb-client.netlify.app

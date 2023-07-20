@@ -1,0 +1,42 @@
+[build]
+  ignore = "printenv CACHED_COMMIT_REF; [[ $CACHED_COMMIT_REF != $COMMIT_REF ]] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./ ../client/src/shared/"
+  command = "(cd ./public; cp robots.${PUBLIC_DEFAULT_ENV}.txt robots.txt) && PUBLIC_VERSION=$(node -p \"require('./package.json').version\") PUBLIC_SHA=$COMMIT_REF PUBLIC_BRANCH=$HEAD yarn build-storefront"
+  publish = "dist"
+
+# any environment
+[build.environment]
+  PUBLIC_GTM_ID="GTM-W68WZ7X"
+  PUBLIC_SEGMENT_SOURCE_ID="a6B6PkdZlNFgMTIzMC0ruJiStExzd9BE"
+  PUBLIC_DEFAULT_ENV="staging"
+  NODE_VERSION="v18.12.1"
+  NODE_OPTIONS = "--max_old_space_size=8192"
+
+# production-storefront for fb-storefront-prod and staging-storefront for fb-storefront
+[context.production.environment]
+  PUBLIC_SEGMENT_SOURCE_ID="36dNZpZKRaGcXxxSU9NV86FSkbMcuew4"
+
+# 'production-storefront' is a branch name
+[context.production-storefront.environment]
+  PUBLIC_GTM_ID="GTM-NSXTRCD"
+  PUBLIC_DEFAULT_ENV="prod"
+
+[[redirects]]
+  from = "/privacy"
+  to = "https://github.com/fogbender/legal/blob/master/privacy-policy.txt"
+
+[[redirects]]
+  from = "/terms-of-use"
+  to = "https://github.com/fogbender/legal/blob/master/terms-of-service.txt"
+
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/SPA.html"
+  status = 200
+
+[dev]
+  envFiles = [".env.netlify", ".env"]
+  command = "yarn start"
+  targetPort = 3101
+  port = 3100

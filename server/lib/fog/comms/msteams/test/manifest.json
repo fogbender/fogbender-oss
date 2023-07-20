@@ -1,0 +1,87 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.11/MicrosoftTeams.schema.json",
+  "version": "1.0.3",
+  "manifestVersion": "1.11",
+  "id": "f27f467f-9631-429a-8f18-818c54ff38b1",
+  "packageName": "com.package.name",
+  "name": {
+    "short": "Fogbender-TEST",
+    "full": ""
+  },
+  "icons": {
+    "outline": "https://aadcdn.msftauthimages.net/dbd5a2dd-glkpdpp24hw5dcxwvnblgp4ldwodse6zvpen4ip7c9k/appbranding/mflqvjzhmtt4ml1t7zftbcpskfuieaouuch-or9-epa/1033/bannerlogo?ts=637973498877564472",
+    "color": "https://aadcdn.msftauthimages.net/dbd5a2dd-glkpdpp24hw5dcxwvnblgp4ldwodse6zvpen4ip7c9k/appbranding/mflqvjzhmtt4ml1t7zftbcpskfuieaouuch-or9-epa/1033/bannerlogo?ts=637973498877564472"
+  },
+  "developer": {
+    "name": "Fogbender Software, Inc.",
+    "mpnId": "",
+    "websiteUrl": "https://fogbender.com",
+    "privacyUrl": "https://github.com/fogbender/legal/blob/master/privacy-policy.txt",
+    "termsOfUseUrl": "https://github.com/fogbender/legal/blob/master/terms-of-service.txt"
+  },
+  "description": {
+    "short": "Fogbender customer-end application for Microsoft Teams",
+    "full": "The Fogbender Microsoft Teams integration enables a company that uses Microsoft Teams for team messaging to communicate with a vendor that uses the Fogbender customer support platform. To learn more about Fogbender and the Fogbender Microsoft Teams integration, please send a note to hello@fogbender.com."
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "edc068bb-4198-4766-9d46-d5deeaa1177e",
+      "scopes": ["team"],
+      "isNotificationOnly": false,
+      "supportsCalling": false,
+      "supportsVideo": false,
+      "supportsFiles": true,
+	  "commandLists":[
+        {
+          "scopes":[
+            "team"
+          ],
+          "commands":[
+            {
+              "title": "help",
+              "description": "Displays the list of available commands"
+            },
+            {
+              "title": "status",
+              "description": "Displays the status of connection to Fogbender"
+            },
+            {
+              "title": "connect",
+              "description": "Connects this channel to Fogbender (requires a code)"
+            },
+            {
+              "title": "disconnect",
+              "description": "Disconnects this channel from Fogbender"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "validDomains": [],
+  "webApplicationInfo": {
+    "id": "edc068bb-4198-4766-9d46-d5deeaa1177e",
+    "resource": "https://RscBasedStoreApp",
+    "applicationPermissions": [
+      "TeamSettings.Read.Group",
+      "TeamSettings.ReadWrite.Group",
+      "ChannelSettings.Read.Group",
+      "ChannelSettings.ReadWrite.Group",
+      "Channel.Create.Group",
+      "Channel.Delete.Group",
+      "ChannelMessage.Read.Group",
+      "TeamsAppInstallation.Read.Group",
+      "TeamsTab.Read.Group",
+      "TeamsTab.Create.Group",
+      "TeamsTab.ReadWrite.Group",
+      "TeamsTab.Delete.Group",
+      "TeamMember.Read.Group",
+      "TeamsActivity.Send.Group"
+    ]
+  }
+}

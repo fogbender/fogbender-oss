@@ -1,0 +1,26 @@
+<%
+%Data.EmailDigest{badges: badges} = data
+to = recipient(data)
+unread_count = badges |> Enum.map(& &1.count) |> Enum.sum()
+mentions_count = badges |> Enum.map(& &1.mentions_count) |> Enum.sum()
+rooms_count = length(badges)
+%>
+Hello, <%= to.name %>,
+
+You have <%= unread_count %> new messages<%= if mentions_count > 0 do %> and <%= mentions_count %> mentions<% end %> in <%= rooms_count %> rooms:
+
+<%= for b <- badges do %>
+    <%= badge_room_name(b) %>
+
+    <%= author(b.first_unread_message).name %>: <%= b.first_unread_message.text %>
+    <%= if b.count > 1 do %> ...<%= b.count - 1 %> more messages<%= if b.mentions_count > 0 do %> with <%= b.mentions_count %> mentions<% end %>.<% end %>
+
+<% end %>
+
+--
+<%= if data.to_type == "agent" do
+  "Fogbender Team"
+else
+  "#{data.vendor.name} Support"
+end
+%>

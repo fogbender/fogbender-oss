@@ -1,0 +1,46 @@
+---
+import Layout from "../layouts/main.astro";
+import Page from "../layouts/Page.astro";
+import PageTitle from "../ui/landing/PageTitle.astro";
+import PricingCard from "../ui/landing/PricingCard.astro";
+
+const title = "Pricing";
+const PricingData = [
+  {
+    title: "On the house",
+    price: "Free",
+    benefits: [
+      "2 customer-facing agents",
+      "Unlimited: readers, history, internal messaging",
+      "Reporting, integrations",
+      "SSO",
+    ],
+  },
+  {
+    title: "Support",
+    price: "$480 per agent, per year",
+    benefits: ["Everything above", "3+ customer-facing agents"],
+  },
+  {
+    title: "Success",
+    price: "$720 per agent, per year",
+    benefits: ["Everything above", " Microsoft Teams integration"],
+  },
+  { title: "Enterprise", price: "Custom", benefits: ["Everything above", "Private deployment"] },
+];
+---
+
+<Layout meta={{ title: "Pricing" }}>
+  <Page>
+    <PageTitle title={title} />
+    <div class="max-w-[51rem] flex justify-center">
+      <div class="w-full sm:w-[39rem] xl:w-[51rem] flex flex-col gap-6">
+        {
+          PricingData.map(data => {
+            return <PricingCard {...data} />;
+          })
+        }
+      </div>
+    </div>
+  </Page>
+</Layout>

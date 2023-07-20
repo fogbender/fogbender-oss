@@ -1,0 +1,65 @@
+{
+  "name": "fogbender-react",
+  "version": "0.2.12",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Made with create-react-library",
+  "author": "JLarky",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.modern.js",
+  "source": "src/index.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-react"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "microbundle --jsx React.createElement --no-compress --format modern,cjs",
+    "start": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
+    "prepare": "run-s build",
+    "test": "run-s test:lint",
+    "test:lint": "eslint . || true",
+    "predeploy": "cd example && yarn install && yarn run build"
+  },
+  "dependencies": {
+    "fogbender": ">=0.2.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.5.0",
+    "@testing-library/react": "^10.0.3",
+    "@testing-library/user-event": "^10.1.0",
+    "@types/jest": "^25.1.4",
+    "@types/node": "13.13.2",
+    "@types/react": "^17.0.52",
+    "@types/react-dom": "^17.0.18",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "microbundle": "^0.14.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "^4.0.0",
+    "typescript": "^4.0.5"
+  },
+  "files": [
+    "dist"
+  ]
+}

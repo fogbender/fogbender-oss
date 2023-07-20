@@ -1,0 +1,10 @@
+config:
+  aws:region: us-east-1
+  cloud:provider: aws
+  api:infraStackRef: fogbender/fogbender/dev
+  api:dbUser: fogbender
+  api:dbMachineType: db.t3.micro
+  api:dbStorageGB: 20
+  api:domainName: fogbender-stage.com
+  api:machineType: t2.micro
+  api:machineStorageGB: 5

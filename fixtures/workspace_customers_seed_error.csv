@@ -1,0 +1,6 @@
+customer_name,customer_id,user_name,user_email,user_id
+Acme,abc123,Bob,bob@acme.test,123
+Acme,John,john@acme.test,124
+Fox,001,Alice,alice@fox.test,aa0
+Fox,001,Marina,marina@fox.test,aa1
+"Chickens, Inc","customer-101,Carrie,carrie@chickens-inc.test,8

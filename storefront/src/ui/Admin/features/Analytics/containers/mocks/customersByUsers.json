@@ -1,0 +1,14 @@
+{
+  "data": [
+    { "name": "Fogbender", "value": 400 },
+    { "name": "Apple", "value": 300 },
+    { "name": "Microsoft", "value": 3000 },
+    { "name": "General Dynamics", "value": 200 },
+    { "name": "Abbvie", "value": 278 },
+    { "name": "McDonalds", "value": 1890 },
+    { "name": "KFC", "value": 300 },
+    { "name": "Pepsi", "value": 2000 },
+    { "name": "Coca Cola", "value": 278 },
+    { "name": "Coinbase", "value": 1890 }
+  ]
+}

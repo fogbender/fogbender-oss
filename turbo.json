@@ -1,0 +1,38 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "storefront#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["*.*", "{src,public}/**", "../client/src/shared"]
+    },
+    "vendor-demo#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["*.*", "{src,public}/**", "../client/src/shared/ui/SelectSearch.tsx"]
+    },
+    "lint:full": {
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev2": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

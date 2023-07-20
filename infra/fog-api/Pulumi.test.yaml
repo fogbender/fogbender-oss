@@ -1,0 +1,13 @@
+config:
+  aws:region: us-west-1
+  fog-api:netStack: fogbender-software/fog-net/test
+  fog-api:kmsStack: fogbender-software/fog-kms/test
+  fog-api:mailStack: fogbender-software/fog-mail/test
+  fog-api:dbStack: fogbender-software/fog-db/test
+  fog-api:publicDomain: fogbender-test.com
+  fog-api:publicHost: api
+  fog-api:privateDomain: fogbender.net
+  fog-api:privateHost: api-test
+  fog-api:machineType: t3.small
+  fog-api:volumeSizeGB: 30
+  fog-api:s3LogBucket: fogbender-s3-logging-us-west-1

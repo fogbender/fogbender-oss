@@ -1,0 +1,26 @@
+---
+import { Picture } from "@astrojs/image/components";
+import type { Props } from "@astrojs/image/components/Picture.astro";
+
+type PictureProps = Props & { src: ImageMetadata; classes?: string[] };
+
+const {
+  src,
+  classes = [],
+  aspectRatio = "16:9",
+  sizes = "(max-width: 816px) 100vw, 816px",
+  formats = ["avif", "webp", "jpeg", "png"],
+  alt = "The Astro logo",
+  widths = [200, 400, 816],
+} = Astro.props as PictureProps;
+---
+
+<Picture
+  class:list={["rounded-2xl", ...classes]}
+  src={src}
+  aspectRatio={aspectRatio}
+  widths={widths}
+  sizes={sizes}
+  formats={formats}
+  alt={alt}
+/>

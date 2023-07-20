@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /?lang=*
+Disallow: /blog/draft
+Disallow: /admin
+Host: fogbender.com
+Sitemap: https://fogbender.com/sitemap-index.xml

@@ -1,0 +1,44 @@
+display_information:
+  name: Fogbender Customer-dev
+  description: Fogbender does B2B stuff
+  background_color: "#737373"
+features:
+  bot_user:
+    display_name: Fogbender Customer-dev
+    always_online: false
+oauth_config:
+  redirect_urls:
+    - https://far-horse-21.deno.dev/oauth/slack
+  scopes:
+    user:
+      - identity.basic
+      - identity.email
+      - identity.avatar
+      - identity.team
+    bot:
+      - channels:history
+      - channels:manage
+      - channels:read
+      - chat:write
+      - chat:write.customize
+      - files:read
+      - groups:read
+      - metadata.message:read
+      - reactions:read
+      - reactions:write
+      - users:read
+      - users:read.email
+      - files:write
+settings:
+  event_subscriptions:
+    request_url: https://9f53-24-32-28-103.ngrok.io/hook/slack
+    bot_events:
+      - file_created
+      - member_joined_channel
+      - member_left_channel
+      - message.channels
+      - reaction_added
+      - reaction_removed
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

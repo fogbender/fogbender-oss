@@ -1,0 +1,71 @@
+---
+import { Logo, XClose, FogbenderText } from "./Icons";
+const pages = [
+  {
+    name: "Get started",
+    path: "/admin",
+    class:
+      "active:text-blue-500 shadow-[-1px_9px_14px_rgba(126,12,245,0.1),9px_-1px_14px_rgba(255,115,21,0.1),-8px_-7px_14px_rgba(254,52,110,0.1)]",
+  },
+  { name: "Pricing", path: "/pricing" },
+  { name: "FAQ", path: "/faq" },
+  { name: "Blog", path: "/blog" },
+];
+const borderClass = "border border-gray-200";
+const menuItemClass =
+  "py-4 px-3 max-w-md font-body font-semibold text-base rounded-2xl text-center transition w-full";
+const menuClass = "px-6 flex flex-col items-center space-y-6";
+---
+
+<aside
+  id="sidebar"
+  class="fixed top-0 left-0 z-10 mx-auto h-full w-full -translate-x-full overflow-y-auto bg-white md:hidden"
+>
+  <div class="flex items-center justify-between px-4 py-3 mb-12">
+    <a href="/" class="flex items-end gap-x-2">
+      <Logo className="w-9 h-11" ariaLabel="Home" />
+      <FogbenderText height={"36"} width={"149"} />
+    </a>
+    <button id="close-sidebar">
+      <XClose className="w-9 h-9" ariaLabel="Close" />
+    </button>
+  </div>
+  <div class:list={["mb-12", menuClass]}>
+    {
+      pages.map(page => (
+        <a
+          class:list={[{ [borderClass]: page.path !== "/" }, menuItemClass, page.class]}
+          href={page.path}
+        >
+          {page.name}
+        </a>
+      ))
+    }
+  </div>
+  <div class:list={[menuClass, "mb-5"]}>
+    <a class:list={[menuItemClass, borderClass]} href="/admin">Sign&nbsp;in</a>
+    <a class:list={["bg-blue-500 text-white", menuItemClass]} href="/signup">Sign&nbsp;up</a>
+  </div>
+</aside>
+<script>
+  const sidebar = document.querySelector("#sidebar")!;
+
+  const closeSidebarButton = document.querySelector("#close-sidebar")!;
+
+  closeSidebarButton.addEventListener("click", e => {
+    const sidebarToggleEvent = new CustomEvent("sidebar-toggle", {
+      bubbles: true,
+      cancelable: true,
+    });
+    const cancelled = e.target?.dispatchEvent(sidebarToggleEvent);
+
+    if (cancelled) {
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener("sidebar-toggle", () => {
+    sidebar.classList.toggle("-translate-x-full");
+    sidebar.classList.add("transition");
+  });
+</script>

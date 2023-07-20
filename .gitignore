@@ -1,0 +1,15 @@
+.vscode
+node_modules
+/.nix-shell/
+/.server/_build/
+/cypress/screenshots
+/cypress/videos
+/result
+local.env
+*.swp
+*.swo
+.DS_Store
+.turbo
+
+# Local Netlify folder
+.netlify

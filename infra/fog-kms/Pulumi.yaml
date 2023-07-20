@@ -1,0 +1,3 @@
+name: fog-kms
+runtime: nodejs
+description: Fogbender AWS KMS

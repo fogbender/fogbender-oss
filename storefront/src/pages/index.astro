@@ -1,0 +1,339 @@
+---
+import Customers from "../ui/Customers.astro";
+import Layout from "../layouts/main.astro";
+import Botface from "../ui/landing/assets/botface.png";
+import organizationSchema from "../content/schema/organization.json";
+import {
+  FogbenderLogo,
+  IconOutlineAsana,
+  IconOutlineHubspot,
+  IconHubSpot,
+  IconOutlineSlack,
+  IconSlack,
+  IconJira,
+  IconOutlineMsTeams,
+  IconMsTeams,
+  IconLinear,
+  IconOutlineGithub,
+  IconGithub,
+  IconGitlab,
+  IconOutlineHeight,
+  IconOutlineSalesforce,
+  IconOutlineTrello,
+  IconBotface,
+} from "../../../client/src/shared/components/IntegrationIcons";
+import LazyFrame from "../ui/LazyFrame.astro";
+---
+
+<Layout meta={{ title: "Team-to-team customer support" }} linkedData={organizationSchema}>
+  <!-- This example requires Tailwind CSS v3.0+ -->
+  <div class="isolate bg-white">
+    <h1
+      class:list={[
+        "w-full md:w-full",
+        "font-light font-prompt text-3xl mt-28 mb-32",
+        "sm:mb-60 sm:text-5xl sm:mt-40",
+      ]}
+    >
+      <span class="leading-tight">Customer support</span>
+      <span class="leading-tight block">for companies that sell</span>
+      <span class="leading-tight">complex products to teams</span>
+    </h1>
+
+    <div class="flex flex-col space-y-8 lg:space-y-16 px-1">
+      <div
+        class:list={[
+          "font-prompt font-light sm:font-extralight text-2xl sm:text-5xl sm:!leading-[77px] text-center lg:border-b border-gray-200 lg:!leading-[0px] w-full",
+        ]}
+      >
+        <span
+          class="bg-white px-3 uppercase md:px-8 tracking-[13px] lg:max-xl:tracking-[6px] xl:tracking-[13px]"
+          >2-way integerations with</span
+        >
+      </div>
+
+      <div class="space-y-8 lg:flex lg:space-y-0 lg:gap-x-12 lg:justify-center">
+        <div class="flex justify-center gap-x-8 lg:gap-x-12">
+          <IconOutlineMsTeams />
+          <IconOutlineSlack />
+          <IconOutlineHeight />
+          <IconGitlab className="h-12 w-12 sm:h-16 sm:w-16 text-gray-500" strokeWidth={1} />
+          <IconOutlineGithub className="h-12 w-12 sm:h-16 sm:w-16 hidden sm:block" />
+          <IconJira
+            className="h-12 w-12 sm:h-16 sm:w-16 hidden sm:block text-gray-500"
+            strokeWidth={1}
+          />
+        </div>
+        <div
+          class="flex flex-col sm:gap-x-14 justify-center sm:flex-row sm:space-y-0 space-y-8 lg:gap-x-12"
+        >
+          <div class="flex justify-center gap-x-8 sm:gap-x-14">
+            <IconOutlineGithub className="h-12 w-12 sm:h-16 sm:w-16 sm:hidden" />
+            <IconJira
+              className="h-12 w-12 sm:h-16 sm:w-16 sm:hidden text-gray-500"
+              strokeWidth={1}
+            />
+            <IconLinear className="h-12 w-12 sm:h-16 sm:w-16 text-gray-500" />
+            <IconOutlineTrello />
+          </div>
+          <div class="flex sm:gap-x-12 gap-x-16 justify-center">
+            <IconOutlineAsana />
+            <IconOutlineSalesforce />
+            <IconOutlineHubspot />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers -->
+    <div>
+      <Customers />
+    </div>
+
+    <div class="my-24 sm:my-40 flex flex-col space-y-24 font-prompt">
+      <div
+        class:list={[
+          "text-2xl sm:text-4xl md:text-5xl lg:text-7xl text-center border-b border-gray-200 !leading-[0px] !sm:leading-[0px] !md:leading-[0px] !lg:leading-[0px] w-full",
+        ]}
+      >
+        <span class="bg-white px-3 font-[100] uppercase tracking-widest md:px-8">features</span>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row-reverse"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/9Dz0Hhr13zg?vq=hd1080&autoplay=1"
+            title="Bob and Alice"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <FogbenderLogo className="w-12 h-12" />
+          <div class="w-72">
+            The Fogbender embeddable team messaging widget connects all users within a customer
+            organization with your support agents
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row md:gap-12"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/93HM3TSvAh8?vq=hd1080&autoplay=1"
+            title="The Agent App"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <FogbenderLogo className="w-12 h-12" />
+          <div class="w-60 sm:w-72">
+            The Fogbender agent app is specifically designed for managing communication between
+            vendor and customer teams in B2B environments
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row-reverse"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/1Nh5fAXr6As?vq=hd1080&autoplay=1"
+            title="Ticket management in Fogbender"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <IconGithub className="w-12 h-12" />
+          <div class="w-60 sm:w-72">
+            Link customer support conversations to tickets in your developer-facing issue tracking
+            system—Jira, Asana, GitHub, GitLab, Height, Linear, etc
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row md:gap-12"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/tkGmLmoWajM?vq=hd1080&autoplay=1"
+            title="Two-way sync between Fogbender and MS Teams"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <IconMsTeams className="w-12 h-12" />
+          <div class="w-60 sm:w-72">
+            The Fogbender Microsoft Teams integration enables your support agents to assist the
+            users of an enterprise customer org that requires your presence in a Microsoft Teams
+            channel
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row-reverse"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/j5WsMhigrt4?vq=hd1080&autoplay=1"
+            title="Fogbender + LLMs"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <IconBotface src={Botface} />
+          <div class="w-60 sm:w-72">
+            Leverage AI to help support agents with tricky user questions
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col font-light items-center gap-4 sm:gap-6 self-center md:flex-row md:gap-12"
+      >
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/BdQ0swMRXzs?vq=hd1080&autoplay=1"
+            title="Two-way sync between Fogbender and Slack shared channels"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <IconSlack className="w-12 h-12" />
+          <div class="w-60 sm:w-72">
+            The Fogbender Slack—Shared Channel Integration keeps tracks of threads, assignments, and
+            promises in your existing customer shared channels
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col font-light items-center gap-4 self-center md:flex-row-reverse">
+        <div
+          class="relative h-[191.25px] w-[340px] sm:max-lg:h-[236px] sm:max-lg:w-[420px] lg:h-[383px] lg:w-[680px]"
+        >
+          <LazyFrame
+            loading="lazy"
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "0",
+              width: "100%",
+              height: "100%",
+              borderRadius: "10px",
+            }}
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/-ZFdxsD0DKQ?vq=hd1080&autoplay=1"
+            title="Fogbender + HubSpot"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+        <div class="flex flex-row gap-6 self-start md:flex-col md:self-end">
+          <IconHubSpot className="w-12 h-12" />
+          <div class="w-60 sm:w-72">
+            Connect your CRM to Fogbender to display customer data in Fogbender UI, and Fogbender
+            tickets in the CRM
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

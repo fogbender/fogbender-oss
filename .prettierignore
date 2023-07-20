@@ -1,0 +1,16 @@
+/server/deps/
+/server/**/*.json
+deps.json
+/secrets/
+/nix/
+*/uild/
+build
+dist
+.astro
+.netlify
+.vscode
+build.css
+client/public/loader.js
+client/public/snippet.min.js
+client/src/shared/z_types.ts
+docs/FolderStructureConventions.md

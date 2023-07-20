@@ -1,0 +1,153 @@
+{
+  "user": {
+    "id": 12428408,
+    "name": "Karan Nakra",
+    "email": "[REDACTED]",
+    "username": "karannakra",
+    "avatar_url": "https://secure.gravatar.com/avatar/58f60c01ca8ad6875dedbdbaacd9c4d1?s=80&d=identicon"
+  },
+  "labels": [
+    {
+      "id": 19936689,
+      "type": "ProjectLabel",
+      "color": "#f7e7ce",
+      "title": "fogbender",
+      "group_id": null,
+      "template": false,
+      "created_at": "2021-05-08 00:47:19 UTC",
+      "project_id": 16012183,
+      "updated_at": "2022-04-18 15:48:09 UTC",
+      "description": ""
+    }
+  ],
+  "changes": {
+    "labels": {
+      "current": [
+        {
+          "id": 19936689,
+          "type": "ProjectLabel",
+          "color": "#f7e7ce",
+          "title": "fogbender",
+          "group_id": null,
+          "template": false,
+          "created_at": "2021-05-08 00:47:19 UTC",
+          "project_id": 16012183,
+          "updated_at": "2022-04-18 15:48:09 UTC",
+          "description": ""
+        }
+      ],
+      "previous": [
+        {
+          "id": 14156596,
+          "type": "ProjectLabel",
+          "color": "#F0AD4E",
+          "title": "Doing",
+          "group_id": null,
+          "template": false,
+          "created_at": "2020-03-11 22:46:17 UTC",
+          "project_id": 16012183,
+          "updated_at": "2022-04-18 15:27:01 UTC",
+          "description": ""
+        },
+        {
+          "id": 19936689,
+          "type": "ProjectLabel",
+          "color": "#f7e7ce",
+          "title": "fogbender",
+          "group_id": null,
+          "template": false,
+          "created_at": "2021-05-08 00:47:19 UTC",
+          "project_id": 16012183,
+          "updated_at": "2022-04-18 15:48:09 UTC",
+          "description": ""
+        }
+      ]
+    }
+  },
+  "project": {
+    "id": 16012183,
+    "url": "git@gitlab.com:fogbender/fogbender.git",
+    "name": "fogbender",
+    "ssh_url": "git@gitlab.com:fogbender/fogbender.git",
+    "web_url": "https://gitlab.com/fogbender/fogbender",
+    "homepage": "https://gitlab.com/fogbender/fogbender",
+    "http_url": "https://gitlab.com/fogbender/fogbender.git",
+    "namespace": "fogbender",
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/16012183/photo_2020-12-11_10-13-43.jpg",
+    "description": "",
+    "git_ssh_url": "git@gitlab.com:fogbender/fogbender.git",
+    "git_http_url": "https://gitlab.com/fogbender/fogbender.git",
+    "ci_config_path": null,
+    "default_branch": "master",
+    "visibility_level": 0,
+    "path_with_namespace": "fogbender/fogbender"
+  },
+  "assignees": [
+    {
+      "id": 12428408,
+      "name": "Karan Nakra",
+      "email": "[REDACTED]",
+      "username": "karannakra",
+      "avatar_url": "https://secure.gravatar.com/avatar/58f60c01ca8ad6875dedbdbaacd9c4d1?s=80&d=identicon"
+    }
+  ],
+  "event_type": "issue",
+  "repository": {
+    "url": "git@gitlab.com:fogbender/fogbender.git",
+    "name": "fogbender",
+    "homepage": "https://gitlab.com/fogbender/fogbender",
+    "description": ""
+  },
+  "object_kind": "issue",
+  "object_attributes": {
+    "id": 116094333,
+    "iid": 647,
+    "url": "https://gitlab.com/fogbender/fogbender/-/issues/647",
+    "state": "opened",
+    "title": "Failed/retry appears on successful upload",
+    "action": "update",
+    "labels": [
+      {
+        "id": 19936689,
+        "type": "ProjectLabel",
+        "color": "#f7e7ce",
+        "title": "fogbender",
+        "group_id": null,
+        "template": false,
+        "created_at": "2021-05-08 00:47:19 UTC",
+        "project_id": 16012183,
+        "updated_at": "2022-04-18 15:48:09 UTC",
+        "description": ""
+      }
+    ],
+    "weight": null,
+    "due_date": null,
+    "severity": "unknown",
+    "state_id": 1,
+    "author_id": 7995609,
+    "closed_at": null,
+    "created_at": "2022-09-30 20:11:47 UTC",
+    "project_id": 16012183,
+    "updated_at": "2022-10-03 20:45:20 UTC",
+    "assignee_id": 12428408,
+    "description": "New issue from **[$Cust_Internal_115189300009635842](https://fogbender.com/admin/vendor/v00039210325559480320/workspace/w00039210328705208320/chat/r00361205711964737536/m00363778932845056000)**\n\n\n\n\n- **[Andrei Soroker](mailto:andrei@fogbender.com)** on `2022-09-30 20:07:36Z`: <br/>  And here's another issue: about 80% of the time I post a file, I see failed/retry appear, even though everything ends up working out<br/>\n![Peek 2022-09-30 13-06.gif](https://api.fogbender.com/public/file/f5jb1dCrYZsy50OyNg2CtaqjAdHodPJlbmb791hyb-ZZUuR_6iRwenH-ER23_WILIPBEpkZDhEyhSry5gzdaqW8Tmo-oO9CnccpiwP9InMrCKbFIf14FdjDYcy4BAjEspcKKngDVBcPfm98qCq-aqOog5fvTNBN_qw-ySeDL2PuHFETh25YAoK6i6l4nvBQN9eyDMZZTEJZpQHjMGEJgXqO7AApVqRi74tEX6Lrm)\n\n\n- **[Karan Nakra](mailto:karannakra@fogbender.com)** on `2022-09-30 20:08:09Z`: <br/>  I was about to ask you about this issue<br/>\n\n\n\n- **[Karan Nakra](mailto:karannakra@fogbender.com)** on `2022-09-30 20:08:14Z`: <br/>  I also faced the same<br/>",
+    "moved_to_id": null,
+    "time_change": 0,
+    "assignee_ids": [
+      12428408
+    ],
+    "confidential": false,
+    "milestone_id": null,
+    "time_estimate": 0,
+    "updated_by_id": 12428408,
+    "last_edited_at": null,
+    "duplicated_to_id": null,
+    "total_time_spent": 0,
+    "discussion_locked": null,
+    "human_time_change": null,
+    "last_edited_by_id": null,
+    "relative_position": 2114303880,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
+}

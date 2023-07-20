@@ -1,0 +1,13 @@
+config:
+  aws:region: us-west-1
+  fog-api:netStack: fogbender-software/fog-net/prod
+  fog-api:kmsStack: fogbender-software/fog-kms/prod
+  fog-api:mailStack: fogbender-software/fog-mail/prod
+  fog-api:dbStack: fogbender-software/fog-db/prod
+  fog-api:publicDomain: fogbender.com
+  fog-api:publicHost: api
+  fog-api:privateDomain: fogbender.net
+  fog-api:privateHost: api-prod
+  fog-api:machineType: m5.2xlarge
+  fog-api:volumeSizeGB: 100
+  fog-api:s3LogBucket: fogbender-s3-logging-us-west-1

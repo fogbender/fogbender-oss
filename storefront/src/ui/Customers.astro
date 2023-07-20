@@ -1,0 +1,60 @@
+---
+import Nick from "../ui/landing/assets/nick-mehta.png";
+import { Warning } from "../ui/landing/Icons";
+import Avatar from "../ui/landing/Avatar.astro";
+---
+
+<div
+  class="font-prompt mb-28 mt-32 sm:mt-52 w-full text-3xl sm:text-[2.875rem] font-light leading-tight max-w-3xl"
+>
+  Traditional customer support systems are designed for communicating with individuals, not teams.
+</div>
+
+<div class="font-prompt flex w-full flex-col gap-8 md:flex-row">
+  <div class="w-full md:w-1/2 shrink-0">
+    <div class="text-lg sm:text-[22px]">
+      Namely, they lack the plumbing for bringing users on the same customer team together. This
+      causes problems:
+    </div>
+    <div
+      class="mt-6 flex flex-col gap-4 rounded-xl bg-gray-100 px-4 py-3 text-sm sm:text-lg font-light"
+    >
+      <div class="flex items-center gap-2">
+        <Warning className="w-5 h-5 shrink-0" />
+        <div>Lack of transparancy</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <Warning className="w-5 h-5 shrink-0" />
+        <div>Duplicate work, trapped knowledge</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <Warning className="w-5 h-5 shrink-0" />
+        <div>Conseals technical champions</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <Warning className="w-5 h-5 shrink-0" />
+        <div>Decreased customer satisfaction, lost revenue, higher churn</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col self-end">
+    <Avatar src={Nick} name="Nick Mehta" size={120} />
+    <div class="mt-4 flex flex-col text-[16px] font-light">
+      <div>
+        “Tooling around B2B customer support has long been overlooked by CSM vendors &ndash; super
+        excited to see Fogbender shake things up in the space!”
+      </div>
+      <div class="mt-3">
+        &mdash; <span class="font-medium">Nick Mehta</span>, CEO at{" "}
+        <a
+          class="hover:text-brand-red-500 text-blue-700"
+          target="_blank"
+          href="https://gainsight.com"
+        >
+          Gainsight</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

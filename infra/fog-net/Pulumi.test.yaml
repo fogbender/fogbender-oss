@@ -1,0 +1,5 @@
+config:
+  aws:region: us-west-1
+  fog-net:cidrBlock: 10.10.0.0/16
+  fog-net:peerVpcStack: fogbender-software/fog-net/admin
+  fog-net:privateZone: fogbender.net

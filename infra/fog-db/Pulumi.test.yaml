@@ -1,0 +1,10 @@
+config:
+  aws:region: us-west-1
+  fog-db:dbPassword:
+    secure: AAABAEgXLTsiBkF34ijeZwx3JN1CtpT1AnqZFbRTmpEEzB58GLtuFUXZc0Pzg13jUSoTlVOOIBlI
+  fog-db:dbUser: fogbender
+  fog-db:domain: fogbender.net
+  fog-db:host: db-test
+  fog-db:machineType: db.t3.small
+  fog-db:netStack: fogbender-software/fog-net/test
+  fog-db:storageGB: "20"
