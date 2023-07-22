@@ -11,7 +11,7 @@ const config = {
   staging: {
     dashboardUrl: "https://api.fogbender-test.com",
     // clientUrl: "https://staging-client--fb-client.netlify.app",
-    clientUrl: "https://master--fb-client.netlify.app",
+    clientUrl: "https://main--fb-client.netlify.app",
     demoUrl: "https://demo1.fogbender-test.com",
     webhookUrl: "https://api.fogbender-test.com/hook",
     cognito: "staging",

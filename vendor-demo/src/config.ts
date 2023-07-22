@@ -6,7 +6,7 @@ const config = {
     widgetKey: "",
   },
   staging: {
-    clientUrl: "https://master--fb-client.netlify.app",
+    clientUrl: "https://main--fb-client.netlify.app",
     storefrontUrl: "https://fogbender-test.com",
     widgetId: "dzAwMjQ4ODUxMDAwMTMwMDE1MjMy",
     widgetKey: "0ac47c847422d17ad2e",
