@@ -8,7 +8,7 @@ on:
   workflow_dispatch: {}
   # Scan mainline branches and report all findings:
   push:
-    branches: ["master", "main", "feature--static-analysis"]
+    branches: ["main", "feature--static-analysis"]
   # Schedule the CI job (this method uses cron syntax):
   schedule:
     - cron: "2 19 * * *" # Sets Semgrep to scan every day at 17:20 UTC.

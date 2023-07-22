@@ -3,12 +3,12 @@ default:
     - soc2
 
 stages:
+  - github_sync
   - build
   - test
   - format
   - bump
   - deploy
-  - github_sync
 
 build:
   stage: build
@@ -46,7 +46,7 @@ writing:
 sync_to_github:
   stage: github_sync
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       allow_failure: true
   script:
     - echo Syncing to GitHub...
