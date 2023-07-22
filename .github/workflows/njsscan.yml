@@ -1,9 +1,9 @@
 name: njsscan
 on:
   push:
-    branches: [master, feature--static-analysis]
+    branches: [main, feature--static-analysis]
   pull_request:
-    branches: [master]
+    branches: [main]
 jobs:
   njsscan:
     runs-on: ubuntu-latest
