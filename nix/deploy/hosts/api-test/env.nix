@@ -5,7 +5,7 @@ rec {
   FOG_STOREFRONT_URL = "https://fogbender-test.com";
   FOG_API_DOMAIN = "api.fogbender-test.com";
   FOG_API_URL = "https://${FOG_API_DOMAIN}";
-  FOG_CLIENT_URL = "https://master--fb-client.netlify.app";
+  FOG_CLIENT_URL = "https://main--fb-client.netlify.app";
   PG_PORT = "5432";
   PG_HOST = "db-test.fogbender.net";
   PG_USER = "fogbender";
