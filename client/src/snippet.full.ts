@@ -39,7 +39,7 @@ import type { Fogbender, FogbenderLoader } from "fogbender";
   }
 })(window as typeof window & { fogbender: Fogbender & FogbenderLoader });
 /*
-<script async src="https://master--fb-client.netlify.app/loader.js"></script>
+<script async src="https://main--fb-client.netlify.app/loader.js"></script>
 <script>
   const token = {
     widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -53,7 +53,7 @@ import type { Fogbender, FogbenderLoader } from "fogbender";
     userAvatarUrl:
       "https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png" // optional
   };
-  fogbender.setClientUrl("https://master--fb-client.netlify.app");
+  fogbender.setClientUrl("https://main--fb-client.netlify.app");
   fogbender.setToken(token);
 
   const rootEl = document.getElementById("app");
