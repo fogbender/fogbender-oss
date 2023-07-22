@@ -384,5 +384,14 @@ defmodule Test.Repo.EmailDigestTest do
                   {message.id, source.text}
                 end)
     end
+
+    test "Deleted user does not get digests", ctx do
+      delete_user(ctx.u1.id, ctx.a1.id)
+      seen(ctx.u1, ctx.r1, %{id: "m0"})
+      Repo.User.update_last_activity(ctx.u1.id, DateTime.utc_now())
+      message(ctx.r1, ctx.a1, "TEST 1")
+
+      assert [_] = Repo.EmailDigest.users_to_notify(ctx.t2, 100)
+    end
   end
 end
