@@ -12,7 +12,7 @@ in
 
   test.api.domain = "api.fogbender-test.com";
   test.storefront.url = "https://fogbender-test.com";
-  test.client.domain = "master--fb-client.netlify.app";
+  test.client.domain = "main--fb-client.netlify.app";
   test.db = {
     host = secrets.test.dbHost;
     port = "5432";
