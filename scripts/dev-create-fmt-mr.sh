@@ -16,9 +16,9 @@ fi
 # Check out the "chore--fmt" branch
 git checkout chore--fmt
 
-# Fetch and rebase the latest changes from master
+# Fetch and rebase the latest changes from main
 git fetch origin
-git rebase origin/master
+git rebase origin/main
 
 # Run the "yarn fix" command
 yarn fix
