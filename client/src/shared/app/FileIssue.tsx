@@ -319,8 +319,8 @@ export const FileIssue: React.FC<{
       const x = await serverCall<RoomUpdate>({
         msgType: "Room.Update",
         roomId,
-        tagsToAdd: [selectedIssue.meta_tag, ":status:open"],
-        tagsToRemove: [":status:closed"],
+        tagsToAdd: [selectedIssue.meta_tag, ":issue", ":status:open"],
+        tagsToRemove: [":status:closed", ":discussion", ":feature", ":bug"],
       });
 
       if (x && x.msgType === "Room.Ok") {
@@ -362,7 +362,7 @@ export const FileIssue: React.FC<{
     const linkStartMessageId = selection[0]?.id;
     const linkEndMessageId = selection.slice(-1)[0]?.id;
     const forward = { linkRoomId, linkStartMessageId, linkEndMessageId };
-    const tagsToAdd = [":status:open", issuePriority];
+    const tagsToAdd = [":status:open", ":issue", issuePriority];
     const integration = issueTrackerIntegrations.find(iti => iti.id === selectedIntegration?.id);
 
     if (integration) {
@@ -385,7 +385,7 @@ export const FileIssue: React.FC<{
               msgType: "Room.Update",
               roomId,
               tagsToAdd,
-              tagsToRemove: [":status:closed"],
+              tagsToRemove: [":status:closed", ":discussion", ":feature", ":bug"],
             });
 
             if (x && x.msgType === "Room.Ok") {
