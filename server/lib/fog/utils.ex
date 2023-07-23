@@ -227,7 +227,7 @@ defmodule Fog.Utils do
         [response |> String.trim_trailing(".")]
 
       e ->
-        Logger.error(Exception.format(:error, e, Exception.format_stacktrace()))
+        Logger.error("Error: #{inspect(e)} #{Exception.format_stacktrace()}")
         {:error, "Could not summarize"}
     end
   end
