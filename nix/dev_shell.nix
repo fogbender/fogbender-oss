@@ -63,11 +63,15 @@ in with pkgs; mkShell {
 
   shellHook = ''
   if [ -f "./local.env" ]; then
-  echo Sourcing local.env..
   . local.env
   fi
   set -a
+  echo Sourcing dev.env..
   eval "$(sops -d ./config/dev.env)"
   set +a
+  if [ -f "./local.env" ]; then
+  echo Sourcing local.env..
+  . local.env
+  fi
   '';
 }
