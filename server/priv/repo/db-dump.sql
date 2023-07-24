@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.15
--- Dumped by pg_dump version 12.15
+-- Dumped from database version 14.8
+-- Dumped by pg_dump version 14.8
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -999,7 +999,9 @@ CREATE TABLE public."user" (
     helpdesk_id bigint DEFAULT 0 NOT NULL,
     image_url text,
     last_activity_at timestamp without time zone,
-    last_digest_check_at timestamp without time zone
+    last_digest_check_at timestamp without time zone,
+    deleted_at timestamp without time zone,
+    deleted_by_agent_id bigint
 );
 
 
@@ -2392,3 +2394,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230413193646);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415133420);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415134354);
 INSERT INTO public."schema_migrations" (version) VALUES (20230507192311);
+INSERT INTO public."schema_migrations" (version) VALUES (20230720040621);

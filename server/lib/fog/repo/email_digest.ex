@@ -216,6 +216,7 @@ defmodule Fog.Repo.EmailDigest do
       join: u in assoc(fo, :user),
       left_join: seen in subquery(user_seen_q()),
       on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
+      where: is_nil(u.deleted_at),
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
         vendor_id: fo.vendor_id,

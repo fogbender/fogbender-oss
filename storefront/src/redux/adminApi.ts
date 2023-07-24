@@ -31,6 +31,8 @@ export type User = {
   avatar_url?: string;
   tags: Tag[];
   inserted_at: string;
+  deleted_at: string;
+  deleted_by_agent_id: string;
 };
 
 export type Invite = {

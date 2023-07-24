@@ -141,6 +141,28 @@ defmodule Test.Service.ImportUsersTest do
              ] = Repo.all(Data.User)
     end
 
+    test "reimport deleted user" do
+      vendor = insert_vendor!(@vendor_with_ws)
+      [ws | _] = vendor.workspaces
+      a1 = agent(ws)
+
+      Fog.Service.ImportUsers.import([csv(1, 1)], vendor.id, ws.id)
+
+      [u1] = Repo.all(Data.User)
+      delete_user(u1.id, a1.id)
+      [u1] = Repo.all(Data.User)
+
+      assert not is_nil(u1.deleted_at)
+      assert u1.deleted_by_agent_id === a1.id
+
+      Fog.Service.ImportUsers.import([csv(1, 1)], vendor.id, ws.id)
+
+      [u1] = Repo.all(Data.User)
+
+      assert is_nil(u1.deleted_at)
+      assert is_nil(u1.deleted_by_agent_id)
+    end
+
     test "uses workspace.triage_name for new triage room" do
       v1 = vendor()
       w1 = workspace(v1)

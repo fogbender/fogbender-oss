@@ -1,8 +1,9 @@
 defmodule Fog.Data.User do
   use Fog.Data
-  alias Fog.Data.{AuthorTag, Helpdesk, UserEvent}
+  alias Fog.Data.{Agent, AuthorTag, Helpdesk, UserEvent}
 
-  @derive {Jason.Encoder, only: [:id, :name, :email, :external_uid]}
+  @derive {Jason.Encoder,
+           only: [:id, :name, :email, :external_uid, :deleted_at, :deleted_by_agent_id]}
   @primary_key {:id, Fog.Types.UserId, autogenerate: true}
   schema "user" do
     belongs_to(:helpdesk, Helpdesk, type: Fog.Types.HelpdeskId)
@@ -19,6 +20,9 @@ defmodule Fog.Data.User do
     has_many(:events, UserEvent)
     has_many(:tags, AuthorTag, on_replace: :delete)
 
+    belongs_to(:deleted_by_agent, Agent, type: Fog.Types.AgentId)
+    field(:deleted_at, :utc_datetime_usec)
+
     timestamps()
   end
 
@@ -32,7 +36,9 @@ defmodule Fog.Data.User do
       :external_uid,
       :image_url,
       :last_digest_check_at,
-      :last_activity_at
+      :last_activity_at,
+      :deleted_at,
+      :deleted_by_agent_id
     ])
     |> validate_required([:email, :name])
     |> validate_format(:email, ~r/@/)

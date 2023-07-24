@@ -1199,6 +1199,8 @@ defmodule Fog.Web.APIRouter do
           email: &1.email,
           external_uid: &1.external_uid,
           avatar_url: &1.image_url,
+          deleted_at: &1.deleted_at |> to_unix(),
+          deleted_by_agent_id: &1.deleted_by_agent_id,
           tags:
             &1.tags
             # TODO somehow we can end up with an association pointing to a tag that doesn't exist
@@ -1237,6 +1239,27 @@ defmodule Fog.Web.APIRouter do
 
       Repo.Helpdesk.rooms_by_tag_ids(helpdesk_id, [tag_to_remove])
       |> Enum.each(&(:ok = Api.Event.Room.publish(&1)))
+
+      ok_no_content(conn)
+    else
+      forbid(conn)
+    end
+  end
+
+  delete "/helpdesks/:helpdesk_id/users/:user_id" do
+    helpdesk = Repo.Helpdesk.get(helpdesk_id) |> Repo.preload(:vendor)
+
+    our_role = our_role(conn, helpdesk.vendor.id)
+
+    if role_at_or_above(our_role, "admin") do
+      our_agent_id = conn.assigns[:agent_id]
+
+      Repo.User.get(user_id)
+      |> Data.User.update(
+        deleted_at: DateTime.utc_now(),
+        deleted_by_agent_id: our_agent_id
+      )
+      |> Repo.update!()
 
       ok_no_content(conn)
     else

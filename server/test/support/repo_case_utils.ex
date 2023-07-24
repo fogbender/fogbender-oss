@@ -331,6 +331,15 @@ defmodule Fog.RepoCaseUtils do
     )
   end
 
+  def delete_user(user_id, deleted_by_agent_id) do
+    Repo.User.get(user_id)
+    |> Data.User.update(
+      deleted_at: DateTime.utc_now(),
+      deleted_by_agent_id: deleted_by_agent_id
+    )
+    |> Repo.update!()
+  end
+
   defp from_author(%Data.User{id: id}), do: [from_user_id: id]
   defp from_author(%Data.Agent{id: id}), do: [from_agent_id: id]
   defp from_author(_), do: nil
