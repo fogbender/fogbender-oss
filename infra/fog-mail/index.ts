@@ -12,6 +12,7 @@ const domain = config.require("domain");
 const host = config.require("host");
 export const mailDomain = `${host}.${domain}`;
 const receiptRuleSetName = "general"; //only one rule set could be active
+const setupIdentity = config.get("setupIdentity");
 
 const region = pulumi.output(aws.getRegion());
 
@@ -43,17 +44,17 @@ const s3Messages = new aws.s3.Bucket(resourceName("s3-messages"), {
   versioning: {
     enabled: true,
   },
-  tags: resourceTags()
+  tags: resourceTags(),
 });
 
 const queue = new aws.sqs.Queue(resourceName("sqs"), {
   contentBasedDeduplication: false,
   fifoQueue: false,
-  tags: resourceTags()
+  tags: resourceTags(),
 });
 
 const snsTopic = new aws.sns.Topic(resourceName("sns"), {
-  tags: resourceTags()
+  tags: resourceTags(),
 });
 
 // see https://docs.aws.amazon.com/ses/latest/dg/receiving-email-permissions.html
@@ -122,8 +123,36 @@ const sqsPolicySNS = new aws.sqs.QueuePolicy(resourceName("sqs-sub-policy"), {
     }`,
 });
 
+let domainIdentity;
+
+if (setupIdentity) {
+  domainIdentity = new aws.ses.DomainIdentity(resourceName("domain-identity"), {
+    domain: mailDomain,
+  });
+  const dkim = new aws.ses.DomainDkim(resourceName("domain-dkim"), {
+    domain: domainIdentity.domain,
+  });
+  const dkimRecord: aws.route53.Record[] = [];
+  for (const range = { value: 0 }; range.value < 3; range.value++) {
+    dkimRecord.push(
+      new aws.route53.Record(resourceName(`dkim-record--${range.value}`), {
+        zoneId: hostedZoneId,
+        name: pulumi.interpolate`${dkim.dkimTokens[range.value]}._domainkey`,
+        type: "CNAME",
+        ttl: 600,
+        records: [pulumi.interpolate`${dkim.dkimTokens[range.value]}.dkim.amazonses.com`],
+      })
+    );
+  }
+} else {
+  domainIdentity = aws.ses.getDomainIdentityOutput({
+    domain: mailDomain,
+  });
+}
+
 export const sqsUrl = queue.id;
 export const sqsArn = queue.arn;
 export const s3Bucket = s3Messages.bucket;
 export const s3Arn = s3Messages.arn;
 export const regionId = region.id;
+export const domainIdentityArn = domainIdentity.arn;

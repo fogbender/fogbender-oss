@@ -3,3 +3,4 @@ config:
   fog-mail:domain: fogbender-test.com
   fog-mail:host: mail
   fog-mail:s3LogBucket: fogbender-s3-logging
+  fog-mail:setupIdentity: true

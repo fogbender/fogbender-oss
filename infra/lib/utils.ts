@@ -11,7 +11,7 @@ export const resourceTags = () => {
   return {
     "user:Project": pulumi.getProject(),
     "user:Stack": pulumi.getStack(),
-  }
+  };
 };
 
 export const assumeRolePolicy = JSON.stringify({

@@ -14,6 +14,7 @@ const mail = new pulumi.StackReference(config.require("mailStack"));
 const sqsS3Arn = mail.requireOutput("s3Arn");
 const sqsArn = mail.requireOutput("sqsArn");
 const sqsUrl = mail.requireOutput("sqsUrl");
+const domainIdentityArn = mail.requireOutput("domainIdentityArn");
 
 const s3FileUpload = new aws.s3.Bucket(resourceName("s3-file-upload"), {
   loggings: [
@@ -25,7 +26,7 @@ const s3FileUpload = new aws.s3.Bucket(resourceName("s3-file-upload"), {
   versioning: {
     enabled: true,
   },
-  tags: resourceTags()
+  tags: resourceTags(),
 });
 
 const accessPolicy = new aws.iam.Policy(resourceName("access-policy"), {
@@ -53,6 +54,11 @@ const accessPolicy = new aws.iam.Policy(resourceName("access-policy"), {
         Effect: "Allow",
         Action: "sqs:*",
         Resource: sqsArn,
+      },
+      {
+        Effect: "Allow",
+        Action: ["ses:SendEmail", "ses:SendRawEmail"],
+        Resource: domainIdentityArn,
       },
     ],
   },
