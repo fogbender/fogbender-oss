@@ -1,3 +1,0 @@
-config:
-  aws:region: us-east-1
-  fog-extra:s3LogBucket: fogbender-s3-logging
