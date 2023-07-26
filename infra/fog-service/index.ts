@@ -3,7 +3,7 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 import { encryptedInstance } from "../lib/ec2server";
-import { resourceName, assumeRolePolicy, cloudWatchPolicy } from "../lib/utils";
+import { resourceName, resourceTags, assumeRolePolicy, cloudWatchPolicy } from "../lib/utils";
 
 const config = new pulumi.Config();
 
@@ -60,6 +60,7 @@ const portal = encryptedInstance(resourceName("portal-host"), portalMachineType,
   subnetId: portalSubnetId,
   vpcSecurityGroupIds: [portalSg.id],
   iamInstanceProfile: portalProfile,
+  tags: resourceTags("portal-host")
 });
 
 const portalEip = new aws.ec2.Eip(resourceName("portal-eip"), {
@@ -133,6 +134,7 @@ const ci = encryptedInstance(resourceName("ci-host"), ciMachineType, ciVolumeSiz
   subnetId: ciSubnetId,
   vpcSecurityGroupIds: [ciSg.id],
   iamInstanceProfile: ciProfile,
+  tags: resourceTags("ci-host")
 });
 
 const ciHostedZoneId = aws.route53
@@ -157,9 +159,43 @@ const ciDns = new aws.route53.Record(
   { aliases: [{ name: resourceName("ci-dns") }] }
 );
 
+const pgDomain = config.require("playgroundDomain");
+const pgHost = config.require("playgroundHost");
+const pg = encryptedInstance(resourceName("pg-host"), ciMachineType, ciVolumeSize, {
+  subnetId: ciSubnetId,
+  vpcSecurityGroupIds: [ciSg.id],
+  iamInstanceProfile: ciProfile,
+  tags: resourceTags("pg-host")
+});
+
+const pgHostedZoneId = aws.route53
+  .getZone(
+    {
+      name: pgDomain,
+      privateZone: true,
+    },
+    { async: true }
+  )
+  .then(zone => zone.zoneId);
+
+const pgDns = new aws.route53.Record(
+  resourceName("pg-dns"),
+  {
+    name: pgHost,
+    type: aws.route53.RecordTypes.CNAME,
+    records: [pg.privateDns],
+    zoneId: pgHostedZoneId,
+    ttl: 300,
+  },
+  { aliases: [{ name: resourceName("pg-dns") }] }
+);
+
 export const portalPrivateIp = portal.privateIp;
 export const portalPublicIp = portalEip.publicIp;
 export const portalDNS = `${portalHost}.${portalDomain}`;
 
 export const ciPrivateIp = ci.privateIp;
 export const ciDNS = `${ciHost}.${ciDomain}`;
+
+export const pgPrivateIp = pg.privateIp;
+export const pgDNS = `${pgHost}.${pgDomain}`;
