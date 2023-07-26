@@ -96,19 +96,16 @@ export const RoomSettings: React.FC<{
 
   const [initialRoomType, setInitialRoomType] = React.useState<RoomType>(() => {
     const roomTags = room?.tags?.map(x => x.name) || [];
-    if (roomTags.includes(":bug")) {
-      return "Bug";
-    }
-    if (roomTags.includes(":feature")) {
-      return "Feature";
-    }
     if (roomTags.includes(":discussion")) {
       return "Discussion";
     }
     if (isInternalRoom && roomTags.includes(":triage")) {
       return "Broadcast";
     }
-    return "Issue";
+    if (roomTags.includes(":issue")) {
+      return "Issue";
+    }
+    return "Discussion";
   });
 
   const [roomType, setRoomType] = React.useState<RoomType>(() => initialRoomType);
@@ -307,23 +304,17 @@ export const RoomSettings: React.FC<{
         tagsToAdd:
           roomType === "Discussion"
             ? [":discussion"]
-            : roomType === "Feature"
-            ? [":feature"]
-            : roomType === "Bug"
-            ? [":bug"]
+            : roomType === "Issue"
+            ? [":issue", ":status:open"]
             : roomType === "Broadcast"
             ? [":triage"]
             : [],
         tagsToRemove:
           roomType === "Issue"
-            ? [":discussion", ":feature", ":bug", ":triage"] // no tags for issue
-            : roomType === "Bug"
-            ? [":discussion", ":feature", ":triage"] // remove all but :bug
-            : roomType === "Feature"
-            ? [":discussion", ":bug", ":triage"] // remove all but :feature
+            ? [":discussion", ":feature", ":bug", ":triage", ":status:closed"] // no tags for issue
             : roomType === "Broadcast"
-            ? [":discussion", ":bug", ":feature"] // remove all but :triage
-            : [":feature", ":bug", ":triage"], // default is :discussion or none
+            ? [":discussion", ":bug", ":feature", ":status:open", ":status:closed"] // remove all but :triage
+            : [":issue", ":feature", ":bug", ":triage", ":status:open", ":status:closed"], // default is :discussion or none
       });
       setUpdating(false);
       if (res.msgType !== "Room.Ok") {
@@ -391,6 +382,7 @@ export const RoomSettings: React.FC<{
   const integrations = ["gitlab", "github", "jira", "trello", "asana"] as const;
   const actionsClassName = "grid grid-cols-1 gap-y-1 gap-x-2 items-center sm:flex sm:gap-y-0";
   const formClassName = "col-span-1 sm:col-span-3 flex items-center";
+  const [debugToggleShowTags, setDebugToggleShowTags] = React.useState(false);
   return (
     <form
       onSubmit={e => {
@@ -876,12 +868,36 @@ export const RoomSettings: React.FC<{
         </div>
       )}
 
-      <div className={classNames("flex items-center mt-8 gap-x-4", !formHasChanges && "hidden")}>
-        <div className="width-12">
-          <ThickButton loading={updating}>Update</ThickButton>
+      <div className={classNames("flex items-center mt-8 gap-x-4 justify-between")}>
+        <div>
+          <div
+            className={classNames(
+              "width-12",
+              "transition-opacity duration-100 ease-in",
+              formHasChanges ? "opacity-100" : "opacity-0 pointer-events-none"
+            )}
+          >
+            <ThickButton loading={updating}>Update</ThickButton>
+          </div>
+          <div className="fog:text-body-m">
+            {updateError && <div className="text-brand-red-500">{updateError}</div>}
+          </div>
         </div>
-        <div className="fog:text-body-m">
-          {updateError && <div className="text-brand-red-500">{updateError}</div>}
+        {debugToggleShowTags && (
+          <div className="text-xs flex items-center gap-2">
+            {(room?.tags || []).map(t => (
+              <div key={t.id}>{t.name}</div>
+            ))}
+          </div>
+        )}
+        <div
+          onClick={e => {
+            e.preventDefault();
+            setDebugToggleShowTags(!debugToggleShowTags);
+          }}
+          className={classNames("width-12 invisible pointer-cursor")}
+        >
+          <ThickButton>Show tags</ThickButton>
         </div>
       </div>
     </form>
@@ -1104,26 +1120,6 @@ const RoomTypeSelector: React.FC<{
             </span>
             <span className="pl-2 pr-1">Issue</span>
             <Icons.RoomIssue className="w-4 h-4 text-gray-500 hidden" />
-          </div>
-          <div
-            className={classNames("flex items-center", roomType !== "Feature" && "cursor-pointer")}
-            onClick={() => setRoomType("Feature")}
-          >
-            <span className="text-blue-500">
-              {roomType === "Feature" ? <Icons.RadioFull /> : <Icons.RadioEmpty />}
-            </span>
-            <span className="pl-2 pr-1">Feature</span>
-            <Icons.RoomFeature className="w-4 h-4 text-gray-500 hidden" />
-          </div>
-          <div
-            className={classNames("flex items-center", roomType !== "Bug" && "cursor-pointer")}
-            onClick={() => setRoomType("Bug")}
-          >
-            <span className="text-blue-500">
-              {roomType === "Bug" ? <Icons.RadioFull /> : <Icons.RadioEmpty />}
-            </span>
-            <span className="pl-2 pr-1">Bug</span>
-            <Icons.RoomBug className="w-4 h-4 text-brand-red-500 hidden" />
           </div>
           {isInternalRoom && (
             <div

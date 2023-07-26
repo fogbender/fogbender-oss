@@ -285,9 +285,6 @@ defmodule Test.Api.BadgesTest do
     end
 
     test "show message for public room without tags", ctx do
-      open_tag = Repo.Tag.create(ctx.workspace.id, ":status:open")
-      untag(ctx.user_room, open_tag)
-
       scoping_f = flag("User Tag Scoping")
       flag(ctx.workspace, scoping_f)
       user_room_id = ctx.user_room.id

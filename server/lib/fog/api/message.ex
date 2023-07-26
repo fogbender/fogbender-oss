@@ -376,7 +376,10 @@ defmodule Fog.Api.Message do
 
       workspace_feature_flags = Enum.map(workspace.feature_flags, & &1.feature_flag_id)
 
-      if room.type !== "dialog" and "User Tag Scoping" not in workspace_feature_flags do
+      is_issue = room.tags |> Enum.find_value(fn rt -> rt.tag.name === ":issue" end)
+
+      if is_issue === true and room.type !== "dialog" and
+           "User Tag Scoping" not in workspace_feature_flags do
         open_tag = Repo.Tag.create(message.helpdesk.workspace_id, ":status:open")
         closed_tag = Repo.Tag.create(message.helpdesk.workspace_id, ":status:closed")
 

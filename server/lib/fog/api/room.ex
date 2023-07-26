@@ -252,7 +252,7 @@ defmodule Fog.Api.Room do
         {:ok, response}
 
       e ->
-        Logger.error(Exception.format(:error, e, Exception.format_stacktrace()))
+        Logger.error("Error: #{inspect(e)} #{Exception.format_stacktrace()}")
         {:error, "Could not summarize"}
     end
   end
