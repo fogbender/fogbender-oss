@@ -382,7 +382,6 @@ export const RoomSettings: React.FC<{
   const integrations = ["gitlab", "github", "jira", "trello", "asana"] as const;
   const actionsClassName = "grid grid-cols-1 gap-y-1 gap-x-2 items-center sm:flex sm:gap-y-0";
   const formClassName = "col-span-1 sm:col-span-3 flex items-center";
-  const [debugToggleShowTags, setDebugToggleShowTags] = React.useState(false);
   return (
     <form
       onSubmit={e => {
@@ -883,17 +882,10 @@ export const RoomSettings: React.FC<{
             {updateError && <div className="text-brand-red-500">{updateError}</div>}
           </div>
         </div>
-        {debugToggleShowTags && (
-          <div className="text-xs flex items-center gap-2">
-            {(room?.tags || []).map(t => (
-              <div key={t.id}>{t.name}</div>
-            ))}
-          </div>
-        )}
         <div
           onClick={e => {
             e.preventDefault();
-            setDebugToggleShowTags(!debugToggleShowTags);
+            console.info((room?.tags || []).map(t => t.name));
           }}
           className={classNames("width-12 invisible pointer-cursor")}
         >
