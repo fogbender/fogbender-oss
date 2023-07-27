@@ -254,6 +254,13 @@ export const SeedCustomers: React.FC<{
             <input {...getInputProps()} />
           </div>
         </form>
+        <a
+          href="/blog/fogbender-user-management"
+          rel="noopener"
+          target="_blank"
+        >
+          <ThinButton>?</ThinButton>
+        </a>
         <div className="my-2">
           <ThinButton onClick={() => setCreateCustomerModalOpen(true)}>Add by hand</ThinButton>
         </div>
