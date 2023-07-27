@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-orig=`basename $0`
+orig=`basename $1`
+shift
 
 Help()
 {
