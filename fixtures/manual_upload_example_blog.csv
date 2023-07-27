@@ -1,0 +1,11 @@
+customer_name,customer_id,user_name,user_email,user_id
+USS Enterprise,uss001,Captain Kirk,captain.kirk@example.com,k001
+USS Enterprise,uss001,Spock,spock@example.com,k002
+Millennium Falcon,mil001,Han Solo,han.solo@example.com,s001
+Millennium Falcon,mil001,Chewbacca,chewbacca@example.com,s002
+Planet Express,px002,Philip J. Fry,fry@example.com,f001
+Planet Express,px002,Turanga Leela,leela@example.com,f002
+Cyberdyne Systems,cs010,Sarah Connor,sarah.connor@example.com,t001
+Cyberdyne Systems,cs010,John Connor,john.connor@example.com,t002
+Tyrell Corporation,tyr007,Rick Deckard,rick.deckard@example.com,d001
+Tyrell Corporation,tyr007,Rachael,achael@example.com,d002
