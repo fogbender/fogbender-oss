@@ -1,5 +1,0 @@
-config:
-  aws:region: us-east-1
-  fog-api:kmsStack: fogbender-software/fog-kms/dev
-  fog-api:mailStack: fogbender-software/fog-mail/dev
-  fog-devenv:s3LogBucket: fogbender-s3-logging
