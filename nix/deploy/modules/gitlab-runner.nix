@@ -3,6 +3,8 @@ let
   home = "/var/lib/gitlab-runner";
 in
 {
+  imports = [ ./decrypt-sops-service.nix ];
+
   environment.systemPackages = with pkgs; [git bash git-lfs];
 
   services.gitlab-runner = {
@@ -14,10 +16,14 @@ in
     };
   };
 
-  systemd.services.gitlab-runner.serviceConfig = {
-    DynamicUser = lib.mkForce false;
-    User = "gitlab-runner";
-    Group = "gitlab-runner";
+  systemd.services.gitlab-runner = {
+    after    = [ "decrypt-sops.service" ];
+    requires = [ "decrypt-sops.service" ];
+    serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = "gitlab-runner";
+      Group = "gitlab-runner";
+    };
   };
 
   users.users = {

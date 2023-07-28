@@ -7,10 +7,11 @@ export const resourceName = (name: string) => {
   return `${project}-${stack}-${name}`;
 };
 
-export const resourceTags = () => {
+export const resourceTags = (name?: string) => {
   return {
     "user:Project": pulumi.getProject(),
     "user:Stack": pulumi.getStack(),
+    "Name": resourceName(name || "resource"),
   };
 };
 
