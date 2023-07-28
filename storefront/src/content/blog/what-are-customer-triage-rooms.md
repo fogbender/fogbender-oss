@@ -77,4 +77,8 @@ Fogbender provides a set of features that can be used to associate customer-faci
 
 <sup>2</sup> "Triage" is a term commonly used in medical contexts to refer to the process of determining the priority of patients’ treatments based on the severity of their condition. It involves quickly assessing the nature and severity of injuries or illnesses to determine which patients need immediate attention and which can wait. The term is also used more broadly to refer to any process of prioritizing tasks or issues based on their level of urgency or importance.
 
-Related article: [User management in Fogbender](/blog/fogbender-user-management)
+---
+
+### Further reading:
+
+To learn about all the different ways users and customers (teams of users) can be imported into your Fogbender workspace, take a look at the article called [End-user management](/blog/fogbender-user-management).
