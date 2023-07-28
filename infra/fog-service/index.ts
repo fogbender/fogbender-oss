@@ -60,7 +60,7 @@ const portal = encryptedInstance(resourceName("portal-host"), portalMachineType,
   subnetId: portalSubnetId,
   vpcSecurityGroupIds: [portalSg.id],
   iamInstanceProfile: portalProfile,
-  tags: resourceTags("portal-host")
+  tags: resourceTags("portal-host"),
 });
 
 const portalEip = new aws.ec2.Eip(resourceName("portal-eip"), {
@@ -134,7 +134,7 @@ const ci = encryptedInstance(resourceName("ci-host"), ciMachineType, ciVolumeSiz
   subnetId: ciSubnetId,
   vpcSecurityGroupIds: [ciSg.id],
   iamInstanceProfile: ciProfile,
-  tags: resourceTags("ci-host")
+  tags: resourceTags("ci-host"),
 });
 
 const ciHostedZoneId = aws.route53
@@ -165,7 +165,7 @@ const pg = encryptedInstance(resourceName("pg-host"), ciMachineType, ciVolumeSiz
   subnetId: ciSubnetId,
   vpcSecurityGroupIds: [ciSg.id],
   iamInstanceProfile: ciProfile,
-  tags: resourceTags("pg-host")
+  tags: resourceTags("pg-host"),
 });
 
 const pgHostedZoneId = aws.route53

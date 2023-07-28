@@ -11,7 +11,7 @@ export const resourceTags = (name?: string) => {
   return {
     "user:Project": pulumi.getProject(),
     "user:Stack": pulumi.getStack(),
-    "Name": resourceName(name || "resource")
+    "Name": resourceName(name || "resource"),
   };
 };
 
