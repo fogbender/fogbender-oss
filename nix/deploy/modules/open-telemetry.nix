@@ -6,6 +6,8 @@ let
   configFile = settingsFormat.generate "otel-contrib.yaml" cfg.settings;
 in
 {
+  imports = [ ./decrypt-sops-service.nix ];
+
   options.services.otel-contrib = {
     enable = mkEnableOption (lib.mdDoc "Open Telemetry collector");
 
@@ -65,7 +67,8 @@ in
 
     systemd.services.otel-contrib = {
       inherit (cfg.package.meta) description;
-      after    = [ "network.target" ];
+      after    = [ "network.target" "decrypt-sops.service" ];
+      requires = [ "decrypt-sops.service" ];
       wantedBy = [ "multi-user.target" ];
       script = ''
         set -euo pipefail

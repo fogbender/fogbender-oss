@@ -6,6 +6,8 @@ let
   cookie = cfg.workDir + "/.cookie";
 in
   {
+    imports = [ ./decrypt-sops-service.nix ];
+
     options.services.fogbender = {
       enable = lib.mkEnableOption "Fogbender service";
 
@@ -65,7 +67,8 @@ in
       systemd.services.fogbender = {
         path = cfg.packages;
         description = "Fogbender service";
-        after = [ "network.target" ];
+        after    = [ "network.target" "decrypt-sops.service" ];
+        requires = [ "decrypt-sops.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           WorkingDirectory = cfg.workDir;

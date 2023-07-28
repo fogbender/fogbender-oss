@@ -14,4 +14,8 @@
     sopsFile = ../../secrets/admin/otel.env;
     format = "dotenv";
   };
+  sops.secrets."pg.env" = {
+    sopsFile = ../../secrets/admin/pg.env;
+    format = "dotenv";
+  };
 }

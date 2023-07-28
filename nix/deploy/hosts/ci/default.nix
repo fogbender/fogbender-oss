@@ -5,7 +5,7 @@
     ../../modules/aws-ec2.nix
     ../../modules/aws-ec2-users.nix
     ../../modules/aws-ec2-open-telemetry.nix
-    ./gitlab-runner.nix
+    ../../modules/gitlab-runner.nix
     ./deploy.nix
   ];
 
