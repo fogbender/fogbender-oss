@@ -34,7 +34,7 @@ https://nvd.nist.gov/vuln/detail/CVE-2022-26691    6.7      A logic issue was ad
 ------------------------------------------------------------------------
 dbus-1
 
-/nix/store/d1zhlk8ypzgidsp3zqflrdz1lkaklvml-dbus-1.drv
+/nix/store/wa61ikxxj0wmz2bdh3sm03qqln6lccnx-dbus-1.drv
 CVE                                                CVSSv3   Description
 https://nvd.nist.gov/vuln/detail/CVE-2019-12749    7.1      dbus before 1.10.28, 1.12.x before 1.12.16, and 1.13.x before 1.13.12, as used in DBusServer in Canonical Upstart in Ubuntu 14.04 (and in some, less common, uses of dbus-daemon), allows cookie spoofing because of symlink mishandling in the reference implementation of DBUS_COOKIE_SHA1 in the libdbus library. (This only affects the DBUS_COOKIE_SHA1 authentication mechanism.) A malicious client with write access to its own home directory could manipulate a ~/.dbus-keyrings symlink to cause a DBusServer with a different uid to read and write in unintended locations. In the worst case, this could result in the DBusServer reusing a cookie that is known to the malicious client, and treating that cookie as evidence that a subsequent client connection came from an attacker-chosen uid, allowing authentication bypass.
 
@@ -124,6 +124,7 @@ https://nvd.nist.gov/vuln/detail/CVE-2023-24536    7.5      Multipart form parsi
 https://nvd.nist.gov/vuln/detail/CVE-2023-24537    7.5      Calling any of the Parse functions on Go source code which contains //line directives with very large line numbers can cause an infinite loop due to integer overflow.
 https://nvd.nist.gov/vuln/detail/CVE-2023-24539    7.3      Angle brackets (<>) are not considered dangerous characters when inserted into CSS contexts. Templates containing multiple actions separated by a '/' character can result in unexpectedly closing the CSS context and allowing for injection of unexpected HTML, if executed with untrusted input.
 https://nvd.nist.gov/vuln/detail/CVE-2023-29400    7.3      Templates containing actions in unquoted HTML attributes (e.g. "attr={{.}}") executed with empty input can result in output with unexpected results when parsed due to HTML normalization rules. This may allow injection of arbitrary attributes into tags.
+https://nvd.nist.gov/vuln/detail/CVE-2023-29406    6.5      The HTTP/1 client does not fully validate the contents of the Host header. A maliciously crafted Host header can inject additional headers or entire requests. With fix, the HTTP/1 client now refuses to send requests containing an invalid Request.Host or Request.URL.Host value.
 https://nvd.nist.gov/vuln/detail/CVE-2022-41717    5.3      An attacker can cause excessive memory growth in a Go server accepting HTTP/2 requests. HTTP/2 server connections contain a cache of HTTP header keys sent by the client. While the total number of entries in this cache is capped, an attacker sending very large keys can cause the server to allocate approximately 64 MiB per open connection.
 https://nvd.nist.gov/vuln/detail/CVE-2023-24532    5.3      The ScalarMult and ScalarBaseMult methods of the P256 Curve may return an incorrect result if called with some specific unreduced scalars (a scalar larger than the order of the curve). This does not impact usages of crypto/ecdsa or crypto/ecdh.
 
@@ -205,7 +206,7 @@ https://nvd.nist.gov/vuln/detail/CVE-2023-31486    8.1      HTTP::Tiny before 0.
 ------------------------------------------------------------------------
 perl-5.36.0-env
 
-/nix/store/1mw7d14k9birwj4g6s2jv4b5h9c12wdh-perl-5.36.0-env.drv
+/nix/store/dmyhnm2fq403afmsnar51b853ipzvx5b-perl-5.36.0-env.drv
 CVE                                                CVSSv3   Description
 https://nvd.nist.gov/vuln/detail/CVE-2023-31486    8.1      HTTP::Tiny before 0.083, a Perl core module since 5.13.9 and available standalone on CPAN, has an insecure default TLS configuration where users must opt in to verify certificates.
 
