@@ -1,46 +1,70 @@
 ## Overview
 
-All secrets are kept in `secrets` directory. Encryption/decryption is done automatically with git-crypt [1] package.
+We use Mozilla SOPS[1] project for managin secrets in project.
 
-[1] https://www.agwa.name/projects/git-crypt/
+[1] https://github.com/getsops/sops
 
-## Setup
+It allows to encrypt data with different types of keys (PGP, Age, AWS KMS, Google KMS, etc.).
+Currently we use AWS KMS approach with several keys for different environments.
 
-1. Install git-crypt in your OS, e.g. with nix-env:
+## Environments
 
-   `nix-env -iA nixpkgs.git-crypt`
+### Admin
 
-2. If needed generate GPG key:
+Used for additional services - portal, CI.
+Files placed in `nix/deploy/secrets/admin`.
+and `config/test.env`.
 
-   `gpg --generate-key`
+### Stage,Test,Prod
 
-3. Export your key
+Several envs for main Fogbender servers.
+Files are in `nix/deploy/secrets/{stage,test,prod}`.
 
-   `gpg --armor --export --output path/to/export/<user>.gpg <KEYID>`
+### Dev
 
-4. Send to someone with access to secrets to add you as collaborator:
-
-   `gpg --import /tmp/test-user.gpg`
-
-   `gpg --edit-key <KEYID>`
-
-   This will open gpg shell, you need to set ultimate trust for this key :
-
-   - `fpr` - will show KEYID, just to check
-   - `trust` - will ask for trust level, set to ultimate, as git-crypt works only with ultimate keys
-   - `save`
-
-   From project directory add new collaborator:
-
-   `git-crypt add-gpg-user <KEYID>`
-
-   You may need to unlock secrets before this command: `git-crypt unlock`.
+Developers resources.
+Files are in `config/dev.env`.
 
 ## Usage
 
-Normally git-crypt will crypt files on push and decrypt on pull.
-You can use explicit commands if needed:
+First you need to provide valid AWS IAM credentials that allows to use KMS from environment.
+All commands should be run from nix shell - use `nix develop` for defaul dev shell.
 
-- `git-crypt unlock` - decipher secret files with your gpg key
+### Encrypting new file
 
-- `git-crypt lock` - cipher secret files
+> cd nix/deploy/secrets/test
+> sops -i -e new-file.env
+
+With `-i` option sops will write result under the same file name.
+SOPS understands several file formats - YAML, JSON, ENV and binary.
+On first encryption it will use nearest sops.yaml file for encryption instructions.
+See `nix/deploy/secrets/sops.yaml`
+
+### Updating encrypted file
+
+After encryption SOPS keeps information about encryption inside file, so moving files will
+not automatically apply sops.yaml rules. Like if you try to copy file form test to prod environment
+it will be encrypted with test keys.
+
+In that case or if you've changed sops.yaml config you need to update encrypted file:
+
+> cd nix/deploy/secrets/prod
+> cp ../test/new-file.env ./
+> sops updatekeys new-file.env
+
+It will show removed/added keys for file and ask for confirmation.
+
+### Decryption
+
+To simple decrypt file and print it to stdout:
+
+> sops -d new-file.env
+
+### Editing
+
+Sops understands file formats and encrypts only values, so it's possible to see field/vars names even in encrypted file.
+To edit you need to call sops with encrypted file - it will create temporal decrypted file and open in default editor.
+After finishing editing, sops will encrypt file with new content and remove temporal ones.
+To use different editor provie EDITOR variable:
+
+> EDITOR=emacsclient sops new-file.env
