@@ -1164,6 +1164,20 @@ export const Logout: Icon = ({ className = "w-6" }) => {
   );
 };
 
+export const Pencil: Icon = ({ className = "w-6" }) => {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M13.232 3.23184L16.768 6.76784M14.732 1.73184C15.2009 1.26294 15.8369 0.999512 16.5 0.999512C17.1631 0.999512 17.7991 1.26294 18.268 1.73184C18.7369 2.20074 19.0003 2.83671 19.0003 3.49984C19.0003 4.16297 18.7369 4.79894 18.268 5.26784L4.5 19.0358H1V15.4638L14.732 1.73184Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const Icons = {
   AgentMark,
   ArrowBack,
@@ -1205,9 +1219,11 @@ export const Icons = {
   Paperclip,
   PauseCircleFilled,
   Pen,
+  Pencil,
   Pin,
   PinMe,
   PlayCircleFilled,
+  Question,
   RadioEmpty,
   RadioEmptyDisabled,
   RadioFull,
@@ -1235,5 +1251,4 @@ export const Icons = {
   XCircle,
   XCircleFilled,
   XClose,
-  Question,
 };
