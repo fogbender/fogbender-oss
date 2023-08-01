@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  staff = import ../../staff.nix {inherit pkgs;};
+  staff = import ../../lib/staff.nix {inherit pkgs;};
   home = "/home/deploy";
   fog-deploy = pkgs.writeShellScriptBin "fog-deploy" (builtins.readFile ./fog-deploy.sh);
 in

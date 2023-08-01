@@ -1,12 +1,12 @@
 { lib, beamPackages, mkMixDeps, gitignoreSource, libsodium, gawk}:
 
 let
-  inherit (mkMixDeps ../server/deps.json) deps;
+  inherit (mkMixDeps ../../server/deps.json) deps;
   inherit (beamPackages) mixRelease erlang elixir;
 
   pname = "fog";
-  version = lib.fileContents ../server/VERSION;
-  src = gitignoreSource ../server;
+  version = lib.fileContents ../../server/VERSION;
+  src = gitignoreSource ../../server;
   mixEnv = "prod";
 
   server = mixRelease {

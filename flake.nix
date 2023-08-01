@@ -26,8 +26,8 @@
         inherit (gitignore.lib) gitignoreSource;
         unstable = unstable.legacyPackages.${final.system};
         beamPackages = final.unstable.beam_nox.packages.erlang;
-        mkMixDeps = final.callPackage ./nix/mk-mix-deps.nix { };
-        fogbender = final.callPackage ./nix/fogbender.nix {  };
+        mkMixDeps = final.callPackage ./nix/lib/mk-mix-deps.nix { };
+        fogbender = final.callPackage ./nix/lib/fogbender.nix {  };
       };
 
       overlay_module = ({ pkgs, ... }: {
@@ -43,28 +43,13 @@
         }
       );
 
-      devShell = (system:
-        let pkgs = sysPkgs system;
-        in pkgs.callPackage ./nix/dev_shell.nix { }
-      );
-
-      deployShell = (system:
-        let pkgs = sysPkgs system;
-        in pkgs.callPackage ./nix/deploy_shell.nix { }
-      );
-
-      testShell = (system:
-        let pkgs = sysPkgs system;
-        in pkgs.callPackage ./nix/test_shell { }
-      );
-
       pkgFogbender = (system:
         let pkgs = sysPkgs system;
         in pkgs.fogbender.server
       );
 
-      hosts = mapAttrs (path: _: import (./nix/deploy/hosts + "/${path}"))
-        (filterAttrs (_: t: t == "directory") (readDir ./nix/deploy/hosts));
+      hosts = mapAttrs (path: _: import (./nix/hosts + "/${path}"))
+        (filterAttrs (_: t: t == "directory") (readDir ./nix/hosts));
 
       shells = (system:
         let s = mapAttrs
