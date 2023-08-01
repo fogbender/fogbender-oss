@@ -66,6 +66,12 @@
       hosts = mapAttrs (path: _: import (./nix/deploy/hosts + "/${path}"))
         (filterAttrs (_: t: t == "directory") (readDir ./nix/deploy/hosts));
 
+      shells = (system:
+        let s = mapAttrs
+          (path: _: (let pkgs = sysPkgs system; in pkgs.callPackage (./nix/shells + "/${path}") {  }))
+          (filterAttrs (_: t: t == "directory") (readDir ./nix/shells));
+        in s // { default = s.dev; } );
+
       system = "x86_64-linux";
 
       # use precompiled deploy-rs package
@@ -101,17 +107,9 @@
         };
     in
     {
-      devShells.x86_64-linux.default = devShell "x86_64-linux";
-      devShells.x86_64-darwin.default = devShell "x86_64-darwin";
-      devShells.aarch64-darwin.default = devShell "aarch64-darwin";
-
-      devShells.x86_64-linux.deploy = deployShell "x86_64-linux";
-      devShells.x86_64-darwin.deploy = deployShell "x86_64-darwin";
-      devShells.aarch64-darwin.deploy = deployShell "aarch64-darwin";
-
-      devShells.x86_64-linux.test = testShell "x86_64-linux";
-      devShells.x86_64-darwin.test = testShell "x86_64-darwin";
-      devShells.aarch64-darwin.test = testShell "aarch64-darwin";
+      devShells.x86_64-linux = shells "x86_64-linux";
+      devShells.x86_64-darwin = shells "x86_64-darwin";
+      devShells.aarch64-darwin = shells "aarch64-darwin";
 
       packages.x86_64-linux.default = self.packages.x86_64-linux.fogbender;
       packages.x86_64-linux.fogbender = pkgFogbender "x86_64-linux";

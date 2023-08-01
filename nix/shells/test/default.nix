@@ -29,7 +29,7 @@ in with pkgs; mkShell {
 
   shellHook = ''
   set -a
-  eval "$(sops -d ./config/test.env)"
+  eval "$(sops -d ./config/test.secrets.env)"
   set +a
   '';
 }

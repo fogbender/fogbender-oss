@@ -35,7 +35,7 @@ let
   ];
 
   pg = pkgs.postgresql_14.withPackages (p: [ p.pg_bigm ]);
-  pgupgrade = pkgs.callPackage ./scripts/pg_upgrade_12_14.nix { postgresql_14 = pg; };
+  pgupgrade = pkgs.callPackage ./pg_upgrade_12_14.nix { postgresql_14 = pg; };
 
 in with pkgs; mkShell {
   buildInputs = [
@@ -65,10 +65,15 @@ in with pkgs; mkShell {
   if [ -f "./local.env" ]; then
   . local.env
   fi
+
   set -a
   echo Sourcing dev.env..
-  eval "$(sops -d ./config/dev.env)"
+  . ./config/dev.env
+
+  echo Sourcing dev.secrets.env..
+  eval "$(sops -d ./config/dev.secrets.env)"
   set +a
+
   if [ -f "./local.env" ]; then
   echo Sourcing local.env..
   . local.env
