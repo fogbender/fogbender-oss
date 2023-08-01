@@ -60,7 +60,7 @@ in with pkgs; mkShell {
 
   shellHook = ''
   set -a
-  echo Sourcing dev.env..
+  echo Sourcing oss.env..
   . ./config/oss.env
   set +a
 
