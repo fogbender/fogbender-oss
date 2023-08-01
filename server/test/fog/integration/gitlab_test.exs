@@ -5,8 +5,8 @@ defmodule Fog.Test.Integration.GitLab do
   alias Fog.{Data, Repo}
   alias Fog.Integration.GitLabHook
 
-  @event_issue "test/integration/gitlab_event_issue.json" |> File.read!() |> Jason.decode!()
-  @event_note "test/integration/gitlab_event_note_on_issue.json"
+  @event_issue "test/fog/integration/gitlab_event_issue.json" |> File.read!() |> Jason.decode!()
+  @event_note "test/fog/integration/gitlab_event_note_on_issue.json"
               |> File.read!()
               |> Jason.decode!()
   @project_id "14"
