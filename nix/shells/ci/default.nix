@@ -35,6 +35,7 @@ in with pkgs; mkShell {
 
   shellHook = ''
   set -a
+  . ./config/ci.env
   eval "$(sops -d ./nix/secrets/admin/ci.env)"
   set +a
   '';
