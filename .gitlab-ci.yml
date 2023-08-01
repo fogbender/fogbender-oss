@@ -18,19 +18,19 @@ build:
 test:
   stage: test
   script:
-    - nix develop '.#test' -c make db-start
-    - nix develop '.#test' -c bash -c "(cd server; link-deps.sh)"
-    - nix develop '.#test' -c make fog-test-no-deps-check
+    - nix develop '.#ci' -c make db-start
+    - nix develop '.#ci' -c bash -c "(cd server; link-deps.sh)"
+    - nix develop '.#ci' -c make fog-test-no-deps-check
   after_script:
-    - nix develop '.#test' -c make db-stop
+    - nix develop '.#ci' -c make db-stop
 
 format:
   stage: format
   script:
     - echo Testing format...
-    - nix develop -c yarn global add "prettier@2.8.3"
-    - nix develop -c yarn fmt
-    - nix develop -c make fog-format
+    - nix develop '.#ci' -c yarn global add "prettier@2.8.3"
+    - nix develop '.#ci' -c yarn fmt
+    - nix develop '.#ci' -c make fog-format
     - echo 'Please run `nix develop -c make format` if you have any problems'
     - git diff --quiet || (git diff --stat; exit 1)
 
