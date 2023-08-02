@@ -137,7 +137,7 @@ if (setupIdentity) {
     dkimRecord.push(
       new aws.route53.Record(resourceName(`dkim-record--${range.value}`), {
         zoneId: hostedZoneId,
-        name: pulumi.interpolate`${dkim.dkimTokens[range.value]}._domainkey`,
+        name: pulumi.interpolate`${dkim.dkimTokens[range.value]}._domainkey.${host}`,
         type: "CNAME",
         ttl: 600,
         records: [pulumi.interpolate`${dkim.dkimTokens[range.value]}.dkim.amazonses.com`],
@@ -156,3 +156,4 @@ export const s3Bucket = s3Messages.bucket;
 export const s3Arn = s3Messages.arn;
 export const regionId = region.id;
 export const domainIdentityArn = domainIdentity.arn;
+export const domainIdentityDomain = domainIdentity.domain;
