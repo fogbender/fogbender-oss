@@ -7,24 +7,6 @@ import PricingCard from "../ui/landing/PricingCard.astro";
 import { IconGithub } from "../../../client/src/shared/components/IntegrationIcons";
 
 const title = "Pricing";
-const PricingData = [
-  {
-    title: "On the house",
-    price: "Free",
-    benefits: ["2 customer-facing agents", "Reporting, integrations", "SSO"],
-  },
-  {
-    title: "Support",
-    price: "$480 per agent, per year",
-    benefits: ["Everything above", "3+ customer-facing agents"],
-  },
-  {
-    title: "Success",
-    price: "$720 per agent, per year",
-    benefits: ["Everything above", " Microsoft Teams integration"],
-  },
-  { title: "Enterprise", price: "Custom", benefits: ["Everything above", "Private deployment"] },
-];
 ---
 
 <Layout meta={{ title: "Pricing" }}>
@@ -75,7 +57,6 @@ const PricingData = [
               "SOC 2 certificate",
               "SSO",
             ]}
-            }
           >
             <div slot="price">
               <span></span>
@@ -83,11 +64,11 @@ const PricingData = [
             </div>
           </PricingCard>
 
-          <span class="flex items-center gap-2">
+          <span class="">
             Fogbender is free and open-source software &mdash; to host your own, <a
-              class="flex gap-2 hover:text-brand-red-500 text-blue-700"
+              class="hover:text-brand-red-500 text-blue-700"
               href="https://github.com/fogbender/fogbender"
-              target="_blank">clone our <IconGithub class="w-4" /> GitHub repo</a
+              target="_blank">clone our <IconGithub className="w-4 inline-block" /> GitHub repo</a
             >
           </span>
         </div>
@@ -117,37 +98,43 @@ const PricingData = [
   const configureSlider = (
     sliderId: string,
     sliderValueId: string,
-    onChange: (x: number) => void
+    onChange?: (x: number) => void
   ) => {
-    const slider = document.getElementById(sliderId);
-    const asNumber = document.getElementById(sliderValueId);
+    const slider = document.getElementById(sliderId) as HTMLInputElement;
+    const asNumber = document.getElementById(sliderValueId) as HTMLInputElement;
 
-    addEventListener("load", e => {
-      asNumber.value = slider.value;
-    });
+    if (asNumber) {
+      addEventListener("load", () => {
+        asNumber.value = slider.value;
+      });
 
-    slider.addEventListener("change", e => {
-      asNumber.value = e.target.value;
-    });
+      asNumber.addEventListener("change", e => {
+        slider.value = (e.target as HTMLInputElement).value;
 
-    slider.addEventListener("input", e => {
-      asNumber.value = e.target.value;
-      asNumber.dispatchEvent(new Event("change"));
-    });
+        if (onChange) {
+          onChange(Number(slider.value));
+        }
+      });
+    }
 
-    asNumber.addEventListener("change", e => {
-      slider.value = e.target.value;
+    if (slider) {
+      slider.addEventListener("change", e => {
+        asNumber.value = (e.target as HTMLInputElement).value;
+      });
 
-      if (onChange) {
-        onChange(slider.value);
-      }
-    });
+      slider.addEventListener("input", e => {
+        asNumber.value = (e.target as HTMLInputElement).value;
+        asNumber.dispatchEvent(new Event("change"));
+      });
+    }
   };
 
   const price = document.getElementById("price");
 
   configureSlider("readerSlider", "readerSliderValue");
   configureSlider("agentSlider", "agentSliderValue", x => {
-    price.innerText = x > 2 ? `${(x - 2) * 25}` : "0";
+    if (price) {
+      price.innerText = x > 2 ? `${(x - 2) * 25}` : "0";
+    }
   });
 </script>

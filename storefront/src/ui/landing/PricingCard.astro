@@ -1,11 +1,10 @@
 ---
 type PricingCardProps = {
   title: string;
-  price: string;
   benefits: string[];
 };
 
-const { title, price, benefits } = Astro.props as PricingCardProps;
+const { title, benefits } = Astro.props as PricingCardProps;
 ---
 
 <div
