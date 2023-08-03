@@ -4,17 +4,14 @@ import Page from "../layouts/Page.astro";
 import PageTitle from "../ui/landing/PageTitle.astro";
 import PricingCard from "../ui/landing/PricingCard.astro";
 
+import { IconGithub } from "../../../client/src/shared/components/IntegrationIcons";
+
 const title = "Pricing";
 const PricingData = [
   {
     title: "On the house",
     price: "Free",
-    benefits: [
-      "2 customer-facing agents",
-      "Unlimited: readers, history, internal messaging",
-      "Reporting, integrations",
-      "SSO",
-    ],
+    benefits: ["2 customer-facing agents", "Reporting, integrations", "SSO"],
   },
   {
     title: "Support",
@@ -34,13 +31,126 @@ const PricingData = [
   <Page>
     <PageTitle title={title} />
     <div class="max-w-[51rem] flex justify-center">
-      <div class="w-full sm:w-[39rem] xl:w-[51rem] flex flex-col gap-6">
-        {
-          PricingData.map(data => {
-            return <PricingCard {...data} />;
-          })
-        }
+      <div>
+        <div class="flex flex-col"></div>
+
+        <div class="w-full sm:w-[39rem] xl:w-[51rem] flex flex-col gap-6">
+          <span class="font-medium text-lg"
+            >How many seats for internal messaging and read-only access to customer conversations?</span
+          >
+          <div class="flex gap-4 items-center">
+            <input class="w-14" type="number" value="0" id="readerSliderValue" />
+            <input
+              type="range"
+              min="0"
+              max="1000"
+              value="10"
+              class="slider readers"
+              id="readerSlider"
+            />
+          </div>
+
+          <span class="font-medium text-lg">How many seats for customer-facing agents?</span>
+          <div class="flex gap-4 items-center">
+            <input class="w-14" type="number" value="0" id="agentSliderValue" />
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value="2"
+              class="slider agents"
+              id="agentSlider"
+            />
+          </div>
+
+          <PricingCard
+            title="Hosted"
+            ,
+            benefits={[
+              "Unlimited end-users",
+              "Anonymous user (visitor) chat widget",
+              "Authenticated user chat widget",
+              "Team-to-team chat widget",
+              "Issue tracker integrations",
+              "Slack and Microsoft Teams integrations",
+              "SOC 2 certificate",
+              "SSO",
+            ]}
+            ,
+            }
+          >
+            <div slot="price">
+              <span></span>
+              $<span id="price">0</span> per month
+            </div>
+          </PricingCard>
+
+          <span class="flex items-center gap-2">
+            Fogbender is free and open-source software &mdash; to host your own, <a
+              class="flex gap-2 hover:text-brand-red-500 text-blue-700"
+              href="https://github.com/fogbender/fogbender"
+              target="_blank">clone our <IconGithub class="w-4" /> GitHub repo</a
+            >
+          </span>
+        </div>
       </div>
     </div>
   </Page>
 </Layout>
+
+<style>
+  .slider {
+    width: 100%; /* Full-width */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+    transition: opacity 0.2s;
+  }
+
+  .readers {
+    accent-color: rgb(104, 0, 243);
+  }
+
+  .agents {
+    accent-color: rgb(251, 21, 91);
+  }
+</style>
+
+<script>
+  const configureSlider = (
+    sliderId: string,
+    sliderValueId: string,
+    onChange: (x: number) => void
+  ) => {
+    const slider = document.getElementById(sliderId);
+    const asNumber = document.getElementById(sliderValueId);
+
+    addEventListener("load", e => {
+      asNumber.value = slider.value;
+    });
+
+    slider.addEventListener("change", e => {
+      asNumber.value = e.target.value;
+    });
+
+    slider.addEventListener("input", e => {
+      asNumber.value = e.target.value;
+      asNumber.dispatchEvent(new Event("change"));
+    });
+
+    asNumber.addEventListener("change", e => {
+      slider.value = e.target.value;
+
+      if (onChange) {
+        onChange(slider.value);
+      }
+    });
+  };
+
+  const price = document.getElementById("price");
+
+  configureSlider("readerSlider", "readerSliderValue");
+  configureSlider("agentSlider", "agentSliderValue", x => {
+    x > 2 ? (price.innerText = `${(x - 2) * 25}`) : (price.innerText = "0");
+  });
+</script>
