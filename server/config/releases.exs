@@ -143,10 +143,12 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
 config :ex_aws,
   access_key_id: [
     {:system, "AWS_ACCESS_KEY_ID"},
+    {:awscli, :system, 10},
     :instance_role
   ],
   secret_access_key: [
     {:system, "AWS_SECRET_ACCESS_KEY"},
+    {:awscli, :system, 10},
     :instance_role
   ],
   json_codec: Jason

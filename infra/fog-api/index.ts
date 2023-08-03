@@ -25,6 +25,7 @@ const keyArn = kms.requireOutput("keyArn");
 const mail = new pulumi.StackReference(config.require("mailStack"));
 const s3Arn = mail.requireOutput("s3Arn");
 const sqsArn = mail.requireOutput("sqsArn");
+const domainIdentityArn = mail.requireOutput("domainIdentityArn");
 
 const db = new pulumi.StackReference(config.require("dbStack"));
 const dbAccessSgId = db.requireOutput("dbAccessSecurityGroupId");
@@ -105,8 +106,7 @@ const emailPolicy = new aws.iam.RolePolicy(resourceName("ses-send-email"), {
       {
         Effect: "Allow",
         Action: ["ses:SendEmail", "ses:SendRawEmail"],
-        Resource: "*",
-        // TODO: setting `ses:FromAddress` might be good idea. See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/control-user-access.html
+        Resource: domainIdentityArn,
       },
     ],
   },
