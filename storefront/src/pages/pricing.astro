@@ -149,6 +149,6 @@ const PricingData = [
 
   configureSlider("readerSlider", "readerSliderValue");
   configureSlider("agentSlider", "agentSliderValue", x => {
-    x > 2 ? (price.innerText = `${(x - 2) * 25}`) : (price.innerText = "0");
+    price.innerText = x > 2 ? `${(x - 2) * 25}` : "0";
   });
 </script>
