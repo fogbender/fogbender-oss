@@ -70,8 +70,8 @@ in with pkgs; mkShell {
   echo Sourcing dev.env..
   . ./config/dev.env
 
-  echo Sourcing dev.secrets.env..
-  eval "$(sops -d ./config/dev.secrets.env)"
+  echo Sourcing nix/secrets/dev/dev.env..
+  eval "$(sops -d nix/secrets/dev/dev.env)"
   set +a
 
   if [ -f "./local.env" ]; then
