@@ -15,12 +15,17 @@ with pkgs; mkShell {
     if [ -f "./local.env" ]; then
     . local.env
     fi
+
     set -a
+
     echo Sourcing dev.env..
     . ./config/dev.env
-    echo Sourcing dev.secrets.env..
-    eval "$(sops -d ./config/dev.secrets.env)"
+
+    echo Sourcing nix/secrets/dev/dev.env..
+    eval "$(sops -d nix/secrets/dev/dev.env)"
+
     set +a
+
     if [ -f "./local.env" ]; then
     echo Sourcing local.env..
     . local.env
