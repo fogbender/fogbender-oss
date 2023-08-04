@@ -10,13 +10,13 @@ SOPS allows us to encrypt data with different types of keys (PGP, Age, AWS KMS, 
 
 Used for additional services - portal, CI.
 
-Files are in `nix/deploy/secrets/admin` and `config/test.env`.
+Files are in `nix/secrets/admin` and `config/test.env`.
 
 ### Stage,Test,Prod
 
 Several envs for main Fogbender servers.
 
-Files are in `nix/deploy/secrets/{stage,test,prod}`.
+Files are in `nix/secrets/{stage,test,prod}`.
 
 ### Dev
 
@@ -32,7 +32,7 @@ All commands should be run from a Nix shell - use `nix develop` for defaul dev s
 
 ### Encrypting a new file
 
-> cd nix/deploy/secrets/test
+> cd nix/secrets/test
 > sops -i -e new-file.env
 
 The `-i` option tells SOPS to write the result to the same file.
@@ -41,7 +41,7 @@ SOPS understands several file formats - YAML, JSON, ENV and binary.
 
 On first encryption, SOPS will use the nearest sops.yaml file for encryption instructions.
 
-See `nix/deploy/secrets/sops.yaml`
+See `nix/secrets/sops.yaml`
 
 ### Updating encrypted file
 
@@ -51,7 +51,7 @@ it will be encrypted with test keys.
 
 In this case, or if you've changed the sops.yaml config, you need to update the encrypted file:
 
-> cd nix/deploy/secrets/prod
+> cd nix/secrets/prod
 > cp ../test/new-file.env ./
 > sops updatekeys new-file.env
 

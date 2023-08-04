@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 stack=`pulumi stack --show-name`
-envFile=../../nix/deploy/secrets/${stack}/fogbender.env
+envFile=../../nix/secrets/${stack}/fogbender.env
 echo reading PG_PASS from $envFile
 
 if [ -f "$envFile" ]; then

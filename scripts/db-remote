@@ -33,7 +33,7 @@ Help()
 
 Connect()
 {
-    PASS=`sops exec-env ./nix/deploy/secrets/${DB_ENV}/fogbender.env 'echo \${PG_PASS} | xargs'`
+    PASS=`sops exec-env ./nix/secrets/${DB_ENV}/fogbender.env 'echo \${PG_PASS} | xargs'`
     ssh -Cfo ExitOnForwardFailure=yes -N -L localhost:$PGPORT:$PGHOST:5432 fogbender@$APIHOST
     PID=$(pgrep -f "N -L localhost:$PGPORT:")
     trap 'kill $PID' ERR
