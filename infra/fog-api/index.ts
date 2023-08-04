@@ -106,7 +106,7 @@ const emailPolicy = new aws.iam.RolePolicy(resourceName("ses-send-email"), {
       {
         Effect: "Allow",
         Action: ["ses:SendEmail", "ses:SendRawEmail"],
-        Resource: domainIdentityArn,
+        Resource: "*",
       },
     ],
   },

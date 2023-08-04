@@ -4,7 +4,7 @@ let
   inherit (builtins) readFile readDir;
 in
 rec {
-  root = ./keys;
+  root = ../keys;
   files = mapAttrs
     (f: v:
       let fileName = root + ("/" + f); in

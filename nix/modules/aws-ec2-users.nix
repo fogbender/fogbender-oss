@@ -1,6 +1,6 @@
 {config, lib, pkgs, ...}:
 let
-  staff = import ../staff.nix {inherit pkgs;};
+  staff = import ../lib/staff.nix {inherit pkgs;};
 in
 {
   config = {

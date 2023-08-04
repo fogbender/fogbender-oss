@@ -1,6 +1,11 @@
 { pkgs, unstable, fogbender, beamPackages, writeScriptBin, lib, ... }:
 let
-  pg12 = pkgs.postgresql_12.withPackages (p: [ p.pg_bigm ]);
+  pg = pkgs.postgresql_14.withPackages (p: [ p.pg_bigm ]);
+
+  js_libs = with unstable; [
+    nodejs
+    yarn
+  ];
 
   link-deps = writeScriptBin "link-deps.sh" ''
     mkdir -p _build/test/lib
@@ -14,10 +19,11 @@ in with pkgs; mkShell {
   buildInputs = [
     glibcLocales
     gnumake git
-    pg12
+    pg
     imagemagick
     libsodium
     link-deps
+    js_libs
     sops
   ];
 
@@ -29,7 +35,8 @@ in with pkgs; mkShell {
 
   shellHook = ''
   set -a
-  eval "$(sops -d ./config/test.env)"
+  . ./config/ci.env
+  eval "$(sops -d ./nix/secrets/admin/ci.env)"
   set +a
   '';
 }

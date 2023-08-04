@@ -35,7 +35,6 @@ let
   ];
 
   pg = pkgs.postgresql_14.withPackages (p: [ p.pg_bigm ]);
-  pgupgrade = pkgs.callPackage ./scripts/pg_upgrade_12_14.nix { postgresql_14 = pg; };
 
 in with pkgs; mkShell {
   buildInputs = [
@@ -47,10 +46,8 @@ in with pkgs; mkShell {
     python3
     jq
     cmake
-    sops
     vulnix
     nix-tree
-    pgupgrade
   ]
   ++ file-notifier
   ++ elixir_libs
@@ -62,13 +59,11 @@ in with pkgs; mkShell {
   LANG = "en_US.UTF-8";
 
   shellHook = ''
-  if [ -f "./local.env" ]; then
-  . local.env
-  fi
   set -a
-  echo Sourcing dev.env..
-  eval "$(sops -d ./config/dev.env)"
+  echo Sourcing oss.env..
+  . ./config/oss.env
   set +a
+
   if [ -f "./local.env" ]; then
   echo Sourcing local.env..
   . local.env
