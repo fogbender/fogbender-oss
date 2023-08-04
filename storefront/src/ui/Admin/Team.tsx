@@ -73,13 +73,13 @@ export const Team: React.FC<{
             <TeamTabs tab="team" />
             {ourAgent && (
               <>
-                <VerifiedDomains authenticatedAgent={ourAgent} vendor={vendor} />
                 <InviteMembers
                   invitesAndAgents={invitesAndAgents}
                   ourAgent={ourAgent}
                   vendor={vendor}
                   agents={agents}
                 />
+                <VerifiedDomains authenticatedAgent={ourAgent} vendor={vendor} />
               </>
             )}
           </>
