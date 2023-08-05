@@ -24,11 +24,13 @@ export type Fogvite = {
   deleted_at: string | null;
 };
 
+export type AgentRole = "owner" | "admin" | "agent" | "reader" | "app";
+
 export type Agent = {
   id: string;
   email: string;
   name: string;
-  role: "owner" | "admin" | "agent" | "reader" | "app";
+  role: AgentRole;
   image_url: string;
   inserted_at: string;
   tags: WorkspaceTag[];
