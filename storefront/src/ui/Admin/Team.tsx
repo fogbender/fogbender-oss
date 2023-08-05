@@ -180,6 +180,7 @@ const TeamMembers: React.FC<{
         <Modal
           onClose={() => {
             setSendNewInvite(false);
+            navigate(location.pathname, { replace: true });
           }}
         >
           <SendInviteForm vendorId={vendor.id} onClose={() => setSendNewInvite(false)} />
