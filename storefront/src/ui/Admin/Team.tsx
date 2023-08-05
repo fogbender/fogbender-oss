@@ -73,7 +73,7 @@ export const Team: React.FC<{
             <TeamTabs tab="team" />
             {ourAgent && (
               <>
-                <InviteMembers
+                <TeamMembers
                   invitesAndAgents={invitesAndAgents}
                   ourAgent={ourAgent}
                   vendor={vendor}
@@ -143,7 +143,7 @@ const TeamTabs: React.FC<{
     </div>
   );
 };
-const InviteMembers: React.FC<{
+const TeamMembers: React.FC<{
   invitesAndAgents: (Agent | Invite)[];
   ourAgent: Agent | undefined;
   vendor: Vendor;
@@ -197,88 +197,90 @@ const InviteMembers: React.FC<{
             Invite teammate
           </ThickButton>
         </div>
-        <table className="table-auto w-full my-2 border-separate border-spacing-y-2">
-          <tbody>
-            {invitesAndAgents?.map((member, i) => (
-              <tr key={i}>
-                <td className="border-t whitespace-nowrap lg:whitespace-normal">
-                  <div className="flex gap-3">
-                    <div className="flex justify-center mt-4">
-                      {isInvite(member) ? (
-                        <Avatar
-                          url={UserPlus}
-                          imageSize={14}
-                          className="w-4"
-                          bgClassName="bg-gray-200"
-                        />
-                      ) : (
-                        <Avatar size={35} url={member.image_url} name={member.name} />
-                      )}
-                    </div>
-
-                    <div className="flex flex-col self-center min-w-max mt-4 pr-2">
-                      <div className="gap-1">
+        <div className="min-h-[22rem]">
+          <table className="table-auto w-full my-2 border-separate border-spacing-y-2">
+            <tbody>
+              {invitesAndAgents?.map((member, i) => (
+                <tr key={i}>
+                  <td className="border-t whitespace-nowrap lg:whitespace-normal">
+                    <div className="flex gap-3">
+                      <div className="flex justify-center mt-4">
                         {isInvite(member) ? (
-                          <span>Invited by {member.from_agent.name}</span>
+                          <Avatar
+                            url={UserPlus}
+                            imageSize={14}
+                            className="w-4"
+                            bgClassName="bg-gray-200"
+                          />
                         ) : (
-                          <span>{member.name}</span>
+                          <Avatar size={35} url={member.image_url} name={member.name} />
                         )}
                       </div>
-                      {!isInvite(member) && (
-                        <div className="text-gray-500 text-xs">
-                          Joined at {formatTs(new Date(member.inserted_at).getTime() * 1000)}
-                        </div>
-                      )}
-                      {isInvite(member) && (
-                        <div className="text-gray-500 text-xs">
-                          At {formatTs(new Date(member.inserted_at).getTime() * 1000)}
-                        </div>
-                      )}
-                      {!isInvite(member) && ourAgentId === member.id && (
-                        <div className="w-full text-left">
-                          <span className="whitespace-nowrap self-center text-white text-xs bg-green-500 rounded-lg py-0.5 px-1">
-                            It&rsquo;s you!
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="border-t">
-                  {isInvite(member) ? (
-                    <span>{member.email}</span>
-                  ) : (
-                    <span>{renderEmailOrTag(member)}</span>
-                  )}
-                </td>
-                <td className="border-t">
-                  {member.role === "app" ? (
-                    <div>Application</div>
-                  ) : (
-                    <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
-                  )}
-                </td>
-                <td className="border-t">
-                  <span
-                    title="Remove"
-                    className="text-gray-500 hover:text-red-500 cursor-pointer flex items-center justify-end"
-                    onClick={e => {
-                      e.stopPropagation();
 
-                      if (isInvite(member)) {
-                        setInviteToDelete(member);
-                      } else {
-                        setAgentToDelete(member);
-                      }
-                    }}
-                  >
-                    <Icons.Trash className="w-5" />
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      <div className="flex flex-col self-center min-w-max mt-4 pr-2">
+                        <div className="gap-1">
+                          {isInvite(member) ? (
+                            <span>Invited by {member.from_agent.name}</span>
+                          ) : (
+                            <span>{member.name}</span>
+                          )}
+                        </div>
+                        {!isInvite(member) && (
+                          <div className="text-gray-500 text-xs">
+                            Joined at {formatTs(new Date(member.inserted_at).getTime() * 1000)}
+                          </div>
+                        )}
+                        {isInvite(member) && (
+                          <div className="text-gray-500 text-xs">
+                            At {formatTs(new Date(member.inserted_at).getTime() * 1000)}
+                          </div>
+                        )}
+                        {!isInvite(member) && ourAgentId === member.id && (
+                          <div className="w-full text-left">
+                            <span className="whitespace-nowrap self-center text-white text-xs bg-green-500 rounded-lg py-0.5 px-1">
+                              It&rsquo;s you!
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="border-t">
+                    {isInvite(member) ? (
+                      <span>{member.email}</span>
+                    ) : (
+                      <span>{renderEmailOrTag(member)}</span>
+                    )}
+                  </td>
+                  <td className="border-t">
+                    {member.role === "app" ? (
+                      <div>Application</div>
+                    ) : (
+                      <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
+                    )}
+                  </td>
+                  <td className="border-t">
+                    <span
+                      title="Remove"
+                      className="text-gray-500 hover:text-red-500 cursor-pointer flex items-center justify-end"
+                      onClick={e => {
+                        e.stopPropagation();
+
+                        if (isInvite(member)) {
+                          setInviteToDelete(member);
+                        } else {
+                          setAgentToDelete(member);
+                        }
+                      }}
+                    >
+                      <Icons.Trash className="w-5" />
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {agentToDelete && (
         <DeleteMemberModal
@@ -305,6 +307,7 @@ const InviteMembers: React.FC<{
     </div>
   );
 };
+
 const ChangeRoleButton: React.FC<{
   member: Agent | Invite;
   ourAgent: Agent | undefined;
@@ -411,7 +414,7 @@ const SendInviteForm: React.FC<{
             <span>
               Sorry, this shouldn't have happened! Please ping us in{" "}
               <a href={`/admin/vendor/${vendorId}/support`} target="_blank" rel="noopener">
-                Fogbender Support
+                Fogbender support
               </a>
             </span>
           )}

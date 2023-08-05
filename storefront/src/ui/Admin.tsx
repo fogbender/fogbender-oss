@@ -22,6 +22,8 @@ import {
   ThinButton,
   useIsIdle,
   WsProvider,
+  AgentRole,
+  IconGithub,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import { Provider as JotaiProvider, useAtom } from "jotai";
@@ -152,6 +154,10 @@ export const Admin = () => {
 
   const teamMode =
     !!designatedVendorId && !designatedWorkspaceId && vendorMatch?.params["*"]?.startsWith("team");
+  const billingMode =
+    !!designatedVendorId &&
+    !designatedWorkspaceId &&
+    vendorMatch?.params["*"]?.startsWith("billing");
   const settingsMode = !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("settings");
   const customersMode =
     !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("customers");
@@ -269,45 +275,18 @@ export const Admin = () => {
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
-      {notificationsPermission === "default" && (
-        <div
-          className="bg-red-100 border-red-400 text-red-700 px-4 py-3 relative text-center shadow"
-          role="alert"
-        >
-          <span
-            onClick={e => {
-              e.preventDefault();
-
-              window.Notification?.requestPermission().then(function (permission) {
-                setNotificationsPermission(permission);
-              });
-            }}
-            className="cursor-pointer"
-          >
-            {browser()?.name === "chrome" ? (
-              <>
-                <strong className="block sm:inline">
-                  Fogbender needs your permission to enable{" "}
-                  <span className="underline">desktop notifications</span>
-                </strong>
-              </>
-            ) : (
-              <>
-                <strong className="font-bold">Click here</strong>{" "}
-                <span className="block sm:inline">
-                  to enable <span className="underline">desktop notifications</span>
-                </span>
-              </>
-            )}
-          </span>
-          <span
-            className="absolute h-full mr-2 top-0 right-0 cursor-pointer flex"
-            onClick={() => setNotificationsPermission("hide")}
-          >
-            <FontAwesomeTimes className="fa-fw self-center text-red-400 hover:text-red-600" />
-          </span>
-        </div>
-      )}
+      <SubscriptionRequiredBanner
+        inViolation={
+          (agents || []).reduce(
+            (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
+            0
+          ) > 2
+        }
+      />
+      <NotificationsPermissionBanner
+        notificationsPermission={notificationsPermission}
+        setNotificationsPermission={setNotificationsPermission}
+      />
       <div
         className="relative flex flex-col flex-1 overflow-hidden"
         style={{
@@ -368,6 +347,8 @@ export const Admin = () => {
                     vendors={vendors}
                     designatedVendorId={designatedVendorId}
                     teamMode={teamMode}
+                    billingMode={billingMode}
+                    ourRole={ourRole}
                   />
                 }
               />
@@ -789,6 +770,90 @@ export const Admin = () => {
   );
 };
 
+const NotificationsPermissionBanner = ({
+  notificationsPermission,
+  setNotificationsPermission,
+}: {
+  notificationsPermission: NotificationPermission | "hide";
+  setNotificationsPermission: (x: NotificationPermission | "hide") => void;
+}) => {
+  if (notificationsPermission === "default") {
+    return (
+      <div
+        className="bg-red-100 border-red-400 text-red-700 px-4 py-3 relative text-center shadow"
+        role="alert"
+      >
+        <span
+          onClick={e => {
+            e.preventDefault();
+
+            window.Notification?.requestPermission().then(function (permission) {
+              setNotificationsPermission(permission);
+            });
+          }}
+          className="cursor-pointer"
+        >
+          {browser()?.name === "chrome" ? (
+            <>
+              <span className="block sm:inline font-medium">
+                Fogbender needs your permission to enable{" "}
+                <span className="underline">desktop notifications</span>
+              </span>
+            </>
+          ) : (
+            <>
+              <strong className="font-bold">Click here</strong>{" "}
+              <span className="block sm:inline font-medium">
+                to enable <span className="underline">desktop notifications</span>
+              </span>
+            </>
+          )}
+        </span>
+        <span
+          className="absolute h-full mr-2 top-0 right-0 cursor-pointer flex"
+          onClick={() => setNotificationsPermission("hide")}
+        >
+          <FontAwesomeTimes className="fa-fw self-center text-red-400 hover:text-red-600" />
+        </span>
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
+const SubscriptionRequiredBanner = ({ inViolation }: { inViolation: boolean }) => {
+  if (inViolation) {
+    return (
+      <div
+        className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-white px-4 py-3 relative text-center"
+        role="alert"
+      >
+        <span className="block sm:inline font-medium">
+          ⚠️ Please{" "}
+          <Link className="hover:text-red-500" to={`/admin/-/billing`}>
+            subscribe
+          </Link>
+          ,{" "}
+          <Link className="hover:text-red-500" to={`/admin/-/team`}>
+            downgrade
+          </Link>{" "}
+          one of your agents to Reader, or{" "}
+          <a
+            className="hover:text-red-500"
+            href="https://github.com/fogbender/fogbender"
+            target="_blank"
+          >
+            host your own Fogbender <IconGithub className="ml-1 w-5 inline-block" />
+          </a>
+        </span>
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
 const Sidebar: React.FC<{
   hidden: boolean;
   vendorInvites: VendorInvite[] | undefined;
@@ -796,7 +861,18 @@ const Sidebar: React.FC<{
   vendors: Vendor[] | undefined;
   designatedVendorId: string | undefined;
   teamMode: boolean | undefined;
-}> = ({ vendors, vendorInvites, vendorInviteCode, designatedVendorId, teamMode, hidden }) => {
+  billingMode: boolean | undefined;
+  ourRole: AgentRole | undefined;
+}> = ({
+  vendors,
+  vendorInvites,
+  vendorInviteCode,
+  designatedVendorId,
+  teamMode,
+  billingMode,
+  hidden,
+  ourRole,
+}) => {
   const hasVendors = vendors !== undefined && vendors.length > 0;
   const hasVendorInvites = vendorInvites !== undefined && vendorInvites.length > 0;
 
@@ -884,7 +960,7 @@ const Sidebar: React.FC<{
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
-                      v.id === designatedVendorId && !teamMode
+                      v.id === designatedVendorId && !teamMode && !billingMode
                         ? "border-opacity-1"
                         : "border-opacity-0"
                     )}
@@ -906,13 +982,26 @@ const Sidebar: React.FC<{
                   >
                     Team
                   </Link>
+                  {ourRole && ["owner", "admin"].includes(ourRole) && (
+                    <Link
+                      className={classNames(
+                        "border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
+                        v.id === designatedVendorId && billingMode
+                          ? "border-opacity-1"
+                          : "border-opacity-0"
+                      )}
+                      to={`vendor/${v.id}/billing`}
+                    >
+                      Billing
+                    </Link>
+                  )}
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 border-opacity-0 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m"
                     )}
                     to={`vendor/${v.id}/support`}
                   >
-                    <div className="flex-1">Fogbender Support</div>
+                    <div className="flex-1">Fogbender support</div>
                     <div className="pr-2">
                       <HeadlessForSupport
                         vendorId={v.id}
@@ -1192,7 +1281,7 @@ const Breadcrumbs: React.FC<{
         />
         <Route
           path="vendor/:vid/support/*"
-          element={<Title>Fogbender | {cachedVendorName} | Fogbender Support</Title>}
+          element={<Title>Fogbender | {cachedVendorName} | Fogbender support</Title>}
         />
         <Route
           path="vendor/:vid/workspace/:wid/settings/*"
@@ -1277,7 +1366,7 @@ const Breadcrumbs: React.FC<{
 
             <span className="px-2">/</span>
 
-            <span className="truncate">{designatedWorkspace?.name || "Fogbender Support"}</span>
+            <span className="truncate">{designatedWorkspace?.name || "Fogbender support"}</span>
           </Link>
           {!supportMode && (
             <Link

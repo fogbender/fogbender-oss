@@ -622,6 +622,12 @@ export const Room: React.FC<{
     }
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
+  const inViolation =
+    (agents || []).reduce(
+      (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
+      0
+    ) > 2;
+
   return (
     <div
       {...getRootProps({
@@ -904,7 +910,8 @@ export const Room: React.FC<{
 
       {fileInput}
 
-      {(agentRole !== "reader" || isInternal) && (
+      {((agentRole && ["owner", "admin", "agent"].includes(agentRole) && !inViolation) ||
+        isInternal) && (
         <div ref={roomFooterRef}>
           {Textarea}
           {(!mode || mode === "Reply" || mode === "Edit") && (
