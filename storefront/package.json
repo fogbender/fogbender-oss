@@ -85,7 +85,7 @@
     "test:vite": "vitest",
     "test:ui": "vitest --ui",
     "start": "astro dev",
-    "dev2": "vite --config qgp.config.mjs"
+    "dev2": "astro sync && vite --config qgp.config.mjs"
   },
   "eslintConfig": {
     "extends": "react-app"
