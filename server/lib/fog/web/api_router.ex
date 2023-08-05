@@ -576,6 +576,8 @@ defmodule Fog.Web.APIRouter do
             updated_at: DateTime.utc_now()
           })
 
+        Process.sleep(1000)
+
         ok_no_content(conn)
 
       {:no, reason} ->
