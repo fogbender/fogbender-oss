@@ -272,17 +272,24 @@ export const Admin = () => {
   );
   const [onboardingChecklistDone, setOnboardingChecklistDone] = useAtom(checklistDoneHiddenAtom);
 
+  const countNonReaders = (agents || []).reduce(
+    (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
+    0
+  );
+
+  const countInViolation = countNonReaders - 2 < 0 ? 0 : countNonReaders - 2;
+
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
-      <SubscriptionRequiredBanner
-        inViolation={
-          (agents || []).reduce(
-            (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
-            0
-          ) > 2
-        }
-      />
+      {designatedVendorId && ourRole && ["owner", "admin", "agent"].includes(ourRole) && (
+        <SubscriptionRequiredBanner
+          admins={agents.filter(a => ["owner", "admin"].includes(a.role))}
+          ourRole={ourRole}
+          vendorId={designatedVendorId}
+          countInViolation={countInViolation}
+        />
+      )}
       <NotificationsPermissionBanner
         notificationsPermission={notificationsPermission}
         setNotificationsPermission={setNotificationsPermission}
@@ -822,8 +829,51 @@ const NotificationsPermissionBanner = ({
   }
 };
 
-const SubscriptionRequiredBanner = ({ inViolation }: { inViolation: boolean }) => {
-  if (inViolation) {
+const SubscriptionRequiredBanner = ({
+  admins,
+  ourRole,
+  vendorId,
+  countInViolation,
+}: {
+  admins: Agent[];
+  ourRole: AgentRole;
+  vendorId: string;
+  countInViolation: number;
+}) => {
+  const createCheckoutSessionMutation = useMutation({
+    mutationFn: () => {
+      return apiServer
+        .url(`/api/vendors/${vendorId}/create-checkout-session`)
+        .post({
+          seats: countInViolation,
+        })
+        .json<{ url: string }>();
+    },
+    onSuccess: res => {
+      const { url } = res;
+
+      window.location.href = url;
+    },
+  });
+
+  const commadAdmins = React.useMemo(() => {
+    const res = [];
+
+    if (admins.length === 1) {
+      res.push(admins[0].email);
+    } else if (admins.length === 2) {
+      res.push(admins[0].email);
+      res.push(" or ");
+      res.push(admins[1].email);
+    } else {
+      admins.slice(0, -1).forEach(a => res.push(`${a.email}, `));
+      res.push(` or ${admins.slice(-1)[0].email}`);
+    }
+
+    return res.join("");
+  }, [admins]);
+
+  if (countInViolation > 0) {
     return (
       <div
         className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-white px-4 py-3 relative text-center"
@@ -831,16 +881,27 @@ const SubscriptionRequiredBanner = ({ inViolation }: { inViolation: boolean }) =
       >
         <span className="block sm:inline font-medium">
           ⚠️ Please{" "}
-          <Link className="hover:text-red-500" to={`/admin/-/billing`}>
+          <button
+            className="hover:text-red-300 underline"
+            onClick={() => {
+              if (ourRole === "agent") {
+                alert(
+                  `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
+                );
+              } else {
+                createCheckoutSessionMutation.mutate();
+              }
+            }}
+          >
             subscribe
-          </Link>
+          </button>
           ,{" "}
-          <Link className="hover:text-red-500" to={`/admin/-/team`}>
-            downgrade
-          </Link>{" "}
-          one of your agents to Reader, or{" "}
+          <Link className="hover:text-red-300" to={`/admin/-/team`}>
+            downgrade to free tier
+          </Link>
+          , or{" "}
           <a
-            className="hover:text-red-500"
+            className="hover:text-red-300"
             href="https://github.com/fogbender/fogbender"
             target="_blank"
           >

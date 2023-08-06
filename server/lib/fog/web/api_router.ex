@@ -180,6 +180,22 @@ defmodule Fog.Web.APIRouter do
     end
   end
 
+  post "/vendors/:vendor_id/create-checkout-session" do
+    our_role = our_role(conn, vendor_id)
+
+    if role_at_or_above(our_role, "admin") do
+      seats = conn.params["seats"]
+      %{"url" => url} = Fog.Stripe.Api.create_checkout_session(seats)
+
+      ok_json(
+        conn,
+        %{url: url} |> Jason.encode!(pretty: true)
+      )
+    else
+      forbid(conn)
+    end
+  end
+
   post "/workspaces/:workspace_id/get-merge-link-token" do
     workspace = Fog.Data.Workspace |> Fog.Repo.get(workspace_id) |> Repo.preload(:vendor)
     our_role = our_role(conn, workspace.vendor_id)
@@ -546,6 +562,8 @@ defmodule Fog.Web.APIRouter do
   end
 
   post "/vendors/:vendor_id/agents/:agent_id" do
+    our_agent_id = conn.assigns[:agent_id]
+
     our_role = our_role(conn, vendor_id)
     {new_role, conn} = new_role(conn)
     {old, old_role} = old_role(vendor_id, agent_id)
@@ -553,6 +571,7 @@ defmodule Fog.Web.APIRouter do
 
     verdict =
       case {our_role, new_role, old_role, num_owners > 1} do
+        {"agent", "reader", _, _} when agent_id === our_agent_id -> :yes
         {"reader", _, _, _} -> {:no, "Readers cannot assign roles"}
         {"agent", _, _, _} -> {:no, "Agents cannot assign roles"}
         {"admin", "owner", _, _} -> {:no, "Only owners can assign owners"}

@@ -111,6 +111,11 @@ config :fog,
 config :fog,
   github_tokens: System.get_env("GITHUB_TOKENS")
 
+config :fog,
+  stripe_public_key: System.get_env("STRIPE_PUBLIC_KEY"),
+  stripe_secret_key: System.get_env("STRIPE_SECRET_KEY"),
+  stripe_price_id: System.get_env("STRIPE_PRICE_ID")
+
 config :logger, :console,
   level: (System.get_env("FOG_LOG_LEVEL") || "debug") |> String.to_atom(),
   format: "\n$time [$level] $message $metadata\n",
