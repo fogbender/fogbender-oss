@@ -50,6 +50,18 @@ in
         journald = {
           priority = "info";
           storage = "file_storage";
+          operators = [
+            {
+              type = "move";
+              from = "body.MESSAGE";
+              to = "body.message";
+            }
+            {
+              type = "copy";
+              from = "body._SYSTEMD_UNIT";
+              to = "body.service";
+            }
+          ];
         };
       };
 
