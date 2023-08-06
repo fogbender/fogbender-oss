@@ -9,6 +9,7 @@ in
 
   services.gitlab-runner = {
     enable = true;
+    settings.log_format = "json";
 
     services.shell = {
       registrationConfigFile = config.sops.secrets."gitlab-runner-registration.env".path;
