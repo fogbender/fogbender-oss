@@ -183,6 +183,7 @@ export const Admin = () => {
 
   const homeMode =
     teamMode ||
+    billingMode ||
     adminMatch !== null ||
     workspacesMatch !== null ||
     adminRedirectMatch !== null ||
