@@ -90,7 +90,7 @@ const portalDns = new aws.route53.Record(
 const ciDomain = config.require("ciDomain");
 const ciHost = config.require("ciHost");
 
-const ciMachineType = "t2.medium";
+const ciMachineType = "t3.large";
 const ciVolumeSize = 40;
 
 const ciSubnetId = net.requireOutput("privateSubnetIds").apply(l => l[0]);
@@ -161,7 +161,10 @@ const ciDns = new aws.route53.Record(
 
 const pgDomain = config.require("playgroundDomain");
 const pgHost = config.require("playgroundHost");
-const pg = encryptedInstance(resourceName("pg-host"), ciMachineType, ciVolumeSize, {
+const pgMachineType = "t2.medium";
+const pgVolumeSize = 40;
+
+const pg = encryptedInstance(resourceName("pg-host"), pgMachineType, pgVolumeSize, {
   subnetId: ciSubnetId,
   vpcSecurityGroupIds: [ciSg.id],
   iamInstanceProfile: ciProfile,
