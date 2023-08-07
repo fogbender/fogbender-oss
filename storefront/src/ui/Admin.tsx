@@ -2,12 +2,14 @@ import browser from "browser-detect";
 import classNames from "classnames";
 import {
   Agent,
+  AgentRole,
   AnyToken,
   App as AgentApp,
   atomWithRealTimeLocalStorage,
   Avatar,
   ConfirmDialog,
   GalleryModal,
+  IconGithub,
   Icons,
   Integration,
   IsIdleProvider,
@@ -21,9 +23,8 @@ import {
   Tag,
   ThinButton,
   useIsIdle,
+  VendorBilling,
   WsProvider,
-  AgentRole,
-  IconGithub,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import { Provider as JotaiProvider, useAtom } from "jotai";
@@ -59,6 +60,7 @@ import {
 import { FontAwesomeTimes } from "../shared/font-awesome/Times";
 
 import { getIntegrationDetails as getAIIntegrationDetails } from "./Admin/AIIntegrations";
+import { Billing } from "./Admin/Billing";
 import { client } from "./Admin/client";
 import { getIntegrationDetails as getCommsIntegrationDetails } from "./Admin/CommsIntegrations";
 import { CreateVendorForm } from "./Admin/CreateVendorForm";
@@ -72,7 +74,6 @@ import { getIntegrationDetails as getIssueTrackerIntegrationDetails } from "./Ad
 import { NoVendors } from "./Admin/NoVendors";
 import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
 import { Team } from "./Admin/Team";
-import { Billing, VendorBilling } from "./Admin/Billing";
 import { UpdateVendorForm } from "./Admin/UpdateVendorForm";
 import { UpdateWorkspaceForm } from "./Admin/UpdateWorkspaceForm";
 import { AcceptInviteButton, BadInviteModal, DeclineInviteButton } from "./Admin/VendorInvite";
@@ -642,6 +643,7 @@ export const Admin = () => {
                           <AgentAppWrapper
                             isIdle={isIdle}
                             designatedVendorId={designatedVendorId}
+                            billing={billing}
                             authorMe={authorMe}
                             openFromLocationHook={useOpenRoomFromBrowserLocation}
                             workspaceTags={workspaceTags}
@@ -927,7 +929,7 @@ const SubscriptionRequiredBanner = ({
         role="alert"
       >
         <span className="block sm:inline font-medium">
-          ⚠️ Please{" "}
+          😔 Please{" "}
           {(billing?.subscriptions || []).length > 0 ? (
             <Link to="/admin/-/billing">resubscribe</Link>
           ) : (
@@ -1180,15 +1182,14 @@ const Sidebar: React.FC<{
 type ExtractProps<Props> = Props extends React.FC<infer TProps> ? TProps : never;
 
 type AgentAppProps = ExtractProps<typeof AgentApp>;
-const AgentAppWrapper: React.FC<AgentAppProps & { designatedVendorId: string }> = ({
-  designatedVendorId,
-  ...props
-}) => {
+const AgentAppWrapper: React.FC<
+  AgentAppProps & { designatedVendorId: string; billing?: VendorBilling }
+> = ({ designatedVendorId, billing, ...props }) => {
   const { data: agents } = useQuery({
     queryKey: queryKeys.agents(designatedVendorId),
     queryFn: () => apiServer.get(`/api/vendors/${designatedVendorId}/agents`).json<Agent[]>(),
   });
-  return <AgentApp agents={agents} {...props} />;
+  return <AgentApp agents={agents} billing={billing} {...props} />;
 };
 
 const AdminSupport: React.FC<{

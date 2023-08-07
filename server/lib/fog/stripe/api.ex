@@ -23,7 +23,8 @@ defmodule Fog.Stripe.Api do
           "line_items[0][quantity]" => seats,
           "mode" => "subscription",
           "success_url" =>
-            "#{Fog.env(:fog_storefront_url)}/admin/-/billing?session_id={CHECKOUT_SESSION_ID}"
+            "#{Fog.env(:fog_storefront_url)}/admin/-/billing?session_id={CHECKOUT_SESSION_ID}",
+          "cancel_url" => "#{Fog.env(:fog_storefront_url)}/admin/-/billing"
         }
       )
 

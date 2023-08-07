@@ -253,7 +253,13 @@ defmodule Fog.Web.APIRouter do
 
               nil
 
-            {:ok, %{"created" => created_ts_sec, "email" => email, "delinquent" => is_delinquent}} ->
+            {:ok,
+             %{
+               "created" => created_ts_sec,
+               "email" => email,
+               "name" => name,
+               "delinquent" => is_delinquent
+             }} ->
               %{"url" => portal_session_url} =
                 Fog.Stripe.Api.create_portal_session(stripe_customer_id)
 
@@ -282,6 +288,7 @@ defmodule Fog.Web.APIRouter do
 
                   %{
                     email: email,
+                    name: name,
                     created_ts_sec: created_ts_sec,
                     delinquent: is_delinquent,
                     portal_session_url: portal_session_url,
@@ -298,9 +305,33 @@ defmodule Fog.Web.APIRouter do
 
       paid_seats = subscriptions |> Enum.map(& &1.quantity) |> Enum.sum()
 
+      free_seats =
+        from(
+          v in Data.Vendor,
+          where: v.id == ^vendor_id,
+          select: v.free_seats
+        )
+        |> Repo.one()
+
+      count_non_free_seats = count_non_free_seats(vendor_id)
+
+      unpaid_seats =
+        case count_non_free_seats - paid_seats do
+          seats when seats >= 0 ->
+            seats
+
+          _ ->
+            0
+        end
+
       ok_json(
         conn,
-        %{paid_seats: paid_seats, free_seats: 2, subscriptions: subscriptions}
+        %{
+          unpaid_seats: unpaid_seats,
+          paid_seats: paid_seats,
+          free_seats: free_seats,
+          subscriptions: subscriptions
+        }
         |> Jason.encode!(pretty: true)
       )
     else
@@ -707,17 +738,7 @@ defmodule Fog.Web.APIRouter do
             updated_at: DateTime.utc_now()
           })
 
-        [count_non_free_seats] =
-          from(
-            var in Data.VendorAgentRole,
-            join: v in Data.Vendor,
-            on: v.id == var.vendor_id,
-            where: var.vendor_id == ^vendor_id,
-            where: var.role in ["owner", "admin", "agent"],
-            group_by: v.free_seats,
-            select: count(var.agent_id) - v.free_seats
-          )
-          |> Repo.all()
+        count_non_free_seats = count_non_free_seats(vendor_id)
 
         stripe_customer_ids =
           from(
@@ -5453,5 +5474,21 @@ defmodule Fog.Web.APIRouter do
           deleted_at: to_unix(r.deleted_at)
       }
     end)
+  end
+
+  defp count_non_free_seats(vendor_id) do
+    [count_non_free_seats] =
+      from(
+        var in Data.VendorAgentRole,
+        join: v in Data.Vendor,
+        on: v.id == var.vendor_id,
+        where: var.vendor_id == ^vendor_id,
+        where: var.role in ["owner", "admin", "agent"],
+        group_by: v.free_seats,
+        select: count(var.agent_id) - v.free_seats
+      )
+      |> Repo.all()
+
+    count_non_free_seats
   end
 end

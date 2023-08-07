@@ -38,7 +38,7 @@ import { MessageView } from "../messages/MessageView";
 import { useNewMessagesAt } from "../messages/useNewMessagesAt";
 import { useSelection } from "../messages/useSelection";
 import { showAiHelperAtom } from "../store/config.store";
-import { Agent } from "../types";
+import { Agent, VendorBilling } from "../types";
 import { atomWithLocalStorage } from "../utils/atomWithLocalStorage";
 import { formatRoomTs } from "../utils/formatTs";
 import { getPreviousMessageId } from "../utils/serverBigInt";
@@ -134,6 +134,7 @@ export const Room: React.FC<{
   ourId: string | undefined;
   isAgent: boolean | undefined;
   agents?: Agent[];
+  billing?: VendorBilling;
   roomId: string;
   vendorId: string | undefined;
   workspaceId: string | undefined;
@@ -168,6 +169,7 @@ export const Room: React.FC<{
   myAuthor,
   ourId,
   isAgent,
+  billing,
   agents,
   roomId,
   vendorId,
@@ -622,11 +624,7 @@ export const Room: React.FC<{
     }
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
-  const inViolation =
-    (agents || []).reduce(
-      (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
-      0
-    ) > 2;
+  const inViolation = isAgent && (billing?.unpaid_seats || 0) > 0;
 
   return (
     <div
@@ -910,8 +908,7 @@ export const Room: React.FC<{
 
       {fileInput}
 
-      {((agentRole && ["owner", "admin", "agent"].includes(agentRole) && !inViolation) ||
-        isInternal) && (
+      {((agentRole !== "reader" && !inViolation) || isInternal) && (
         <div ref={roomFooterRef}>
           {Textarea}
           {(!mode || mode === "Reply" || mode === "Edit") && (

@@ -1,29 +1,12 @@
 import dayjs from "dayjs";
-import { ThinButton, Icons } from "fogbender-client/src/shared";
+import { Icons, StripeCustomer, ThinButton, VendorBilling } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 
 import { getQueryParam } from "../../params";
 import { Vendor } from "../../redux/adminApi";
-import { apiServer, queryKeys, queryClient } from "../client";
-
-export type StripeCustomer = {
-  email: string;
-  created_ts_sec: number;
-  delinquent: boolean;
-  portal_session_url: string;
-  period_end_ts_sec: number;
-  cancel_at_ts_sec: number | null;
-  canceled_at_ts_sec: number | null;
-  status: string;
-};
-
-export type VendorBilling = {
-  subscriptions: StripeCustomer[];
-  free_seats: number;
-  paid_seats: number;
-};
+import { apiServer, queryClient, queryKeys } from "../client";
 
 export const Billing = ({
   vendor,
@@ -37,7 +20,7 @@ export const Billing = ({
       return apiServer
         .url(`/api/vendors/${vendor.id}/set-stripe-session-id`)
         .post({
-          session_id: session_id,
+          session_id,
         })
         .json<StripeCustomer>();
     },
@@ -126,6 +109,7 @@ export const Billing = ({
           {subscriptions?.map((subscription, i) => (
             <div key={i} className="flex flex-col bg-gray-100 rounded-lg py-2 px-3">
               <span>Email: {subscription.email}</span>
+              <span>Name: {subscription.name}</span>
               <span>
                 Created on {dayjs(subscription.created_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
               </span>
@@ -141,6 +125,7 @@ export const Billing = ({
                   {dayjs(subscription.cancel_at_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
                 </span>
               )}
+              <span>Seats: {subscription.quantity}</span>
               <a className="fog:text-link" href={subscription.portal_session_url}>
                 Manage subscription
               </a>

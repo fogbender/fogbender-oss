@@ -52,5 +52,25 @@ export type FeatureOptions = {
   default_group_assignment?: string;
 };
 
+export type StripeCustomer = {
+  email: string;
+  name: string;
+  created_ts_sec: number;
+  delinquent: boolean;
+  portal_session_url: string;
+  period_end_ts_sec: number;
+  cancel_at_ts_sec: number | null;
+  canceled_at_ts_sec: number | null;
+  status: string;
+  quantity: number;
+};
+
+export type VendorBilling = {
+  subscriptions: StripeCustomer[];
+  free_seats: number;
+  paid_seats: number;
+  unpaid_seats: number;
+};
+
 // TODO: remove this once we update to TS 4.9
 export const satisfy = <T>(x: T) => x;
