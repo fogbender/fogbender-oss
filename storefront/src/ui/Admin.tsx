@@ -72,6 +72,7 @@ import { getIntegrationDetails as getIssueTrackerIntegrationDetails } from "./Ad
 import { NoVendors } from "./Admin/NoVendors";
 import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
 import { Team } from "./Admin/Team";
+import { Billing, VendorBilling } from "./Admin/Billing";
 import { UpdateVendorForm } from "./Admin/UpdateVendorForm";
 import { UpdateWorkspaceForm } from "./Admin/UpdateWorkspaceForm";
 import { AcceptInviteButton, BadInviteModal, DeclineInviteButton } from "./Admin/VendorInvite";
@@ -277,19 +278,37 @@ export const Admin = () => {
     0
   );
 
-  const countInViolation = countNonReaders - 2 < 0 ? 0 : countNonReaders - 2;
+  const { data: billing, isLoading: billingIsLoading } = useQuery({
+    queryKey: queryKeys.billing(designatedVendorId || "N/A"),
+    queryFn: () =>
+      apiServer.get(`/api/vendors/${designatedVendorId}/billing`).json<VendorBilling>(),
+    enabled: !!designatedVendorId,
+  });
+
+  const freeSeats = billing?.free_seats || 2;
+
+  const paidSeats = billing?.paid_seats || 0;
+
+  const countInViolation =
+    (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
 
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
-      {designatedVendorId && ourRole && ["owner", "admin", "agent"].includes(ourRole) && (
-        <SubscriptionRequiredBanner
-          admins={agents.filter(a => ["owner", "admin"].includes(a.role))}
-          ourRole={ourRole}
-          vendorId={designatedVendorId}
-          countInViolation={countInViolation}
-        />
-      )}
+      {designatedVendorId &&
+        !billingIsLoading &&
+        billing &&
+        ourRole &&
+        ["owner", "admin", "agent"].includes(ourRole) &&
+        countInViolation > 0 && (
+          <SubscriptionRequiredBanner
+            admins={agents.filter(a => ["owner", "admin"].includes(a.role))}
+            ourRole={ourRole}
+            vendorId={designatedVendorId}
+            countInViolation={countInViolation}
+            billing={billing}
+          />
+        )}
       <NotificationsPermissionBanner
         notificationsPermission={notificationsPermission}
         setNotificationsPermission={setNotificationsPermission}
@@ -720,6 +739,32 @@ export const Admin = () => {
                     )
                   }
                 />
+                <Route
+                  path="vendor/:vid/billing/*"
+                  element={
+                    designatedVendor !== undefined && workspaces !== undefined ? (
+                      <div className="sm:ml-8">
+                        <Link
+                          className={classNames(
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white fog:box-shadow-s transform transition-transform no-underline",
+                            !designatedVendorId
+                              ? "-translate-x-full"
+                              : "translate-x-0 sm:-translate-x-full"
+                          )}
+                          to={"/admin"}
+                        >
+                          <Icons.ArrowBack />
+                          <span className="fog:text-caption-l fog:text-link">Organizations</span>
+                        </Link>
+                        <div className={classNames("sm:mt-8 flex flex-col gap-8 mt-16")}>
+                          <Billing vendor={designatedVendor} countInViolation={countInViolation} />
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )
+                  }
+                />
               </Routes>
             </div>
           </div>
@@ -834,11 +879,13 @@ const SubscriptionRequiredBanner = ({
   ourRole,
   vendorId,
   countInViolation,
+  billing,
 }: {
   admins: Agent[];
   ourRole: AgentRole;
   vendorId: string;
   countInViolation: number;
+  billing: VendorBilling;
 }) => {
   const createCheckoutSessionMutation = useMutation({
     mutationFn: () => {
@@ -881,20 +928,24 @@ const SubscriptionRequiredBanner = ({
       >
         <span className="block sm:inline font-medium">
           ⚠️ Please{" "}
-          <button
-            className="hover:text-red-300 underline"
-            onClick={() => {
-              if (ourRole === "agent") {
-                alert(
-                  `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
-                );
-              } else {
-                createCheckoutSessionMutation.mutate();
-              }
-            }}
-          >
-            subscribe
-          </button>
+          {(billing?.subscriptions || []).length > 0 ? (
+            <Link to="/admin/-/billing">resubscribe</Link>
+          ) : (
+            <button
+              className="hover:text-red-300 underline"
+              onClick={() => {
+                if (ourRole === "agent") {
+                  alert(
+                    `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
+                  );
+                } else {
+                  createCheckoutSessionMutation.mutate();
+                }
+              }}
+            >
+              subscribe
+            </button>
+          )}
           ,{" "}
           <Link className="hover:text-red-300" to={`/admin/-/team`}>
             downgrade to free tier

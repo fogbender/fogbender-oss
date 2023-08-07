@@ -196,6 +196,118 @@ defmodule Fog.Web.APIRouter do
     end
   end
 
+  post "/vendors/:vendor_id/set-stripe-session-id" do
+    our_role = our_role(conn, vendor_id)
+
+    if role_at_or_above(our_role, "admin") do
+      session_id = conn.params["session_id"]
+      {:ok, session} = Fog.Stripe.Api.get_checkout_session(session_id)
+
+      %{"status" => "complete", "customer" => stripe_customer_id} = session
+
+      Data.VendorStripeCustomer.new(%{
+        vendor_id: vendor_id,
+        stripe_customer_id: stripe_customer_id
+      })
+      |> Repo.insert!(on_conflict: :nothing)
+
+      {:ok, %{"created" => created_ts_sec, "email" => email, "delinquent" => is_delinquent}} =
+        Fog.Stripe.Api.get_customer(stripe_customer_id)
+
+      %{"url" => portal_session_url} = Fog.Stripe.Api.create_portal_session(stripe_customer_id)
+
+      ok_json(
+        conn,
+        %{
+          email: email,
+          created_ts_sec: created_ts_sec,
+          delinquent: is_delinquent,
+          portal_session_url: portal_session_url
+        }
+        |> Jason.encode!(pretty: true)
+      )
+    else
+      forbid(conn)
+    end
+  end
+
+  get "/vendors/:vendor_id/billing" do
+    our_role = our_role(conn, vendor_id)
+
+    if role_at_or_above(our_role, "admin") do
+      subscriptions =
+        from(
+          c in Data.VendorStripeCustomer,
+          where: c.vendor_id == ^vendor_id
+        )
+        |> Repo.all()
+        |> Enum.map(fn %{stripe_customer_id: stripe_customer_id} ->
+          case Fog.Stripe.Api.get_customer(stripe_customer_id) do
+            {:ok, %{"deleted" => true}} ->
+              from(
+                c in Data.VendorStripeCustomer,
+                where: c.vendor_id == ^vendor_id,
+                where: c.stripe_customer_id == ^stripe_customer_id
+              )
+              |> Repo.delete_all()
+
+              nil
+
+            {:ok, %{"created" => created_ts_sec, "email" => email, "delinquent" => is_delinquent}} ->
+              %{"url" => portal_session_url} =
+                Fog.Stripe.Api.create_portal_session(stripe_customer_id)
+
+              {:ok, %{"data" => subscriptions}} =
+                Fog.Stripe.Api.get_subscriptions(stripe_customer_id)
+
+              case subscriptions do
+                [] ->
+                  from(
+                    c in Data.VendorStripeCustomer,
+                    where: c.vendor_id == ^vendor_id,
+                    where: c.stripe_customer_id == ^stripe_customer_id
+                  )
+                  |> Repo.delete_all()
+
+                  nil
+
+                [subscription] ->
+                  %{
+                    "current_period_end" => period_end_ts_sec,
+                    "cancel_at" => cancel_at_ts_sec,
+                    "canceled_at" => canceled_at_ts_sec,
+                    "status" => status,
+                    "quantity" => quantity
+                  } = subscription
+
+                  %{
+                    email: email,
+                    created_ts_sec: created_ts_sec,
+                    delinquent: is_delinquent,
+                    portal_session_url: portal_session_url,
+                    period_end_ts_sec: period_end_ts_sec,
+                    cancel_at_ts_sec: cancel_at_ts_sec,
+                    canceled_at_ts_sec: canceled_at_ts_sec,
+                    status: status,
+                    quantity: quantity
+                  }
+              end
+          end
+        end)
+        |> Enum.filter(&(not is_nil(&1)))
+
+      paid_seats = subscriptions |> Enum.map(& &1.quantity) |> Enum.sum()
+
+      ok_json(
+        conn,
+        %{paid_seats: paid_seats, free_seats: 2, subscriptions: subscriptions}
+        |> Jason.encode!(pretty: true)
+      )
+    else
+      forbid(conn)
+    end
+  end
+
   post "/workspaces/:workspace_id/get-merge-link-token" do
     workspace = Fog.Data.Workspace |> Fog.Repo.get(workspace_id) |> Repo.preload(:vendor)
     our_role = our_role(conn, workspace.vendor_id)
@@ -595,7 +707,57 @@ defmodule Fog.Web.APIRouter do
             updated_at: DateTime.utc_now()
           })
 
-        Process.sleep(1000)
+        [count_non_free_seats] =
+          from(
+            var in Data.VendorAgentRole,
+            join: v in Data.Vendor,
+            on: v.id == var.vendor_id,
+            where: var.vendor_id == ^vendor_id,
+            where: var.role in ["owner", "admin", "agent"],
+            group_by: v.free_seats,
+            select: count(var.agent_id) - v.free_seats
+          )
+          |> Repo.all()
+
+        stripe_customer_ids =
+          from(
+            c in Data.VendorStripeCustomer,
+            where: c.vendor_id == ^vendor_id,
+            select: c.stripe_customer_id
+          )
+          |> Repo.all()
+
+        subscriptions =
+          stripe_customer_ids
+          |> Enum.flat_map(fn stripe_customer_id ->
+            {:ok, %{"data" => subscriptions}} =
+              Fog.Stripe.Api.get_subscriptions(stripe_customer_id)
+
+            subscriptions
+          end)
+
+        subscription =
+          subscriptions
+          |> Enum.find(fn s ->
+            s["status"] === "active" && is_nil(s["canceled_at"])
+          end)
+
+        subscription =
+          if !subscription do
+            subscriptions |> Enum.find(fn s -> s["status"] === "active" end)
+          else
+            subscription
+          end
+
+        if subscription && count_non_free_seats > 0 do
+          %{"items" => %{"data" => [subscription_item]}} = subscription
+
+          {:ok, _} =
+            Fog.Stripe.Api.set_subscription_plan_quantity(
+              subscription_item["id"],
+              count_non_free_seats
+            )
+        end
 
         ok_no_content(conn)
 

@@ -8,6 +8,7 @@ defmodule Fog.Data.Vendor do
     VendorAgentInvite,
     VendorAgentRole,
     VendorApiToken,
+    VendorStripeCustomer,
     Workspace
   }
 
@@ -15,6 +16,7 @@ defmodule Fog.Data.Vendor do
   @primary_key {:id, Fog.Types.VendorId, autogenerate: true}
   schema "vendor" do
     field(:name, :string)
+    field(:free_seats, :integer, default: 2)
     has_many(:agents, VendorAgentRole)
     has_many(:workspaces, Workspace)
     has_many(:invites, VendorAgentInvite)
@@ -22,6 +24,7 @@ defmodule Fog.Data.Vendor do
     has_many(:domains, through: [:customers, :domains])
     has_many(:groups, VendorAgentGroup)
     has_many(:api_tokens, VendorApiToken)
+    has_many(:stripe_customers, VendorStripeCustomer)
 
     belongs_to(:deleted_by_agent, Agent, type: Fog.Types.AgentId)
     field(:deleted_at, :utc_datetime_usec)
@@ -37,6 +40,7 @@ defmodule Fog.Data.Vendor do
       :id,
       :status,
       :name,
+      :free_seats,
       :deleted_at,
       :deleted_by_agent_id
     ])

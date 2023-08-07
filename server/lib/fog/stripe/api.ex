@@ -33,6 +33,75 @@ defmodule Fog.Stripe.Api do
     end
   end
 
+  def get_checkout_session(session_id) do
+    r =
+      client()
+      |> Tesla.get("/v1/checkout/sessions/#{session_id}")
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        {:ok, body}
+    end
+  end
+
+  def get_customer(customer_id) do
+    r =
+      client()
+      |> Tesla.get("/v1/customers/#{customer_id}")
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        {:ok, body}
+    end
+  end
+
+  def get_subscriptions(customer_id) do
+    r =
+      client()
+      |> Tesla.get("/v1/subscriptions",
+        query: [
+          customer: customer_id
+        ]
+      )
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        {:ok, body}
+    end
+  end
+
+  def create_portal_session(customer_id) do
+    r =
+      post(
+        "/v1/billing_portal/sessions",
+        %{
+          "customer" => customer_id,
+          "return_url" => "#{Fog.env(:fog_storefront_url)}/admin/-/billing"
+        }
+      )
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        body
+    end
+  end
+
+  def set_subscription_plan_quantity(subscription_item_id, quantity) do
+    r =
+      post(
+        "/v1/subscription_items/#{subscription_item_id}",
+        %{
+          "quantity" => quantity,
+          "proration_behavior" => "always_invoice"
+        }
+      )
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        {:ok, body}
+    end
+  end
+
   defp post(path, map), do: client() |> Tesla.post(path, URI.encode_query(map))
 
   defp client() do

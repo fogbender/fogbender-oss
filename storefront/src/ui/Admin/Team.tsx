@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import {
   Agent,
+  AgentRole,
   Avatar,
   formatTs,
   Icons,
@@ -30,8 +31,6 @@ import { fetchServerApiPost } from "../useServerApi";
 import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
 import { AgentGroups } from "./AgentGroups";
-
-type Role = "owner" | "admin" | "agent" | "reader" | "app";
 
 export const Team: React.FC<{
   vendor: Vendor;
@@ -314,7 +313,7 @@ const ChangeRoleButton: React.FC<{
   vendor: Vendor;
 }> = props => {
   const { member, ourAgent, vendor } = props;
-  const [newRole, setNewRole] = React.useState<Role>();
+  const [newRole, setNewRole] = React.useState<AgentRole>();
 
   const closeModal = React.useCallback(() => {
     setNewRole(undefined);
@@ -483,8 +482,8 @@ const UpdateRoleModal: React.FC<{
   vendor: Vendor;
   onClose: () => void;
   member: Agent | Invite;
-  newRole: Role;
-  ourRole: Role;
+  newRole: AgentRole;
+  ourRole: AgentRole;
 }> = ({ vendor, onClose, member, newRole, ourRole }) => {
   const [error, setError] = React.useState<string>();
   const changeRoleMutation = useMutation(
@@ -503,6 +502,7 @@ const UpdateRoleModal: React.FC<{
       onSuccess: async r => {
         if (r.status === 204) {
           queryClient.invalidateQueries(queryKeys.agents(vendor.id));
+          queryClient.invalidateQueries(queryKeys.billing(vendor.id));
           onClose();
         } else {
           const res = await r.json();
@@ -861,9 +861,9 @@ function isInvite(member: Agent | Invite): member is Invite {
   return "invite_id" in member && member.invite_id !== undefined;
 }
 
-const agentRoleOption = { id: "agent" as Role, option: "Agent" };
+const agentRoleOption = { id: "agent" as AgentRole, option: "Agent" };
 
-const roleOptions: { id: Role; option: string }[] = [
+const roleOptions: { id: AgentRole; option: string }[] = [
   { id: "owner", option: "Owner" },
   { id: "admin", option: "Admin" },
   agentRoleOption,

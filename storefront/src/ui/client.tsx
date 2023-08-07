@@ -37,6 +37,7 @@ export const queryKeys = {
   ],
   vendorIntegrations: (vendorId: string | undefined) => ["vendor_integrations", vendorId],
   onboardingChecklist: (vendorId: string | undefined) => ["onboarding_checklist", vendorId],
+  billing: (vendorId: string) => ["billing", vendorId],
 };
 
 export async function fetchData<T>(url: string): Promise<T> {
