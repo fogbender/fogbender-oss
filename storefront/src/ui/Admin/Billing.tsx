@@ -74,25 +74,23 @@ export const Billing = ({
           <div className="flex flex-col gap-4">
             <span>{vendor.name} does’t have any active subscriptions.</span>
 
-            {countInViolation > 0 && (
-              <>
-                <span>Your free tier is limited to {freeSeats} customer-facing agents.</span>
-                <span>
-                  Additional customer-facing agents cost $25 per agent, per month. See{" "}
-                  <a className="fog:text-link" href="/pricing">
-                    pricing
-                  </a>{" "}
-                  for details.
-                </span>
-                <span>
-                  Fogbender is free and open-source software: alternatively, you can{" "}
-                  <a className="fog:text-link" href="https://github.com/fogbender/fogbender">
-                    host your own Fogbender
-                  </a>
-                  .
-                </span>
-              </>
-            )}
+            <>
+              <span>Your free tier is limited to {freeSeats} customer-facing agents.</span>
+              <span>
+                Additional customer-facing agents cost $25 per agent, per month. See{" "}
+                <a className="fog:text-link" href="/pricing">
+                  pricing
+                </a>{" "}
+                for details.
+              </span>
+              <span>
+                Alternatively&mdash;since Fogbender is free and open-source software&mdash;you can{" "}
+                <a className="fog:text-link" href="https://github.com/fogbender/fogbender">
+                  host your own Fogbender
+                </a>
+                .
+              </span>
+            </>
 
             {countInViolation > 0 && (
               <ThinButton
