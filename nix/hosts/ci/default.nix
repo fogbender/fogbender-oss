@@ -23,4 +23,10 @@
     format = "dotenv";
   };
 
+  # on build will run gc if free disk space less than 5gb
+  nix.extraOptions = ''
+    min-free = ${toString (5 * 1025 * 1024 * 1024)}
+    max-free = ${toString (15 * 1024 * 1024 * 1024)}
+  '';
+
 }
