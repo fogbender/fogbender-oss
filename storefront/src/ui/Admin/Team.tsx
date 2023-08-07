@@ -48,11 +48,11 @@ export const Team: React.FC<{
     [agents, ourAgentId]
   );
 
-  const { data: invites } = useQuery<Invite[]>(queryKeys.invites(vendor.id), () =>
-    fetch(`${getServerUrl()}/api/vendors/${vendor.id}/invites`, {
-      credentials: "include",
-    }).then(res => res.json())
-  );
+  const { data: invites } = useQuery({
+    queryKey: queryKeys.invites(vendor.id),
+    queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/invites`).json<Invite[]>(),
+    enabled: (ourAgent?.role && ["owner", "admin", "agent"].includes(ourAgent.role)) === true,
+  });
 
   const invitesAndAgents = React.useMemo(() => {
     if (agents && invites && ourAgent && ["admin", "owner"].includes(ourAgent?.role ?? "")) {
@@ -73,13 +73,15 @@ export const Team: React.FC<{
             <TeamTabs tab="team" />
             {ourAgent && (
               <>
-                <VerifiedDomains authenticatedAgent={ourAgent} vendor={vendor} />
                 <InviteMembers
                   invitesAndAgents={invitesAndAgents}
                   ourAgent={ourAgent}
                   vendor={vendor}
                   agents={agents}
                 />
+                {["owner", "admin"].includes(ourAgent.role) && (
+                  <VerifiedDomains authenticatedAgent={ourAgent} vendor={vendor} />
+                )}
               </>
             )}
           </>

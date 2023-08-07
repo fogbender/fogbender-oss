@@ -162,8 +162,16 @@ export const Admin = () => {
     !designatedWorkspaceId &&
     vendorMatch?.params["*"]?.startsWith("support");
 
-  const agentId = useSelector(getAuthenticatedAgentId);
+  const ourAgentId = useSelector(getAuthenticatedAgentId);
   const [agentToken, setAgentToken] = React.useState<AnyToken>();
+
+  const { data: agents } = useQuery({
+    queryKey: queryKeys.agents(designatedVendorId || "N/A"),
+    queryFn: () => apiServer.get(`/api/vendors/${designatedVendorId}/agents`).json<Agent[]>(),
+    enabled: !!designatedVendorId,
+  });
+
+  const ourRole = agents?.find(a => a.id === ourAgentId)?.role;
 
   const homeMode =
     teamMode ||
@@ -178,16 +186,16 @@ export const Admin = () => {
         token &&
         "agentId" in token &&
         token.vendorId === designatedVendorId &&
-        token.agentId === agentId
+        token.agentId === ourAgentId
       ) {
         return token;
-      } else if (designatedVendorId && agentId) {
-        return { vendorId: designatedVendorId, agentId };
+      } else if (designatedVendorId && ourAgentId) {
+        return { vendorId: designatedVendorId, agentId: ourAgentId };
       } else {
         return undefined;
       }
     });
-  }, [designatedVendorId, agentId]);
+  }, [designatedVendorId, ourAgentId]);
 
   const [suspendConnection, setSuspendConnection] = React.useState(false);
 
@@ -427,7 +435,7 @@ export const Admin = () => {
                         <span className="fog:text-caption-l fog:text-link">Organizations</span>
                       </Link>
                       <div className="mt-8 mb-8">
-                        {designatedVendorId && (
+                        {designatedVendorId && ourRole && ["owner", "admin"].includes(ourRole) && (
                           <OnboardingChecklist
                             onboardingChecklistDone={onboardingChecklistDone}
                             setOnboardingChecklistDone={setOnboardingChecklistDone}
@@ -693,7 +701,7 @@ export const Admin = () => {
                           <Icons.ArrowBack />
                           <span className="fog:text-caption-l fog:text-link">Organizations</span>
                         </Link>
-                        {designatedVendorId && (
+                        {designatedVendorId && ourRole && ["owner", "admin"].includes(ourRole) && (
                           <div
                             className={classNames("sm:mt-8", !onboardingChecklistDone && "mt-16")}
                           >
