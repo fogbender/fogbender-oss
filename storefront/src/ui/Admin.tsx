@@ -930,7 +930,7 @@ const SubscriptionRequiredBanner = ({
         role="alert"
       >
         <span className="block sm:inline font-medium">
-          😔 Please{" "}
+          😃 Please{" "}
           {(billing?.subscriptions || []).length > 0 ? (
             <Link to="/admin/-/billing">resubscribe</Link>
           ) : (

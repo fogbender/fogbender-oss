@@ -67,6 +67,7 @@ export type StripeCustomer = {
 
 export type VendorBilling = {
   subscriptions: StripeCustomer[];
+  price_per_seat: number;
   free_seats: number;
   paid_seats: number;
   unpaid_seats: number;

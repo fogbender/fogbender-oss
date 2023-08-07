@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { Icons, StripeCustomer, ThinButton, VendorBilling } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import { getQueryParam } from "../../params";
 import { Vendor } from "../../redux/adminApi";
@@ -62,6 +62,8 @@ export const Billing = ({
     },
   });
 
+  const price_per_seat = (billing?.price_per_seat || 0) / 100;
+
   return (
     <div className="w-full bg-white p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8">
       <div className="w-full flex flex-col gap-2 overflow-auto">
@@ -70,14 +72,23 @@ export const Billing = ({
             <Icons.Spinner className="w-full" />
           </span>
         )}
-        {subscriptions?.length === 0 && (
+        {billing && subscriptions?.length === 0 && (
           <div className="flex flex-col gap-4">
-            <span>{vendor.name} does’t have any active subscriptions.</span>
+            <span>
+              <span className="font-medium">{vendor.name}</span> is currently on a free tier.
+            </span>
 
             <>
-              <span>Your free tier is limited to {freeSeats} customer-facing agents.</span>
               <span>
-                Additional customer-facing agents cost $25 per agent, per month. See{" "}
+                Your free tier is limited to {freeSeats} customer-facing agents (any role above
+                “Reader”). You can adjust agent roles under{" "}
+                <Link className="fog:text-link" to="/admin/-/team">
+                  Team settings
+                </Link>
+                .
+              </span>
+              <span>
+                Additional customer-facing agents cost ${price_per_seat} per agent, per month. See{" "}
                 <a className="fog:text-link" href="/pricing">
                   pricing
                 </a>{" "}
@@ -95,7 +106,7 @@ export const Billing = ({
             {countInViolation > 0 && (
               <ThinButton
                 onClick={() => createCheckoutSessionMutation.mutate()}
-                className="max-w-min"
+                className="mt-4 max-w-min"
               >
                 Buy a subscription
               </ThinButton>
@@ -105,32 +116,71 @@ export const Billing = ({
 
         <div className="flex flex-col gap-3">
           {subscriptions?.map((subscription, i) => (
-            <div key={i} className="flex flex-col bg-gray-100 rounded-lg py-2 px-3">
-              <span>Email: {subscription.email}</span>
-              <span>Name: {subscription.name}</span>
-              <span>
-                Created on {dayjs(subscription.created_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
-              </span>
-              {subscription.canceled_at_ts_sec === null && (
-                <span>
-                  Renews on{" "}
-                  {dayjs(subscription.period_end_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
-                </span>
-              )}
-              {subscription.cancel_at_ts_sec && (
-                <span>
-                  Cancels on{" "}
-                  {dayjs(subscription.cancel_at_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
-                </span>
-              )}
-              <span>Seats: {subscription.quantity}</span>
-              <a className="fog:text-link" href={subscription.portal_session_url}>
+            <div key={i} className="flex flex-col rounded-lg py-2 px-3">
+              <table className="table-auto">
+                <tbody>
+                  <Row>
+                    <Cell>Email</Cell>
+                    <Cell>{subscription.email}</Cell>
+                  </Row>
+                  <Row>
+                    <Cell>Name</Cell>
+                    <Cell>{subscription.name}</Cell>
+                  </Row>
+                  <Row>
+                    <Cell>Created on</Cell>
+                    <Cell>
+                      {dayjs(subscription.created_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
+                    </Cell>
+                  </Row>
+                  {subscription.canceled_at_ts_sec === null && (
+                    <Row>
+                      <Cell>Renews on</Cell>
+                      <Cell>
+                        {dayjs(subscription.period_end_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
+                      </Cell>
+                    </Row>
+                  )}
+                  {subscription.cancel_at_ts_sec && (
+                    <Row>
+                      <Cell>Cancels on</Cell>
+                      <Cell>
+                        {dayjs(subscription.cancel_at_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
+                      </Cell>
+                    </Row>
+                  )}
+                  <Row>
+                    <Cell>Seats</Cell>
+                    <Cell>{subscription.quantity}</Cell>
+                  </Row>
+                  <Row>
+                    <Cell>Cost</Cell>
+                    <Cell>
+                      {subscription.quantity} x ${price_per_seat} = $
+                      {price_per_seat * subscription.quantity} per month
+                    </Cell>
+                  </Row>
+                </tbody>
+              </table>
+
+              <ThinButton
+                className="max-w-min mt-4"
+                onClick={() => (window.location.href = subscription.portal_session_url)}
+              >
                 Manage subscription
-              </a>
+              </ThinButton>
             </div>
           ))}
         </div>
       </div>
     </div>
   );
+};
+
+const Row = ({ children }: { children: React.ReactNode }) => {
+  return <tr className="even:bg-gray-100 odd:bg-blue-100">{children}</tr>;
+};
+
+const Cell = ({ children }: { children: React.ReactNode }) => {
+  return <td className="p-1 odd:text-gray-600 even:font-medium">{children}</td>;
 };

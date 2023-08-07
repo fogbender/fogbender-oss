@@ -324,12 +324,15 @@ defmodule Fog.Web.APIRouter do
             0
         end
 
+      {:ok, %{"unit_amount" => price_per_seat}} = Fog.Stripe.Api.get_price()
+
       ok_json(
         conn,
         %{
           unpaid_seats: unpaid_seats,
           paid_seats: paid_seats,
           free_seats: free_seats,
+          price_per_seat: price_per_seat,
           subscriptions: subscriptions
         }
         |> Jason.encode!(pretty: true)

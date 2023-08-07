@@ -103,6 +103,17 @@ defmodule Fog.Stripe.Api do
     end
   end
 
+  def get_price() do
+    r =
+      client()
+      |> Tesla.get("/v1/prices/#{Fog.env(:stripe_price_id)}")
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        {:ok, body}
+    end
+  end
+
   defp post(path, map), do: client() |> Tesla.post(path, URI.encode_query(map))
 
   defp client() do
