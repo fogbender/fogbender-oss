@@ -178,7 +178,7 @@ export const Billing = ({
 };
 
 const Row = ({ children }: { children: React.ReactNode }) => {
-  return <tr className="even:bg-gray-100 odd:bg-blue-100">{children}</tr>;
+  return <tr className="even:bg-gray-50 odd:bg-blue-50">{children}</tr>;
 };
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
