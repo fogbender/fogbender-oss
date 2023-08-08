@@ -2,7 +2,7 @@ defmodule Fog.Web.AuthRouter do
   import Ecto.Query
   use Plug.Router
 
-  alias Fog.{Data, Repo}
+  alias Fog.{Data, Mailer, Repo}
 
   plug(:match)
   plug(:fetch_query_params)
@@ -57,6 +57,68 @@ defmodule Fog.Web.AuthRouter do
       end
 
     send_resp(conn, 200, "OK #{user} #{inspect(x)}")
+  end
+
+  get "/dev-only" do
+    if Mix.env() == :dev do
+      token = conn.query_params["token"]
+
+      if token === nil || token === "" do
+        send_resp(conn, 400, "token is required")
+      else
+        %{
+          "dev_only_email" => email
+        } = Fog.TokenNew.validate(token)
+
+        conn = fetch_session(conn)
+
+        image_url = nil
+        name = email
+
+        {:ok, %{id: agent_id} = agent} =
+          Repo.insert(%Data.Agent{email: email, name: name, image_url: image_url},
+            on_conflict: {:replace, [:name, :updated_at]},
+            conflict_target: :email,
+            returning: true
+          )
+
+        :ok = assign_roles_based_on_verified_domains(agent)
+
+        conn = put_session(conn, :agent_id, agent_id)
+
+        url = "http://localhost:3100/admin"
+        Fog.Web.PublicRouter.send_html_redirect(conn, url, "web app")
+      end
+    else
+      send_resp(conn, 404, "Not found")
+    end
+  end
+
+  post "/dev-only" do
+    if Mix.env() == :dev do
+      conn = fetch_session(conn)
+      {:ok, data, conn} = Plug.Conn.read_body(conn)
+      {:ok, %{"email" => email}} = Jason.decode(data)
+
+      token = Fog.TokenNew.token(%{"dev_only_email" => email}, 3600)
+
+      url = "http://localhost:8000/auth/dev-only?token=#{token}"
+      name = "click the link"
+      IO.puts("\n\n\ndev-only login link: #{url}\n\n\n")
+      html = Fog.Email.Digest.content_tag(:a, name, href: url)
+
+      Bamboo.Email.new_email(
+        to: email,
+        from: Mailer.source(),
+        subject: "Dev-only login",
+        html_body: html
+      )
+      |> Mailer.send()
+
+      send_resp(conn, 200, "ok")
+    else
+      send_resp(conn, 404, "Not found")
+    end
   end
 
   post "/cognito" do

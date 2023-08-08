@@ -485,8 +485,66 @@ export const LoginForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogin
               </div>
             </>
           }
+          {import.meta.env.DEV && <LoginDevOnly email={email} />}
         </div>
       </div>
     </div>
   );
 };
+
+function LoginDevOnly({ email }: { email: string }) {
+  return (
+    <div className="mt-5">
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm leading-5">
+          <span className="bg-gray-100 px-2 text-gray-500">Dev only</span>
+        </div>
+      </div>
+      <div className="mt-7">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="http://localhost:8000/public/emails"
+          className="block w-full rounded-md border border-gray-300 py-2 px-3 text-center font-medium text-gray-900 no-underline hover:border-gray-400 focus:border-gray-400 focus:outline-none sm:text-sm sm:leading-5"
+        >
+          Local email client
+        </a>
+      </div>
+      <div className="mt-5">
+        <a
+          href="/login"
+          onClick={e => {
+            e.preventDefault();
+            if (!email) {
+              alert(
+                "Please enter an email address in the login form above and click the button again."
+              );
+              return;
+            }
+            fetch("http://localhost:8000/auth/dev-only", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email }),
+            }).then(res => {
+              if (res.status !== 200) {
+                alert("Failed to login");
+                throw new Error("Failed to login");
+              }
+              alert(
+                `Login link was created for user ${email}. You can see it in Elixir terminal or in the local email client (button above). Once you click on the link you can open http://localhost:3100/admin`
+              );
+            });
+          }}
+          className="block w-full rounded-md border border-gray-300 py-2 px-3 text-center font-medium text-gray-900 no-underline hover:border-gray-400 focus:border-gray-400 focus:outline-none sm:text-sm sm:leading-5"
+        >
+          {email ? <>Login as {email} (dev only)</> : "Dev-only login"}
+        </a>
+      </div>
+    </div>
+  );
+}
