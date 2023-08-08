@@ -931,7 +931,7 @@ const SubscriptionRequiredBanner = ({
         role="alert"
       >
         <span className="block sm:inline font-medium">
-          😃 Please{" "}
+          🧐 Please{" "}
           {billing.delinquent ? (
             <Link to={`/admin/vendor/${vendorId}/billing`} className="hover:text-red-300 underline">
               update payment method
