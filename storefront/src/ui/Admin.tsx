@@ -932,7 +932,7 @@ const SubscriptionRequiredBanner = ({
       >
         <span className="block sm:inline font-medium">
           🧐 Please{" "}
-          {billing.delinquent ? (
+          {billing.delinquent && billing.subscriptions.length > 0 ? (
             <Link to={`/admin/vendor/${vendorId}/billing`} className="hover:text-red-300 underline">
               update payment method
             </Link>
