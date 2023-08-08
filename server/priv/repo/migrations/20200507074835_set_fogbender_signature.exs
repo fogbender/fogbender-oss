@@ -8,7 +8,7 @@ defmodule Fog.Repo.Migrations.SetFogbenderSignature do
     workspace_id = String.to_integer(workspace_id)
 
     signature_type = "paseto"
-    signature_secret = Fog.UserSignature.generate_192bit_secret()
+    signature_secret = Base.encode64(:crypto.strong_rand_bytes(24))
 
     execute(
       query!(
