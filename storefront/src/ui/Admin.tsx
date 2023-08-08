@@ -932,20 +932,26 @@ const SubscriptionRequiredBanner = ({
       >
         <span className="block sm:inline font-medium">
           😃 Please{" "}
-          <button
-            className="hover:text-red-300 underline"
-            onClick={() => {
-              if (ourRole === "agent") {
-                alert(
-                  `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
-                );
-              } else {
-                createCheckoutSessionMutation.mutate();
-              }
-            }}
-          >
-            subscribe
-          </button>
+          {billing.delinquent ? (
+            <Link to="/admin/-/billing" className="hover:text-red-300 underline">
+              update payment method
+            </Link>
+          ) : (
+            <button
+              className="hover:text-red-300 underline"
+              onClick={() => {
+                if (ourRole === "agent") {
+                  alert(
+                    `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
+                  );
+                } else {
+                  createCheckoutSessionMutation.mutate();
+                }
+              }}
+            >
+              subscribe
+            </button>
+          )}
           ,{" "}
           <Link className="hover:text-red-300" to={`/admin/-/team`}>
             downgrade to free tier
