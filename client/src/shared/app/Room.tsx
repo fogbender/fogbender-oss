@@ -416,6 +416,7 @@ export const Room: React.FC<{
   const isInternal = roomById(roomId)?.customerName.startsWith("$Cust_Internal");
 
   const showAiHelper = useAtomValue(showAiHelperAtom);
+  const aiEnabled = workspaceIntegrations?.find(i => i.type === "ai") !== undefined;
 
   const pendingAtom = React.useRef(
     atomWithLocalStorage(`_pending_${roomId}`, [] as Message[])
@@ -748,7 +749,7 @@ export const Room: React.FC<{
               newMessagesIsDimmed={newMessagesIsDimmed}
               allowForward={isAgent === true}
               allowFileIssue={room?.type !== "dialog"}
-              showAiHelper={showAiHelper}
+              showAiHelper={aiEnabled && showAiHelper}
               allowDelete={
                 !msg.deletedTs &&
                 (isAgent || msg.author.id === myAuthor.id) &&
