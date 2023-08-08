@@ -52,9 +52,10 @@ config :fog,
   fogbender_workspace_name: "Main",
   # 16 bytes
   secret_key: (System.get_env("FOG_SECRET_KEY_BASE64") || "") |> Base.decode64!(),
+  # 16 bytes
+  fog_key_prefix: (System.get_env("FOG_KEY_PREFIX") || "") |> Base.url_decode64!(),
   fog_secret_key_base: System.get_env("FOG_SECRET_KEY_BASE"),
   fog_detective_secret_key_base: System.get_env("FOG_DETECTIVE_SECRET_KEY_BASE"),
-  fog_key_prefix: System.get_env("FOG_KEY_PREFIX"),
   web_api_enable: true,
   cognito_enable: true,
   scheduler_enable: true,
