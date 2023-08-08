@@ -50,7 +50,7 @@ export const Team: React.FC<{
   const { data: invites } = useQuery({
     queryKey: queryKeys.invites(vendor.id),
     queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/invites`).json<Invite[]>(),
-    enabled: (ourAgent?.role && ["owner", "admin", "agent"].includes(ourAgent.role)) === true,
+    enabled: (ourAgent?.role && ["owner", "admin"].includes(ourAgent.role)) === true,
   });
 
   const invitesAndAgents = React.useMemo(() => {
@@ -513,6 +513,12 @@ const UpdateRoleModal: React.FC<{
     }
   );
 
+  const handledErrors = [
+    "Assign another owner first",
+    "Agents cannot assign roles",
+    "Readers cannot assign roles",
+  ];
+
   return (
     <div className="flex flex-col gap-6">
       <div className="font-bold font-admin text-4xl mb-2">
@@ -536,6 +542,8 @@ const UpdateRoleModal: React.FC<{
             <span className="font-semibold capitalize">{ourRole}</span>).
           </div>
         )}
+
+      {error && !handledErrors.includes(error) && <div className="text-brand-red-500">{error}</div>}
 
       {error === undefined ? (
         <ThickButton

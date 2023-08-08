@@ -302,7 +302,8 @@ export const Admin = () => {
         billing &&
         ourRole &&
         ["owner", "admin", "agent"].includes(ourRole) &&
-        countInViolation > 0 && (
+        billing &&
+        (billing.delinquent || countInViolation > 0) && (
           <SubscriptionRequiredBanner
             admins={agents.filter(a => ["owner", "admin"].includes(a.role))}
             ourRole={ourRole}
@@ -923,7 +924,7 @@ const SubscriptionRequiredBanner = ({
     return res.join("");
   }, [admins]);
 
-  if (countInViolation > 0) {
+  if (billing.delinquent || countInViolation > 0) {
     return (
       <div
         className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-white px-4 py-3 relative text-center"
@@ -931,24 +932,20 @@ const SubscriptionRequiredBanner = ({
       >
         <span className="block sm:inline font-medium">
           😃 Please{" "}
-          {(billing?.subscriptions || []).length > 0 ? (
-            <Link to="/admin/-/billing">resubscribe</Link>
-          ) : (
-            <button
-              className="hover:text-red-300 underline"
-              onClick={() => {
-                if (ourRole === "agent") {
-                  alert(
-                    `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
-                  );
-                } else {
-                  createCheckoutSessionMutation.mutate();
-                }
-              }}
-            >
-              subscribe
-            </button>
-          )}
+          <button
+            className="hover:text-red-300 underline"
+            onClick={() => {
+              if (ourRole === "agent") {
+                alert(
+                  `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
+                );
+              } else {
+                createCheckoutSessionMutation.mutate();
+              }
+            }}
+          >
+            subscribe
+          </button>
           ,{" "}
           <Link className="hover:text-red-300" to={`/admin/-/team`}>
             downgrade to free tier

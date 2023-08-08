@@ -114,6 +114,22 @@ defmodule Fog.Stripe.Api do
     end
   end
 
+  def delete_subscription(subscription_id) do
+    r =
+      client()
+      |> Tesla.delete("/v1/subscriptions/#{subscription_id}",
+        query: [
+          invoice_now: true,
+          prorate: true
+        ]
+      )
+
+    case r do
+      {:ok, %Tesla.Env{status: 200}} ->
+        :ok
+    end
+  end
+
   defp post(path, map), do: client() |> Tesla.post(path, URI.encode_query(map))
 
   defp client() do

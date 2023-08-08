@@ -624,7 +624,7 @@ export const Room: React.FC<{
     }
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
-  const inViolation = isAgent && (billing?.unpaid_seats || 0) > 0;
+  const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
 
   return (
     <div

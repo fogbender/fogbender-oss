@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import dayjs from "dayjs";
 import { Icons, StripeCustomer, ThinButton, VendorBilling } from "fogbender-client/src/shared";
 import React from "react";
@@ -59,6 +60,18 @@ export const Billing = ({
       const { url } = res;
 
       window.location.href = url;
+    },
+  });
+
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: (subscriptionId: string) => {
+      return apiServer
+        .url(`/api/vendors/${vendor.id}/cancel-subscription`)
+        .post({ subscriptionId })
+        .text();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKeys.billing(vendor.id));
     },
   });
 
@@ -128,6 +141,16 @@ export const Billing = ({
                     <Cell>{subscription.name}</Cell>
                   </Row>
                   <Row>
+                    <Cell>status</Cell>
+                    <Cell>
+                      <span
+                        className={classNames(subscription.status !== "active" && "text-red-600")}
+                      >
+                        {subscription.status}
+                      </span>
+                    </Cell>
+                  </Row>
+                  <Row>
                     <Cell>Created on</Cell>
                     <Cell>
                       {dayjs(subscription.created_ts_sec * 1000).format("YYYY-MM-DD hh:mm:ss")}
@@ -149,10 +172,24 @@ export const Billing = ({
                       </Cell>
                     </Row>
                   )}
-                  <Row>
-                    <Cell>Seats</Cell>
-                    <Cell>{subscription.quantity}</Cell>
-                  </Row>
+                  {billing && (
+                    <Row>
+                      <Cell>Free seats</Cell>
+                      <Cell>{billing.free_seats}</Cell>
+                    </Row>
+                  )}
+                  {billing && (
+                    <Row>
+                      <Cell>Paid seats</Cell>
+                      <Cell>{billing.paid_seats}</Cell>
+                    </Row>
+                  )}
+                  {billing && (
+                    <Row>
+                      <Cell>Used seats</Cell>
+                      <Cell>{billing.used_seats}</Cell>
+                    </Row>
+                  )}
                   <Row>
                     <Cell>Cost</Cell>
                     <Cell>
@@ -162,6 +199,20 @@ export const Billing = ({
                   </Row>
                 </tbody>
               </table>
+
+              {billing && billing.used_seats < billing.free_seats + billing.paid_seats && (
+                <div className="mt-4 text-sm text-gray-600">
+                  Note: Even though your current usage falls under the free tier, to maintain a
+                  subscription, you must be paying for at least one seat. You can{" "}
+                  <button
+                    onClick={() => cancelSubscriptionMutation.mutate(subscription.id)}
+                    className="fog:text-link"
+                  >
+                    cancel your subscription
+                  </button>{" "}
+                  immediately and receive a prorated refund.
+                </div>
+              )}
 
               <ThinButton
                 className="max-w-min mt-4"
