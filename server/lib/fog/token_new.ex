@@ -22,7 +22,13 @@ defmodule Fog.TokenNew do
   def validate(token), do: check_exp(decrypt(token) |> Jason.decode!())
 
   def encrypt(data, key \\ key()) do
-    Paseto.V2.encrypt(data, key)
+    case Paseto.V2.encrypt(data, key) do
+      token when is_binary(token) ->
+        token
+
+      error ->
+        raise "Failed to encrypt a token: #{inspect(error)}"
+    end
   end
 
   def decrypt(data, key \\ key()) do
