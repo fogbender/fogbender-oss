@@ -68,8 +68,6 @@ defmodule Fog.Cowboy do
     |> send_file(200, Path.join([:code.priv_dir(:fog), "static/favicon.ico"]))
   end
 
-  forward("/export", to: Fog.Web.ExportRouter)
-
   forward("/auth", to: Fog.Web.AuthRouter)
   forward("/detective_auth", to: Fog.Web.DetectiveAuthRouter)
 
