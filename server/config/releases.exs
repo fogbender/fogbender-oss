@@ -37,7 +37,6 @@ config :fog,
 
 # APIs
 config :fog,
-  api_export_key: "ohrohweGhe6laWee2oiwish0y",
   ses_source: System.get_env("SES_SOURCE"),
   ses_region: System.get_env("SES_REGION"),
   s3_file_upload_bucket: System.get_env("S3_FILE_UPLOAD_BUCKET"),
