@@ -682,7 +682,13 @@ defmodule Fog.Web.APIRouter do
       user
       |> Jason.encode!(pretty: true)
 
-    signature_secret = Fog.env(:fogbender_workspace_secret)
+    # default workspace used to support customers of Fogbender
+    workspace_id = Fog.env(:fogbender_workspace_id)
+
+    %Fog.Data.Workspace{
+      signature_secret: signature_secret
+    } = Fog.Data.Workspace |> Fog.Repo.get!(workspace_id)
+
     # user_hmac = Fog.UserSignature.hmac_digest(id, signature_secret)
     user_paseto = Fog.UserSignature.paseto_encrypt(%{userId: id}, signature_secret)
     # user_jwt = Fog.UserSignature.jwt_sign(id, signature_secret)

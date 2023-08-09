@@ -48,7 +48,6 @@ config :fog,
   fogbender_vendor_id: "v39210325559480320",
   fogbender_vendor_name: "Fogbender",
   fogbender_workspace_id: "w39210328705208320",
-  fogbender_workspace_secret: System.get_env("FOGBENDER_WORKSPACE_SECRET"),
   fogbender_workspace_name: "Main",
   # 16 bytes
   secret_key: (System.get_env("FOG_SECRET_KEY_BASE64") || "") |> Base.decode64!(),
