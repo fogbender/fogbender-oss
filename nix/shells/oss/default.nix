@@ -57,6 +57,7 @@ in with pkgs; mkShell {
   MIX_REBAR3 = "${rebar3}/bin/rebar3";
   LOCALE_ARCHIVE = if stdenv.isLinux then "${glibcLocales}/lib/locale/locale-archive" else "";
   LANG = "en_US.UTF-8";
+  LD_LIBRARY_PATH = lib.makeLibraryPath [ libsodium ];
 
   shellHook = ''
   set -a
