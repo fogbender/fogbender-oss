@@ -2,6 +2,7 @@ defmodule Fog.Api.File do
   require Logger
   use Fog.Api.Handler
   alias Fog.Api.{Session, Perm}
+  alias Fog.FileStorage
 
   @expires_in_sec 7 * 86400
 
@@ -99,7 +100,7 @@ defmodule Fog.Api.File do
 
     content_type = Fog.Utils.escape_mime(file_type)
     file_ext = Path.extname(filename)
-    {:ok, s3_file_path} = s3_upload(file_binary, content_type, file_ext)
+    {:ok, file_path} = FileStorage.upload(file_binary, content_type, file_ext)
 
     {type, thumbnail} =
       case try_create_thumbnail(content_type, filename, file_binary) do
@@ -115,15 +116,13 @@ defmodule Fog.Api.File do
           {"attachment:other", nil}
       end
 
-    :console.log(thumbnail)
-
     create_file(
       roomId,
       filename,
       content_type,
       type,
       byte_size(file_binary),
-      s3_file_path,
+      file_path,
       thumbnail,
       nil,
       sess
@@ -143,7 +142,7 @@ defmodule Fog.Api.File do
     type = "metadata"
     content_type = "application/json"
     thumbnail = nil
-    s3_file_path = nil
+    file_path = nil
     file_size = 0
 
     create_file(
@@ -152,7 +151,7 @@ defmodule Fog.Api.File do
       content_type,
       type,
       file_size,
-      s3_file_path,
+      file_path,
       thumbnail,
       meta_data,
       sess
@@ -165,7 +164,7 @@ defmodule Fog.Api.File do
          content_type,
          type,
          file_size,
-         s3_file_path,
+         file_path,
          thumbnail,
          meta_data,
          sess
@@ -180,7 +179,7 @@ defmodule Fog.Api.File do
           from_agent_id: author(:agent, sess),
           type: type,
           size: file_size,
-          file_s3_file_path: s3_file_path,
+          file_path: file_path,
           meta_data: meta_data,
           thumbnail: thumbnail
         }
@@ -331,109 +330,6 @@ defmodule Fog.Api.File do
     end
   end
 
-  defp s3_upload(file_binary, content_type, file_ext) do
-    {:ok, key1} = Salty.Random.buf(3)
-    {:ok, key2} = Salty.Random.buf(18)
-
-    # file_ext has `.` already
-    s3_file_path = "#{Base.url_encode64(key1)}/#{Base.url_encode64(key2)}-content#{file_ext}"
-
-    if Fog.env(:s3_file_upload_enable) == false do
-      {:ok, s3_file_path}
-    else
-      do_s3_upload(file_binary, content_type, s3_file_path)
-    end
-  end
-
-  defp do_s3_upload(file_binary, content_type, s3_file_path) do
-    s3_bucket = Application.get_env(:fog, :s3_file_upload_bucket)
-    s3_region = Application.get_env(:fog, :s3_file_upload_region)
-
-    case ExAws.S3.put_object(s3_bucket, s3_file_path, file_binary,
-           content_type: content_type,
-           cache_control: "max-age=86400000",
-           timeout: 300_000
-         )
-         |> ExAws.request(region: s3_region) do
-      {:ok, _} ->
-        {:ok, s3_file_path}
-
-      {:error, error} ->
-        {:error, error}
-    end
-  end
-
-  def get_s3_presigned_url(s3_file_path) do
-    cond do
-      !s3_file_path ->
-        nil
-
-      Fog.env(:s3_file_upload_enable) == false ->
-        "s3_file_upload_disabled"
-
-      true ->
-        do_get_s3_presigned_url(s3_file_path)
-    end
-  end
-
-  def do_get_s3_presigned_url(s3_file_path) do
-    s3_bucket = Application.get_env(:fog, :s3_file_upload_bucket)
-    s3_region = Application.get_env(:fog, :s3_file_upload_region)
-    config = ExAws.Config.new(:s3, region: s3_region)
-
-    {:ok, url} =
-      ExAws.S3.presigned_url(config, :get, s3_bucket, s3_file_path, expires_in: @expires_in_sec)
-
-    url
-  end
-
-  def get_s3_download_presigned_url(s3_file_path, file_name) do
-    cond do
-      !s3_file_path ->
-        nil
-
-      Fog.env(:s3_file_upload_enable) == false ->
-        "s3_file_upload_disabled"
-
-      true ->
-        do_get_s3_download_presigned_url(s3_file_path, file_name)
-    end
-  end
-
-  def do_get_s3_download_presigned_url(s3_file_path, file_name) do
-    s3_bucket = Application.get_env(:fog, :s3_file_upload_bucket)
-    s3_region = Application.get_env(:fog, :s3_file_upload_region)
-    config = ExAws.Config.new(:s3, region: s3_region)
-    # TODO: properly escape file_name
-    query_params = [{"response-content-disposition", "attachment; filename=\"#{file_name}\""}]
-
-    {:ok, url} =
-      ExAws.S3.presigned_url(config, :get, s3_bucket, s3_file_path,
-        expires_in: @expires_in_sec,
-        query_params: query_params
-      )
-
-    url
-  end
-
-  def get_s3_file(s3_file_path) do
-    s3_bucket = Application.get_env(:fog, :s3_file_upload_bucket)
-    s3_region = Application.get_env(:fog, :s3_file_upload_region)
-
-    case ExAws.S3.get_object(s3_bucket, s3_file_path, timeout: 300_000)
-         |> ExAws.request(region: s3_region) do
-      {:ok,
-       %{
-         status_code: 200,
-         body: body
-       }} ->
-        {:ok, body}
-
-      {:error, error} ->
-        {:error, error}
-    end
-  end
-
   def file_to_file_info(f) do
     if f.data["type"] == "metadata" do
       nil
@@ -451,8 +347,13 @@ defmodule Fog.Api.File do
       type: f.data["type"],
       fileSize: f.data["size"],
       fileExpirationTs: Fog.Utils.time_us() + get_expires_in_us(),
-      downloadUrl: get_s3_download_presigned_url(f.data["file_s3_file_path"], f.filename),
-      fileUrl: get_s3_presigned_url(f.data["file_s3_file_path"])
+      downloadUrl:
+        FileStorage.download_url(
+          f.data["file_s3_file_path"] || f.data["file_path"],
+          f.filename,
+          @expires_in_sec
+        ),
+      fileUrl: FileStorage.file_url(f.data["file_s3_file_path"] || f.data["file_path"])
     }
   end
 

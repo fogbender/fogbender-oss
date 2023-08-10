@@ -3,7 +3,7 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
 
   import Ecto.Query, only: [from: 2]
 
-  alias Fog.{Api, Data, Repo, Utils}
+  alias Fog.{Api, Data, Repo, Utils, FileStorage}
   alias Fog.Comms.{Slack}
 
   @broadcast_threshold_seconds 3600
@@ -530,12 +530,11 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
         %Fog.Data.File{
           filename: filename,
           content_type: content_type,
-          data: %{
-            "file_s3_file_path" => file_s3_file_path
-          }
+          data: data
         } = file
 
-        {:ok, file_body} = Fog.Api.File.get_s3_file(file_s3_file_path)
+        file_path = data["file_s3_file_path"] || data["file_path"]
+        {:ok, file_body} = FileStorage.read(file_path)
 
         # XXX response with no shares
         _m = """
