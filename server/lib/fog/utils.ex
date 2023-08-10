@@ -31,14 +31,6 @@ defmodule Fog.Utils do
     |> Enum.into([])
   end
 
-  # we should probably go with https://github.com/martinsvalin/html_entities
-  def escape_html(raw) do
-    raw
-    |> String.replace("&", "&amp;")
-    |> String.replace("<", "&lt;")
-    |> String.replace(">", "&gt;")
-  end
-
   def escape_mime(type) do
     case MIME.extensions(type) do
       [] ->
