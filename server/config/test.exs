@@ -19,7 +19,7 @@ config :fog,
   scheduler_enable: false,
   notify_badge_enable: false,
   notify_badge_delay: 0,
-  s3_file_upload_enable: false
+  file_storage: "dumb"
 
 config :fog,
   fog_ip_str: "127.0.0.1",

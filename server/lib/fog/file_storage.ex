@@ -1,5 +1,5 @@
 defmodule Fog.FileStorage do
-  alias Fog.FileStorage.{S3, Local}
+  alias Fog.FileStorage.{S3, Local, Dumb}
 
   @expires_in_sec 7 * 86400
 
@@ -33,6 +33,7 @@ defmodule Fog.FileStorage do
     case Fog.env(:file_storage) do
       "s3" -> S3
       "local" -> Local
+      "dumb" -> Dumb
     end
   end
 end
