@@ -40,6 +40,7 @@ config :fog,
   file_size_limit: 20_971_520,
   # s3 | local
   file_storage: System.get_env("FILE_STORAGE") || "s3",
+  file_storage_local_dir: System.get_env("FILE_STORAGE_LOCAL_DIR") || "/tmp/fog-local",
   s3_file_upload_bucket: System.get_env("S3_FILE_UPLOAD_BUCKET"),
   s3_file_upload_region: System.get_env("S3_FILE_UPLOAD_REGION") || "us-east-1"
 
