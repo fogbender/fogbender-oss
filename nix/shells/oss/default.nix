@@ -60,6 +60,8 @@ in with pkgs; mkShell {
   LD_LIBRARY_PATH = lib.makeLibraryPath [ libsodium ];
 
   shellHook = ''
+  mkdir -p .nix-shell/files
+
   set -a
   echo Sourcing oss.env..
   . ./config/oss.env
