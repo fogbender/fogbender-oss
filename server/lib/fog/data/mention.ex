@@ -6,7 +6,7 @@ defmodule Fog.Data.Mention do
   schema "mention" do
     belongs_to(:message, Message, type: Fog.Types.MessageId, primary_key: true)
     belongs_to(:user, User, type: Fog.Types.UserId, primary_key: true)
-    belongs_to(:agent, Agent, type: Fog.Types.AgentId)
+    belongs_to(:agent, Agent, type: Fog.Types.AgentId, primary_key: true)
     field(:text, :string)
 
     has_one(:room, through: [:message, :room])
