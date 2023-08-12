@@ -15,6 +15,7 @@ defmodule Fog.Stripe.Api do
   end
 
   def create_checkout_session(seats) do
+    # TODO: add vendorId instead of "-" for faster navigation
     r =
       post(
         "/v1/checkout/sessions",
@@ -72,6 +73,7 @@ defmodule Fog.Stripe.Api do
   end
 
   def create_portal_session(customer_id) do
+    # TODO: add vendorId instead of "-" for faster navigation
     r =
       post(
         "/v1/billing_portal/sessions",
