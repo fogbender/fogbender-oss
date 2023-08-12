@@ -179,7 +179,7 @@ defmodule Fog.Api.File do
           from_agent_id: author(:agent, sess),
           type: type,
           size: file_size,
-          file_path: file_path,
+          file_s3_file_path: file_path,
           meta_data: meta_data,
           thumbnail: thumbnail
         }
@@ -349,11 +349,11 @@ defmodule Fog.Api.File do
       fileExpirationTs: Fog.Utils.time_us() + get_expires_in_us(),
       downloadUrl:
         FileStorage.download_url(
-          f.data["file_s3_file_path"] || f.data["file_path"],
+          f.data["file_s3_file_path"],
           f.filename,
           @expires_in_sec
         ),
-      fileUrl: FileStorage.file_url(f.data["file_s3_file_path"] || f.data["file_path"])
+      fileUrl: FileStorage.file_url(f.data["file_s3_file_path"])
     }
   end
 

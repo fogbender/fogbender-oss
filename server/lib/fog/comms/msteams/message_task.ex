@@ -569,7 +569,7 @@ defmodule Fog.Comms.MsTeams.MessageTask do
         data: data
       } = file
 
-      file_path = data["file_s3_file_path"] || data["file_path"]
+      file_path = data["file_s3_file_path"]
       {:ok, binary} = FileStorage.read(file_path)
 
       upload_filename = "#{file_id}-#{filename}"

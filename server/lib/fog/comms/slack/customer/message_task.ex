@@ -794,7 +794,7 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
             data: data
           } = file
 
-          file_path = data["file_s3_file_path"] || data["file_path"]
+          file_path = data["file_s3_file_path"]
           {:ok, file_body} = FileStorage.read(file_path)
 
           res =
