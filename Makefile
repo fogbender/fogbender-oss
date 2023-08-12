@@ -67,7 +67,7 @@ fog-format:
 	cd server && mix format
 
 fog-test: db-start
-	cd server && MIX_ENV=test mix do ecto.create --quiet, ecto.migrate && mix test
+	cd server && MIX_ENV=test mix do ecto.create --quiet, ecto.migrate && mix test ${TEST_FILE}
 
 fog-test-watch: db-start
 	cd server && MIX_ENV=test mix do ecto.create --quiet, ecto.migrate && mix test.watch
