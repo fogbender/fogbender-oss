@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import {
   Agent,
+  AgentRole,
   Avatar,
   formatTs,
   Icons,
@@ -31,8 +32,6 @@ import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
 import { AgentGroups } from "./AgentGroups";
 
-type Role = "owner" | "admin" | "agent" | "reader" | "app";
-
 export const Team: React.FC<{
   vendor: Vendor;
 }> = ({ vendor }) => {
@@ -51,7 +50,7 @@ export const Team: React.FC<{
   const { data: invites } = useQuery({
     queryKey: queryKeys.invites(vendor.id),
     queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/invites`).json<Invite[]>(),
-    enabled: (ourAgent?.role && ["owner", "admin", "agent"].includes(ourAgent.role)) === true,
+    enabled: (ourAgent?.role && ["owner", "admin"].includes(ourAgent.role)) === true,
   });
 
   const invitesAndAgents = React.useMemo(() => {
@@ -73,7 +72,7 @@ export const Team: React.FC<{
             <TeamTabs tab="team" />
             {ourAgent && (
               <>
-                <InviteMembers
+                <TeamMembers
                   invitesAndAgents={invitesAndAgents}
                   ourAgent={ourAgent}
                   vendor={vendor}
@@ -143,7 +142,7 @@ const TeamTabs: React.FC<{
     </div>
   );
 };
-const InviteMembers: React.FC<{
+const TeamMembers: React.FC<{
   invitesAndAgents: (Agent | Invite)[];
   ourAgent: Agent | undefined;
   vendor: Vendor;
@@ -197,88 +196,90 @@ const InviteMembers: React.FC<{
             Invite teammate
           </ThickButton>
         </div>
-        <table className="table-auto w-full my-2 border-separate border-spacing-y-2">
-          <tbody>
-            {invitesAndAgents?.map((member, i) => (
-              <tr key={i}>
-                <td className="border-t whitespace-nowrap lg:whitespace-normal">
-                  <div className="flex gap-3">
-                    <div className="flex justify-center mt-4">
-                      {isInvite(member) ? (
-                        <Avatar
-                          url={UserPlus}
-                          imageSize={14}
-                          className="w-4"
-                          bgClassName="bg-gray-200"
-                        />
-                      ) : (
-                        <Avatar size={35} url={member.image_url} name={member.name} />
-                      )}
-                    </div>
-
-                    <div className="flex flex-col self-center min-w-max mt-4 pr-2">
-                      <div className="gap-1">
+        <div className="min-h-[22rem]">
+          <table className="table-auto w-full my-2 border-separate border-spacing-y-2">
+            <tbody>
+              {invitesAndAgents?.map((member, i) => (
+                <tr key={i}>
+                  <td className="border-t whitespace-nowrap lg:whitespace-normal">
+                    <div className="flex gap-3">
+                      <div className="flex justify-center mt-4">
                         {isInvite(member) ? (
-                          <span>Invited by {member.from_agent.name}</span>
+                          <Avatar
+                            url={UserPlus}
+                            imageSize={14}
+                            className="w-4"
+                            bgClassName="bg-gray-200"
+                          />
                         ) : (
-                          <span>{member.name}</span>
+                          <Avatar size={35} url={member.image_url} name={member.name} />
                         )}
                       </div>
-                      {!isInvite(member) && (
-                        <div className="text-gray-500 text-xs">
-                          Joined at {formatTs(new Date(member.inserted_at).getTime() * 1000)}
-                        </div>
-                      )}
-                      {isInvite(member) && (
-                        <div className="text-gray-500 text-xs">
-                          At {formatTs(new Date(member.inserted_at).getTime() * 1000)}
-                        </div>
-                      )}
-                      {!isInvite(member) && ourAgentId === member.id && (
-                        <div className="w-full text-left">
-                          <span className="whitespace-nowrap self-center text-white text-xs bg-green-500 rounded-lg py-0.5 px-1">
-                            It&rsquo;s you!
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="border-t">
-                  {isInvite(member) ? (
-                    <span>{member.email}</span>
-                  ) : (
-                    <span>{renderEmailOrTag(member)}</span>
-                  )}
-                </td>
-                <td className="border-t">
-                  {member.role === "app" ? (
-                    <div>Application</div>
-                  ) : (
-                    <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
-                  )}
-                </td>
-                <td className="border-t">
-                  <span
-                    title="Remove"
-                    className="text-gray-500 hover:text-red-500 cursor-pointer flex items-center justify-end"
-                    onClick={e => {
-                      e.stopPropagation();
 
-                      if (isInvite(member)) {
-                        setInviteToDelete(member);
-                      } else {
-                        setAgentToDelete(member);
-                      }
-                    }}
-                  >
-                    <Icons.Trash className="w-5" />
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      <div className="flex flex-col self-center min-w-max mt-4 pr-2">
+                        <div className="gap-1">
+                          {isInvite(member) ? (
+                            <span>Invited by {member.from_agent.name}</span>
+                          ) : (
+                            <span>{member.name}</span>
+                          )}
+                        </div>
+                        {!isInvite(member) && (
+                          <div className="text-gray-500 text-xs">
+                            Joined at {formatTs(new Date(member.inserted_at).getTime() * 1000)}
+                          </div>
+                        )}
+                        {isInvite(member) && (
+                          <div className="text-gray-500 text-xs">
+                            At {formatTs(new Date(member.inserted_at).getTime() * 1000)}
+                          </div>
+                        )}
+                        {!isInvite(member) && ourAgentId === member.id && (
+                          <div className="w-full text-left">
+                            <span className="whitespace-nowrap self-center text-white text-xs bg-green-500 rounded-lg py-0.5 px-1">
+                              It&rsquo;s you!
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="border-t">
+                    {isInvite(member) ? (
+                      <span>{member.email}</span>
+                    ) : (
+                      <span>{renderEmailOrTag(member)}</span>
+                    )}
+                  </td>
+                  <td className="border-t">
+                    {member.role === "app" ? (
+                      <div>Application</div>
+                    ) : (
+                      <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
+                    )}
+                  </td>
+                  <td className="border-t">
+                    <span
+                      title="Remove"
+                      className="text-gray-500 hover:text-red-500 cursor-pointer flex items-center justify-end"
+                      onClick={e => {
+                        e.stopPropagation();
+
+                        if (isInvite(member)) {
+                          setInviteToDelete(member);
+                        } else {
+                          setAgentToDelete(member);
+                        }
+                      }}
+                    >
+                      <Icons.Trash className="w-5" />
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {agentToDelete && (
         <DeleteMemberModal
@@ -305,13 +306,14 @@ const InviteMembers: React.FC<{
     </div>
   );
 };
+
 const ChangeRoleButton: React.FC<{
   member: Agent | Invite;
   ourAgent: Agent | undefined;
   vendor: Vendor;
 }> = props => {
   const { member, ourAgent, vendor } = props;
-  const [newRole, setNewRole] = React.useState<Role>();
+  const [newRole, setNewRole] = React.useState<AgentRole>();
 
   const closeModal = React.useCallback(() => {
     setNewRole(undefined);
@@ -411,7 +413,7 @@ const SendInviteForm: React.FC<{
             <span>
               Sorry, this shouldn't have happened! Please ping us in{" "}
               <a href={`/admin/vendor/${vendorId}/support`} target="_blank" rel="noopener">
-                Fogbender Support
+                Fogbender support
               </a>
             </span>
           )}
@@ -480,8 +482,8 @@ const UpdateRoleModal: React.FC<{
   vendor: Vendor;
   onClose: () => void;
   member: Agent | Invite;
-  newRole: Role;
-  ourRole: Role;
+  newRole: AgentRole;
+  ourRole: AgentRole;
 }> = ({ vendor, onClose, member, newRole, ourRole }) => {
   const [error, setError] = React.useState<string>();
   const changeRoleMutation = useMutation(
@@ -500,6 +502,7 @@ const UpdateRoleModal: React.FC<{
       onSuccess: async r => {
         if (r.status === 204) {
           queryClient.invalidateQueries(queryKeys.agents(vendor.id));
+          queryClient.invalidateQueries(queryKeys.billing(vendor.id));
           onClose();
         } else {
           const res = await r.json();
@@ -509,6 +512,12 @@ const UpdateRoleModal: React.FC<{
       },
     }
   );
+
+  const handledErrors = [
+    "Assign another owner first",
+    "Agents cannot assign roles",
+    "Readers cannot assign roles",
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -533,6 +542,8 @@ const UpdateRoleModal: React.FC<{
             <span className="font-semibold capitalize">{ourRole}</span>).
           </div>
         )}
+
+      {error && !handledErrors.includes(error) && <div className="text-brand-red-500">{error}</div>}
 
       {error === undefined ? (
         <ThickButton
@@ -858,9 +869,9 @@ function isInvite(member: Agent | Invite): member is Invite {
   return "invite_id" in member && member.invite_id !== undefined;
 }
 
-const agentRoleOption = { id: "agent" as Role, option: "Agent" };
+const agentRoleOption = { id: "agent" as AgentRole, option: "Agent" };
 
-const roleOptions: { id: Role; option: string }[] = [
+const roleOptions: { id: AgentRole; option: string }[] = [
   { id: "owner", option: "Owner" },
   { id: "admin", option: "Admin" },
   agentRoleOption,

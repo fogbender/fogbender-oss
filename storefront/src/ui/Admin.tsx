@@ -2,12 +2,14 @@ import browser from "browser-detect";
 import classNames from "classnames";
 import {
   Agent,
+  AgentRole,
   AnyToken,
   App as AgentApp,
   atomWithRealTimeLocalStorage,
   Avatar,
   ConfirmDialog,
   GalleryModal,
+  IconGithub,
   Icons,
   Integration,
   IsIdleProvider,
@@ -21,6 +23,7 @@ import {
   Tag,
   ThinButton,
   useIsIdle,
+  VendorBilling,
   WsProvider,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
@@ -57,6 +60,7 @@ import {
 import { FontAwesomeTimes } from "../shared/font-awesome/Times";
 
 import { getIntegrationDetails as getAIIntegrationDetails } from "./Admin/AIIntegrations";
+import { Billing } from "./Admin/Billing";
 import { client } from "./Admin/client";
 import { getIntegrationDetails as getCommsIntegrationDetails } from "./Admin/CommsIntegrations";
 import { CreateVendorForm } from "./Admin/CreateVendorForm";
@@ -152,6 +156,10 @@ export const Admin = () => {
 
   const teamMode =
     !!designatedVendorId && !designatedWorkspaceId && vendorMatch?.params["*"]?.startsWith("team");
+  const billingMode =
+    !!designatedVendorId &&
+    !designatedWorkspaceId &&
+    vendorMatch?.params["*"]?.startsWith("billing");
   const settingsMode = !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("settings");
   const customersMode =
     !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("customers");
@@ -175,6 +183,7 @@ export const Admin = () => {
 
   const homeMode =
     teamMode ||
+    billingMode ||
     adminMatch !== null ||
     workspacesMatch !== null ||
     adminRedirectMatch !== null ||
@@ -266,48 +275,47 @@ export const Admin = () => {
   );
   const [onboardingChecklistDone, setOnboardingChecklistDone] = useAtom(checklistDoneHiddenAtom);
 
+  const countNonReaders = (agents || []).reduce(
+    (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
+    0
+  );
+
+  const { data: billing, isLoading: billingIsLoading } = useQuery({
+    queryKey: queryKeys.billing(designatedVendorId || "N/A"),
+    queryFn: () =>
+      apiServer.get(`/api/vendors/${designatedVendorId}/billing`).json<VendorBilling>(),
+    enabled: !!designatedVendorId,
+  });
+
+  const freeSeats = billing?.free_seats || 2;
+
+  const paidSeats = billing?.paid_seats || 0;
+
+  const countInViolation =
+    (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
+
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
-      {notificationsPermission === "default" && (
-        <div
-          className="bg-red-100 border-red-400 text-red-700 px-4 py-3 relative text-center shadow"
-          role="alert"
-        >
-          <span
-            onClick={e => {
-              e.preventDefault();
-
-              window.Notification?.requestPermission().then(function (permission) {
-                setNotificationsPermission(permission);
-              });
-            }}
-            className="cursor-pointer"
-          >
-            {browser()?.name === "chrome" ? (
-              <>
-                <strong className="block sm:inline">
-                  Fogbender needs your permission to enable{" "}
-                  <span className="underline">desktop notifications</span>
-                </strong>
-              </>
-            ) : (
-              <>
-                <strong className="font-bold">Click here</strong>{" "}
-                <span className="block sm:inline">
-                  to enable <span className="underline">desktop notifications</span>
-                </span>
-              </>
-            )}
-          </span>
-          <span
-            className="absolute h-full mr-2 top-0 right-0 cursor-pointer flex"
-            onClick={() => setNotificationsPermission("hide")}
-          >
-            <FontAwesomeTimes className="fa-fw self-center text-red-400 hover:text-red-600" />
-          </span>
-        </div>
-      )}
+      {designatedVendorId &&
+        !billingIsLoading &&
+        billing &&
+        ourRole &&
+        ["owner", "admin", "agent"].includes(ourRole) &&
+        billing &&
+        (billing.delinquent || countInViolation > 0) && (
+          <SubscriptionRequiredBanner
+            admins={agents.filter(a => ["owner", "admin"].includes(a.role))}
+            ourRole={ourRole}
+            vendorId={designatedVendorId}
+            countInViolation={countInViolation}
+            billing={billing}
+          />
+        )}
+      <NotificationsPermissionBanner
+        notificationsPermission={notificationsPermission}
+        setNotificationsPermission={setNotificationsPermission}
+      />
       <div
         className="relative flex flex-col flex-1 overflow-hidden"
         style={{
@@ -368,6 +376,8 @@ export const Admin = () => {
                     vendors={vendors}
                     designatedVendorId={designatedVendorId}
                     teamMode={teamMode}
+                    billingMode={billingMode}
+                    ourRole={ourRole}
                   />
                 }
               />
@@ -635,6 +645,7 @@ export const Admin = () => {
                           <AgentAppWrapper
                             isIdle={isIdle}
                             designatedVendorId={designatedVendorId}
+                            billing={billing}
                             authorMe={authorMe}
                             openFromLocationHook={useOpenRoomFromBrowserLocation}
                             workspaceTags={workspaceTags}
@@ -732,6 +743,32 @@ export const Admin = () => {
                     )
                   }
                 />
+                <Route
+                  path="vendor/:vid/billing/*"
+                  element={
+                    designatedVendor !== undefined && workspaces !== undefined ? (
+                      <div className="sm:ml-8">
+                        <Link
+                          className={classNames(
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white fog:box-shadow-s transform transition-transform no-underline",
+                            !designatedVendorId
+                              ? "-translate-x-full"
+                              : "translate-x-0 sm:-translate-x-full"
+                          )}
+                          to={"/admin"}
+                        >
+                          <Icons.ArrowBack />
+                          <span className="fog:text-caption-l fog:text-link">Organizations</span>
+                        </Link>
+                        <div className={classNames("sm:mt-8 flex flex-col gap-8 mt-16")}>
+                          <Billing vendor={designatedVendor} countInViolation={countInViolation} />
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )
+                  }
+                />
               </Routes>
             </div>
           </div>
@@ -789,6 +826,152 @@ export const Admin = () => {
   );
 };
 
+const NotificationsPermissionBanner = ({
+  notificationsPermission,
+  setNotificationsPermission,
+}: {
+  notificationsPermission: NotificationPermission | "hide";
+  setNotificationsPermission: (x: NotificationPermission | "hide") => void;
+}) => {
+  if (notificationsPermission === "default") {
+    return (
+      <div
+        className="bg-red-100 border-red-400 text-red-700 px-4 py-3 relative text-center shadow"
+        role="alert"
+      >
+        <span
+          onClick={e => {
+            e.preventDefault();
+
+            window.Notification?.requestPermission().then(function (permission) {
+              setNotificationsPermission(permission);
+            });
+          }}
+          className="cursor-pointer"
+        >
+          {browser()?.name === "chrome" ? (
+            <>
+              <span className="block sm:inline font-medium">
+                Fogbender needs your permission to enable{" "}
+                <span className="underline">desktop notifications</span>
+              </span>
+            </>
+          ) : (
+            <>
+              <strong className="font-bold">Click here</strong>{" "}
+              <span className="block sm:inline font-medium">
+                to enable <span className="underline">desktop notifications</span>
+              </span>
+            </>
+          )}
+        </span>
+        <span
+          className="absolute h-full mr-2 top-0 right-0 cursor-pointer flex"
+          onClick={() => setNotificationsPermission("hide")}
+        >
+          <FontAwesomeTimes className="fa-fw self-center text-red-400 hover:text-red-600" />
+        </span>
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
+const SubscriptionRequiredBanner = ({
+  admins,
+  ourRole,
+  vendorId,
+  countInViolation,
+  billing,
+}: {
+  admins: Agent[];
+  ourRole: AgentRole;
+  vendorId: string;
+  countInViolation: number;
+  billing: VendorBilling;
+}) => {
+  const createCheckoutSessionMutation = useMutation({
+    mutationFn: () => {
+      return apiServer
+        .url(`/api/vendors/${vendorId}/create-checkout-session`)
+        .post({
+          seats: countInViolation,
+        })
+        .json<{ url: string }>();
+    },
+    onSuccess: res => {
+      const { url } = res;
+
+      window.location.href = url;
+    },
+  });
+
+  const commadAdmins = React.useMemo(() => {
+    const res = [];
+
+    if (admins.length === 1) {
+      res.push(admins[0].email);
+    } else if (admins.length === 2) {
+      res.push(admins[0].email);
+      res.push(" or ");
+      res.push(admins[1].email);
+    } else {
+      admins.slice(0, -1).forEach(a => res.push(`${a.email}, `));
+      res.push(` or ${admins.slice(-1)[0].email}`);
+    }
+
+    return res.join("");
+  }, [admins]);
+
+  if (billing.delinquent || countInViolation > 0) {
+    return (
+      <div
+        className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-white px-4 py-3 relative text-center"
+        role="alert"
+      >
+        <span className="block sm:inline font-medium">
+          🧐 Please{" "}
+          {billing.delinquent && billing.subscriptions.length > 0 ? (
+            <Link to={`/admin/vendor/${vendorId}/billing`} className="hover:text-red-300 underline">
+              update payment method
+            </Link>
+          ) : (
+            <button
+              className="hover:text-red-300 underline"
+              onClick={() => {
+                if (ourRole === "agent") {
+                  alert(
+                    `Only owners and admins can manage billing - your role is Agent. Please touch base with ${commadAdmins}`
+                  );
+                } else {
+                  createCheckoutSessionMutation.mutate();
+                }
+              }}
+            >
+              subscribe
+            </button>
+          )}
+          ,{" "}
+          <Link className="hover:text-red-300" to={`/admin/-/team`}>
+            downgrade to free tier
+          </Link>
+          , or{" "}
+          <a
+            className="hover:text-red-300"
+            href="https://github.com/fogbender/fogbender"
+            target="_blank"
+          >
+            host your own Fogbender <IconGithub className="ml-1 w-5 inline-block" />
+          </a>
+        </span>
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
 const Sidebar: React.FC<{
   hidden: boolean;
   vendorInvites: VendorInvite[] | undefined;
@@ -796,7 +979,18 @@ const Sidebar: React.FC<{
   vendors: Vendor[] | undefined;
   designatedVendorId: string | undefined;
   teamMode: boolean | undefined;
-}> = ({ vendors, vendorInvites, vendorInviteCode, designatedVendorId, teamMode, hidden }) => {
+  billingMode: boolean | undefined;
+  ourRole: AgentRole | undefined;
+}> = ({
+  vendors,
+  vendorInvites,
+  vendorInviteCode,
+  designatedVendorId,
+  teamMode,
+  billingMode,
+  hidden,
+  ourRole,
+}) => {
   const hasVendors = vendors !== undefined && vendors.length > 0;
   const hasVendorInvites = vendorInvites !== undefined && vendorInvites.length > 0;
 
@@ -884,7 +1078,7 @@ const Sidebar: React.FC<{
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
-                      v.id === designatedVendorId && !teamMode
+                      v.id === designatedVendorId && !teamMode && !billingMode
                         ? "border-opacity-1"
                         : "border-opacity-0"
                     )}
@@ -906,13 +1100,26 @@ const Sidebar: React.FC<{
                   >
                     Team
                   </Link>
+                  {ourRole && ["owner", "admin"].includes(ourRole) && (
+                    <Link
+                      className={classNames(
+                        "border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
+                        v.id === designatedVendorId && billingMode
+                          ? "border-opacity-1"
+                          : "border-opacity-0"
+                      )}
+                      to={`vendor/${v.id}/billing`}
+                    >
+                      Billing
+                    </Link>
+                  )}
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 border-opacity-0 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m"
                     )}
                     to={`vendor/${v.id}/support`}
                   >
-                    <div className="flex-1">Fogbender Support</div>
+                    <div className="flex-1">Fogbender support</div>
                     <div className="pr-2">
                       <HeadlessForSupport
                         vendorId={v.id}
@@ -979,15 +1186,14 @@ const Sidebar: React.FC<{
 type ExtractProps<Props> = Props extends React.FC<infer TProps> ? TProps : never;
 
 type AgentAppProps = ExtractProps<typeof AgentApp>;
-const AgentAppWrapper: React.FC<AgentAppProps & { designatedVendorId: string }> = ({
-  designatedVendorId,
-  ...props
-}) => {
+const AgentAppWrapper: React.FC<
+  AgentAppProps & { designatedVendorId: string; billing?: VendorBilling }
+> = ({ designatedVendorId, billing, ...props }) => {
   const { data: agents } = useQuery({
     queryKey: queryKeys.agents(designatedVendorId),
     queryFn: () => apiServer.get(`/api/vendors/${designatedVendorId}/agents`).json<Agent[]>(),
   });
-  return <AgentApp agents={agents} {...props} />;
+  return <AgentApp agents={agents} billing={billing} {...props} />;
 };
 
 const AdminSupport: React.FC<{
@@ -1192,7 +1398,7 @@ const Breadcrumbs: React.FC<{
         />
         <Route
           path="vendor/:vid/support/*"
-          element={<Title>Fogbender | {cachedVendorName} | Fogbender Support</Title>}
+          element={<Title>Fogbender | {cachedVendorName} | Fogbender support</Title>}
         />
         <Route
           path="vendor/:vid/workspace/:wid/settings/*"
@@ -1277,7 +1483,7 @@ const Breadcrumbs: React.FC<{
 
             <span className="px-2">/</span>
 
-            <span className="truncate">{designatedWorkspace?.name || "Fogbender Support"}</span>
+            <span className="truncate">{designatedWorkspace?.name || "Fogbender support"}</span>
           </Link>
           {!supportMode && (
             <Link

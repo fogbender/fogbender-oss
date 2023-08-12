@@ -1030,7 +1030,8 @@ CREATE TABLE public.vendor (
     updated_at timestamp without time zone NOT NULL,
     status text DEFAULT 'active'::text NOT NULL,
     deleted_at timestamp without time zone,
-    deleted_by_agent_id bigint
+    deleted_by_agent_id bigint,
+    free_seats integer DEFAULT 2
 );
 
 
@@ -1123,6 +1124,18 @@ ALTER SEQUENCE public.vendor_api_token_id_seq OWNED BY public.vendor_api_token.i
 CREATE TABLE public.vendor_group (
     vendor_id bigint NOT NULL,
     "group" text NOT NULL,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: vendor_stripe_customer; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.vendor_stripe_customer (
+    vendor_id bigint NOT NULL,
+    stripe_customer_id text NOT NULL,
     inserted_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -2250,6 +2263,13 @@ CREATE UNIQUE INDEX vendor_group_uq_index ON public.vendor_group USING btree (ve
 
 
 --
+-- Name: vendor_stripe_customer_vendor_id_stripe_customer_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX vendor_stripe_customer_vendor_id_stripe_customer_id_index ON public.vendor_stripe_customer USING btree (vendor_id, stripe_customer_id);
+
+
+--
 -- Name: vendor_verified_domain_uq; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2395,3 +2415,5 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230415133420);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415134354);
 INSERT INTO public."schema_migrations" (version) VALUES (20230507192311);
 INSERT INTO public."schema_migrations" (version) VALUES (20230720040621);
+INSERT INTO public."schema_migrations" (version) VALUES (20230806172529);
+INSERT INTO public."schema_migrations" (version) VALUES (20230806192239);

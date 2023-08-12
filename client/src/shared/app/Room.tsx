@@ -38,7 +38,7 @@ import { MessageView } from "../messages/MessageView";
 import { useNewMessagesAt } from "../messages/useNewMessagesAt";
 import { useSelection } from "../messages/useSelection";
 import { showAiHelperAtom } from "../store/config.store";
-import { Agent } from "../types";
+import { Agent, VendorBilling } from "../types";
 import { atomWithLocalStorage } from "../utils/atomWithLocalStorage";
 import { formatRoomTs } from "../utils/formatTs";
 import { getPreviousMessageId } from "../utils/serverBigInt";
@@ -134,6 +134,7 @@ export const Room: React.FC<{
   ourId: string | undefined;
   isAgent: boolean | undefined;
   agents?: Agent[];
+  billing?: VendorBilling;
   roomId: string;
   vendorId: string | undefined;
   workspaceId: string | undefined;
@@ -168,6 +169,7 @@ export const Room: React.FC<{
   myAuthor,
   ourId,
   isAgent,
+  billing,
   agents,
   roomId,
   vendorId,
@@ -622,6 +624,8 @@ export const Room: React.FC<{
     }
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
+  const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
+
   return (
     <div
       {...getRootProps({
@@ -904,7 +908,7 @@ export const Room: React.FC<{
 
       {fileInput}
 
-      {(agentRole !== "reader" || isInternal) && (
+      {((agentRole !== "reader" && !inViolation) || isInternal) && (
         <div ref={roomFooterRef}>
           {Textarea}
           {(!mode || mode === "Reply" || mode === "Edit") && (

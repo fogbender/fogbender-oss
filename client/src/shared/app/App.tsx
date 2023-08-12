@@ -39,7 +39,7 @@ import {
   muteNotificationsAtom,
   showOutlookRosterAtom,
 } from "../store/config.store";
-import { Agent, AuthorMe } from "../types";
+import { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternal, isInternal } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
@@ -81,6 +81,7 @@ export const App: React.FC<{
   isIdle: boolean;
   authorMe: AuthorMe | undefined;
   agents?: Agent[];
+  billing?: VendorBilling;
   openFromLocationHook?: (roomById: (id: string) => RoomT | undefined) => void | undefined;
   workspaceTags?: TagT[];
   workspaceIntegrations?: IntegrationT[];
@@ -93,6 +94,7 @@ export const App: React.FC<{
   renderCustomerInfoPane?: RenderCustomerInfoCb;
 }> = ({
   authorMe,
+  billing,
   agents,
   openFromLocationHook,
   workspaceTags,
@@ -1205,6 +1207,7 @@ export const App: React.FC<{
                     myAuthor={myAuthor}
                     ourId={ourId}
                     isAgent={isAgent}
+                    billing={billing}
                     agents={agents}
                     roomId={el.i}
                     vendorId={vendorId}
