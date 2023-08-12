@@ -5532,13 +5532,19 @@ defmodule Fog.Web.APIRouter do
     if subscription && count_used_seats - free_seats > 0 do
       %{"items" => %{"data" => [subscription_item]}} = subscription
 
-      {:ok, _} =
-        Fog.Stripe.Api.set_subscription_plan_quantity(
-          subscription_item["id"],
-          count_used_seats - free_seats
-        )
-    end
+      case Fog.Stripe.Api.set_subscription_plan_quantity(
+             subscription_item["id"],
+             count_used_seats - free_seats
+           ) do
+        {:ok, _} ->
+          :ok
 
-    :ok
+        err ->
+          Logger.error("Subscription / billing update error: #{inspect(err)}")
+          :ok
+      end
+    else
+      :ok
+    end
   end
 end
