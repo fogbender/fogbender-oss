@@ -208,6 +208,22 @@ export const SignupForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogi
                 </span>
               </div>
             )}
+            <div className="mt-5 text-xs">
+              <span>By signing up, you’re agreeing with Fogbender’s </span>
+              <a
+                href="https://github.com/fogbender/legal/blob/master/terms-of-service.txt"
+                target="_blank"
+              >
+                terms of service
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://github.com/fogbender/legal/blob/master/privacy-policy.txt"
+                target="_blank"
+              >
+                privacy policy
+              </a>
+            </div>
             <div className="mt-5">
               <button
                 type="submit"
