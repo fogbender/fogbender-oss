@@ -8,6 +8,7 @@ defmodule Test.Api.MessageTest do
     vendor = vendor()
     workspace = workspace(vendor)
     agent = agent(workspace)
+    agent2 = agent(workspace)
 
     agent_api =
       Api.Session.for_agent(vendor.id, agent.id)
@@ -43,7 +44,19 @@ defmodule Test.Api.MessageTest do
 
       assert {:reply, %Api.Message.Ok{messageId: message_id}, _} = Api.request(msg, ctx.user_api)
 
-      [message_id: message_id]
+      int_msg = %Api.Message.Create{
+        roomId: ctx.agent_room.id,
+        text: "TEST @Agent 1 and @Agent 2",
+        mentions: [
+          %Api.Message.Mention{id: ctx.agent.id, text: "Agent 1"},
+          %Api.Message.Mention{id: ctx.agent2.id, text: "Agent 2"}
+        ]
+      }
+
+      assert {:reply, %Api.Message.Ok{messageId: int_message_id}, _} =
+               Api.request(int_msg, ctx.agent_api)
+
+      [message_id: message_id, int_message_id: int_message_id]
     end
 
     test "create", ctx do
@@ -86,6 +99,17 @@ defmodule Test.Api.MessageTest do
       assert {:reply, %Api.Message.Ok{}, _} = Api.request(msg, ctx.user_api)
       assert [%Api.Event.Message{mentions: [], rawText: raw}] = load(ctx.user_api, ctx.user_room)
       assert raw == "Deleted by #{ctx.user.name}"
+
+      int_msg = %Api.Message.Update{
+        messageId: ctx.int_message_id
+      }
+
+      assert {:reply, %Api.Message.Ok{}, _} = Api.request(int_msg, ctx.agent_api)
+
+      assert [%Api.Event.Message{mentions: [], rawText: raw}] =
+               load(ctx.agent_api, ctx.agent_room)
+
+      assert raw == "Deleted by #{ctx.agent.name}"
     end
 
     test "visualize mentions by provided text", ctx do

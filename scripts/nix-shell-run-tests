@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Helper script for run tests from Emacs Elixir mode
+
+set -o errexit -o nounset -o pipefail
+
+nix develop -c make fog-test TEST_FILE=$1
