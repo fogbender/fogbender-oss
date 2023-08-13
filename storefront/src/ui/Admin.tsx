@@ -280,7 +280,11 @@ export const Admin = () => {
     0
   );
 
-  const { data: billing, isLoading: billingIsLoading } = useQuery({
+  const {
+    data: billing,
+    isLoading: billingIsLoading,
+    status: billingStatus,
+  } = useQuery({
     queryKey: queryKeys.billing(designatedVendorId || "N/A"),
     queryFn: () =>
       apiServer.get(`/api/vendors/${designatedVendorId}/billing`).json<VendorBilling>(),
@@ -377,6 +381,7 @@ export const Admin = () => {
                     designatedVendorId={designatedVendorId}
                     teamMode={teamMode}
                     billingMode={billingMode}
+                    billingStatus={billingStatus}
                     ourRole={ourRole}
                   />
                 }
@@ -980,6 +985,7 @@ const Sidebar: React.FC<{
   designatedVendorId: string | undefined;
   teamMode: boolean | undefined;
   billingMode: boolean | undefined;
+  billingStatus: string;
   ourRole: AgentRole | undefined;
 }> = ({
   vendors,
@@ -988,6 +994,7 @@ const Sidebar: React.FC<{
   designatedVendorId,
   teamMode,
   billingMode,
+  billingStatus,
   hidden,
   ourRole,
 }) => {
@@ -1100,19 +1107,21 @@ const Sidebar: React.FC<{
                   >
                     Team
                   </Link>
-                  {ourRole && ["owner", "admin"].includes(ourRole) && (
-                    <Link
-                      className={classNames(
-                        "border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
-                        v.id === designatedVendorId && billingMode
-                          ? "border-opacity-1"
-                          : "border-opacity-0"
-                      )}
-                      to={`vendor/${v.id}/billing`}
-                    >
-                      Billing
-                    </Link>
-                  )}
+                  {ourRole &&
+                    ["owner", "admin"].includes(ourRole) &&
+                    billingStatus === "success" && (
+                      <Link
+                        className={classNames(
+                          "border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
+                          v.id === designatedVendorId && billingMode
+                            ? "border-opacity-1"
+                            : "border-opacity-0"
+                        )}
+                        to={`vendor/${v.id}/billing`}
+                      >
+                        Billing
+                      </Link>
+                    )}
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 border-opacity-0 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m"
