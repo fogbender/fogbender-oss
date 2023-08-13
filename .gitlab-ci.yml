@@ -46,12 +46,12 @@ writing:
 sync_to_github:
   stage: github_sync
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "feature--sync-to-github"'
       allow_failure: true
   script:
     - echo Syncing to GitHub...
     # make sure we do not publish anything that contains the original repo's commits (because they had secrets in plaintext)
-    - git merge-base --is-ancestor abf48a5e0 HEAD; if [ $? -eq 0 ]; then echo "Good"; else echo "Can only push from clean history"; exit 1; fi
+    - git merge-base --is-ancestor b243068b0 HEAD; if [ $? -eq 0 ]; then echo "Good"; else echo "Can only push from clean history"; exit 1; fi
     - ps -p $SSH_AGENT_PID > /dev/null || eval `ssh-agent -s`
     - echo "$GITHUB_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - git remote add github git@github.com:fogbender/fogbender.git || true
