@@ -35,12 +35,19 @@ config :fog,
   fog_client_url: System.get_env("FOG_CLIENT_URL"),
   fog_storefront_url: System.get_env("FOG_STOREFRONT_URL")
 
+# File uploads
+config :fog,
+  file_size_limit: 20_971_520,
+  # s3 | local
+  file_storage: System.get_env("FILE_STORAGE") || "s3",
+  file_storage_local_dir: System.get_env("FILE_STORAGE_LOCAL_DIR") || "/tmp",
+  s3_file_upload_bucket: System.get_env("S3_FILE_UPLOAD_BUCKET"),
+  s3_file_upload_region: System.get_env("S3_FILE_UPLOAD_REGION") || "us-east-1"
+
 # APIs
 config :fog,
   ses_source: System.get_env("SES_SOURCE"),
   ses_region: System.get_env("SES_REGION"),
-  s3_file_upload_bucket: System.get_env("S3_FILE_UPLOAD_BUCKET"),
-  s3_file_upload_region: System.get_env("S3_FILE_UPLOAD_REGION") || "us-east-1",
   cognito_region: System.get_env("COGNITO_REGION"),
   cognito_user_pool_id: System.get_env("COGNITO_USER_POOL_ID"),
   cognito_client_id: System.get_env("COGNITO_CLIENT_ID"),
@@ -59,7 +66,6 @@ config :fog,
   scheduler_enable: true,
   notify_badge_enable: true,
   notify_badge_delay: 1000,
-  file_size_limit: 20_971_520,
   inbox_sqs_url: System.get_env("INBOX_SQS_URL"),
   inbox_domain: System.get_env("INBOX_DOMAIN") || "example.com",
   merge_access_key: System.get_env("MERGE_ACCESS_KEY"),

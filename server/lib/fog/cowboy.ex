@@ -88,6 +88,8 @@ defmodule Fog.Cowboy do
 
   forward("/tokens", to: Fog.Integration.Tokens)
 
+  forward("/files", to: Fog.Web.LocalFilesRouter)
+
   match _ do
     send_resp(conn, 404, "Nothing here... yet")
   end

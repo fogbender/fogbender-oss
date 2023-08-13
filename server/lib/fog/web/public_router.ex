@@ -30,8 +30,8 @@ defmodule Fog.Web.PublicRouter do
     token = URI.decode(token)
 
     case Fog.Token.validate(token) do
-      %{type: :file_token, file_id: _id, file_path: s3_file_path} ->
-        url = Fog.Api.File.get_s3_presigned_url(s3_file_path)
+      %{type: :file_token, file_id: _id, file_path: file_path} ->
+        url = Fog.FileStorage.file_url(file_path)
 
         conn
         |> put_resp_header("location", url)

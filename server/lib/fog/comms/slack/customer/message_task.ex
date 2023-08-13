@@ -3,7 +3,7 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
 
   import Ecto.Query, only: [from: 2]
 
-  alias Fog.{Api, Data, Repo}
+  alias Fog.{Api, Data, Repo, FileStorage}
   alias Fog.Comms.{Slack}
   alias Slack.{Customer}
 
@@ -791,12 +791,11 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
           %Fog.Data.File{
             filename: filename,
             content_type: content_type,
-            data: %{
-              "file_s3_file_path" => file_s3_file_path
-            }
+            data: data
           } = file
 
-          {:ok, file_body} = Fog.Api.File.get_s3_file(file_s3_file_path)
+          file_path = data["file_s3_file_path"]
+          {:ok, file_body} = FileStorage.read(file_path)
 
           res =
             Slack.Api.upload_file(

@@ -3,7 +3,7 @@ defmodule Fog.Comms.MsTeams.MessageTask do
 
   import Ecto.Query, only: [from: 2]
 
-  alias Fog.{Api, Data, MsTeams, Repo, Utils}
+  alias Fog.{Api, Data, MsTeams, Repo, Utils, FileStorage}
   alias Fog.Comms.{MsTeams}
 
   def child_spec() do
@@ -566,12 +566,11 @@ defmodule Fog.Comms.MsTeams.MessageTask do
         id: file_id,
         filename: filename,
         content_type: content_type,
-        data: %{
-          "file_s3_file_path" => file_s3_file_path
-        }
+        data: data
       } = file
 
-      {:ok, binary} = Api.File.get_s3_file(file_s3_file_path)
+      file_path = data["file_s3_file_path"]
+      {:ok, binary} = FileStorage.read(file_path)
 
       upload_filename = "#{file_id}-#{filename}"
 
