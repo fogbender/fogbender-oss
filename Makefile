@@ -97,6 +97,9 @@ fog-gettext:
 	cd server && mix gettext.extract
 
 web-start:
+	yarn && yarn start
+
+web-dev:
 	yarn && yarn dev
 
 web-format:
