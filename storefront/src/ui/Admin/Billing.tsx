@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Icons, StripeCustomer, ThinButton, VendorBilling } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
-import { useLocation, Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { getQueryParam } from "../../params";
 import { Vendor } from "../../redux/adminApi";
