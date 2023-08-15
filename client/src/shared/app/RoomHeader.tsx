@@ -215,6 +215,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
     return (
       <ThinButton
         loading={updatingTagsRoomIds.has(roomId)}
+        className="max-w-min"
         onClick={() => {
           if (hasLinkedIssues) {
             setShowReopenIssueModal(true);
