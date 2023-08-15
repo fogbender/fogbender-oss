@@ -122,6 +122,9 @@ config :fog,
   stripe_secret_key: System.get_env("STRIPE_SECRET_KEY"),
   stripe_price_id: System.get_env("STRIPE_PRICE_ID")
 
+config :fog,
+  geoapify_api_key: System.get_env("GEOAPIFY_API_KEY")
+
 config :logger, :console,
   level: (System.get_env("FOG_LOG_LEVEL") || "debug") |> String.to_atom(),
   format: "\n$time [$level] $message $metadata\n",
