@@ -1,5 +1,6 @@
 defmodule Fog.Repo.User do
   import Ecto.Query
+
   alias Fog.{Data, Repo}
 
   def get(id), do: Data.User |> Fog.Repo.get(id)
@@ -49,7 +50,8 @@ defmodule Fog.Repo.User do
         workspace_id,
         customer_external_uid,
         user_external_uid,
-        {user_email, user_name, user_picture, customer_name}
+        {user_email, user_name, user_picture, customer_name},
+        with_triage \\ true
       ) do
     import_users = [
       %Fog.Data.ImportUser{
@@ -62,7 +64,7 @@ defmodule Fog.Repo.User do
       }
     ]
 
-    :ok = Fog.Service.ImportUsers.import(import_users, vendor_id, workspace_id)
+    :ok = Fog.Service.ImportUsers.import(import_users, vendor_id, workspace_id, with_triage)
 
     get_external_by_email(vendor_id, workspace_id, customer_external_uid, user_email)
   end

@@ -2,7 +2,7 @@ defmodule Fog.Service.ImportUsers do
   alias Fog.{Repo, Data, Api}
   import Ecto.Query
 
-  def import(entries, vendor_id, workspace_id) do
+  def import(entries, vendor_id, workspace_id, with_triage \\ true) do
     triage_tag = Repo.Tag.create(workspace_id, ":triage")
 
     {:ok, {new_helpdesks, new_triages}} =
@@ -10,7 +10,7 @@ defmodule Fog.Service.ImportUsers do
         Data.Vendor
         |> Repo.get(vendor_id)
         |> import_customers(entries)
-        |> import_helpdesks(workspace_id, entries, triage_tag)
+        |> import_helpdesks(workspace_id, entries, triage_tag, with_triage)
       end)
 
     for h <- new_helpdesks, do: Api.Event.Customer.publish(h)
@@ -59,7 +59,7 @@ defmodule Fog.Service.ImportUsers do
     |> Repo.update!()
   end
 
-  defp import_helpdesks(vendor, workspace_id, entries, triage_tag) do
+  defp import_helpdesks(vendor, workspace_id, entries, triage_tag, with_triage) do
     customer_ids = Enum.map(vendor.customers, & &1.id)
 
     user_ex_uids =
@@ -94,7 +94,7 @@ defmodule Fog.Service.ImportUsers do
     old_helpdesk_ids = Enum.map(workspace.helpdesks, & &1.id)
 
     updates =
-      to_helpdesks(entries, vendor, workspace, triage_tag)
+      to_helpdesks(entries, vendor, workspace, triage_tag, with_triage)
       |> merge_updates(workspace.helpdesks, :customer_id)
 
     workspace =
@@ -108,8 +108,12 @@ defmodule Fog.Service.ImportUsers do
       end
 
     new_triages =
-      for h <- workspace.helpdesks, h.triage.id not in old_triage_ids do
-        h.triage
+      if with_triage do
+        for h <- workspace.helpdesks, h.triage.id not in old_triage_ids do
+          h.triage
+        end
+      else
+        []
       end
 
     {new_helpdesks, new_triages}
@@ -135,19 +139,29 @@ defmodule Fog.Service.ImportUsers do
     %{external_uid: id, name: name, email: email |> to_downcased_binary, image_url: image_url}
   end
 
-  defp to_helpdesks(entries, vendor, workspace, triage_tag) do
+  defp to_helpdesks(entries, vendor, workspace, triage_tag, with_triage) do
     customer_ids = Map.new(vendor.customers, &{&1.external_uid, &1.id})
 
     helpdesk_info =
       Map.new(workspace.helpdesks, fn h ->
         {h.customer_id,
-         %{
-           id: h.id,
-           users: h.users,
-           triage_id: h.triage.id,
-           triage_name: h.triage.name,
-           triage: h.triage
-         }}
+         case with_triage do
+           true ->
+             %{
+               id: h.id,
+               users: h.users,
+               triage_id: h.triage.id,
+               triage_name: h.triage.name,
+               triage: h.triage
+             }
+
+           false ->
+             %{
+               id: h.id,
+               users: h.users,
+               triage: nil
+             }
+         end}
       end)
 
     entries
@@ -181,16 +195,27 @@ defmodule Fog.Service.ImportUsers do
             false
         end)
 
-      %{
-        id: info[:id],
-        customer_id: customer_id,
-        triage: %{
-          id: info[:triage_id],
-          name: info[:triage_name] || workspace.triage_name,
-          tags: tags
-        },
-        users: users
-      }
+      case with_triage do
+        true ->
+          %{
+            id: info[:id],
+            customer_id: customer_id,
+            triage: %{
+              id: info[:triage_id],
+              name: info[:triage_name] || workspace.triage_name,
+              tags: tags
+            },
+            users: users
+          }
+
+        false ->
+          %{
+            id: info[:id],
+            customer_id: customer_id,
+            triage: nil,
+            users: users
+          }
+      end
     end)
   end
 
