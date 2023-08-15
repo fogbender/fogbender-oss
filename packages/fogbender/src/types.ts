@@ -34,6 +34,7 @@ export type FallbackToken = {
   widgetId: string;
   widgetKey: string;
   versions?: { [key: string]: string };
+  anonymous?: true;
 };
 
 export type Env = "prod" | "staging" | "dev";

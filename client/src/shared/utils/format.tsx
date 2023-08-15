@@ -1,5 +1,7 @@
+import dayjs from "dayjs";
 import classNames from "classnames";
 import {
+  EventRoom as Room,
   EventIssue,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
@@ -18,16 +20,36 @@ import {
   IconTrello,
 } from "../components/IntegrationIcons";
 export const INTERNAL_CONVERASTIONS = "Internal conversations";
-export function isInternal(name?: string) {
+export const VISITOR_INBOX = "Visitor inbox";
+export function isInternalHelpdesk(name?: string) {
   return name?.startsWith("$Cust_Internal") || false;
 }
 
-export function isExternal(name?: string) {
+export function isExternalHelpdesk(name?: string) {
   return name?.startsWith("$Cust_External") || false;
 }
 
+export function isAnonymousHelpdesk(name?: string) {
+  return name?.startsWith("$Cust_Anonymous") || false;
+}
+
 export function formatCustomerName(name?: string) {
-  return isInternal(name) ? INTERNAL_CONVERASTIONS : isExternal(name) ? "Shared Email Inbox" : name;
+  return isInternalHelpdesk(name)
+    ? INTERNAL_CONVERASTIONS
+    : isExternalHelpdesk(name)
+    ? "Shared email inbox"
+    : isAnonymousHelpdesk(name)
+    ? VISITOR_INBOX
+    : name;
+}
+
+export function formatRoomName(room: Room, isAgent: boolean, name?: string) {
+  const isExternal = isExternalHelpdesk(room.customerName);
+  const isAnonymous = isAnonymousHelpdesk(room.customerName);
+
+  return !isAgent && (isAnonymous || isExternal)
+    ? `Support conversation from ${dayjs(room.createdTs / 1000).format("MMM D h:mm a")}`
+    : name || room.name;
 }
 
 type RenderTagOpts = {

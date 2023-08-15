@@ -34,7 +34,9 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
 };
 
 const isAuthMessage = (message: FogSchema["outbound"]) =>
-  message.msgType === "Auth.Agent" || message.msgType === "Auth.User";
+  message.msgType === "Auth.Agent" ||
+  message.msgType === "Auth.User" ||
+  message.msgType === "Auth.Unauthenticated";
 
 export function useServerWs(
   client: Client,
@@ -166,7 +168,75 @@ export function useServerWs(
     onError("other", "other", ReadyState[readyState]);
 
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
-      if ("widgetId" in token) {
+      if ("widgetId" in token && "unauthenticated" in token) {
+        const clone = { ...token };
+        clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
+        const unauthenticatedSession =
+          client &&
+          client.getUnauthenticatedSession &&
+          client.getUnauthenticatedSession(token.widgetId);
+
+        if (unauthenticatedSession) {
+          clone.userId = unauthenticatedSession.userId;
+        }
+
+        serverCall({
+          ...clone,
+          msgType: "Auth.Unauthenticated",
+          widgetId: token.widgetId,
+        }).then(
+          r => {
+            if (r.msgType === "Auth.Ok") {
+              const {
+                sessionId,
+                userId,
+                userName,
+                userEmail,
+                helpdeskId,
+                userAvatarUrl,
+                customerName,
+              } = r;
+              authenticated.current = true;
+              setHelpdesk(r.helpdesk);
+              setAvatarLibraryUrl(r.avatarLibraryUrl);
+              client.setUnauthenticatedSession?.({
+                sessionId,
+                widgetId: token.widgetId,
+                userId,
+                userAvatarUrl,
+              });
+              client.setSession?.({
+                sessionId,
+                userId,
+                helpdeskId,
+                userAvatarUrl,
+                userName,
+                userEmail,
+                customerName,
+              });
+            } else if (r.msgType === "Auth.Err") {
+              if (r.code === 401 || r.code === 403) {
+                onWrongToken(token);
+              } else {
+                onError("error", "other", new Error("Failed to authenticate " + JSON.stringify(r)));
+              }
+            } else if (r.msgType === "Error.Fatal") {
+              if ("code" in r && r.code === 409) {
+                onWrongToken(token);
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Fatal error while authenticating " + JSON.stringify(r))
+                );
+              }
+            }
+          },
+          r => {
+            onError("error", "other", r);
+          }
+        );
+      } else if ("widgetId" in token) {
         const clone = { ...token };
         clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
         serverCall({
@@ -176,11 +246,27 @@ export function useServerWs(
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
-              const { sessionId, userId, helpdeskId, userAvatarUrl } = r;
+              const {
+                sessionId,
+                userId,
+                userName,
+                userEmail,
+                helpdeskId,
+                userAvatarUrl,
+                customerName,
+              } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
               setAvatarLibraryUrl(r.avatarLibraryUrl);
-              client.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
+              client.setSession?.({
+                sessionId,
+                userId,
+                helpdeskId,
+                userAvatarUrl,
+                userName,
+                userEmail,
+                customerName,
+              });
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
                 onWrongToken(token);
@@ -234,7 +320,7 @@ export function useServerWs(
                   authenticated.current = true;
                   setHelpdesk(r.helpdesk);
                   setAgentRole(r.role);
-                  client.setSession?.(sessionId);
+                  client.setSession?.({ sessionId });
                 } else if (r.msgType === "Auth.Err") {
                   if (r.code === 401 || r.code === 403) {
                     onWrongToken(token);

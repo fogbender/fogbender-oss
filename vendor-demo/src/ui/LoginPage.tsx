@@ -89,6 +89,7 @@ export const LoginPage = () => {
                     const token: Record<
                       | Exclude<
                           keyof Token,
+                          | "unauthenticated"
                           | "widgetId"
                           | "userAvatarUrl"
                           | "userHMAC"

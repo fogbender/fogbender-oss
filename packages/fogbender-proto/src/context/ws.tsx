@@ -122,7 +122,15 @@ function useProviderValue(
   const [userAvatarUrl, setUserAvatarUrl] = React.useState<string>();
   const [providerClient] = React.useState<Client>(() => ({
     ...client,
-    setSession(sessionId, userId, helpdeskId, userAvatarUrl) {
+    setSession({
+      sessionId,
+      userId,
+      helpdeskId,
+      userAvatarUrl,
+      userName,
+      userEmail,
+      customerName,
+    }) {
       setFogSessionId(sessionId);
       if (userId) {
         setUserId(userId);
@@ -133,7 +141,15 @@ function useProviderValue(
       }
 
       setHelpdeskId(helpdeskId);
-      client?.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
+      client?.setSession?.({
+        sessionId,
+        userId,
+        helpdeskId,
+        userAvatarUrl,
+        userName,
+        userEmail,
+        customerName,
+      });
     },
   }));
   React.useEffect(() => {

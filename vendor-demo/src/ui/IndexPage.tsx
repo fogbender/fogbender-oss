@@ -92,14 +92,14 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                         to="/test-support-before"
                         className="ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (without Fogbender)
+                        Without Fogbender
                       </NavLink>
                       <NavLink
                         activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
                         to="/support"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (with Fogbender)
+                        With Fogbender
                         <div className="absolute top-1 right-0.5">
                           <Badge />
                         </div>
@@ -109,7 +109,21 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                         to="/support-unknown-user"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (Unknown User)
+                        Unknown User
+                      </NavLink>
+                      <NavLink
+                        activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
+                        to="/support-anonymous"
+                        className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
+                      >
+                        Visitor widget
+                      </NavLink>
+                      <NavLink
+                        activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
+                        to="/support-anonymous-floatie"
+                        className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
+                      >
+                        Visitor floatie
                       </NavLink>
                     </div>
                   </div>

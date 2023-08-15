@@ -2,13 +2,13 @@ import { Helpdesk } from "fogbender-proto";
 import React from "react";
 
 import { Avatar, ThickButton } from "../components/lib";
-import { isExternal } from "../utils/format";
+import { isExternalHelpdesk } from "../utils/format";
 
 export const Welcome: React.FC<{
   isProfile: boolean;
   helpdesk: Helpdesk | undefined;
   userInfo:
-    | { id: string; name: string; avatarUrl: string | undefined; customerName: string }
+    | { id: string; name: string; avatarUrl: string | undefined; customerName: string | undefined }
     | undefined;
   onAvatarClick: () => void;
   onClose: () => void;
@@ -38,7 +38,7 @@ export const Welcome: React.FC<{
               <Avatar url={userInfo.avatarUrl} name={userInfo.name} size={40} />
             </div>
             <div className="fog:text-caption-xl">{userInfo.name}</div>
-            {isExternal(userInfo.customerName) !== true && (
+            {userInfo.customerName && isExternalHelpdesk(userInfo.customerName) !== true && (
               <div className="fog:text-body-m">{userInfo.customerName}</div>
             )}
           </div>
@@ -54,7 +54,7 @@ export const Welcome: React.FC<{
               </span>
               {helpdesk.vendorName}
             </p>
-            {userInfo && isExternal(userInfo.customerName) !== true && (
+            {userInfo && isExternalHelpdesk(userInfo.customerName) !== true && (
               <>
                 <p className="mt-4">
                   <span>

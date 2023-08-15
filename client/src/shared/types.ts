@@ -2,6 +2,7 @@ export type AuthorMe = {
   name: string;
   email: string;
   avatarUrl?: string;
+  customerName?: string;
 };
 
 export type UserMe = {

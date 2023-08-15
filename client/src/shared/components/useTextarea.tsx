@@ -448,6 +448,13 @@ export const useTextarea = ({
     return color;
   };
 
+  const placeholder =
+    isCustomerInternal === true
+      ? roomName
+      : isAgent
+      ? roomName + " " + `(${formatCustomerName(roomById(roomId)?.customerName)})`
+      : roomName;
+
   const Textarea = React.useMemo(() => {
     return (
       <div
@@ -646,11 +653,7 @@ export const useTextarea = ({
                 setFocused(true);
               }}
               onBlur={() => setFocused(false)}
-              placeholder={
-                isCustomerInternal !== false
-                  ? roomName
-                  : roomName + " " + `(${formatCustomerName(roomById(roomId)?.customerName)})`
-              }
+              placeholder={placeholder}
             />
           </div>
         </div>

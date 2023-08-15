@@ -16,7 +16,12 @@ import React from "react";
 
 import { Icons } from "../components/Icons";
 import { Avatar, UnreadCircle } from "../components/lib";
-import { formatCustomerName, isInternal } from "../utils/format";
+import {
+  formatCustomerName,
+  isInternalHelpdesk,
+  isExternalHelpdesk,
+  isAnonymousHelpdesk,
+} from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
 import { viewIdAtom } from "./Folders";
@@ -245,8 +250,9 @@ export const RoomItem: React.FC<{
   const unreadMentionsCount = badge?.mentionsCount;
   const latestMessageText = badge?.lastRoomMessage?.plainText;
   const latestMessageAuthor = (badge?.lastRoomMessage?.fromName || "").split(/\s+/)[0];
-  const showAsInternal = isInternal(room.customerName);
-  const isEmail = room?.tags?.some(t => t.name === ":email") || false;
+  const showAsInternal = isInternalHelpdesk(room.customerName);
+  const isEmail = isExternalHelpdesk(room.customerName);
+  const isAnonymous = isAnonymousHelpdesk(room.customerName);
   const resolved = room.resolved;
 
   return (
@@ -289,7 +295,7 @@ export const RoomItem: React.FC<{
         {room.type === "dialog" && (
           <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={20} />
         )}
-        {room.type === "private" && isEmail === false && (
+        {room.type === "private" && isEmail === false && isAnonymous === false && (
           <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
             Private
           </span>
@@ -325,7 +331,7 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!(latestMessageText && latestMessageAuthor) && room.isTriage && (
+          {!(latestMessageText && latestMessageAuthor) && (room.isTriage || isAnonymous) && (
             <span className="text-gray-500">☝️ Start here</span>
           )}
         </span>

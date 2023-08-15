@@ -22,7 +22,7 @@ import { Icons } from "../components/Icons";
 import { IntegrationDetails } from "../components/IntegrationDetails";
 import { Avatar, FilterInput, ThickButton, ThinButton } from "../components/lib";
 import { useTxtAreaWithError } from "../components/useTxtAreaWithError";
-import { formatCustomerName, isInternal, renderTag } from "../utils/format";
+import { formatCustomerName, isInternalHelpdesk, renderTag } from "../utils/format";
 import { formatRoomTs } from "../utils/formatTs";
 
 import { Issue } from "./FileIssue";
@@ -91,15 +91,15 @@ export const RoomSettings: React.FC<{
   const [tagsToAdd, setTagsToAdd] = React.useState<string[]>([]);
   const [tagsToRemove, setTagsToRemove] = React.useState<string[]>([]);
 
-  const isInternalRoom = isInternal(room?.customerName);
-  const linkedReadOnly = isInternalRoom;
+  const isInternal = isInternalHelpdesk(room?.customerName);
+  const linkedReadOnly = isInternal;
 
   const [initialRoomType, setInitialRoomType] = React.useState<RoomType>(() => {
     const roomTags = room?.tags?.map(x => x.name) || [];
     if (roomTags.includes(":discussion")) {
       return "Discussion";
     }
-    if (isInternalRoom && roomTags.includes(":triage")) {
+    if (isInternal && roomTags.includes(":triage")) {
       return "Broadcast";
     }
     if (roomTags.includes(":issue")) {
@@ -418,7 +418,7 @@ export const RoomSettings: React.FC<{
           <>
             <div className="flex items-center text-gray-500">Customer</div>
             <div className={classNames(formClassName, "gap-x-3")}>
-              <div className={classNames("flex-1 truncate", isInternalRoom && "text-green-500")}>
+              <div className={classNames("flex-1 truncate", isInternal && "text-green-500")}>
                 {formatCustomerName(room.customerName)}
               </div>
             </div>
@@ -506,7 +506,7 @@ export const RoomSettings: React.FC<{
                       </ThinButton>
                       <div className="fog:text-body-s text-gray-500">Visibility: only you</div>
                     </div>
-                    {isInternalRoom && room.type === "public" && (
+                    {isInternal && room.type === "public" && (
                       <div className={actionsClassName}>
                         <ThinButton
                           className="min-w-[7rem]"
@@ -546,6 +546,7 @@ export const RoomSettings: React.FC<{
             <div className="pt-1.5 text-gray-500">Members</div>
             <div className="col-span-1 sm:col-span-3 flex flex-col justify-center gap-y-2 fog:text-caption-l">
               <MembersList
+                isAgent={!!isAgent}
                 key={saveCounter}
                 roomId={roomId}
                 userId={userId}
@@ -897,10 +898,11 @@ export const RoomSettings: React.FC<{
 };
 
 const Member: React.FC<{
+  isAgent: boolean;
   room: RoomT;
   variant?: "blue" | "green" | "red";
   onCloseClick?: () => void;
-}> = ({ room, variant, onCloseClick }) => {
+}> = ({ isAgent, room, variant, onCloseClick }) => {
   if (room.type !== "dialog" || !room.counterpart) {
     return null;
   }
@@ -917,7 +919,7 @@ const Member: React.FC<{
       <Avatar url={imageUrl} name={name} size={25} />
       {name}
       {type === "agent" && <Icons.AgentMark />}
-      {onCloseClick && (
+      {isAgent && onCloseClick && (
         <span className="ml-1 cursor-pointer hover:text-brand-red-500" onClick={onCloseClick}>
           <Icons.XClose className="w-4" />
         </span>
@@ -927,12 +929,13 @@ const Member: React.FC<{
 };
 
 const MembersList: React.FC<{
+  isAgent: boolean;
   roomId: string;
   userId: string | undefined;
   workspaceId: string | undefined;
   customerId: string | undefined;
   onChange: (toAdd: string[], toRemove: string[]) => void;
-}> = ({ roomId, userId, workspaceId, customerId, onChange }) => {
+}> = ({ isAgent, roomId, userId, workspaceId, customerId, onChange }) => {
   const { filteredRoster, setRosterFilter } = useRoster({
     userId,
     workspaceId,
@@ -1010,6 +1013,7 @@ const MembersList: React.FC<{
       <div className="flex flex-wrap gap-2">
         {roomMembers.map(member => (
           <Member
+            isAgent={isAgent}
             key={member.id}
             room={member}
             variant="blue"
@@ -1018,18 +1022,21 @@ const MembersList: React.FC<{
         ))}
         {membersToAdd.map(member => (
           <Member
+            isAgent={isAgent}
             key={member.id}
             room={member}
             variant="green"
             onCloseClick={() => toggleMember(member)}
           />
         ))}
-        <div
-          className="w-8 h-8 flex items-center justify-center rounded-md border border-blue-200 text-blue-500 fog:text-caption-m cursor-pointer"
-          onClick={() => setSearchIsVisible(x => !x)}
-        >
-          {searchIsVisible ? "—" : "+"}
-        </div>
+        {isAgent && (
+          <div
+            className="w-8 h-8 flex items-center justify-center rounded-md border border-blue-200 text-blue-500 fog:text-caption-m cursor-pointer"
+            onClick={() => setSearchIsVisible(x => !x)}
+          >
+            {searchIsVisible ? "—" : "+"}
+          </div>
+        )}
       </div>
       {searchIsVisible && (
         <div className="relative z-10">
@@ -1065,6 +1072,7 @@ const MembersList: React.FC<{
           <div className="flex flex-wrap gap-2">
             {membersToRemove.map(member => (
               <Member
+                isAgent={isAgent}
                 key={member.id}
                 room={member}
                 variant="red"
@@ -1084,7 +1092,7 @@ const RoomTypeSelector: React.FC<{
   setRoomType: (x: RoomType) => void;
   className?: string;
 }> = ({ room, roomType, setRoomType, className = "" }) => {
-  const isInternalRoom = isInternal(room.customerName);
+  const isInternal = isInternalHelpdesk(room.customerName);
 
   return (
     <>
@@ -1113,7 +1121,7 @@ const RoomTypeSelector: React.FC<{
             <span className="pl-2 pr-1">Issue</span>
             <Icons.RoomIssue className="w-4 h-4 text-gray-500 hidden" />
           </div>
-          {isInternalRoom && (
+          {isInternal && (
             <div
               className={classNames(
                 "flex items-center",

@@ -6,7 +6,8 @@ import {
   Customer,
   CustomerCrm,
   Icons,
-  isExternal,
+  isAnonymousHelpdesk,
+  isExternalHelpdesk,
   ThickButton,
   ThinButton,
   useInputWithError,
@@ -71,31 +72,33 @@ export const CustomerDetails: React.FC<{
       </div>
 
       <div className="flex flex-col gap-6">
-        {isExternal(customer.name) !== true && (mergeLinks || []).length > 0 && (
-          <div className="basis-2/5 rounded-lg">
-            <h3 className="fog:text-header3 text-2xl mb-4">
-              CRM account assignments for {customer.name}
-            </h3>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col h-full">
-                <div className="fog:text-caption-l flex space-x-2">
-                  <div className="basis-1/3">Account</div>
-                  <div className="basis-2/3">Existing Assignment</div>
+        {isAnonymousHelpdesk(customer.name) !== true &&
+          isExternalHelpdesk(customer.name) !== true &&
+          (mergeLinks || []).length > 0 && (
+            <div className="basis-2/5 rounded-lg">
+              <h3 className="fog:text-header3 text-2xl mb-4">
+                CRM account assignments for {customer.name}
+              </h3>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col h-full">
+                  <div className="fog:text-caption-l flex space-x-2">
+                    <div className="basis-1/3">Account</div>
+                    <div className="basis-2/3">Existing Assignment</div>
+                  </div>
+                  <hr className="mt-2" />
+                  {(mergeLinks || []).concat().map(x => (
+                    <CrmLink
+                      workspaceId={workspaceId}
+                      customer={customer}
+                      link={x}
+                      key={`${customer.id} ${x.id}`} // here we are creating key using customer.id because we want the CrmLink to create new instance whenever customer is changed
+                      lookupCustomerById={lookupCustomerById}
+                    />
+                  ))}
                 </div>
-                <hr className="mt-2" />
-                {(mergeLinks || []).concat().map(x => (
-                  <CrmLink
-                    workspaceId={workspaceId}
-                    customer={customer}
-                    link={x}
-                    key={`${customer.id} ${x.id}`} // here we are creating key using customer.id because we want the CrmLink to create new instance whenever customer is changed
-                    lookupCustomerById={lookupCustomerById}
-                  />
-                ))}
               </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
 
       {customerCrms?.crmData?.length && (
@@ -326,7 +329,7 @@ const DomainsInfo = ({
     })
     .filter(c => c.customers.length > 0);
 
-  return isExternal(customer.name) !== true ? (
+  return isExternalHelpdesk(customer.name) !== true ? (
     <div className="border text-sm rounded-xl p-4">
       {customer.domains !== undefined && customer.domains.length > 0 && (
         <div className="flex mb-4 gap-2">

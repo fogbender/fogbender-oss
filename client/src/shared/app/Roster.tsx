@@ -24,7 +24,13 @@ import { Icons } from "../components/Icons";
 import { Avatar, RosterChevronButton, UnreadCircle } from "../components/lib";
 import { showFocusedRosterAtom } from "../store/config.store";
 import { queryKeys } from "../utils/client";
-import { formatCustomerName, isInternal } from "../utils/format";
+import {
+  formatRoomName,
+  formatCustomerName,
+  isExternalHelpdesk,
+  isInternalHelpdesk,
+  isAnonymousHelpdesk,
+} from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
 import { LayoutOptions } from "./LayoutOptions";
@@ -268,8 +274,8 @@ const RoomSection = (props: RoomSectionProps) => {
         style={expanded ? { minHeight: "4rem" } : undefined}
       >
         {(section.rooms?.length || 0) === 0 && (
-          <p className="flex items-center justify-center px-1 py-2 text-center fog:text-caption-xl">
-            <span>{searching ? "Not found" : "No conversations"}</span>
+          <p className="flex items-center justify-center px-1 py-2 text-center fog:text-caption-xl text-gray-400 !font-light">
+            <span>{searching ? "No matches" : "🕺"}</span>
           </p>
         )}
         <div
@@ -357,8 +363,10 @@ export const RoomItem: React.FC<{
   const unreadMentionsCount = badge?.mentionsCount;
   const latestMessageText = badge?.lastRoomMessage?.plainText;
   const latestMessageAuthor = (badge?.lastRoomMessage?.fromName || "").split(/\s+/)[0];
-  const showAsInternal = isInternal(room.customerName);
+  const showAsInternal = isInternalHelpdesk(room.customerName);
   const isEmail = room?.tags?.some(t => t.name === ":email") || false;
+  const isAnonymous = isAnonymousHelpdesk(room.customerName);
+  const isExternal = isExternalHelpdesk(room.customerName);
   const resolved = room.resolved;
 
   const priority = React.useMemo(() => {
@@ -416,11 +424,14 @@ export const RoomItem: React.FC<{
         {room.type === "dialog" && (
           <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={20} />
         )}
-        {room.type === "private" && isEmail === false && (
-          <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
-            Private
-          </span>
-        )}
+        {room.type === "private" &&
+          isEmail === false &&
+          isAnonymous === false &&
+          isExternal === false && (
+            <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
+              Private
+            </span>
+          )}
         {room.type === "private" && isEmail === true && (
           <Icons.RoomExternal className="w-4 h-4 text-gray-500" />
         )}
@@ -430,7 +441,7 @@ export const RoomItem: React.FC<{
             className={classNames(showAsInternal && "text-green-500", "leading-snug truncate")}
             title={name}
           >
-            {name}
+            {formatRoomName(room, isAgent === true, name)}
           </span>
         </span>
         {!isAgent && priority && priority}
@@ -456,9 +467,10 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!(latestMessageText && latestMessageAuthor) && room.isTriage && (
-            <span className="text-gray-500">☝️ Start here</span>
-          )}
+          {!(latestMessageText && latestMessageAuthor) &&
+            (room.isTriage || isAnonymous || isExternal) && (
+              <span className="text-gray-500">☝️ Start here</span>
+            )}
         </span>
         <span className="text-gray-500 whitespace-no-wrap fog:text-body-s">
           {formatRosterTs(badge?.lastRoomMessage?.createdTs || room.createdTs)}

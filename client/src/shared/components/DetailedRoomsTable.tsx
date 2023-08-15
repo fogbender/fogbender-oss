@@ -10,7 +10,7 @@ import { Avatar } from "../components/lib";
 import { renderRoomTypeIcon } from "../components/RoomTypeIcon";
 import { FontAwesomeLock } from "../font-awesome/Lock";
 import { Agent } from "../types";
-import { formatCustomerName, isInternal, renderTag } from "../utils/format";
+import { formatCustomerName, isInternalHelpdesk, renderTag } from "../utils/format";
 
 dayjs.extend(relativeTime);
 
@@ -58,7 +58,7 @@ export const DetailedRoomsTable: React.FC<{
               : true
           )
           .map(r => {
-            const isInternalRoom = isInternal(r.customerName);
+            const isInternal = isInternalHelpdesk(r.customerName);
 
             let typeIcon = renderRoomTypeIcon(r);
 
@@ -92,7 +92,7 @@ export const DetailedRoomsTable: React.FC<{
                   className={classNames(
                     "p-2",
                     activeRoomId === r.id
-                      ? isInternalRoom
+                      ? isInternal
                         ? "border-l-5 border-green-500"
                         : "border-l-5 border-brand-orange-500"
                       : "border-l-5 border-white"
@@ -121,7 +121,7 @@ export const DetailedRoomsTable: React.FC<{
                       )}
                       {showCustomerName && (
                         <span>
-                          {!isInternalRoom && <span>Customer: </span>}
+                          {!isInternal && <span>Customer: </span>}
                           <span className="font-semibold">
                             {formatCustomerName(r.customerName)}
                           </span>

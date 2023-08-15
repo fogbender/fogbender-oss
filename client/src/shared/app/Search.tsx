@@ -5,7 +5,7 @@ import { throttle } from "throttle-debounce";
 
 import { FilterInput } from "../components/lib";
 import { MessageView } from "../messages/MessageView";
-import { isInternal as isInternalRoom } from "../utils/format";
+import { isInternalHelpdesk } from "../utils/format";
 
 import { RoomResizeHandle } from "./Room";
 import { RoomHeader } from "./RoomHeader";
@@ -38,7 +38,7 @@ export const Search: React.FC<{
   rosterVisible,
 }) => {
   const room = roomById(roomId);
-  const isInternal = isInternalRoom(room?.customerName);
+  const isInternal = isInternalHelpdesk(room?.customerName);
   const isActiveRoom = activeRoomId === paneId;
   const { loadAroundByRoom } = useLoadAround();
   const loadAroundMessage = loadAroundByRoom[roomId];

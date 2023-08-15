@@ -1,7 +1,7 @@
 import { Customer, EventBadge, Room } from "fogbender-proto";
 import React from "react";
 
-import { isExternal, isInternal } from "./format";
+import { isExternalHelpdesk, isInternalHelpdesk } from "./format";
 
 export const useSortedCustomers = ({
   customers,
@@ -50,10 +50,10 @@ export const useSortedCustomers = ({
           }
         })
         .sort(c0 => {
-          return isExternal(c0.name) ? -1 : 0;
+          return isExternalHelpdesk(c0.name) ? -1 : 0;
         })
         .sort(c0 => {
-          return isInternal(c0.name) ? -1 : 0;
+          return isInternalHelpdesk(c0.name) ? -1 : 0;
         }),
 
     [customers, customerBadges]

@@ -1,10 +1,10 @@
-import type { UserToken } from "fogbender-proto";
+import type { UnauthenticatedToken, UserToken } from "fogbender-proto";
 import { stringifyUrl } from "query-string";
 import React from "react";
 
 import { Icons } from "./Icons";
 
-export const GoFullScreen: React.FC<{ token: UserToken }> = ({ token }) => {
+export const GoFullScreen: React.FC<{ token: UserToken | UnauthenticatedToken }> = ({ token }) => {
   return (
     <button onClick={() => handleGoFullScreen(token)} type="button">
       <Icons.FullScreen />
@@ -12,7 +12,7 @@ export const GoFullScreen: React.FC<{ token: UserToken }> = ({ token }) => {
   );
 };
 
-export const handleGoFullScreen = (token: UserToken) => {
+export const handleGoFullScreen = (token: UserToken | UnauthenticatedToken) => {
   const url = stringifyUrl({
     url: window.location.href,
     query: {

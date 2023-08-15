@@ -40,7 +40,7 @@ import {
   showOutlookRosterAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
-import { isExternal, isInternal } from "../utils/format";
+import { isAnonymousHelpdesk, isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -628,16 +628,23 @@ export const App: React.FC<{
   }, [ourId, userAvatarUrl, lastIncomingMessage]);
 
   const userInfo = React.useMemo(() => {
-    if (token && "userId" in token && ourId) {
+    if (token && "userId" in token && ourId && !("unauthenticated" in token) && authorMe) {
       return {
         id: ourId,
         name: token.userName,
         avatarUrl: avatarUrl || userAvatarUrl,
-        customerName: token.customerName,
+        customerName: authorMe.customerName,
+      };
+    } else if (ourId && token && "unauthenticated" in token && authorMe) {
+      return {
+        id: ourId,
+        name: authorMe.name,
+        avatarUrl: avatarUrl || userAvatarUrl || authorMe.avatarUrl,
+        customerName: authorMe.customerName,
       };
     }
     return undefined;
-  }, [ourId, avatarUrl, userAvatarUrl, token]);
+  }, [ourId, avatarUrl, userAvatarUrl, token, authorMe]);
 
   React.useEffect(() => {
     workspaceId &&
@@ -812,7 +819,7 @@ export const App: React.FC<{
   }, [badges, recentBadge]);
 
   const internalHelpdeskId = React.useMemo(
-    () => customers.find(c => isInternal(c.name))?.helpdeskId,
+    () => customers.find(c => isInternalHelpdesk(c.name))?.helpdeskId,
     [customers]
   );
 
@@ -834,6 +841,11 @@ export const App: React.FC<{
   const [selectedSectionId, setSelectedSectionId] = React.useState<string>();
   const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
 
+  const onGoFullScreen =
+    isIframe && token && ("userId" in token || "unauthenticated" in token)
+      ? () => handleGoFullScreen(token)
+      : undefined;
+
   return (
     <div ref={appRef} className="relative h-full max-h-screen flex-1 flex flex-col z-10">
       {isUser && userInfo && (
@@ -851,6 +863,7 @@ export const App: React.FC<{
                   onClose={onCloseRoom}
                   rosterVisible={rosterVisible}
                   unreadBadge={unreadBadge}
+                  isAgent={!!isAgent}
                 />
               </div>
             )}
@@ -873,7 +886,7 @@ export const App: React.FC<{
               {helpdesk?.vendorName}
             </span>
           </div>
-          {isIframe && token && "userId" in token && (
+          {isIframe && token && ("userId" in token || "unauthenticated" in token) && (
             <div className="h-full flex items-center">
               <GoFullScreen token={token} />
             </div>
@@ -898,20 +911,31 @@ export const App: React.FC<{
                         <span className="truncate">{userInfo.name}</span>
                       </span>
                     </div>
-                    {userInfo.customerName && isExternal(userInfo.customerName) === false ? (
+                    {userInfo.customerName &&
+                    isExternalHelpdesk(userInfo.customerName) === false &&
+                    isAnonymousHelpdesk(userInfo.customerName) === false ? (
                       <div className="fog:text-body-m truncate">{userInfo.customerName}</div>
                     ) : (
                       <div className="fog:text-body-m truncate">
-                        Talking with {helpdesk?.vendorName} support
+                        <span>{helpdesk?.vendorName} support chat</span>
                       </div>
                     )}
                   </div>
                   <div
-                    className="cursor-pointer"
+                    className={classNames(
+                      !isExternalHelpdesk(userInfo.customerName) &&
+                        !isAnonymousHelpdesk(userInfo.customerName) &&
+                        "cursor-pointer"
+                    )}
                     onClick={e => {
-                      setShowUserWelcome(true);
-                      if (e.ctrlKey || e.metaKey) {
-                        setHideWelcome(false);
+                      if (
+                        !isExternalHelpdesk(userInfo.customerName) &&
+                        !isAnonymousHelpdesk(userInfo.customerName)
+                      ) {
+                        setShowUserWelcome(true);
+                        if (e.ctrlKey || e.metaKey) {
+                          setHideWelcome(false);
+                        }
                       }
                     }}
                   >
@@ -936,19 +960,17 @@ export const App: React.FC<{
                   )}
                 </div>
               )}
-              {isExternal(userInfo?.customerName) !== true && (
-                <form onSubmit={rosterInputSubmit} className="bg-white">
-                  <FilterInput
-                    placeholder="Search"
-                    value={rosterSearch}
-                    setValue={setRosterSearch}
-                    addButton={isAgent ? "CREATE ROOM" : undefined}
-                    onAddButtonClick={
-                      isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
-                    }
-                  />
-                </form>
-              )}
+              <form onSubmit={rosterInputSubmit} className={classNames("bg-white")}>
+                <FilterInput
+                  placeholder="Search"
+                  value={rosterSearch}
+                  setValue={setRosterSearch}
+                  addButton={isAgent ? "CREATE ROOM" : undefined}
+                  onAddButtonClick={
+                    isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
+                  }
+                />
+              </form>
               {isAgent && !isOutlook && (
                 // roster and search for agents (old one)
                 <div className="h-full flex flex-col -mt-12 pt-12">
@@ -1215,11 +1237,7 @@ export const App: React.FC<{
                     helpdesk={helpdesk}
                     activeRoomId={activeRoomId}
                     setActiveRoomId={setActiveRoomId}
-                    onGoFullScreen={
-                      isIframe && token && "userId" in token
-                        ? () => handleGoFullScreen(token)
-                        : undefined
-                    }
+                    onGoFullScreen={onGoFullScreen}
                     isLayoutPinned={layoutPins.includes(el.i)}
                     resizing={resizingRoomId === el.i}
                     dragging={dragging}
@@ -1339,7 +1357,7 @@ export const App: React.FC<{
             />
           </Modal>
         )}
-        {showUserWelcome && userInfo && (
+        {showUserWelcome && userInfo && !isAnonymousHelpdesk(userInfo.customerName) && (
           <Modal onClose={closeWelcome} inUserWidget={isUser}>
             <Welcome
               isProfile={hideWelcome}
@@ -1358,7 +1376,7 @@ export const App: React.FC<{
 };
 
 const isExternalTriage = (room: RoomT) => {
-  return room.isTriage === true && isExternal(room.customerName);
+  return room.isTriage === true && isExternalHelpdesk(room.customerName);
 };
 
 function filterRosterRooms(rooms: RoomT[], isAgent: boolean | undefined) {

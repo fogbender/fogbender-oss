@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { Room as RoomT } from "fogbender-proto";
 import React from "react";
 
-import { formatCustomerName, isInternal } from "../utils/format";
+import { formatCustomerName, isInternalHelpdesk } from "../utils/format";
 
 import { Icons } from "./Icons";
 import { Avatar } from "./lib";
@@ -80,7 +80,7 @@ export const useRoomList = ({
               <span
                 className={classNames(
                   "col-start-3 col-end-4 ml-2 truncate fog:text-body-s",
-                  isInternal(x.customerName) && "text-green-500",
+                  isInternalHelpdesk(x.customerName) && "text-green-500",
                   x.customerName === "It’s you!" &&
                     "self-center text-white justify-self-start text-xs bg-green-500 rounded-lg py-0.5 px-1 text-center"
                 )}

@@ -4,7 +4,7 @@ import {
   DetailedRoomsTable,
   formatCustomerName,
   Icons,
-  isInternal,
+  isInternalHelpdesk,
   Tag,
 } from "fogbender-client/src/shared";
 import { RenderCustomerInfoCb } from "fogbender-client/src/shared/app/CustomerInfo";
@@ -46,7 +46,7 @@ export const CustomerInfoPane: React.FC<Parameters<RenderCustomerInfoCb>[0]> = (
 
   const { data: customer } = customerData;
 
-  const isCustomerInternal = isInternal(customer?.name);
+  const isCustomerInternal = isInternalHelpdesk(customer?.name);
 
   const customerName = () => (
     <span className="flex gap-2 font-semibold items-center">

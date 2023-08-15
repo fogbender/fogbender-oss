@@ -99,17 +99,17 @@ const SettingsTabs: React.FC<{
 }> = ({ tab }) => {
   const secondaryTabs = ["embed", "ai", "integrations", "notifications"];
   return (
-    <div className="mt-2 mb-4 sm:mt-8 sm:mb-8 w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
+    <div className="max-w-min lg:max-w-full pr-4 lg:pr-0 mt-2 mb-4 sm:mt-8 sm:mb-8 w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <TabListHeaderWrapper>
         <Link
           to={tab === "embed" ? "." : secondaryTabs.includes(tab) ? "../embed" : "embed"}
-          className="flex-1 md:flex-none no-underline"
+          className="flex-1 md:flex-none no-underline group"
         >
           <TabHeaderWrapper selected={tab === "embed"}>Embedding instructions</TabHeaderWrapper>
         </Link>
         <Link
           to={secondaryTabs.includes(tab) ? ".." : "."}
-          className="flex-1 md:flex-none no-underline"
+          className="flex-1 md:flex-none no-underline group"
         >
           <TabHeaderWrapper selected={tab === "settings"}>Workspace configuration</TabHeaderWrapper>
         </Link>
@@ -121,13 +121,13 @@ const SettingsTabs: React.FC<{
               ? "../integrations"
               : "integrations"
           }
-          className="flex-1 md:flex-none no-underline"
+          className="flex-1 md:flex-none no-underline group"
         >
           <TabHeaderWrapper selected={tab === "integrations"}>Integrations</TabHeaderWrapper>
         </Link>
         <Link
           to={tab === "ai" ? "." : secondaryTabs.includes(tab) ? "../ai" : "ai"}
-          className="flex-1 md:flex-none no-underline"
+          className="flex-1 md:flex-none no-underline group"
         >
           <TabHeaderWrapper selected={tab === "ai"}>
             <code>AI</code>
@@ -141,7 +141,7 @@ const SettingsTabs: React.FC<{
               ? "../notifications"
               : "notifications"
           }
-          className="flex-1 md:flex-none no-underline"
+          className="flex-1 md:flex-none no-underline group"
         >
           <TabHeaderWrapper selected={tab === "notifications"}>Notifications</TabHeaderWrapper>
         </Link>

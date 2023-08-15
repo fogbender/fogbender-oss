@@ -21,7 +21,14 @@ export type AgentToken = {
   versions?: { [key: string]: string };
 };
 
-export type AnyToken = UserToken | AgentToken;
+export type UnauthenticatedToken = {
+  widgetId: string;
+  userId?: string;
+  unauthenticated: true;
+  versions?: { [key: string]: string };
+};
+
+export type AnyToken = UserToken | AgentToken | UnauthenticatedToken;
 
 // UTILITY TYPES
 
@@ -75,6 +82,9 @@ export type APISchema = {
   MessageRefreshFilesRPC: RPC<MessageRefreshFiles, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
+  AuthUnauthenticatedRPC: RPC<AuthUnauthenticated, AuthError | AuthOk>;
+  AuthEmailToVerifyRPC: RPC<AuthEmailToVerify, AuthError | AuthOk>;
+  AuthCodeToVerifyRPC: RPC<AuthCodeToVerify, AuthError | AuthOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
@@ -707,6 +717,23 @@ export type AuthAgent = {
   token: string;
 } & AgentToken;
 
+export type AuthUnauthenticated = {
+  msgId?: string;
+  msgType: "Auth.Unauthenticated";
+} & UnauthenticatedToken;
+
+export type AuthEmailToVerify = {
+  msgId?: string;
+  msgType: "Auth.EmailToVerify";
+  email: string;
+};
+
+export type AuthCodeToVerify = {
+  msgId?: string;
+  msgType: "Auth.CodeToVerify";
+  verificationCode: string;
+};
+
 export type AuthError = Error<"Auth.Err">;
 
 export type AuthOk = {
@@ -714,11 +741,15 @@ export type AuthOk = {
   msgType: "Auth.Ok";
   sessionId: string;
   userId: string;
+  userName: string;
+  userEmail: string;
   helpdeskId: string;
   helpdesk?: Helpdesk;
   userAvatarUrl?: string;
   avatarLibraryUrl?: string;
   role?: string;
+  widgetId?: string;
+  customerName?: string;
 };
 
 export type EchoGet = {
