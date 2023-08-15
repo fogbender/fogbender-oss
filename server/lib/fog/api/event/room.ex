@@ -289,8 +289,10 @@ defmodule Fog.Api.Event.Room do
          resolved_at: resolved_at,
          last_message: lm,
          helpdesk: helpdesk,
-         type: "public"
-       }) do
+         type: type,
+         agent_groups: agent_groups
+       })
+       when type === "public" or length(agent_groups) > 0 do
     Repo.Helpdesk.internal?(helpdesk) or
       (!!resolved and
          (is_nil(lm) or
