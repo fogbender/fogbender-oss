@@ -221,6 +221,9 @@ defmodule Fog.Web.APIClientRouter do
                   "$Cust_External_" <> _ ->
                     false
 
+                  "$Cust_Anonymous_" <> _ ->
+                    false
+
                   _ ->
                     true
                 end

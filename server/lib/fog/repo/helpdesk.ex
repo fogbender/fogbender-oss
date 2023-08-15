@@ -5,14 +5,45 @@ defmodule Fog.Repo.Helpdesk do
   def get(helpdesk_id), do: Data.Helpdesk |> Repo.get(helpdesk_id)
 
   def get_external(workspace_id) do
-    from(
-      h in Data.Helpdesk,
-      join: c in assoc(h, :customer),
-      on: like(c.name, "$Cust_External_%"),
-      where: h.workspace_id == ^workspace_id
+    external =
+      from(
+        h in Data.Helpdesk,
+        join: c in assoc(h, :customer),
+        on: like(c.name, "$Cust_External_%"),
+        where: h.workspace_id == ^workspace_id
+      )
+      |> Repo.one()
+      |> Repo.preload(:customer)
+
+    case external do
+      nil ->
+        create_external(workspace_id)
+
+      _ ->
+        external
+    end
+  end
+
+  defp create_external(workspace_id) do
+    workspace = Repo.Workspace.get(workspace_id)
+    customer_name = "$Cust_External_#{Fog.Types.WorkspaceId.dump(workspace_id) |> elem(1)}"
+
+    Data.Customer.new(
+      name: customer_name,
+      external_uid: customer_name,
+      vendor_id: workspace.vendor_id
     )
-    |> Repo.one()
-    |> Repo.preload(:customer)
+    |> Repo.insert!(on_conflict: :nothing)
+
+    customer = Repo.get_by(Data.Customer, vendor_id: workspace.vendor_id, name: customer_name)
+
+    Data.Helpdesk.new(
+      customer_id: customer.id,
+      workspace_id: workspace_id
+    )
+    |> Repo.insert!(on_conflict: :nothing)
+
+    get_external(workspace_id)
   end
 
   def get_internal(workspace_id) do
@@ -20,6 +51,16 @@ defmodule Fog.Repo.Helpdesk do
       h in Data.Helpdesk,
       join: c in assoc(h, :customer),
       on: like(c.name, "$Cust_Internal_%"),
+      where: h.workspace_id == ^workspace_id
+    )
+    |> Repo.one()
+  end
+
+  def get_anonymous(workspace_id) do
+    from(
+      h in Data.Helpdesk,
+      join: c in assoc(h, :customer),
+      on: like(c.name, "$Cust_Anonymous_%"),
       where: h.workspace_id == ^workspace_id
     )
     |> Repo.one()

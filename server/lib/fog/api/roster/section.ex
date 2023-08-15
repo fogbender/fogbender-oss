@@ -148,6 +148,14 @@ defmodule Fog.Api.Roster.Section do
         when type not in ["private"] ->
           []
 
+        %Params{
+          event: %Event.RosterRoom{
+            room: %Event.Room{type: type, customerName: "$Cust_Anonymous_" <> _}
+          }
+        }
+        when type not in ["private"] ->
+          []
+
         _ ->
           [%Event.RosterSection{id: section, name: section}]
       end

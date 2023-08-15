@@ -11,7 +11,11 @@ defmodule Fog.Api.Session do
       eventId: 0,
       typing_ref: :undefined,
       lastActivityTs: 0,
-      pending_notifications: %{}
+      pending_notifications: %{},
+      verification_code: nil,
+      verification_request_ts: nil,
+      verification_request_attempt: 0,
+      verification_email: nil
     ]
   end
 
