@@ -38,7 +38,7 @@ const { title } = Astro.props;
             const div = document.getElementById("error");
             if (!div) return;
             div.innerHTML =
-              "<h1 class='m-4 fog:text-header2'>Failed to load page.</h1><p class='ml-4'>Please try one more time; if it still doesn't work, email <a class='fog:text-link' href='mailto:support@fogbender.com'>support@fogbender.com</a>.</p>";
+              "<h1 class='m-4 fog:text-header2'>Failed to load page</h1><p class='ml-4'>Please try one more time; if it still doesn't work, email <a class='fog:text-link' href='mailto:support@fogbender.com'>support@fogbender.com</a>.</p>";
             console.error("Failed to load page.");
           }
         }, 3000);
