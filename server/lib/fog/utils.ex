@@ -5,6 +5,10 @@ defmodule Fog.Utils do
 
   alias Fog.{Api, Data, Repo}
 
+  @internal_customer_name "Internal conversations"
+  @external_customer_name "Shared email inbox"
+  @anonymous_customer_name "Visitor inbox"
+
   def time_us do
     {megs, sec, usec} = :os.timestamp()
     megs * 1_000_000_000_000 + sec * 1_000_000 + usec
@@ -187,12 +191,14 @@ defmodule Fog.Utils do
     "#{Fog.env(:fog_storefront_url)}/admin/vendor/#{vendor_id}/workspace/#{workspace_id}/chat/#{room_id}/#{message_id}"
   end
 
-  def customer_name(%Data.Customer{name: "$Cust_Internal_" <> _}), do: "Internal conversations"
-  def customer_name(%Data.Customer{name: "$Cust_External_" <> _}), do: "Shared Email Inbox"
+  def customer_name(%Data.Customer{name: "$Cust_Internal_" <> _}), do: @internal_customer_name
+  def customer_name(%Data.Customer{name: "$Cust_External_" <> _}), do: @external_customer_name
+  def customer_name(%Data.Customer{name: "$Cust_Anonymous_" <> _}), do: @anonymous_customer_name
   def customer_name(%Data.Customer{name: name}), do: name
 
-  def customer_name("$Cust_Internal_" <> _), do: "Internal conversations"
-  def customer_name("$Cust_External_" <> _), do: "Shared Email Inbox"
+  def customer_name("$Cust_Internal_" <> _), do: @internal_customer_name
+  def customer_name("$Cust_External_" <> _), do: @external_customer_name
+  def customer_name("$Cust_Anonymous_" <> _), do: @anonymous_customer_name
   def customer_name(name), do: name
 
   def safe_text_to_issue_title(text, maxWords \\ 8) do
