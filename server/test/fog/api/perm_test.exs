@@ -25,7 +25,8 @@ defmodule Test.Api.PermTest do
 
       assert capture_log(fn ->
                assert false == Fake.allowed?(s, :create, par1: false, par2: :create)
-             end) =~ ~r".*[warn].*DENY Fake/create for guest\. %{par1: false, par2: :create}.*"
+             end) =~
+               ~r".*[warnin].*DENY Fake/create by deny_\*_12 rule for guest\. %{par1: false, par2: :create}.*"
     end
 
     test "allow on first valid allow rule", %{s: s} do
@@ -39,7 +40,8 @@ defmodule Test.Api.PermTest do
 
       assert capture_log(fn ->
                assert false == Fake.allowed?(s, :update, par1: true, par2: :create)
-             end) =~ ~r".*[warn].*DENY Fake/update for guest\. %{par1: true, par2: :create}.*"
+             end) =~
+               ~r".*[warn].*DENY Fake/update by no allow rule found for guest\. %{par1: true, par2: :create}.*"
     end
   end
 end
