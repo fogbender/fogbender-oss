@@ -510,7 +510,7 @@ function LoginDevOnly({ email }: { email: string }) {
           href="http://localhost:8000/public/emails"
           className="block w-full rounded-md border border-gray-300 py-2 px-3 text-center font-medium text-gray-900 no-underline hover:border-gray-400 focus:border-gray-400 focus:outline-none sm:text-sm sm:leading-5"
         >
-          Local email client
+          Open local email client
         </a>
       </div>
       <div className="mt-5">
@@ -520,7 +520,7 @@ function LoginDevOnly({ email }: { email: string }) {
             e.preventDefault();
             if (!email) {
               alert(
-                "Please enter an email address in the login form above and click the button again."
+                "Please enter an email address at the top of the login form and click this button again"
               );
               return;
             }
@@ -536,7 +536,7 @@ function LoginDevOnly({ email }: { email: string }) {
                 throw new Error("Failed to login");
               }
               alert(
-                `Login link was created for user ${email}. You can see it in Elixir terminal or in the local email client (button above). Once you click on the link you can open http://localhost:3100/admin`
+                `A login link was created for ${email}. You can see the link in the Elixir terminal or in the local email client (button above). After opening the link, you can open http://localhost:3100/admin`
               );
             });
           }}
