@@ -376,7 +376,7 @@ defmodule Fog.Api.Message do
 
       workspace_feature_flags = Enum.map(workspace.feature_flags, & &1.feature_flag_id)
 
-      is_issue = room.tags |> Enum.find_value(fn rt -> rt.tag.name === ":issue" end)
+      is_issue = room.tags |> Enum.find_value(fn rt -> rt.tag.name in [":issue"] end)
 
       if is_issue === true and room.type !== "dialog" and
            "User Tag Scoping" not in workspace_feature_flags do

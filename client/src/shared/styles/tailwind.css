@@ -11,14 +11,14 @@
 
 .fog\:text-header1 {
   @apply font-admin;
-  @apply font-bold;
+  @apply font-semibold;
   @apply text-6xl;
   @apply leading-normal;
 }
 
 .fog\:text-header2 {
   @apply font-admin;
-  @apply font-bold;
+  @apply font-medium;
   @apply text-4xl;
   @apply leading-normal;
 }
