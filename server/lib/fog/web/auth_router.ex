@@ -111,7 +111,7 @@ defmodule Fog.Web.AuthRouter do
         to: email,
         from: Mailer.source(),
         subject: "Dev-only login",
-        html_body: html
+        html_body: "#{html}"
       )
       |> Mailer.send()
 
