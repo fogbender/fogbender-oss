@@ -96,6 +96,9 @@ fog-detective-boot:
 fog-gettext:
 	cd server && mix gettext.extract
 
+fog-secrets:
+	cd server && mix secrets ../local.env
+
 web-start:
 	yarn && yarn start
 
