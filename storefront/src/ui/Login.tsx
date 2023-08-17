@@ -20,6 +20,7 @@ import {
   useReturnBackWhenDone,
   useTimePassedSince,
 } from "./authUtils";
+import { apiServer } from "./client";
 import { LoginWithGoogle } from "./LoginWithGoogle";
 import { useCognito } from "./useCognito";
 
@@ -524,21 +525,21 @@ function LoginDevOnly({ email }: { email: string }) {
               );
               return;
             }
-            fetch("http://localhost:8000/auth/dev-only", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ email }),
-            }).then(res => {
-              if (res.status !== 200) {
+            apiServer
+              .url(`/auth/dev-only`)
+              .post({
+                email,
+              })
+              .text()
+              .catch(err => {
                 alert("Failed to login");
-                throw new Error("Failed to login");
-              }
-              alert(
-                `A login link was created for ${email}. You can see the link in the Elixir terminal or in the local email client (button above). After opening the link, you can open http://localhost:3100/admin`
-              );
-            });
+                throw err;
+              })
+              .then(() => {
+                alert(
+                  `A login link was created for ${email}. You can see the link in the Elixir terminal or in the local email client (button above). After opening the link, you can open http://localhost:3100/admin`
+                );
+              });
           }}
           className="block w-full rounded-md border border-gray-300 py-2 px-3 text-center font-medium text-gray-900 no-underline hover:border-gray-400 focus:border-gray-400 focus:outline-none sm:text-sm sm:leading-5"
         >
