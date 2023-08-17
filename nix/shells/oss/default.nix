@@ -63,13 +63,15 @@ in with pkgs; mkShell {
   mkdir -p .nix-shell/files
 
   set -a
+
   echo Sourcing oss.env..
   . ./config/oss.env
-  set +a
 
   if [ -f "./local.env" ]; then
   echo Sourcing local.env..
   . local.env
   fi
+
+  set +a
   '';
 }
