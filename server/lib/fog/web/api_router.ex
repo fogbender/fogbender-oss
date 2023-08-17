@@ -5382,6 +5382,7 @@ defmodule Fog.Web.APIRouter do
   end
 
   defp update_billing(vendor_id) do
+    # TODO: this should be done as an async task so that we don't crash the request that triggered update_billing and so that we can retry it if it fails
     free_seats =
       from(
         v in Data.Vendor,
