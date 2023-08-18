@@ -40,7 +40,6 @@ defmodule Test.Service.ImportUsersTest do
       assert [_, _] = Repo.all(Data.User)
     end
 
-    '''
     test "creates new helpdesk without triage" do
       vendor = insert_vendor!(@vendor_with_ws)
       [ws | _] = vendor.workspaces
@@ -51,7 +50,6 @@ defmodule Test.Service.ImportUsersTest do
       assert %Data.Helpdesk{triage: nil} =
                Repo.get_by(Data.Helpdesk, customer_id: customer_id) |> Repo.preload(:triage)
     end
-    '''
 
     test "updates old customer" do
       vendor = insert_vendor!(@vendor_with_ws)
