@@ -30,6 +30,7 @@ defmodule Fog.Api.Handler do
         def conflict(params \\ []), do: mk_error(409, "Conflict", params)
         def internal(params \\ []), do: mk_error(500, "Internal server error", params)
         def not_implemented(params \\ []), do: mk_error(501, "Not implemented", params)
+        def rate_limited(params \\ []), do: mk_error(429, "Too many requests", params)
 
         defp mk_error(code, error, params) do
           message = %{struct(__MODULE__) | code: code, error: error}

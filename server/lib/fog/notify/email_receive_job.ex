@@ -106,7 +106,8 @@ defmodule Fog.Notify.EmailReceiveJob do
       workspace.id,
       customer_name,
       user_email,
-      {user_email, user_name, nil, customer_name}
+      {user_email, user_name, nil, customer_name},
+      false
     )
   end
 
