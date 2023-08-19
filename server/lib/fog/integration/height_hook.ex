@@ -246,7 +246,14 @@ defmodule Fog.Integration.HeightHook do
         by_name = "#{f_name} #{l_name}"
         by_avatar_url = user["pictureUrl"]
 
-        text = "Changed status from **#{model["oldValue"]}** to **#{model["newValue"]}**"
+        text =
+          case model["oldValue"] do
+            old_value when is_binary(old_value) ->
+              "Changed status from **#{model["oldValue"]}** to **#{model["newValue"]}**"
+
+            _ ->
+              "Set status to **#{model["newValue"]}**"
+          end
 
         cmd = %Api.Message.Create{
           roomId: room.id,
