@@ -751,8 +751,8 @@ export const Room: React.FC<{
               highlight={flash === msg.id}
               newMessagesAtId={newMessagesAtId}
               newMessagesIsDimmed={newMessagesIsDimmed}
-              allowForward={isAgent === true}
-              allowFileIssue={room?.type !== "dialog"}
+              allowForward={true}
+              allowFileIssue={!!isAgent && room?.type !== "dialog"}
               showAiHelper={aiEnabled && showAiHelper}
               allowDelete={
                 !msg.deletedTs &&

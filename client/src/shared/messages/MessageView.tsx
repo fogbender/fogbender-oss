@@ -495,23 +495,25 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                   cancelSelection={cancelSelection}
                 />
               )}
-              {allowForward && (
+              {(allowForward || allowFileIssue) && (
                 <div className="flex items-center whitespace-nowrap cursor-pointer">
                   {selectedSingle && !message.deletedTs && <span className="text-gray-300">|</span>}
-                  <span
-                    title="Forward to another room"
-                    onClick={() => {
-                      doForward?.(true);
-                    }}
-                    className="flex items-center gap-x-1 px-1 text-gray-500 hover:text-brand-red-500"
-                  >
-                    <Icons.ArrowRightThin className="w-4 h-4" />
-                    {(!selectedSingle || message.deletedTs) && (
-                      <div className="flex flex-col">
-                        <span className="fog:text-body-m">Forward</span>
-                      </div>
-                    )}
-                  </span>
+                  {allowForward && (
+                    <span
+                      title="Forward to another room"
+                      onClick={() => {
+                        doForward?.(true);
+                      }}
+                      className="flex items-center gap-x-1 px-1 text-gray-500 hover:text-brand-red-500"
+                    >
+                      <Icons.ArrowRightThin className="w-4 h-4" />
+                      {(!selectedSingle || message.deletedTs) && (
+                        <div className="flex flex-col">
+                          <span className="fog:text-body-m">Forward</span>
+                        </div>
+                      )}
+                    </span>
+                  )}
                   {allowFileIssue && (
                     <span
                       title="File issue"
