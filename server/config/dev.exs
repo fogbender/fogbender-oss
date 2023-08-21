@@ -4,7 +4,7 @@ config :exsync, addition_dirs: ["/priv"]
 
 config :fog, Fog.Mailer,
   adapter:
-    if(System.get_env("INBOX_SQS_URL") in [nil, ""],
+    if(System.get_env("SES_REGION") in [nil, ""],
       do: Bamboo.LocalAdapter,
       else: Bamboo.SesAdapter
     )
