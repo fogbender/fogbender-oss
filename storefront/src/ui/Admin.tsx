@@ -1726,6 +1726,7 @@ const NewVersionChecker = React.memo(() => {
   if (newVersion !== oldVersion) {
     return (
       <button
+        title={`New version available: ${oldVersion} -> ${newVersion}`}
         className="bg-brand-red-500 text-white text-xs px-2 py-1 rounded-full hover:text-yellow-100 hover:bg-purple-500"
         onClick={e => {
           e.preventDefault();
