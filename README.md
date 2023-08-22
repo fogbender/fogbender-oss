@@ -27,7 +27,7 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 - Unlimited messages and files
 - Note: we're using some non-free APIs for AI, IP geolocation, and contact enrichment - we plan on introducing a base price for features that use these APIs, to help us cover the bills
 
-## 🚣‍♀️ Medium: Get it running locally
+## 🤺 Medium: Get it running locally
 
 1.  Install [Nix](https://nixos.org/nix/download.html):
 
