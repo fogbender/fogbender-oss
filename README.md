@@ -1,55 +1,84 @@
-### Get it running locally
+![Fogbender log](storefront/src/assets/logomark.svg)
 
-1. Install prerequisites
+### Fogbender is an open-source customer communication system
 
-- [Nixpkgs install](https://nixos.org/nix/download.html)
+- Conceptually, it's a hybrid between Slack Connect and Intercom: you can embed a messaging widget on your customer-facing dashboard, but expose it to the whole customer team (account), instead of just individuals
+- It can also be configured to support website visitors (pre-authentication)
+- Conversations can be turned into issues - essentially named threads - and optionally associated with new or existing tickets in an external tracker, such as Linear, Height, Jira, GitHub, etc.
+- Fogender can be used as an alternative to a team messaging system, for internal communication.
+- Agent Slack integration can be used to monitor all conversations in a single channel, where each issue is turned into a thread. The integration is bi-directional - it's possible to respond from Slack.
+- The same agent Slack integration can be used to connect existing shared channels to customers in Fogbender.
+- Customer Slack integration can be used to connect a customer in Fogbender to a channel in a customer's Slack workspace - without using Slack Connect.
+- A Microsoft Teams integration can be used to connect a customer in Fogbender to a channel in a customer's Microsoft Teams team.
 
-  curl -L https://nixos.org/nix/install | sh
+# Giving it a go
 
-2. Clone repo
+## Easy: Fogbender Cloud
 
-   git clone https://github.com/fogbender/fogbender.git
+https://fogbender.com is a hosted version of Fogbender operated by the team behind this project.
 
-3. Generate token/session secrets (it will automatically store it in the `local.env` file, it's not tracked by git, you only need to do it once)
+Pricing:
+
+- Free tier is limited to two customer-facing agents
+- You can have any number of Readers: agents with read-only access to customer conversations, but full write access to internal conversations
+- Unlimited end-users
+- Unlimited messages and files
+- Note: we're using some non-free APIs for AI, IP geolocation, and email enrichment - we're plan on introducing a base price for features that use these APIs, to help us cover the bills
+
+## Medium: Get it running locally
+
+1. Install [Nix](https://nixos.org/nix/download.html):
+
+   curl -L https://nixos.org/nix/install | sh
+
+2. Clone the repo
+
+   git clone https://github.com/fogbender/fogbender.git && cd fogbender
+
+3. Generate token/session secrets. This will write the secrets to a Git-ignored `local.env` file:
 
    ./scripts/oss-make.sh fog-secrets
 
-4. Start backend application
+Note: do this once
+
+4. Start the backend:
 
    ./scripts/oss-make.sh
 
-You can check that it works by opening http://localhost:8000/admin
+Is it running? Check here: http://localhost:8000/admin
 
-5. Start frontend application (in a separate terminal)
+5. Start the frontend (use a second terminal):
 
    ./scripts/oss-make.sh web-start
 
-It will start 3 apps on different ports:
+The above will start 3 apps on different ports:
 
 - http://localhost:3100 - local version of https://fogbender.com
 - http://localhost:3200 - local version of https://demo1.fogbender.com/
-- http://localhost:3300 - local version of https://client.fogbender.com (embeddedable widget)
+- http://localhost:3300 - local version of https://client.fogbender.com (embeddedable widget - won't load without a token)
 
-6. Now you can use the app like you would use it on https://fogbender.com except that some of the features are going to be turned off or mocked.
+6. Now you can use Fogbender just like you would on https://fogbender.com, except some features will be turned off or mocked:
 
    - Intergrations with 3rd party services (like Stripe, Slack, GitHub, etc), Google login, AWS Cognito are turned off (you need to configure secrets in the `local.env` file to enable them)
-   - File upload is mocked (it will upload files to the local filesystem instead of S3 inside `.nix-shell/files`)
-   - You can't receive or send emails (you can use http://localhost:8000/public/emails to debug locally sent emails)
+   - File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
+   - You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
 
-7. Optional. To get access to Fogbender root organization you can add very first agent to that organization. By running this command:
+7. Optional: To get access to Fogbender root organization, do the above, sign up, then run
 
    ./scripts/oss-make.sh fog-agent-boot
 
+Once you do this, you'll see the "Fogbender" organization under http://localhost:3100/admin - this way, you can answer your own support questions.
+
 ### Working with the Database
 
-When you start the backend server it will automatically create and start a local PostgreSQL database. To get access to it you can run:
+Starting the backend server will automatically create and start a local PostgreSQL database. For `psql` access, run
 
     ./scripts/oss-make.sh db-repl
 
-To stop the database run:
+To stop the database, run
 
     ./scripts/oss-make.sh db-stop
 
-To reset (it will wipe all data) the database run:
+To reset the database (WIPING ALL DATA) run
 
     ./scripts/oss-make.sh db-clean
