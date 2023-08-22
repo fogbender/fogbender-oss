@@ -38,8 +38,7 @@ It will start 3 apps on different ports:
 
 7. Optional. To get access to Fogbender root organization you can add very first agent to that organization. By running this command:
 
-    ./scripts/oss-make.sh fog-agent-boot
-
+   ./scripts/oss-make.sh fog-agent-boot
 
 ### Working with the Database
 
