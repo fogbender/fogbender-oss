@@ -41,7 +41,7 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 
         ./scripts/oss-make.sh fog-secrets
 
-Note: do this once
+Note: do this ^^ once
 
 4.  Start the backend:
 
