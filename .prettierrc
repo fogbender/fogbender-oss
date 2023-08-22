@@ -8,8 +8,7 @@
     {
       "files": "README.md",
       "options": {
-        "parser": "markdown",
-        "embeddedLanguageFormatting": "off"
+        "parser": "markdown"
       }
     },
     {
