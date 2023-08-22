@@ -23,7 +23,7 @@ Pricing:
 - You can have any number of Readers: agents with read-only access to customer conversations, but full write access to internal conversations
 - Unlimited end-users
 - Unlimited messages and files
-- Note: we're using some non-free APIs for AI, IP geolocation, and email enrichment - we're plan on introducing a base price for features that use these APIs, to help us cover the bills
+- Note: we're using some non-free APIs for AI, IP geolocation, and contact enrichment - we plan on introducing a base price for features that use these APIs, to help us cover the bills
 
 ## Medium: Get it running locally
 
