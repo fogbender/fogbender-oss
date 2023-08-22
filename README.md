@@ -5,11 +5,11 @@
 - Conceptually, it's a hybrid between Slack Connect and Intercom: you can embed a messaging widget on your customer-facing dashboard, but expose it to the whole customer team (account), instead of just individuals
 - It can also be configured to support website visitors (pre-authentication)
 - Conversations can be turned into issues - essentially named threads - and optionally associated with new or existing tickets in an external tracker, such as Linear, Height, Jira, GitHub, etc.
-- Fogender can be used as an alternative to a team messaging system, for internal communication.
-- Agent Slack integration can be used to monitor all conversations in a single channel, where each issue is turned into a thread. The integration is bi-directional - it's possible to respond from Slack.
-- The same agent Slack integration can be used to connect existing shared channels to customers in Fogbender.
-- Customer Slack integration can be used to connect a customer in Fogbender to a channel in a customer's Slack workspace - without using Slack Connect.
-- A Microsoft Teams integration can be used to connect a customer in Fogbender to a channel in a customer's Microsoft Teams team.
+- Fogender can be used as an alternative to a team messaging system, for internal communication
+- Agent Slack integration can be used to monitor all conversations in a single channel, where each issue is turned into a thread. The integration is bi-directional - it's possible to respond from Slack
+- The same agent Slack integration can be used to connect existing shared channels to customers in Fogbender
+- Customer Slack integration can be used to connect a customer in Fogbender to a channel in a customer's Slack workspace - without using Slack Connect
+- A Microsoft Teams integration can be used to connect a customer in Fogbender to a channel in a customer's Microsoft Teams team
 
 # Giving it a go
 
