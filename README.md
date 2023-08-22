@@ -15,7 +15,7 @@
 
 ## Easy: Fogbender Cloud
 
-https://fogbender.com is a hosted version of Fogbender operated by the team behind this project.
+https://fogbender.com is a hosted version of Fogbender operated by the authors of the project
 
 Pricing:
 
