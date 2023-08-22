@@ -6,6 +6,13 @@
   "quoteProps": "preserve",
   "overrides": [
     {
+      "files": "README.md",
+      "options": {
+        "parser": "markdown",
+        "embeddedLanguageFormatting": "off"
+      }
+    },
+    {
       "files": "package.json",
       "options": {
         "printWidth": 9999
