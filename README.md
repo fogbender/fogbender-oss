@@ -17,6 +17,8 @@
 
 https://fogbender.com is a hosted version of Fogbender operated by the authors of the project.
 
+![SOC2](storefront/src/assets/soc2.png)
+
 [Pricing](https://fogbender.com/pricing) summary:
 
 - Free tier is limited to two customer-facing agents
