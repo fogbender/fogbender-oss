@@ -15,9 +15,9 @@
 
 ## Easy: Fogbender Cloud
 
-https://fogbender.com is a hosted version of Fogbender operated by the authors of the project
+https://fogbender.com is a hosted version of Fogbender operated by the authors of the project.
 
-Pricing:
+[Pricing](https://fogbender.com/pricing) summary:
 
 - Free tier is limited to two customer-facing agents
 - You can have any number of Readers: agents with read-only access to customer conversations, but full write access to internal conversations
@@ -82,3 +82,9 @@ To stop the database, run
 To reset the database (WIPING ALL DATA) run
 
     ./scripts/oss-make.sh db-clean
+
+## Hard: Host it in your cloud
+
+We host Fogbender in AWS and use [Pulumi](https://www.pulumi.com) for IaC and [SOPS](https://github.com/getsops/sops) with AWS KMS for secrets management.
+
+Our plan is to develop a tutorial (or CLI) to serve as a guide; meanwhile, we'd be happy to walk you through it via support on Fogbender Cloud: https://fogbender.com/admin/-/support.
