@@ -13,7 +13,7 @@
 
 # Giving it a go
 
-## Easy: Fogbender Cloud
+## 🍔 Easy: Fogbender Cloud
 
 https://fogbender.com is a hosted version of Fogbender operated by the authors of the project, who recently (July 2023) managed to get Fogbender through SOC2 (Type I) compliance certification.
 
@@ -27,7 +27,7 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 - Unlimited messages and files
 - Note: we're using some non-free APIs for AI, IP geolocation, and contact enrichment - we plan on introducing a base price for features that use these APIs, to help us cover the bills
 
-## Medium: Get it running locally
+## 🚣‍♀️ Medium: Get it running locally
 
 1.  Install [Nix](https://nixos.org/nix/download.html):
 
@@ -85,7 +85,7 @@ To reset the database (WIPING ALL DATA) run
 
     ./scripts/oss-make.sh db-clean
 
-## Hard: Host it in your cloud
+## 🧗‍♀️ Hard: Host it in your cloud
 
 We host Fogbender in AWS and use [Pulumi](https://www.pulumi.com) for IaC and [SOPS](https://github.com/getsops/sops) with AWS KMS for secrets management.
 
