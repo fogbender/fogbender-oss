@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 const { AdminPage } = lazily(() => import("./pages/Admin"));
 const Debug = React.lazy(() => import("./Debug"));
 const Detective = React.lazy(() => import("./Detective"));
-const { Landing } = lazily(() => import("./Landing"));
 const { Login } = lazily(() => import("./Login"));
 const { Signup } = lazily(() => import("./Signup"));
+const { Landing } = lazily(() => import("./ReactLanding"));
 
 const AppBody = () => {
   return (

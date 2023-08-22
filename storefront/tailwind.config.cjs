@@ -1,5 +1,3 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   presets: [require("../client/src/shared/fogbender.tailwind.preset.js")],
@@ -11,12 +9,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        landing: ['"Archivo"', ...defaultTheme.fontFamily.sans],
-      },
-      screens: {
-        "tiny": "320px",
-      },
       typography: ({ theme }) => ({
         fog: {
           css: {
