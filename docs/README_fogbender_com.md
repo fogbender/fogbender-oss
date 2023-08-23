@@ -226,7 +226,7 @@ SSH to test/production servers:
 
 Access Elixir console:
 
-- `fog remote`
+- `RELEASE_COOKIE=/run/fogbender/.cookie fog remote`
 
 Remote database access from dev admin:
 
