@@ -44,9 +44,9 @@ Note: do this ^^ once
 
 4.  Start the backend:
 
-        ./scripts/oss-make.sh fog-secrets
+        ./scripts/oss-make.sh
 
-Is it running? Check here: http://localhost:8000/admin
+Is it running? Check here: http://localhost:8000/public/about
 
 5.  Start the frontend (use a second terminal):
 
