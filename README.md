@@ -25,7 +25,6 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 - You can have any number of Readers: agents with read-only access to customer conversations, but full write access to internal conversations
 - Unlimited end-users
 - Unlimited messages and files
-- Note: we're using some non-free APIs for AI, IP geolocation, and contact enrichment - we plan on introducing a base price for features that use these APIs, to help us cover the bills
 
 ## 🤺 Medium: Get it running locally
 

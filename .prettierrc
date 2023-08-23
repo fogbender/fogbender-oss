@@ -6,7 +6,7 @@
   "quoteProps": "preserve",
   "overrides": [
     {
-      "files": "README.md",
+      "files": ["README.md", "docs/README_fogbender_com.md"],
       "options": {
         "parser": "markdown"
       }

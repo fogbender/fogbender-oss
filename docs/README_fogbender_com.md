@@ -1,77 +1,89 @@
-# Fogbender
+![Fogbender log](storefront/src/assets/logomark.svg)
 
-## Customer support for companies that sell complex products to technical teams
+(This is our pre-open-source README - intended for folks who work at Fogbender.)
 
 See also:
 
 - [Initialization](Initialization.md) for application setup once the steps in this document are complete.
 
-## Preparation
+## Install Nix
 
 ### [Nixpkgs install](https://nixos.org/nix/download.html)
 
     > curl -L https://nixos.org/nix/install | sh
 
-### Nix on macOS Catalina (10.15)
+### Enable [Flakes](https://nixos.wiki/wiki/Flakes):
 
-Use [this workaround](https://github.com/NixOS/nix/issues/2925#issuecomment-539570232). Also see [this](https://github.com/NixOS/nix/issues/3125).
+```
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+```
 
-If you see the following error:
+## Start Nix shell
 
-`bash: warning: setlocale: LC_COLLATE: cannot change locale (C.UTF-8): No such file or directory`
+    > nix develop
 
-Add the following to ~/.bashrc
+> If you see the following error:
+
+> `bash: warning: setlocale: LC_COLLATE: cannot change locale (C.UTF-8): No such file or directory`
+
+> Add the following to ~/.bashrc
 
 ```
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 ```
 
-## Nix shell
+The first run will install Elixir, Postgres, Node, Yarn and other deps into Nix store, so it could take some time.
 
-    > nix-shell
-
-First run will install Elixir, Postgres, Node, Yarn and other deps into Nix store, so it could take some time.
-Next runs should immediately open shell with all apps accessible.
-Also it is possible to run isolated shell with restricted environment:
-
-    > nix-shell --pure
+Next runs should immediately open a shell with all the apps accessible.
 
 ## Fast start
 
-1. Open nix shell: `nix-shell`
+1. Start Nix shell: `nix develop`
 
-2. Run `make` - it will create/start local DB, build web assets, compile fog server,
-   migrate DB and start server with repl.
-   To be sure you use last web assets (after git pull for example), use clean: `make clean all`.
+2. Run `make` to:
 
-By default site should be accessible on http://localhost:8000 url.
+- Create/start local DB, build web assets, compile fog server
+- Migrate DB and start server with repl
 
-To clean not only compiled files, but also database use `make clean-all` command.
+Visit http://localhost:8000/public/about - it should show something like
+
+```
+{
+  "version": "2023.8.16"
+}
+```
+
+To be sure you use the latest web assets (after git pull for example), run `make clean all`
+
+To clean not only compiled files, but also the database, use the `make clean-all` command. Note: it will wipe all data from the database.
 
 ## Database for development
 
-Run from `nix-shell`:
+Run from `nix develop`:
 
-- Start: `make db-start` - it will initialize local database if needed and start it
-- Stop: `make db-stop`
-- Clean: `make db-clean`
+- Start: `make db-start` - it will initialize local database, if needed, and start it
+- Stop: `make db-stop` - stop the local database
+- Clean: `make db-clean` - delete data from the local database
 
-Commands work with local instance of PostgreSQL database. For shell database access, run `make db-repl`.
+For database access with `psql`, run `make db-repl`.
 
-To fill database with test data use `mix db.seed` task:
+To fill the database with test data, use the `mix db.seed` task:
 
     > (cd server && mix db.seed -c=2 --agents=10)
 
-It has several options to control count of objects created, see docs with `h Mix.Tasks.Db.Seed`.
+There are several options to control the count of objects created: to see the docs, run `h Mix.Tasks.Db.Seed` in the Elixir shell.
 
 ## Server development
 
-Run from `nix-shell`:
+Run from `nix develop`:
 
-`make fog-repl` - it will compile, migrate and start server with repl.
+`make fog-repl` - compile, migrate, and start the server with repl
 
 Note: to generate migration files, see https://hexdocs.pm/ecto/2.1.4/Mix.Tasks.Ecto.Gen.Migration.html
+
+Available commands:
 
 - Migrate: `make fog-migrate`
 - Compile: `make fog-compile`
@@ -79,109 +91,100 @@ Note: to generate migration files, see https://hexdocs.pm/ecto/2.1.4/Mix.Tasks.E
 - Clean: `make fog-clean`
 - Bump version: `make fog-bump`
 
-Any other `mix` commands are available from `./server` directory.
+Other `mix` commands (e.g., `test`) are available from the `./server` directory.
 
-Configuration currently loaded from `./config/dev.nix` file. It is exported as env variables on `nix-shell` load.
+Configuration is loaded from the `./config/dev.nix` file - its contents are exported as env variables on `nix develop` load.
 
 ### Testing
 
-There are several `make` commands that simplify running tests:
+There are several `make` commands that simplify the running of tests:
 
 - Run all tests: `make fog-test`
 - Run all tests and watch: `make fog-test-watch`
 - Run all tests in a file: `(cd server/ && mix test test/api/integration_test.exs)`
 - Run a specific test: `(cd server/ && mix test test/api/integration_test.exs:109)`
 
-During development you can mark currently developed tests with `:wip` tag:
+During development, you can mark tests currently being developed with a `:wip` tag:
 
     @tag :wip
     test "Some new test" do
     ...
 
-And run only them with `make fog-test-wip-watch` command.
+To run `:wip` tests only, use the `make fog-test-wip-watch` command.
 
 ### Versioning
 
-Fog server uses calendar versioning (calver) with format: YYYY.MM.Z, where YYYY - year, MM - month without leading zero, Z - patch number in current month.
-Current version is kept in `server/VERSION` file. To check version on fog installation run `fog version` command.
-New version created automatically by Gitlab CI when some server changes merged to master branch. It creates new commit with `server/VERSION` update and tag it
-with FOG-YYYY.MM.Z tag. When new tag placed, CI deploys it to staging.
+Fog server uses calendar versioning (calver) with format: YYYY.MM.Z, where YYYY - year, MM - month without the leading zero, Z - patch number in the current month.
 
-To create new version manually, checkout master and run `make fog-bump` command, it will update `server/VERSION` and create `FOG-YYYY.MM.Z` tag.
-Review changes and push it to master with `git push master --tags` command.
+The current version is kept in `server/VERSION` file. To check the version on a Fogbender installation, run the `fog version` command.
 
-## Adding Elixir dependencies to nix
+New versions are created automatically by the GitLab CI when changes changes inside the `server` directly are merged to the main branch: it creates a new commit updating the `server/VERSION` file, and tags the commit with a `FOG-YYYY.MM.Z` tag. When a new tag is created, CI triggers a deployment to the test environment.
+
+To create a new version manually, run `make fog-bump` from `main` to update the `server/VERSION` file and create the `FOG-YYYY.MM.Z` tag.
+
+Review changes and push to `main` with `git push main --tags` command.
+
+## Adding Elixir dependencies to Nix
 
 1. Add/remove deps as usual to mix.exs.
-2. Then from `nix-shell` run `make fog-deps fog-deps-nix`.
-   Last command will sync deps.json file with mix.lock.
-3. Commit changes to both mix.exs and deps.json to repository.
+2. Then from `nix develop` run `make fog-deps fog-deps-nix`.
+   The second command will sync the `deps.json` file with `mix.lock`.
+3. Commit changes to both mix.exs and deps.json to the repository.
 
 ## Web
 
+You can run the web part without Nix.
+
 Requirements:
 
-- node v18.12.1
+- Node v18.12.1
 - [Tailwind plugin for VSCode](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 Build:
 
     yarn
 
-Start all apps at the same time:
+Start all webapps at the same time:
 
     yarn start
 
-Or
+Or, with Nix:
 
-    nix-shell --run 'make web-start'
+    nix develop -c make web-start
 
 Now you can open:
 
-- http://localhost:3100/ for storefront, i.e. fogbender.com
+- http://localhost:3100/ for storefront, i.e. local version of fogbender.com
 - http://localhost:3200/ for vendor demo
-- http://localhost:3300/ for fogbender client ui
+- http://localhost:3300/ for Fogbender client UI
 
-### On a phone
+For developing integrations, install Ngrok and start it with
 
-To test the web UI on a second device during development, you'll need to specify the server IP instead of using `localhost`.
+    ngrok http 8000
 
-Note that third-party signin will not work — only email/password (aka Cognito).
+Then, start the frontend with
 
-#### Server
-
-edit `vi local.env` and add this (requires `nix-shell` restart):
-
-    export FOG_IP="<server_ip>"
-    export FOG_IP="192.168.1.2" # example
-
-#### Client
-
-In the interactive nix shell (after `nix-shell --pure`):
-
-```
-PUBLIC_API_SERVER_URL=http://<server_ip>:8000
-PUBLIC_CLIENT_WIDGET_URL=http://<server_ip>:3300
-yarn start
-```
-
-Or, as a single command:
-
-```
-nix-shell --pure --run "PUBLIC_API_SERVER_URL=http://<server_ip>:8000 PUBLIC_CLIENT_WIDGET_URL=http://<server_ip>:3300 yarn start"
-```
-
-Now open http://<server_ip>:3100/ from your phone. Make sure to add `http://<server_ip>:3100` to "secure" domains [in chrome](https://stackoverflow.com/a/54934302/74167) in order to use notifications.
+    yarn && PUBLIC_HOOK_URL="https://fbbc-75-111-56-87.ngrok-free.app/hook" yarn dev
 
 ## Deploying Web
 
 Deployment is done with branches (not tags):
 
+### Test (fogbender-test.com)
+
 - staging-client
 - staging-storefront
 - staging-vendordemo
 
-Example of deploying storefront:
+Note that the "staging" prefix in the above branches is a historical misnomer.
+
+### Production (fogbender.com)
+
+- production-client
+- staging-storefront
+- staging-vendordemo
+
+Example of deploying storefront to the Test environment:
 
     git fetch
     git checkout staging-storefront
@@ -192,35 +195,10 @@ To monitor the build process, go here: [https://app.netlify.com/teams/fogbender/
 
 Also see docs/Deploy.md and docs/Release.md
 
-## Mobile (react-native & expo)
-
-Make sure you have globally installed `expo-cli`:
-
-    yarn global add expo-cli
-
-Then go to `mobile` folder, update dependencies and start expo's metro server:
-
-    cd mobile
-    yarn
-    yarn start
-
-Follow instructions on screen. To test local version you need AndroidStudio or XCode installed.
-
-`fogbender-proto` is added as published package. If you want to edit proto library while developing mobile, then start watching it:
-
-    cd packages/fogbender-proto
-    yarn start
-
-After that, you need to override installed version and update it live:
-
-    cd mobile
-    rm -rf node_modules/fogbender-proto/
-    npx cpx -w -v "../packages/fogbender-proto/**/*.*" node_modules/fogbender-proto/
-
 ## Nix packages
 
-`default.nix` in root directory defines several attributes that could be used to create Fogbender derivations.
-They can be built with nix-build and then used to run services with command:
+`default.nix` in the repo root defines several attributes that can be used to create Fogbender derivations.
+They can be built with `nix-build` and then used to run services with command:
 
     nix-build /path/to/fogbender -A some.attribute`
 
@@ -244,9 +222,10 @@ Database should be started in advance (possibly from nix-shell with `make db-sta
 
 ## Remote access
 
-SSH to staging server:
+SSH to test/production servers:
 
-- `ssh fogbender@api.fogbender-test.com`
+- `ssh fogbender@api-test.fogbender.net -J root@portal.fogbender.com`
+- `ssh fogbender@api-prod.fogbender.net -J root@portal.fogbender.com`
 
 Access Elixir console:
 
@@ -257,12 +236,12 @@ Remote database access from dev admin:
 - `scripts/db-test repl`- opens psql shell connected to test database
 - `scripts/db-prod repl`- opens psql shell connected to prod database
 
-Also available commands are:
+Other commands:
 
-- `report`report.sql` - runs report and outputs result in csv format to stdin.
-- `psql ...` - runsq psql on remote with commands/options provided.
+- `report <report>.sql` - runs report and outputs result in csv format to stdin
+- `psql ...` - runsq psql on remote with commands/options provided
 
-Your local machine should have ssh access to api host and secrets folder.
+For this to work, your local machine should have ssh access to api host and secrets directory.
 
 Examples:
 
@@ -272,7 +251,7 @@ Examples:
 
 ## Secrets
 
-See docs/Secrets.md
+See [docs/Secrets.md](docs/Secrets.md)
 
 ## Building MS Teams packages
 
