@@ -151,9 +151,9 @@ Or, with Nix:
 
 Now you can open:
 
-- http://localhost:3100/ for storefront, i.e. local version of fogbender.com
-- http://localhost:3200/ for vendor demo
-- http://localhost:3300/ for Fogbender client UI
+- http://localhost:3100/ - storefront, i.e. local version of fogbender.com
+- http://localhost:3200/ - vendor demo
+- http://localhost:3300/ - Fogbender client UI
 
 For developing integrations, install Ngrok and start it with
 
