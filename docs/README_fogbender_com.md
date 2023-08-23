@@ -23,10 +23,7 @@ echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
     > nix develop
 
-> If you see the following error:
-
-> `bash: warning: setlocale: LC_COLLATE: cannot change locale (C.UTF-8): No such file or directory`
-
+> If you see `bash: warning: setlocale: LC_COLLATE: cannot change locale (C.UTF-8): No such file or directory`
 > Add the following to ~/.bashrc
 
 ```
