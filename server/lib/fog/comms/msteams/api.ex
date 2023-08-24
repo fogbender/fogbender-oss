@@ -453,11 +453,11 @@ defmodule Fog.Comms.MsTeams.Api do
          status: 401,
          body: %{
            "error" => %{
-             "code" => "InvalidAuthenticationToken",
-             "message" => "Access token has expired or is not yet valid."
+             "code" => "InvalidAuthenticationToken"
            }
          }
-       }} ->
+       } = error} ->
+        Logger.error("Error: #{inspect(error)}")
         {:ok, _} = get_graph_access_token(tenant_id, :renew)
         renew_subscription(tenant_id, subscription_id)
 
