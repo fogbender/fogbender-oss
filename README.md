@@ -15,7 +15,7 @@
 
 ## 🍔 Easy: Fogbender Cloud
 
-https://fogbender.com is a hosted version of Fogbender operated by the authors of the project, who recently (July 2023) managed to get Fogbender through SOC2 (Type I) compliance certification.
+https://fogbender.com is a hosted version of Fogbender operated by the authors of the project, who recently (July 2023) got Fogbender through SOC2 (Type I) compliance certification.
 
 ![SOC2](storefront/src/assets/soc2.png)
 
@@ -40,7 +40,7 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 
         ./scripts/oss-make.sh fog-secrets
 
-Note: do this ^^ once
+> Note: do this ^^ once
 
 4.  Start the backend:
 
