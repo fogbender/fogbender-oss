@@ -1,6 +1,6 @@
 ![img](https://pbs.twimg.com/profile_images/1312524109218111489/1e7X9EZ5_400x400.png)
 
-# Fogbender open-source software
+# Fogbender open-source packages
 
 Open source packages to work with https://fogbender.com
 
