@@ -89,3 +89,7 @@ To reset the database (WIPING ALL DATA) run
 We host Fogbender in AWS and use [Pulumi](https://www.pulumi.com) for IaC and [SOPS](https://github.com/getsops/sops) with AWS KMS for secrets management.
 
 Our plan is to develop a tutorial (or CLI) to serve as a guide; meanwhile, we'd be happy to walk you through it via support on Fogbender Cloud: https://fogbender.com/admin/-/support.
+
+# Getting help
+
+The easiest way to get help is to ping us in [Fogbender Support](https://fogbender.com/admin/-/support). If nothing works, we'll reply to DMs and xweets aimed at [@fogbender](https://twitter.com/fogbender).
