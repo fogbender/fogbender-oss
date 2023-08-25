@@ -2,7 +2,7 @@ defmodule Fog.Api.Auth do
   use Fog.Api.Handler
 
   alias Fog.Api.{Session}
-  alias Fog.{Repo, Data}
+  alias Fog.{Repo, Data, Api}
   require Logger
 
   defmsg(User, [
@@ -46,7 +46,6 @@ defmodule Fog.Api.Auth do
 
   defmsg(LogoutOk, [])
   deferr(Err)
-
 
   def info(%User{} = auth, %Session.Guest{}) do
     login_user(auth)
@@ -97,7 +96,6 @@ defmodule Fog.Api.Auth do
 
   def info(_, _), do: :skip
 
-
   def login_user(%User{widgetId: widget_id} = auth) do
     with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
          {signature_type, signature} <- signature(auth, workspace.signature_type),
@@ -121,34 +119,38 @@ defmodule Fog.Api.Auth do
 
   defp check_visitor_signature(signature, signature_type, signature_secret) do
     case Fog.UserSignature.verify_user_signature(
-          signature,
-          %{userId: ""},
-          signature_type,
-          signature_secret
-    ) do
+           signature,
+           %{userId: ""},
+           signature_type,
+           signature_secret
+         ) do
       {:claims, %{"userId" => user_id, "visitor" => true}} ->
         {:ok, user_id}
+
       {:claims, claims} ->
-        Logger.error("invalid visitor token: #{inspect claims}")
+        Logger.error("invalid visitor token: #{inspect(claims)}")
+
       error ->
-        Logger.error("visitor signature check failed: #{inspect error}")
+        Logger.error("visitor signature check failed: #{inspect(error)}")
         error
     end
   end
 
   defp check_user_signature(%User{} = auth, signature, signature_type, signature_secret) do
     case Fog.UserSignature.verify_user_signature(
-          signature,
-          auth,
-          signature_type,
-          signature_secret
-    ) do
+           signature,
+           auth,
+           signature_type,
+           signature_secret
+         ) do
       :ok ->
         :ok
+
       {:error, :signature_is_nil} ->
         check_widget_key(auth, signature_secret)
+
       error ->
-        Logger.error("user signature check failed: #{inspect error}")
+        Logger.error("user signature check failed: #{inspect(error)}")
         error
     end
   end
@@ -157,8 +159,9 @@ defmodule Fog.Api.Auth do
     case Fog.UserSignature.verify_widget_key(widget_key, signature_secret) do
       :ok ->
         :ok
+
       error ->
-        Logger.error("widget key check failed: #{inspect error}")
+        Logger.error("widget key check failed: #{inspect(error)}")
         error
     end
   end
@@ -171,6 +174,7 @@ defmodule Fog.Api.Auth do
   defp user_picture(%User{userAvatarUrl: nil} = auth, workspace) do
     {:default, user_picture_url(Repo.FeatureOption.get(workspace).avatar_library_url, auth)}
   end
+
   defp user_picture(%User{userAvatarUrl: user_picture}, _), do: user_picture
 
   defp with_triage?(%User{customerName: "$Cust_External_" <> _}), do: false
@@ -179,13 +183,14 @@ defmodule Fog.Api.Auth do
   defp import_user(%User{} = auth, workspace) do
     user_picture = user_picture(auth, workspace)
     with_triage = with_triage?(auth)
+
     Repo.User.import_external(
-        workspace.vendor_id,
-        workspace.id,
-        auth.customerId,
-        auth.userId,
-        {auth.userEmail, auth.userName, user_picture, auth.customerName},
-        with_triage
+      workspace.vendor_id,
+      workspace.id,
+      auth.customerId,
+      auth.userId,
+      {auth.userEmail, auth.userName, user_picture, auth.customerName},
+      with_triage
     )
   end
 
@@ -196,11 +201,20 @@ defmodule Fog.Api.Auth do
 
   defp login_response(%Data.User{} = user, workspace) do
     session = Session.for_user(workspace.vendor_id, user.helpdesk_id, user.id)
+
+    session = %Session.User{
+      session
+      | is_visitor: Api.Visitor.is_visitor?(user),
+        email_verified: Api.Visitor.email_verified?(user)
+    }
+
     user = user |> Repo.preload(helpdesk: [:tags, :customer, :vendor])
+
     unless user.last_activity_at,
       do: Repo.User.update_last_activity(user.id, DateTime.utc_now())
 
     avatar_library_url = Repo.FeatureOption.get(workspace).avatar_library_url
+
     res = %Ok{
       sessionId: session.id,
       userId: user.id,
@@ -212,16 +226,18 @@ defmodule Fog.Api.Auth do
       helpdeskId: user.helpdesk_id,
       helpdesk: %{
         id: user.helpdesk_id,
-        tags: user.helpdesk.tags
-        |> Enum.map(
-          &%{
-            id: &1.id,
-            name: &1.name
-          }
-        ),
+        tags:
+          user.helpdesk.tags
+          |> Enum.map(
+            &%{
+              id: &1.id,
+              name: &1.name
+            }
+          ),
         vendorName: user.helpdesk.vendor.name
       }
     }
+
     {:reply, res, session}
   end
 
