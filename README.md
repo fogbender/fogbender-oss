@@ -60,9 +60,9 @@ The above will start 3 apps on different ports:
 
 ### 6. Now you can use Fogbender just like you would on https://fogbender.com, except some features will be turned off or mocked:
 
-    - Intergrations with 3rd party services (like Stripe, Slack, GitHub, etc), Google login, AWS Cognito are turned off (you need to configure secrets in the `local.env` file to enable them)
-    - File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
-    - You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
+- Intergrations with 3rd party services (like Stripe, Slack, GitHub, etc), Google login, AWS Cognito are turned off (you need to configure secrets in the `local.env` file to enable them)
+- File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
+- You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
 
 ### 7. Optional: To get access to Fogbender root organization, do the above, sign up, then run
 
