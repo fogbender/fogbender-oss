@@ -56,16 +56,6 @@ defmodule Fog.Repo.Helpdesk do
     |> Repo.one()
   end
 
-  def get_anonymous(workspace_id) do
-    from(
-      h in Data.Helpdesk,
-      join: c in assoc(h, :customer),
-      on: like(c.name, "$Cust_Anonymous_%"),
-      where: h.workspace_id == ^workspace_id
-    )
-    |> Repo.one()
-  end
-
   def has_user?(helpdesk_id, user_id) do
     from(h in Data.Helpdesk,
       join: u in assoc(h, :users),

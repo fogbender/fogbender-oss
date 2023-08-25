@@ -8,6 +8,7 @@ defmodule Test.Repo.Room do
     h = helpdesk(w)
     r1 = public_room(h, "R1")
     a = agent(w)
+    u = user(h)
     Kernel.binding()
   end
 
@@ -94,5 +95,17 @@ defmodule Test.Repo.Room do
              |> Repo.all()
              |> Enum.map(&{&1.id, &1.name})
              |> Enum.sort()
+  end
+
+  describe "create_private" do
+    test "creates room if not exists", ctx do
+      r = Repo.Room.create_private(ctx.w.id, [ctx.u.id], ["all"], %{
+        helpdesk_id: ctx.h.id,
+        name: "TEST",
+        tags: []
+      })
+
+      assert %Data.Room{name: "TEST"} = r
+    end
   end
 end
