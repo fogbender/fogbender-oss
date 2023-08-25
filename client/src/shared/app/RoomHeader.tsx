@@ -1012,7 +1012,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             !singleRoomMode && isActive
               ? isInternal
                 ? "bg-green-500 text-white"
-                : "bg-brand-orange-500 text-white"
+                : "bg-black text-white"
               : "",
             singleRoomMode && "hidden sm:flex",
             isDraggable && "cursor-move"
