@@ -139,7 +139,7 @@ export function renderIframe(
     if (!rootEl || disableFit) {
       return;
     }
-    const totalFooterHeight = (el, acc) => {
+    const totalFooterHeight = (el: Element, acc: number): number => {
       const cs = getComputedStyle(el);
       const x =
         parseInt(cs.paddingBottom) + parseInt(cs.marginBottom) + parseInt(cs.borderBottomWidth);
