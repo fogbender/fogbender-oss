@@ -15,6 +15,13 @@ defmodule Fog.Repo.User do
     Repo.one(q)
   end
 
+  def from_helpdesk(helpdesk_id, user_id) do
+    from(u in Data.User,
+      where: u.id == ^user_id and u.helpdesk_id == ^helpdesk_id
+    )
+    |> Repo.one()
+  end
+
   def get_external(vid, wid, cid, uid) do
     q =
       from(u in Data.User,

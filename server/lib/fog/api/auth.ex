@@ -54,6 +54,10 @@ defmodule Fog.Api.Auth do
 
   def info(%User{}, _), do: {:reply, Err.forbidden()}
 
+  def info(%Visitor{} = auth, %Session.Guest{}) do
+    login_user(auth)
+  end
+
   def info(
         %Agent{agentId: agentId, vendorId: vendorId, token: token},
         %Session.Guest{agentId: agentId}
@@ -102,6 +106,33 @@ defmodule Fog.Api.Auth do
       login_response(user, workspace)
     else
       _ -> {:reply, Err.not_authorized()}
+    end
+  end
+
+  def login_user(%Visitor{widgetId: widget_id} = auth) do
+    with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
+         {:ok, user_id} <- check_visitor_signature(auth.token, "jwt", workspace.signature_secret),
+         %Data.User{} = user <- load_visitor(user_id, workspace) do
+      login_response(user, workspace)
+    else
+      _ -> {:reply, Err.not_authorized()}
+    end
+  end
+
+  defp check_visitor_signature(signature, signature_type, signature_secret) do
+    case Fog.UserSignature.verify_user_signature(
+          signature,
+          %{userId: ""},
+          signature_type,
+          signature_secret
+    ) do
+      {:claims, %{"userId" => user_id, "visitor" => true}} ->
+        {:ok, user_id}
+      {:claims, claims} ->
+        Logger.error("invalid visitor token: #{inspect claims}")
+      error ->
+        Logger.error("visitor signature check failed: #{inspect error}")
+        error
     end
   end
 
@@ -156,6 +187,11 @@ defmodule Fog.Api.Auth do
         {auth.userEmail, auth.userName, user_picture, auth.customerName},
         with_triage
     )
+  end
+
+  defp load_visitor(user_id, workspace) do
+    helpdesk = Repo.Helpdesk.get_external(workspace.id)
+    Repo.User.from_helpdesk(helpdesk.id, user_id)
   end
 
   defp login_response(%Data.User{} = user, workspace) do

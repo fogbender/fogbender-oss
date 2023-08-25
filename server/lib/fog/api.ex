@@ -10,6 +10,7 @@ defmodule Fog.Api do
     Api.Ping,
     Api.Echo,
     Api.Auth,
+    Api.Visitor,
     Api.Room,
     Api.Message,
     Api.File,

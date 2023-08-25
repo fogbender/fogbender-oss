@@ -99,11 +99,12 @@ defmodule Test.Repo.Room do
 
   describe "create_private" do
     test "creates room if not exists", ctx do
-      r = Repo.Room.create_private(ctx.w.id, [ctx.u.id], ["all"], %{
-        helpdesk_id: ctx.h.id,
-        name: "TEST",
-        tags: []
-      })
+      r =
+        Repo.Room.create_private(ctx.w.id, [ctx.u.id], ["all"], %{
+          helpdesk_id: ctx.h.id,
+          name: "TEST",
+          tags: []
+        })
 
       assert %Data.Room{name: "TEST"} = r
     end
