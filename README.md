@@ -64,11 +64,11 @@ The above will start 3 apps on different ports:
 - File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
 - You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
 
-### 7. Optional: To get access to Fogbender root organization, do the above, sign up, then run
+### 7. Optional: To get access to the Fogbender root organization, do the above, sign up, then run
 
         ./scripts/oss-make.sh fog-agent-boot
 
-Once you do this, you'll see the "Fogbender" organization under http://localhost:3100/admin - this way, you can answer your own support questions.
+> Once you do this, you'll see the "Fogbender" organization under http://localhost:3100/admin - this way, you can answer your own support questions.
 
 ### Working with the local database
 
