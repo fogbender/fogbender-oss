@@ -26,29 +26,29 @@ https://fogbender.com is a hosted version of Fogbender operated by the authors o
 - Unlimited end-users
 - Unlimited messages and files
 
-## 🤺 Medium: Get it running locally
+## 🤺 Medium: Run Fogbender locally
 
-1.  Install [Nix](https://nixos.org/nix/download.html):
+### 1. Install [Nix](https://nixos.org/nix/download.html):
 
         curl -L https://nixos.org/nix/install | sh
 
-2.  Clone the repo
+### 2. Clone the repo
 
         git clone https://github.com/fogbender/fogbender.git && cd fogbender
 
-3.  Generate token/session secrets. This will write the secrets to a Git-ignored `local.env` file:
+### 3. Generate token/session secrets. This will write the secrets to a Git-ignored `local.env` file:
 
         ./scripts/oss-make.sh fog-secrets
 
 > Note: do this ^^ once
 
-4.  Start the backend:
+### 4. Start the backend:
 
         ./scripts/oss-make.sh
 
-Is it running? Check here: http://localhost:8000/public/about
+> Is it running? Check here: http://localhost:8000/public/about
 
-5.  Start the frontend (use a second terminal):
+### 5. Start the frontend (use a second terminal):
 
         ./scripts/oss-make.sh web-start
 
@@ -58,13 +58,13 @@ The above will start 3 apps on different ports:
 - http://localhost:3200 - local version of https://demo1.fogbender.com/
 - http://localhost:3300 - local version of https://client.fogbender.com (embeddedable widget - won't load without a token)
 
-6.  Now you can use Fogbender just like you would on https://fogbender.com, except some features will be turned off or mocked:
+### 6. Now you can use Fogbender just like you would on https://fogbender.com, except some features will be turned off or mocked:
 
     - Intergrations with 3rd party services (like Stripe, Slack, GitHub, etc), Google login, AWS Cognito are turned off (you need to configure secrets in the `local.env` file to enable them)
     - File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
     - You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
 
-7.  Optional: To get access to Fogbender root organization, do the above, sign up, then run
+### 7. Optional: To get access to Fogbender root organization, do the above, sign up, then run
 
         ./scripts/oss-make.sh fog-agent-boot
 
@@ -84,7 +84,7 @@ To reset the database (WIPING ALL DATA) run
 
     ./scripts/oss-make.sh db-clean
 
-## 🧗‍♀️ Hard: Host it in your cloud
+## 🧗‍♀️ Hard: Host Fogbender in your cloud
 
 We host Fogbender in AWS and use [Pulumi](https://www.pulumi.com) for IaC and [SOPS](https://github.com/getsops/sops) with AWS KMS for secrets management.
 
