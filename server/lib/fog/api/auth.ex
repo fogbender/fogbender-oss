@@ -128,7 +128,9 @@ defmodule Fog.Api.Auth do
         {:ok, user_id}
 
       {:claims, claims} ->
-        Logger.error("invalid visitor token: #{inspect(claims)}")
+        error = "invalid visitor token: #{inspect(claims)}"
+        Logger.error(error)
+        {:error, error}
 
       error ->
         Logger.error("visitor signature check failed: #{inspect(error)}")
