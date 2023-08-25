@@ -139,9 +139,31 @@ export function renderIframe(
     if (!rootEl || disableFit) {
       return;
     }
+    const totalFooterHeight = (el, acc) => {
+      const cs = getComputedStyle(el);
+      const x =
+        parseInt(cs.paddingBottom) + parseInt(cs.marginBottom) + parseInt(cs.borderBottomWidth);
+
+      if (el.parentElement) {
+        return totalFooterHeight(el.parentElement, acc + x);
+      }
+
+      return acc;
+    };
+
+    let heightBelow = 0;
+
+    try {
+      const iFrameTopBorderWidth = parseInt(getComputedStyle(iFrame).borderTopWidth);
+      heightBelow = Math.max(totalFooterHeight(iFrame, 0) + iFrameTopBorderWidth, 0);
+    } catch (e) {}
+
     const height = headless
       ? 0
-      : Math.min(window.innerHeight, window.innerHeight - rootEl.getBoundingClientRect().top);
+      : Math.min(
+          window.innerHeight,
+          window.innerHeight - heightBelow - rootEl.getBoundingClientRect().top
+        );
     iFrame.style.height = height + "px";
   }
 
