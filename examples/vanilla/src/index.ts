@@ -1,7 +1,7 @@
 import { createNewFogbender } from "fogbender";
 
 const addFogbender = async (rootEl: HTMLElement) => {
-  const clientUrl = "https://master--fb-client.netlify.app";
+  const clientUrl = "https://main--fb-client.netlify.app";
   const token = {
     widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
     customerId: "org123",

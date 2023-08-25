@@ -36,7 +36,7 @@ npm i -g @antfu/ni && ni fogbender-vue
 <template>
   <div>
     <p>Hello Fogbender</p>
-    <FogbenderSimpleWidget clientUrl="https://master--fb-client.netlify.app" :token="token" />
+    <FogbenderSimpleWidget clientUrl="https://main--fb-client.netlify.app" :token="token" />
   </div>
 </template>
 ```
