@@ -70,7 +70,7 @@ The above will start 3 apps on different ports:
 
 Once you do this, you'll see the "Fogbender" organization under http://localhost:3100/admin - this way, you can answer your own support questions.
 
-### Working with the Database
+### Working with the local database
 
 Starting the backend server will automatically create and start a local PostgreSQL database. For `psql` access, run
 
