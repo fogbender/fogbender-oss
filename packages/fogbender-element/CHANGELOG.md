@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.1.3
+
+### Patch Changes
+
+- 55212c8: bump to use fogbender 0.2.3
+
 ## 0.1.2
 
 ### Patch Changes
