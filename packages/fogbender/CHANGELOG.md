@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.2.3
+
+### Patch Changes
+
+- 5d24202: Fix iFrame height calculation so things work nicely when there is a footer below the iFrame.
+
 ## 0.2.2
 
 ### Patch Changes
