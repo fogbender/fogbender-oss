@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
 import classNames from "classnames";
+import dayjs from "dayjs";
 import {
-  EventRoom as Room,
   EventIssue,
+  EventRoom as Room,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
   Tag,

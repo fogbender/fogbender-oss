@@ -1001,7 +1001,9 @@ CREATE TABLE public."user" (
     last_activity_at timestamp without time zone,
     last_digest_check_at timestamp without time zone,
     deleted_at timestamp without time zone,
-    deleted_by_agent_id bigint
+    deleted_by_agent_id bigint,
+    is_visitor boolean DEFAULT false NOT NULL,
+    email_verified boolean DEFAULT true NOT NULL
 );
 
 
@@ -2417,3 +2419,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230507192311);
 INSERT INTO public."schema_migrations" (version) VALUES (20230720040621);
 INSERT INTO public."schema_migrations" (version) VALUES (20230806172529);
 INSERT INTO public."schema_migrations" (version) VALUES (20230806192239);
+INSERT INTO public."schema_migrations" (version) VALUES (20230826185752);

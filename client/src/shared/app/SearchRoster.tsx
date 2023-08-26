@@ -15,9 +15,9 @@ import { Avatar, UnreadCircle } from "../components/lib";
 import { queryKeys } from "../utils/client";
 import {
   formatCustomerName,
-  isInternalHelpdesk,
-  isExternalHelpdesk,
   isAnonymousHelpdesk,
+  isExternalHelpdesk,
+  isInternalHelpdesk,
 } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 

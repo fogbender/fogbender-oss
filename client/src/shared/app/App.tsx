@@ -110,6 +110,7 @@ export const App: React.FC<{
     agentRole,
     avatarLibraryUrl,
     isAgent,
+    userType,
     isAuthenticated,
     isConnected,
     isTokenWrong,
@@ -130,12 +131,13 @@ export const App: React.FC<{
   const myAuthor = React.useMemo(() => {
     const author: Author = {
       type: isAgent ? "agent" : "user",
+      userType,
       id: ourId || "",
       name: authorMe?.name || "",
       avatarUrl: userAvatarUrl || authorMe?.avatarUrl,
     };
     return author;
-  }, [authorMe, ourId, isAgent, userAvatarUrl]);
+  }, [authorMe, ourId, isAgent, userType, userAvatarUrl]);
 
   const version = getVersion();
 
@@ -628,14 +630,14 @@ export const App: React.FC<{
   }, [ourId, userAvatarUrl, lastIncomingMessage]);
 
   const userInfo = React.useMemo(() => {
-    if (token && "userId" in token && ourId && !("unauthenticated" in token) && authorMe) {
+    if (token && "userId" in token && ourId && !("visitor" in token) && authorMe) {
       return {
         id: ourId,
         name: token.userName,
         avatarUrl: avatarUrl || userAvatarUrl,
         customerName: authorMe.customerName,
       };
-    } else if (ourId && token && "unauthenticated" in token && authorMe) {
+    } else if (ourId && token && "visitor" in token && authorMe) {
       return {
         id: ourId,
         name: authorMe.name,
@@ -842,7 +844,7 @@ export const App: React.FC<{
   const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
 
   const onGoFullScreen =
-    isIframe && token && ("userId" in token || "unauthenticated" in token)
+    isIframe && token && ("userId" in token || "visitor" in token)
       ? () => handleGoFullScreen(token)
       : undefined;
 
@@ -886,7 +888,7 @@ export const App: React.FC<{
               {helpdesk?.vendorName}
             </span>
           </div>
-          {isIframe && token && ("userId" in token || "unauthenticated" in token) && (
+          {isIframe && token && ("userId" in token || "visitor" in token) && (
             <div className="h-full flex items-center">
               <GoFullScreen token={token} />
             </div>
@@ -908,7 +910,9 @@ export const App: React.FC<{
                   <div className="flex flex-col text-right truncate">
                     <div className="flex items-center space-x-1">
                       <span className="flex-1 flex flex-col fog:text-caption-xl truncate">
-                        <span className="truncate">{userInfo.name}</span>
+                        <span title={userInfo.name} className="truncate">
+                          {userInfo.name}
+                        </span>
                       </span>
                     </div>
                     {userInfo.customerName &&
@@ -1214,6 +1218,7 @@ export const App: React.FC<{
                     paneId={el.i}
                     roomId={paneIdToRoomId(el.i)}
                     isAgent={isAgent}
+                    myAuthor={myAuthor}
                     activeRoomId={activeRoomId}
                     singleRoomMode={singleRoomMode}
                     isLayoutPinned={layoutPins.includes(el.i)}

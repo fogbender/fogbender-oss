@@ -21,14 +21,15 @@ export type AgentToken = {
   versions?: { [key: string]: string };
 };
 
-export type UnauthenticatedToken = {
+export type VisitorToken = {
   widgetId: string;
+  visitor: true;
   userId?: string;
-  unauthenticated: true;
+  userJWT?: string;
   versions?: { [key: string]: string };
 };
 
-export type AnyToken = UserToken | AgentToken | UnauthenticatedToken;
+export type AnyToken = UserToken | AgentToken | VisitorToken;
 
 // UTILITY TYPES
 
@@ -82,9 +83,10 @@ export type APISchema = {
   MessageRefreshFilesRPC: RPC<MessageRefreshFiles, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
-  AuthUnauthenticatedRPC: RPC<AuthUnauthenticated, AuthError | AuthOk>;
-  AuthEmailToVerifyRPC: RPC<AuthEmailToVerify, AuthError | AuthOk>;
-  AuthCodeToVerifyRPC: RPC<AuthCodeToVerify, AuthError | AuthOk>;
+  AuthVisitorRPC: RPC<AuthVisitor, AuthError | AuthOk>;
+  VisitorNewRPC: RPC<VisitorNew, VisitorError | VisitorOk>;
+  VisitorVerifyEmailRPC: RPC<VisitorVerifyEmail, VisitorError | VisitorOk>;
+  VisitorVerifyCodeRPC: RPC<VisitorVerifyCode, VisitorError | VisitorOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
@@ -717,22 +719,32 @@ export type AuthAgent = {
   token: string;
 } & AgentToken;
 
-export type AuthUnauthenticated = {
+export type AuthVisitor = {
   msgId?: string;
-  msgType: "Auth.Unauthenticated";
-} & UnauthenticatedToken;
+  msgType: "Auth.Visitor";
+  widgetId: string;
+  token: string;
+};
 
-export type AuthEmailToVerify = {
+export type VisitorNew = {
   msgId?: string;
-  msgType: "Auth.EmailToVerify";
+  msgType: "Visitor.New";
+  widgetId: string;
+};
+
+export type VisitorVerifyEmail = {
+  msgId?: string;
+  msgType: "Visitor.VerifyEmail";
   email: string;
 };
 
-export type AuthCodeToVerify = {
+export type VisitorVerifyCode = {
   msgId?: string;
-  msgType: "Auth.CodeToVerify";
-  verificationCode: string;
+  msgType: "Visitor.VerifyCode";
+  emailCode: string;
 };
+
+export type VisitorError = Error<"Visitor.Err">;
 
 export type AuthError = Error<"Auth.Err">;
 
@@ -750,6 +762,15 @@ export type AuthOk = {
   role?: string;
   widgetId?: string;
   customerName?: string;
+  isVisitor?: boolean;
+  emailVerified?: boolean;
+};
+
+export type VisitorOk = {
+  msgId: string;
+  msgType: "Visitor.Ok";
+  userId?: string;
+  token?: string;
 };
 
 export type EchoGet = {

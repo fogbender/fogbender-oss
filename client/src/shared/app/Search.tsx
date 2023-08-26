@@ -1,5 +1,11 @@
 import classNames from "classnames";
-import { Room as RoomT, useLoadAround, useRoomHistory, useSearchHistory } from "fogbender-proto";
+import {
+  Author,
+  Room as RoomT,
+  useLoadAround,
+  useRoomHistory,
+  useSearchHistory,
+} from "fogbender-proto";
 import React from "react";
 import { throttle } from "throttle-debounce";
 
@@ -14,6 +20,7 @@ export const Search: React.FC<{
   roomId: string;
   paneId: string;
   isAgent?: boolean;
+  myAuthor: Author;
   singleRoomMode?: boolean;
   activeRoomId?: string;
   isLayoutPinned: boolean;
@@ -27,6 +34,7 @@ export const Search: React.FC<{
   roomId,
   paneId,
   isAgent,
+  myAuthor,
   singleRoomMode,
   activeRoomId,
   isLayoutPinned,
@@ -92,6 +100,7 @@ export const Search: React.FC<{
           mode="Search"
           helpdesk={undefined}
           isAgent={isAgent}
+          myAuthor={myAuthor}
           singleRoomMode={singleRoomMode || false}
           isActive={singleRoomMode || activeRoomId === paneId}
           isLayoutPinned={isLayoutPinned}

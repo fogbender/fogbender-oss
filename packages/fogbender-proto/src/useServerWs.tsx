@@ -6,7 +6,16 @@ import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import type { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
+import type {
+  AnyToken,
+  Helpdesk,
+  FogSchema,
+  PingPing,
+  ServerCalls,
+  ServerEvents,
+  VisitorNew,
+  AuthVisitor,
+} from "./schema";
 import type { Client } from "./client";
 
 type Requests = {
@@ -36,7 +45,8 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
 const isAuthMessage = (message: FogSchema["outbound"]) =>
   message.msgType === "Auth.Agent" ||
   message.msgType === "Auth.User" ||
-  message.msgType === "Auth.Unauthenticated";
+  message.msgType === "Auth.Visitor" ||
+  message.msgType === "Visitor.New";
 
 export function useServerWs(
   client: Client,
@@ -47,6 +57,9 @@ export function useServerWs(
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [avatarLibraryUrl, setAvatarLibraryUrl] = React.useState<string>();
   const [agentRole, setAgentRole] = React.useState<string>();
+  const [userType, setUserType] = React.useState<
+    "user" | "visitor-verified" | "visitor-unverified"
+  >();
   const inFlight = React.useRef(new Map<string, Requests>());
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
@@ -168,22 +181,62 @@ export function useServerWs(
     onError("other", "other", ReadyState[readyState]);
 
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
-      if ("widgetId" in token && "unauthenticated" in token) {
-        const clone = { ...token };
-        clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
-        const unauthenticatedSession =
-          client &&
-          client.getUnauthenticatedSession &&
-          client.getUnauthenticatedSession(token.widgetId);
+      const visitorInfo =
+        "widgetId" in token && client?.getVisitorInfo
+          ? client?.getVisitorInfo(token.widgetId)
+          : undefined;
 
-        if (unauthenticatedSession) {
-          clone.userId = unauthenticatedSession.userId;
-        }
-
-        serverCall({
-          ...clone,
-          msgType: "Auth.Unauthenticated",
+      if ("widgetId" in token && "visitor" in token && !visitorInfo) {
+        serverCall<VisitorNew>({
+          msgType: "Visitor.New",
           widgetId: token.widgetId,
+        }).then(
+          r => {
+            if (r.msgType === "Visitor.Ok") {
+              const { token: visitorToken, userId } = r;
+              if (visitorToken && userId) {
+                client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
+                window.location.reload();
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Expected a token in Visitor.Ok, but got nothing")
+                );
+              }
+            } else if (r.msgType === "Visitor.Err") {
+              if (r.code === 401 || r.code === 403) {
+                onWrongToken(token);
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Failed to create new visitor " + JSON.stringify(r))
+                );
+              }
+            } else if (r.msgType === "Error.Fatal") {
+              if ("code" in r && r.code === 409) {
+                onWrongToken(token);
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Fatal error while creating visitor " + JSON.stringify(r))
+                );
+              }
+            }
+          },
+          r => {
+            onError("error", "other", r);
+          }
+        );
+      }
+
+      if ("widgetId" in token && "visitor" in token && visitorInfo && "token" in visitorInfo) {
+        serverCall<AuthVisitor>({
+          msgType: "Auth.Visitor",
+          widgetId: token.widgetId,
+          token: visitorInfo.token,
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
@@ -195,16 +248,16 @@ export function useServerWs(
                 helpdeskId,
                 userAvatarUrl,
                 customerName,
+                emailVerified,
               } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
               setAvatarLibraryUrl(r.avatarLibraryUrl);
-              client.setUnauthenticatedSession?.({
-                sessionId,
-                widgetId: token.widgetId,
-                userId,
-                userAvatarUrl,
-              });
+              if (emailVerified) {
+                setUserType("visitor-verified");
+              } else {
+                setUserType("visitor-unverified");
+              }
               client.setSession?.({
                 sessionId,
                 userId,
@@ -236,7 +289,7 @@ export function useServerWs(
             onError("error", "other", r);
           }
         );
-      } else if ("widgetId" in token) {
+      } else if ("widgetId" in token && !("visitor" in token)) {
         const clone = { ...token };
         clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
         serverCall({
@@ -257,6 +310,7 @@ export function useServerWs(
               } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
+              setUserType("user");
               setAvatarLibraryUrl(r.avatarLibraryUrl);
               client.setSession?.({
                 sessionId,
@@ -441,6 +495,7 @@ export function useServerWs(
     isAgent: token && "agentId" in token,
     avatarLibraryUrl: avatarLibraryUrl,
     agentRole: agentRole,
+    userType,
   };
 }
 

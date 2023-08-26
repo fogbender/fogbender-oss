@@ -14,11 +14,10 @@ export type ClientSession = {
   customerName?: string;
 };
 
-export type UnauthenticatedSession = {
-  sessionId?: string;
+export type VisitorInfo = {
   widgetId: string;
+  token: string;
   userId: string;
-  userAvatarUrl?: string;
 };
 
 export interface Client {
@@ -27,11 +26,9 @@ export interface Client {
   onError?(type: ErrorType, kind: ErrorKind, ...errors: (Error | string)[]): void;
   setSession?(x: ClientSession): void;
 
-  getUnauthenticatedSession?(
-    widgetId: string
-  ): { userId: string; userAvatarUrl?: string } | undefined;
+  getVisitorInfo?(widgetId: string): VisitorInfo | undefined;
 
-  setUnauthenticatedSession?(x: UnauthenticatedSession): void;
+  setVisitorInfo?(x: VisitorInfo): void;
 
   onWrongToken?(token: AnyToken): void;
 }

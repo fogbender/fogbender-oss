@@ -36,6 +36,7 @@ export type Author = {
   id: string;
   name: string;
   type: AuthorType;
+  userType?: "visitor-verified" | "visitor-unverified" | "user";
   avatarUrl?: string;
 };
 
@@ -198,6 +199,7 @@ function useProviderValue(
       isAuthenticated: ws.isAuthenticated,
       isTokenWrong: ws.isTokenWrong,
       isAgent: ws.isAgent,
+      userType: ws.userType,
       avatarLibraryUrl: ws.avatarLibraryUrl,
       token,
       fogSessionId,
@@ -217,6 +219,7 @@ function useProviderValue(
     ws.isAuthenticated,
     ws.isTokenWrong,
     ws.isAgent,
+    ws.userType,
     ws.avatarLibraryUrl,
     token,
     fogSessionId,

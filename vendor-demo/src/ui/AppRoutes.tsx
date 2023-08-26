@@ -8,7 +8,7 @@ import { Dashboard } from "./Dashboard";
 import { IndexPage } from "./IndexPage";
 import { LoginPage } from "./LoginPage";
 import { Profile } from "./ProfilePage";
-import { Support, SupportAnonymous, SupportAnonymousFloatie, SupportFallback } from "./Support";
+import { Support, SupportFallback, SupportVisitor, SupportVisitorFloatie } from "./Support";
 import { SupportBefore } from "./SupportBefore";
 import { Team } from "./Team";
 
@@ -81,20 +81,20 @@ export const AppRoutes = () => {
         }
       />
       <Route
-        path="support-anonymous"
+        path="support-visitor"
         element={
           <IndexPage title="Support: Visitor">
             <HideFloatingWidget />
-            <SupportAnonymous />
+            <SupportVisitor />
           </IndexPage>
         }
       />
       <Route
-        path="support-anonymous-floatie"
+        path="support-visitor-floatie"
         element={
           <IndexPage title="Support: Visitor (floatie)">
             <HideFloatingWidget />
-            <SupportAnonymousFloatie />
+            <SupportVisitorFloatie />
           </IndexPage>
         }
       />

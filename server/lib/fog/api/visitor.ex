@@ -33,6 +33,8 @@ defmodule Fog.Api.Visitor do
         false
       )
 
+    user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
+
     room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
 
     %Data.Room{} =
@@ -110,10 +112,12 @@ defmodule Fog.Api.Visitor do
   end
 
   def info(%VerifyCode{emailCode: code}, %Session.User{
+        userId: user_id,
         is_visitor: true,
         email_verified: false,
         verification_code: code
       }) do
+    %Data.User{} = Repo.User.update(user_id, email_verified: true)
     {:reply, %Ok{}}
   end
 

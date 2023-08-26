@@ -1,10 +1,10 @@
 import { isUserToken, Token } from "fogbender";
 import {
-  UnauthenticatedToken,
   ClientSession,
   getServerApiUrl,
-  UnauthenticatedSession,
   UserToken,
+  VisitorInfo,
+  VisitorToken,
 } from "fogbender-proto";
 import { parse } from "query-string";
 import React from "react";
@@ -81,16 +81,16 @@ const App = () => {
     }
   }, [notificationsPermission]);
 
-  const setUnauthenticatedSession = ({ widgetId, userId }: UnauthenticatedSession) => {
-    if (userId && widgetId) {
-      SafeLocalStorage.setItem(`unauthenticated-user-${widgetId}`, userId);
-    }
+  const setVisitorInfo = (info: VisitorInfo) => {
+    const { widgetId } = info;
+
+    SafeLocalStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
   };
 
-  const getUnauthenticatedSession = (widgetId: string) => {
-    const userId = SafeLocalStorage.getItem(`unauthenticated-user-${widgetId}`);
+  const getVisitorInfo = (widgetId: string) => {
+    const info = SafeLocalStorage.getItem(`visitor-${widgetId}`);
 
-    return userId ? { userId } : undefined;
+    return info ? JSON.parse(info) : undefined;
   };
 
   React.useLayoutEffect(() => {
@@ -123,10 +123,9 @@ const App = () => {
 
   const userToken = isUserToken(token) ? token : undefined;
 
-  const isUnauthenticatedOk =
-    token && "unauthenticated" in token && token["unauthenticated"] === true;
+  const isVisitorOk = token && "visitor" in token && token["visitor"] === true;
 
-  if (!userToken && !isUnauthenticatedOk && token) {
+  if (!userToken && !isVisitorOk && token) {
     return <NoUserFallback clientEnv={clientEnv} token={token} />;
   }
 
@@ -134,12 +133,12 @@ const App = () => {
     <ErrorBoundary FallbackComponent={ErrorPageFallback}>
       <IsIdleProvider>
         <ProviderWrapper
-          token={isUnauthenticatedOk ? token : userToken}
+          token={isVisitorOk ? token : userToken}
           clientEnv={clientEnv}
           wrongToken={wrongToken}
           onWrongToken={onWrongToken}
-          setUnauthenticatedSession={setUnauthenticatedSession}
-          getUnauthenticatedSession={getUnauthenticatedSession}
+          setVisitorInfo={setVisitorInfo}
+          getVisitorInfo={getVisitorInfo}
           headless={headless}
           notificationsPermission={notificationsPermission}
           setNotificationsPermission={setNotificationsPermission}
@@ -152,14 +151,12 @@ const App = () => {
 };
 
 const ProviderWrapper: React.FC<{
-  token: UserToken | UnauthenticatedToken | undefined;
+  token: UserToken | VisitorToken | undefined;
   clientEnv: string | undefined;
   wrongToken: boolean;
   onWrongToken: (token: UserToken) => void;
-  setUnauthenticatedSession?: (x: UnauthenticatedSession) => void;
-  getUnauthenticatedSession?: (
-    widgetId: string
-  ) => { userId: string; userAvatarUrl?: string } | undefined;
+  setVisitorInfo?: (x: VisitorInfo) => void;
+  getVisitorInfo?: (widgetId: string) => VisitorInfo | undefined;
   headless: boolean;
   notificationsPermission: NotificationPermission | "hide" | "request";
   setNotificationsPermission: (p: NotificationPermission | "hide" | "request") => void;
@@ -170,8 +167,8 @@ const ProviderWrapper: React.FC<{
   clientEnv,
   wrongToken,
   onWrongToken,
-  setUnauthenticatedSession,
-  getUnauthenticatedSession,
+  setVisitorInfo,
+  getVisitorInfo,
   headless,
   notificationsPermission,
   setNotificationsPermission,
@@ -190,15 +187,15 @@ const ProviderWrapper: React.FC<{
       client={{
         getEnv: () => envRef.current,
         onWrongToken,
-        getUnauthenticatedSession,
-        setUnauthenticatedSession,
+        getVisitorInfo,
+        setVisitorInfo,
         setSession: ({ userAvatarUrl, userName, userEmail, customerName }: ClientSession) => {
           if (userName && userEmail) {
             setAuthorMe({
               name: userName,
               email: userEmail,
               avatarUrl: userAvatarUrl,
-              customerName: customerName,
+              customerName,
             });
           }
         },

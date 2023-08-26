@@ -27,9 +27,6 @@ defmodule Fog.Api.Auth do
   defmsg(Resume, [:vendorId, :sessionId, :token])
   defmsg(Logout, [:vendorId, :sessionId])
 
-  defmsg(EmailToVerify, [:email])
-  defmsg(CodeToVerify, [:verificationCode])
-
   defmsg(Ok, [
     :sessionId,
     :userId,
@@ -41,7 +38,9 @@ defmodule Fog.Api.Auth do
     :role,
     :userName,
     :userEmail,
-    :widgetId
+    :widgetId,
+    :isVisitor,
+    :emailVerified
   ])
 
   defmsg(LogoutOk, [])
@@ -237,7 +236,9 @@ defmodule Fog.Api.Auth do
             }
           ),
         vendorName: user.helpdesk.vendor.name
-      }
+      },
+      isVisitor: user.is_visitor,
+      emailVerified: user.email_verified
     }
 
     {:reply, res, session}

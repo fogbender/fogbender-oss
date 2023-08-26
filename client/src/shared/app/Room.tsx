@@ -1,4 +1,3 @@
-import { formatRoomName, isInternalHelpdesk } from "../utils/format";
 import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import dayjs from "dayjs";
@@ -41,6 +40,7 @@ import { useSelection } from "../messages/useSelection";
 import { showAiHelperAtom } from "../store/config.store";
 import { Agent, VendorBilling } from "../types";
 import { atomWithLocalStorage } from "../utils/atomWithLocalStorage";
+import { formatRoomName, isInternalHelpdesk } from "../utils/format";
 import { formatRoomTs } from "../utils/formatTs";
 import { getPreviousMessageId } from "../utils/serverBigInt";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -169,7 +169,7 @@ export const Room: React.FC<{
 }> = ({
   myAuthor,
   ourId,
-  isAgent,
+  isAgent, // TODO: this is reduntant, use myAuthor.type
   billing,
   agents,
   roomId,
@@ -665,6 +665,7 @@ export const Room: React.FC<{
           helpdesk={helpdesk}
           ourId={ourId}
           isAgent={isAgent}
+          myAuthor={myAuthor}
           agents={agents}
           singleRoomMode={singleRoomMode}
           onGoFullScreen={onGoFullScreen}

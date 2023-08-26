@@ -66,7 +66,7 @@ export const SupportFallback = ({ headless }: { headless?: boolean }) => {
   );
 };
 
-export const SupportAnonymous = ({ headless }: { headless?: boolean }) => {
+export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
   const fogbender = React.useRef(createNewFogbender());
   const fullToken = useToken();
   const token = React.useMemo<FallbackToken | undefined>(
@@ -76,7 +76,7 @@ export const SupportAnonymous = ({ headless }: { headless?: boolean }) => {
             widgetId: fullToken.widgetId,
             widgetKey: fullToken.widgetKey,
             versions: fullToken.versions,
-            unauthenticated: true,
+            visitor: true,
           }
         : undefined,
     [fullToken]
@@ -97,7 +97,7 @@ export const SupportAnonymous = ({ headless }: { headless?: boolean }) => {
   );
 };
 
-export const SupportAnonymousFloatie = ({}: { headless?: boolean }) => {
+export const SupportVisitorFloatie = ({}: { headless?: boolean }) => {
   const fogbender = React.useRef(createNewFogbender());
   const fullToken = useToken();
   const token = React.useMemo<FallbackToken | undefined>(
@@ -107,7 +107,7 @@ export const SupportAnonymousFloatie = ({}: { headless?: boolean }) => {
             widgetId: fullToken.widgetId,
             widgetKey: fullToken.widgetKey,
             versions: fullToken.versions,
-            unauthenticated: true,
+            visitor: true,
           }
         : undefined,
     [fullToken]

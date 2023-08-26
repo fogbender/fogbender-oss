@@ -18,9 +18,9 @@ import { Icons } from "../components/Icons";
 import { Avatar, UnreadCircle } from "../components/lib";
 import {
   formatCustomerName,
-  isInternalHelpdesk,
-  isExternalHelpdesk,
   isAnonymousHelpdesk,
+  isExternalHelpdesk,
+  isInternalHelpdesk,
 } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 

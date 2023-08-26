@@ -25,11 +25,11 @@ import { Avatar, RosterChevronButton, UnreadCircle } from "../components/lib";
 import { showFocusedRosterAtom } from "../store/config.store";
 import { queryKeys } from "../utils/client";
 import {
-  formatRoomName,
   formatCustomerName,
+  formatRoomName,
+  isAnonymousHelpdesk,
   isExternalHelpdesk,
   isInternalHelpdesk,
-  isAnonymousHelpdesk,
 } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 

@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import {
-  AuthCodeToVerify,
-  AuthEmailToVerify,
+  Author,
   calculateCounterpart,
   EventRoom,
   Helpdesk,
@@ -14,6 +13,8 @@ import {
   Tag,
   useRosterActions,
   useWs,
+  VisitorVerifyCode,
+  VisitorVerifyEmail,
 } from "fogbender-proto";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
@@ -26,14 +27,13 @@ import { Modal } from "../components/Modal";
 import { Agent } from "../types";
 import { queryKeys } from "../utils/client";
 import {
-  formatRoomName,
   formatCustomerName,
+  formatRoomName,
+  isAnonymousHelpdesk,
   isExternalHelpdesk,
   isInternalHelpdesk,
-  isAnonymousHelpdesk,
   renderTag,
 } from "../utils/format";
-import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
 
 import { RoomAssignees } from "./RoomAssignees";
@@ -55,6 +55,7 @@ type RoomHeaderProps = {
   helpdesk?: Helpdesk;
   ourId?: string;
   isAgent: boolean | undefined;
+  myAuthor: Author;
   agents?: Agent[];
   singleRoomMode: boolean;
   isActive: boolean;
@@ -96,6 +97,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
     helpdesk,
     ourId,
     isAgent,
+    myAuthor,
     agents,
     singleRoomMode,
     isActive,
@@ -1210,7 +1212,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
           )}
         </div>
       </div>
-      {!isAgent && isAnonymous && <EmailVerification serverCall={serverCall} />}
+      {myAuthor.userType === "visitor-unverified" && <EmailVerification serverCall={serverCall} />}
     </>
   );
 };
@@ -1219,6 +1221,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
   const [error, setError] = React.useState<string | React.ReactNode>();
   const [mode, setMode] = React.useState<"email" | "code">("email");
   const [email, setEmail] = React.useState<string>();
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <form
@@ -1229,18 +1232,20 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
           const email = (document.getElementById("emailToVerify") as HTMLInputElement)?.value;
 
           if (email) {
-            const res = await serverCall<AuthEmailToVerify>({
-              msgType: "Auth.EmailToVerify",
+            setLoading(true);
+            const res = await serverCall<VisitorVerifyEmail>({
+              msgType: "Visitor.VerifyEmail",
               email,
             });
+            setLoading(false);
 
-            if (res.msgType === "Auth.Err") {
+            if (res.msgType === "Visitor.Err") {
               if (res.code === 429) {
                 setError("Too many attempts: please try again in a bit");
               } else if (res.code === 400) {
                 setError("This does not look like a valid email address, please try again:");
               }
-            } else if (res.msgType === "Auth.Ok") {
+            } else if (res.msgType === "Visitor.Ok") {
               setError(undefined);
               setMode("code");
               setEmail(email);
@@ -1250,12 +1255,14 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
           const code = (document.getElementById("codeToVerify") as HTMLInputElement)?.value;
 
           if (code) {
-            const res = await serverCall<AuthCodeToVerify>({
-              msgType: "Auth.CodeToVerify",
-              verificationCode: code,
+            setLoading(true);
+            const res = await serverCall<VisitorVerifyCode>({
+              msgType: "Visitor.VerifyCode",
+              emailCode: code,
             });
+            setLoading(false);
 
-            if (res.msgType === "Auth.Err") {
+            if (res.msgType === "Visitor.Err") {
               if (res.code === 404) {
                 setError(
                   <>
@@ -1265,11 +1272,9 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
                 );
                 setMode("email");
               }
-            } else if (res.msgType === "Auth.Ok") {
+            } else if (res.msgType === "Visitor.Ok") {
               setError(undefined);
               setMode("code");
-              const { widgetId, userId } = res;
-              SafeLocalStorage.setItem(`unauthenticated-user-${widgetId}`, userId);
               window.location.reload();
             }
           }
@@ -1295,6 +1300,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
         <div className="flex gap-2">
           {mode === "email" && (
             <input
+              data-1p-ignore
               autoFocus={true}
               title="Please enter a valid email address"
               id="emailToVerify"
@@ -1305,6 +1311,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
           )}
           {mode === "code" && (
             <input
+              data-1p-ignore
               id="codeToVerify"
               className="flex-grow border-1 rounded-md bg-yellow-50 px-2 leading-loose text-gray-800"
               type="text"
@@ -1313,8 +1320,14 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
             />
           )}
           <ThinButton className="w-24">
-            {mode === "email" && <span>Go</span>}
-            {mode === "code" && <span>Verify</span>}
+            {loading ? (
+              <Icons.Spinner className="w-3 text-blue-500" />
+            ) : (
+              <>
+                {mode === "email" && <span>Go</span>}
+                {mode === "code" && <span>Verify</span>}
+              </>
+            )}
           </ThinButton>
           {mode === "code" && (
             <ThinButton className="w-24" onClick={() => setMode("email")}>
