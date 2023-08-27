@@ -1,4 +1,4 @@
-![Fogbender log](storefront/src/assets/logomark.svg)
+![Fogbender log](docs/assets/logomark.svg)
 
 ### Fogbender is an open-source customer communication system
 
@@ -17,7 +17,7 @@
 
 https://fogbender.com is a hosted version of Fogbender operated by the authors of the project, who recently (July 2023) got Fogbender through SOC2 (Type I) compliance certification.
 
-![SOC2](storefront/src/assets/soc2.png)
+![SOC2](docs/assets/soc2.png)
 
 [Pricing](https://fogbender.com/pricing) summary:
 
