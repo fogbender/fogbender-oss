@@ -6,6 +6,12 @@
   "quoteProps": "preserve",
   "overrides": [
     {
+      "files": ["README.md", "docs/README_fogbender_com.md"],
+      "options": {
+        "parser": "markdown"
+      }
+    },
+    {
       "files": "package.json",
       "options": {
         "printWidth": 9999

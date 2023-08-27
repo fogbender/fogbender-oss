@@ -1,288 +1,95 @@
-# Fogbender
+![Fogbender log](storefront/src/assets/logomark.svg)
 
-## Customer support for companies that sell complex products to technical teams
+### Fogbender is an open-source customer communication system
 
-See also:
+- Conceptually, it's a hybrid between Slack Connect and Intercom: you can embed a messaging widget on your customer-facing dashboard, but expose it to the whole customer team (account), instead of just individuals
+- It can also be configured to support website visitors (pre-authentication)
+- Conversations can be turned into issues - essentially named threads - and optionally associated with new or existing tickets in an external tracker, such as Linear, Height, Jira, GitHub, etc.
+- Fogender can be used as an alternative to a team messaging system, for internal communication
+- Agent Slack integration can be used to monitor all conversations in a single channel, where each issue is turned into a thread. The integration is bi-directional - it's possible to respond from Slack
+- The same agent Slack integration can be used to connect existing shared channels to customers in Fogbender
+- Customer Slack integration can be used to connect a customer in Fogbender to a channel in a customer's Slack workspace - without using Slack Connect
+- A Microsoft Teams integration can be used to connect a customer in Fogbender to a channel in a customer's Microsoft Teams team
 
-- [Initialization](Initialization.md) for application setup once the steps in this document are complete.
+# Giving it a go
 
-## Preparation
+## 🍔 Easy: Fogbender Cloud
 
-### [Nixpkgs install](https://nixos.org/nix/download.html)
+https://fogbender.com is a hosted version of Fogbender operated by the authors of the project, who recently (July 2023) got Fogbender through SOC2 (Type I) compliance certification.
 
-    > curl -L https://nixos.org/nix/install | sh
+![SOC2](storefront/src/assets/soc2.png)
 
-### Nix on macOS Catalina (10.15)
+[Pricing](https://fogbender.com/pricing) summary:
 
-Use [this workaround](https://github.com/NixOS/nix/issues/2925#issuecomment-539570232). Also see [this](https://github.com/NixOS/nix/issues/3125).
+- Free tier is limited to two customer-facing agents
+- You can have any number of Readers: agents with read-only access to customer conversations, but full write access to internal conversations
+- Unlimited end-users
+- Unlimited messages and files
 
-If you see the following error:
+## 🤺 Medium: Run Fogbender locally
 
-`bash: warning: setlocale: LC_COLLATE: cannot change locale (C.UTF-8): No such file or directory`
+### 1. Install [Nix](https://nixos.org/nix/download.html):
 
-Add the following to ~/.bashrc
+        curl -L https://nixos.org/nix/install | sh
 
-```
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-```
+### 2. Clone the repo
 
-## Nix shell
+        git clone https://github.com/fogbender/fogbender.git && cd fogbender
 
-    > nix-shell
+### 3. Generate token/session secrets. This will write the secrets to a Git-ignored `local.env` file:
 
-First run will install Elixir, Postgres, Node, Yarn and other deps into Nix store, so it could take some time.
-Next runs should immediately open shell with all apps accessible.
-Also it is possible to run isolated shell with restricted environment:
+        ./scripts/oss-make.sh fog-secrets
 
-    > nix-shell --pure
+> Note: do this ^^ once
 
-## Fast start
+### 4. Start the backend:
 
-1. Open nix shell: `nix-shell`
+        ./scripts/oss-make.sh
 
-2. Run `make` - it will create/start local DB, build web assets, compile fog server,
-   migrate DB and start server with repl.
-   To be sure you use last web assets (after git pull for example), use clean: `make clean all`.
+> Is it running? Check here: http://localhost:8000/public/about
 
-By default site should be accessible on http://localhost:8000 url.
+### 5. Start the frontend (use a second terminal):
 
-To clean not only compiled files, but also database use `make clean-all` command.
+        ./scripts/oss-make.sh web-start
 
-## Database for development
+The above will start 3 apps on different ports:
 
-Run from `nix-shell`:
+- http://localhost:3100 - local version of https://fogbender.com
+- http://localhost:3200 - local version of https://demo1.fogbender.com/
+- http://localhost:3300 - local version of https://client.fogbender.com (embeddedable widget - won't load without a token)
 
-- Start: `make db-start` - it will initialize local database if needed and start it
-- Stop: `make db-stop`
-- Clean: `make db-clean`
+### 6. Now you can use Fogbender just like you would on https://fogbender.com, except some features will be turned off or mocked:
 
-Commands work with local instance of PostgreSQL database. For shell database access, run `make db-repl`.
+- Intergrations with 3rd party services (like Stripe, Slack, GitHub, etc), Google login, AWS Cognito are turned off (you need to configure secrets in the `local.env` file to enable them)
+- File upload is mocked (will upload files to the local filesystem - `.nix-shell/files` - instead of S3)
+- You can't receive or send emails (http://localhost:8000/public/emails will work for debugging local sending)
 
-To fill database with test data use `mix db.seed` task:
+### 7. Optional: To get access to the Fogbender root organization, do the above, sign up, then run
 
-    > (cd server && mix db.seed -c=2 --agents=10)
+        ./scripts/oss-make.sh fog-agent-boot
 
-It has several options to control count of objects created, see docs with `h Mix.Tasks.Db.Seed`.
+> Once you do this, you'll see the "Fogbender" organization under http://localhost:3100/admin - this way, you can answer your own support questions.
 
-## Server development
+### Working with the local database
 
-Run from `nix-shell`:
+Starting the backend server will automatically create and start a local PostgreSQL database. For `psql` access, run
 
-`make fog-repl` - it will compile, migrate and start server with repl.
+    ./scripts/oss-make.sh db-repl
 
-Note: to generate migration files, see https://hexdocs.pm/ecto/2.1.4/Mix.Tasks.Ecto.Gen.Migration.html
+To stop the database, run
 
-- Migrate: `make fog-migrate`
-- Compile: `make fog-compile`
-- Get deps: `make fog-deps`
-- Clean: `make fog-clean`
-- Bump version: `make fog-bump`
+    ./scripts/oss-make.sh db-stop
 
-Any other `mix` commands are available from `./server` directory.
+To reset the database (WIPING ALL DATA) run
 
-Configuration currently loaded from `./config/dev.nix` file. It is exported as env variables on `nix-shell` load.
+    ./scripts/oss-make.sh db-clean
 
-### Testing
+## 🧗‍♀️ Hard: Host Fogbender in your cloud
 
-There are several `make` commands that simplify running tests:
+We host Fogbender in AWS and use [Pulumi](https://www.pulumi.com) for IaC and [SOPS](https://github.com/getsops/sops) with AWS KMS for secrets management.
 
-- Run all tests: `make fog-test`
-- Run all tests and watch: `make fog-test-watch`
-- Run all tests in a file: `(cd server/ && mix test test/api/integration_test.exs)`
-- Run a specific test: `(cd server/ && mix test test/api/integration_test.exs:109)`
+Our plan is to develop a tutorial (or CLI) to serve as a guide; meanwhile, we'd be happy to walk you through it via support on Fogbender Cloud: https://fogbender.com/admin/-/support.
 
-During development you can mark currently developed tests with `:wip` tag:
+# Getting help
 
-    @tag :wip
-    test "Some new test" do
-    ...
-
-And run only them with `make fog-test-wip-watch` command.
-
-### Versioning
-
-Fog server uses calendar versioning (calver) with format: YYYY.MM.Z, where YYYY - year, MM - month without leading zero, Z - patch number in current month.
-Current version is kept in `server/VERSION` file. To check version on fog installation run `fog version` command.
-New version created automatically by Gitlab CI when some server changes merged to master branch. It creates new commit with `server/VERSION` update and tag it
-with FOG-YYYY.MM.Z tag. When new tag placed, CI deploys it to staging.
-
-To create new version manually, checkout master and run `make fog-bump` command, it will update `server/VERSION` and create `FOG-YYYY.MM.Z` tag.
-Review changes and push it to master with `git push master --tags` command.
-
-## Adding Elixir dependencies to nix
-
-1. Add/remove deps as usual to mix.exs.
-2. Then from `nix-shell` run `make fog-deps fog-deps-nix`.
-   Last command will sync deps.json file with mix.lock.
-3. Commit changes to both mix.exs and deps.json to repository.
-
-## Web
-
-Requirements:
-
-- node v18.12.1
-- [Tailwind plugin for VSCode](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
-
-Build:
-
-    yarn
-
-Start all apps at the same time:
-
-    yarn start
-
-Or
-
-    nix-shell --run 'make web-start'
-
-Now you can open:
-
-- http://localhost:3100/ for storefront, i.e. fogbender.com
-- http://localhost:3200/ for vendor demo
-- http://localhost:3300/ for fogbender client ui
-
-### On a phone
-
-To test the web UI on a second device during development, you'll need to specify the server IP instead of using `localhost`.
-
-Note that third-party signin will not work — only email/password (aka Cognito).
-
-#### Server
-
-edit `vi local.env` and add this (requires `nix-shell` restart):
-
-    export FOG_IP="<server_ip>"
-    export FOG_IP="192.168.1.2" # example
-
-#### Client
-
-In the interactive nix shell (after `nix-shell --pure`):
-
-```
-PUBLIC_API_SERVER_URL=http://<server_ip>:8000
-PUBLIC_CLIENT_WIDGET_URL=http://<server_ip>:3300
-yarn start
-```
-
-Or, as a single command:
-
-```
-nix-shell --pure --run "PUBLIC_API_SERVER_URL=http://<server_ip>:8000 PUBLIC_CLIENT_WIDGET_URL=http://<server_ip>:3300 yarn start"
-```
-
-Now open http://<server_ip>:3100/ from your phone. Make sure to add `http://<server_ip>:3100` to "secure" domains [in chrome](https://stackoverflow.com/a/54934302/74167) in order to use notifications.
-
-## Deploying Web
-
-Deployment is done with branches (not tags):
-
-- staging-client
-- staging-storefront
-- staging-vendordemo
-
-Example of deploying storefront:
-
-    git fetch
-    git checkout staging-storefront
-    git rebase origin/master
-    git push origin staging-storefront
-
-To monitor the build process, go here: [https://app.netlify.com/teams/fogbender/builds/](https://app.netlify.com/teams/fogbender/builds/)
-
-Also see docs/Deploy.md and docs/Release.md
-
-## Mobile (react-native & expo)
-
-Make sure you have globally installed `expo-cli`:
-
-    yarn global add expo-cli
-
-Then go to `mobile` folder, update dependencies and start expo's metro server:
-
-    cd mobile
-    yarn
-    yarn start
-
-Follow instructions on screen. To test local version you need AndroidStudio or XCode installed.
-
-`fogbender-proto` is added as published package. If you want to edit proto library while developing mobile, then start watching it:
-
-    cd packages/fogbender-proto
-    yarn start
-
-After that, you need to override installed version and update it live:
-
-    cd mobile
-    rm -rf node_modules/fogbender-proto/
-    npx cpx -w -v "../packages/fogbender-proto/**/*.*" node_modules/fogbender-proto/
-
-## Nix packages
-
-`default.nix` in root directory defines several attributes that could be used to create Fogbender derivations.
-They can be built with nix-build and then used to run services with command:
-
-    nix-build /path/to/fogbender -A some.attribute`
-
-Result of building is placed somewhere in `/nix/store/xxx` directory. For convenience local symlink `result` is created.
-
-Attributes:
-
-- `fogbender.server` - Fog server
-- `fogbender.client` - Fog client
-- `fogbender.storefront` - landing page
-- `fogbender.vendor` - vendor demo
-- `scripts.run` - script to start local version of Fog server with Client web app from /nix/store.
-
-To run local script, just build it and run the result :
-
-    nix-build /path/to/fogbender -A scripts.run && ./result
-
-Or just call `/path/to/fogbender/scripts/local-run.sh` script. It will run both steps above without intermediate result folder.
-
-Database should be started in advance (possibly from nix-shell with `make db-start`).
-
-## Remote access
-
-SSH to staging server:
-
-- `ssh fogbender@api.fogbender-test.com`
-
-Access Elixir console:
-
-- `fog remote`
-
-Remote database access from dev admin:
-
-- `scripts/db-test repl`- opens psql shell connected to test database
-- `scripts/db-prod repl`- opens psql shell connected to prod database
-
-Also available commands are:
-
-- `report`report.sql` - runs report and outputs result in csv format to stdin.
-- `psql ...` - runsq psql on remote with commands/options provided.
-
-Your local machine should have ssh access to api host and secrets folder.
-
-Examples:
-
-- `scripts/db-test psql -c "select count(*) from message;"`
-- `scripts/db-test psql -f reports/stats.sql -F ',' -A `
-- `scripts/db-test report reports/stats.sql > /tmp/stats.csv`
-
-## Secrets
-
-See docs/Secrets.md
-
-## Building MS Teams packages
-
-- DEV: `(cd server/lib/fog/comms/msteams/dev && zip -j Fogbender-DEV.zip ../color.png manifest.json ../outline.png)`
-- TEST: `(cd server/lib/fog/comms/msteams/test && zip -j Fogbender-TEST.zip ../color.png manifest.json ../outline.png)`
-- PROD: `(cd server/lib/fog/comms/msteams/prod && zip -j Fogbender-PROD.zip ../color.png manifest.json ../outline.png)`
-
-## Benchmarking
-
-Benchmark scripts are placed in `server/bench` directory.
-To run it, call `mix run`:
-
-    (cd server && mix run --no-start bench/markdown.exs)
+The easiest way to get help is to ping us in [Fogbender Support](https://fogbender.com/admin/-/support). If nothing works, we'll reply to DMs and xweets aimed at [@fogbender](https://twitter.com/fogbender).
