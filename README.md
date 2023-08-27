@@ -27,6 +27,8 @@ This repository contains the source code of **Fogbender packages** published to 
 
 ## Examples
 
-- https://codesandbox.io/s/fogbender-demo-7e0kg
-- https://codesandbox.io/s/fogbender-demo-with-react-w519q?file=/src/index.tsx
-- https://codesandbox.io/s/fogbender-vue-scgn25?file=/src/App.vue
+- [Vanilla JavaScript on CodeSandbox](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vanilla?file=/src/index.ts)
+- [React on CodeSandbox](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/react)
+- [Vue on CodeSandbox](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vue)
+- [Element via CDN on CodeSandbox](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-cdn)
+- [Element with Lit on CodeSandbox](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-lit)
