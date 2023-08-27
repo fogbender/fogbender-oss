@@ -8,7 +8,7 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "fogbender": "0.1.1",
+    "fogbender": "0.2.3",
     "parcel-bundler": "^1.6.1"
   },
   "devDependencies": {
