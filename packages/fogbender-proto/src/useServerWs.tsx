@@ -180,11 +180,14 @@ export function useServerWs(
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
+    const getVisitorInfo = (token: AnyToken) => {
+      return "widgetId" in token && client?.getVisitorInfo
+        ? client?.getVisitorInfo(token.widgetId)
+        : undefined;
+    };
+
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
-      const visitorInfo =
-        "widgetId" in token && client?.getVisitorInfo
-          ? client?.getVisitorInfo(token.widgetId)
-          : undefined;
+      const visitorInfo = getVisitorInfo(token);
 
       if ("widgetId" in token && "visitor" in token && !visitorInfo) {
         serverCall<VisitorNew>({
@@ -196,7 +199,11 @@ export function useServerWs(
               const { token: visitorToken, userId } = r;
               if (visitorToken && userId) {
                 client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
-                window.location.reload();
+                const visitorInfo2 = getVisitorInfo(token);
+
+                if (visitorInfo2 && "token" in visitorInfo2) {
+                  window.location.reload();
+                }
               } else {
                 onError(
                   "error",
