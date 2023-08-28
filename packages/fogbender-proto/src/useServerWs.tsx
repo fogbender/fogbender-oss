@@ -503,6 +503,7 @@ export function useServerWs(
     avatarLibraryUrl: avatarLibraryUrl,
     agentRole: agentRole,
     userType,
+    widgetId: token && "widgetId" in token && token["widgetId"],
   };
 }
 

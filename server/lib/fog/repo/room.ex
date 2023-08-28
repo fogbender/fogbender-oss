@@ -20,7 +20,8 @@ defmodule Fog.Repo.Room do
       on: m.user_id == u.id,
       where: u.id == ^user_id,
       select: r
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   def tags(rid) do

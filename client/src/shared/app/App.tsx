@@ -40,7 +40,7 @@ import {
   showOutlookRosterAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
-import { isAnonymousHelpdesk, isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
+import { isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -915,9 +915,7 @@ export const App: React.FC<{
                         </span>
                       </span>
                     </div>
-                    {userInfo.customerName &&
-                    isExternalHelpdesk(userInfo.customerName) === false &&
-                    isAnonymousHelpdesk(userInfo.customerName) === false ? (
+                    {userInfo.customerName && userType === "user" ? (
                       <div className="fog:text-body-m truncate">{userInfo.customerName}</div>
                     ) : (
                       <div className="fog:text-body-m truncate">
@@ -927,15 +925,12 @@ export const App: React.FC<{
                   </div>
                   <div
                     className={classNames(
-                      !isExternalHelpdesk(userInfo.customerName) &&
-                        !isAnonymousHelpdesk(userInfo.customerName) &&
+                      userType &&
+                        ["user", "visitor-verified"].includes(userType) &&
                         "cursor-pointer"
                     )}
                     onClick={e => {
-                      if (
-                        !isExternalHelpdesk(userInfo.customerName) &&
-                        !isAnonymousHelpdesk(userInfo.customerName)
-                      ) {
+                      if (userType && ["user", "visitor-verified"].includes(userType)) {
                         setShowUserWelcome(true);
                         if (e.ctrlKey || e.metaKey) {
                           setHideWelcome(false);
@@ -1362,7 +1357,7 @@ export const App: React.FC<{
             />
           </Modal>
         )}
-        {showUserWelcome && userInfo && !isAnonymousHelpdesk(userInfo.customerName) && (
+        {showUserWelcome && userInfo && (
           <Modal onClose={closeWelcome} inUserWidget={isUser}>
             <Welcome
               isProfile={hideWelcome}

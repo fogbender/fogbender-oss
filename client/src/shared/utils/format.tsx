@@ -48,7 +48,7 @@ export function formatRoomName(room: Room, isAgent: boolean, name?: string) {
   const isAnonymous = isAnonymousHelpdesk(room.customerName);
 
   return !isAgent && (isAnonymous || isExternal)
-    ? `Support conversation from ${dayjs(room.createdTs / 1000).format("MMM D h:mm a")}`
+    ? `Conversation from ${dayjs(room.createdTs / 1000).format("MMM D h:mm a")}`
     : name || room.name;
 }
 

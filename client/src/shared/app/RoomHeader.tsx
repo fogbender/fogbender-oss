@@ -1222,6 +1222,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
   const [mode, setMode] = React.useState<"email" | "code">("email");
   const [email, setEmail] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
+  const { client, widgetId } = useWs();
 
   return (
     <form
@@ -1275,7 +1276,23 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
             } else if (res.msgType === "Visitor.Ok") {
               setError(undefined);
               setMode("code");
-              window.location.reload();
+              if (client && client.setVisitorInfo) {
+                const { token, userId } = res;
+
+                if (widgetId && token && userId) {
+                  client.setVisitorInfo({ token, widgetId, userId });
+
+                  const visitorInfo = client.getVisitorInfo && client.getVisitorInfo(widgetId);
+
+                  if (visitorInfo) {
+                    const { token: newToken } = visitorInfo;
+
+                    if (newToken === token) {
+                      window.location.reload();
+                    }
+                  }
+                }
+              }
             }
           }
         }

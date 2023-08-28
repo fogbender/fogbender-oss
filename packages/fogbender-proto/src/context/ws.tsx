@@ -190,7 +190,9 @@ function useProviderValue(
 
   return React.useMemo(() => {
     return {
+      client: client,
       serverCall: ws.serverCall,
+      widgetId: ws.widgetId,
       lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
       sharedRosterAtom,
       respondToMessage: ws.respondToMessage,
@@ -210,6 +212,8 @@ function useProviderValue(
       agentRole: ws.agentRole,
     };
   }, [
+    client,
+    ws.widgetId,
     ws.serverCall,
     ws.lastIncomingMessageAtom,
     sharedRosterAtom,

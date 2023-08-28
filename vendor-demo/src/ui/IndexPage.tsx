@@ -120,14 +120,14 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                         to="/support-visitor"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Visitor widget
+                        Visitor roomy
                       </NavLink>
                       <NavLink
                         activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
-                        to="/support-visitor-floatie"
+                        to="/support-visitor-floaty"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Visitor floatie
+                        Visitor floaty
                       </NavLink>
                     </div>
                   </div>

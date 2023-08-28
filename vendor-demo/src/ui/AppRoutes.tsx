@@ -90,9 +90,9 @@ export const AppRoutes = () => {
         }
       />
       <Route
-        path="support-visitor-floatie"
+        path="support-visitor-floaty"
         element={
-          <IndexPage title="Support: Visitor (floatie)">
+          <IndexPage title="Support: Visitor (floaty)">
             <HideFloatingWidget />
             <SupportVisitorFloatie />
           </IndexPage>
