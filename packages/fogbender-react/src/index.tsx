@@ -16,11 +16,14 @@ export {
   FogbenderIsConfigured,
 };
 
-export const FogbenderSimpleWidget: React.FC<{
+type RoomyWidgetProps = {
   clientUrl?: string;
   env?: Env;
   token: Token;
-}> = ({ clientUrl, env, token }) => {
+};
+
+// old name; new name is FogbenderSimpleRoomyWidget
+export const FogbenderSimpleWidget = ({ clientUrl, env, token }: RoomyWidgetProps) => {
   const [fogbender, setFogbender] = React.useState(undefined as Fogbender | undefined);
   React.useEffect(() => {
     const fb = createNewFogbender();
@@ -39,6 +42,7 @@ export const FogbenderSimpleWidget: React.FC<{
   );
 };
 
+// old name; new name is FogbenderRoomyWidget
 export const FogbenderWidget = () => {
   const divRef = React.useRef<HTMLDivElement>(null);
   useRenderIframe(divRef, false);
@@ -64,13 +68,17 @@ const useRenderIframe = (divRef: React.RefObject<HTMLDivElement | null>, headles
   );
 };
 
-export const FogbenderFloatingWidget: React.FC<{
+type FloatyWidgetProps = {
   verbose?: boolean;
   openInNewTab?: boolean;
   closeable?: boolean;
   defaultOpen?: boolean;
-}> = ({ verbose, openInNewTab, closeable, defaultOpen }) => {
-  useCreateFloatingWidget({ verbose, openInNewTab, closeable, defaultOpen });
+};
+
+// old name; new name is FogbenderFloatyWidget
+export const FogbenderFloatingWidget = (props: FloatyWidgetProps) => {
+  useCreateFloatingWidget(props);
+
   return null;
 };
 
@@ -79,12 +87,7 @@ const useCreateFloatingWidget = ({
   openInNewTab,
   closeable,
   defaultOpen,
-}: {
-  verbose?: boolean;
-  openInNewTab?: boolean;
-  closeable?: boolean;
-  defaultOpen?: boolean;
-}) => {
+}: FloatyWidgetProps) => {
   const fogbender = useFogbender();
   useRenderComponent(
     React.useCallback(() => {
@@ -147,13 +150,22 @@ function addVersion(token: Token | undefined) {
   return token;
 }
 
-export const FogbenderSimpleFloatie: React.FC<{
+type SimpleFloatyWidgetProps = {
   token: Token;
   clientUrl?: string | undefined;
   verbose?: boolean;
   openInNewTab?: boolean;
   closeable?: boolean;
-}> = ({ token, clientUrl, openInNewTab, verbose, closeable }) => {
+};
+
+// old name; new name is FogbenderSimpleFloatyWidget
+export const FogbenderSimpleFloatie = ({
+  token,
+  clientUrl,
+  openInNewTab,
+  verbose,
+  closeable,
+}: SimpleFloatyWidgetProps) => {
   const fogbender = React.useMemo(createNewFogbender, []);
   return (
     <FogbenderProvider fogbender={fogbender}>
@@ -169,3 +181,8 @@ export const FogbenderSimpleFloatie: React.FC<{
     </FogbenderProvider>
   );
 };
+
+export const FogbenderRoomyWidget = FogbenderWidget;
+export const FogbenderSimpleRoomyWidget = FogbenderSimpleWidget;
+export const FogbenderFloatyWidget = FogbenderFloatingWidget;
+export const FogbenderSimpleFloatyWidget = FogbenderSimpleFloatie;
