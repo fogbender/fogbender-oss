@@ -17,8 +17,7 @@ defmodule Fog.Api.Visitor do
     customer = Repo.Helpdesk.get_external(workspace.id).customer
     uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
 
-    user_picture =
-      "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
+    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
 
     user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
     user_email = "#{uexid}@example.com"
@@ -123,8 +122,7 @@ defmodule Fog.Api.Visitor do
     user_exid = email
     user_name = email
 
-    user_picture =
-      "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(email)}"
+    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(email)}"
 
     helpdesk = Repo.Helpdesk.get(helpdesk_id) |> Repo.preload([:customer, :workspace])
 
@@ -157,7 +155,7 @@ defmodule Fog.Api.Visitor do
 
   def info(%New{}, _), do: {:reply, Err.forbidden()}
   def info(%VerifyEmail{}, _), do: {:reply, Err.forbidden()}
-  def info(%VerifyCode{}, _), do: {:reply, Err.forbidden()}
+  def info(%VerifyCode{}, _), do: {:reply, Err.not_found()}
   def info(_, _), do: :skip
 
   def is_visitor?(%Data.User{external_uid: "visitor-" <> _}), do: true
