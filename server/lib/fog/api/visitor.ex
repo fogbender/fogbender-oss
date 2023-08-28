@@ -112,13 +112,43 @@ defmodule Fog.Api.Visitor do
   end
 
   def info(%VerifyCode{emailCode: code}, %Session.User{
-        userId: user_id,
+        vendorId: vendor_id,
+        helpdeskId: helpdesk_id,
+        userId: old_user_id,
         is_visitor: true,
         email_verified: false,
-        verification_code: code
+        verification_code: code,
+        verification_email: email
       }) do
-    %Data.User{} = Repo.User.update(user_id, email_verified: true)
-    {:reply, %Ok{}}
+
+    user_exid = email
+    user_name = email
+    user_picture = "https://api.dicebear.com/6.x/adventurer/svg?seed=#{Base.url_encode64(email)}.svg"
+
+    helpdesk = Repo.Helpdesk.get(helpdesk_id) |> Repo.preload([:customer, :workspace])
+    user = Repo.User.import_external(
+        vendor_id,
+        helpdesk.workspace_id,
+        helpdesk.customer.external_uid,
+        user_exid,
+        {email, user_name, user_picture, helpdesk.customer.name},
+        false
+      )
+
+    {:ok, widget_id} = Repo.Workspace.to_widget_id(helpdesk.workspace_id)
+    token =
+      Fog.UserSignature.jwt_sign(
+        %{widgetId: widget_id, userId: user.id, visitor: true},
+        helpdesk.workspace.signature_secret
+      )
+
+    Repo.Room.for_user(old_user_id)
+    |> Enum.each(fn r ->
+      r = Repo.Room.update_members(r.id, [user.id], [])
+      Fog.Api.Event.Room.publish(r)
+    end)
+
+    {:reply, %Ok{userId: user.id, token: token}}
   end
 
   def info(%New{}, _), do: {:reply, Err.forbidden()}
