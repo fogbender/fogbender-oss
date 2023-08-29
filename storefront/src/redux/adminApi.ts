@@ -34,6 +34,7 @@ export type User = {
   inserted_at: string;
   deleted_at: string;
   deleted_by_agent_id: string;
+  email_verified: string;
 };
 
 export type Invite = {

@@ -101,6 +101,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
   const userInsertedAt = userInfo?.user?.inserted_at;
   const userLastActivityAt = userInfo?.user?.last_activity_at;
   const userName = userInfo?.user?.name;
+  const userEmailVerified = userInfo?.user?.email_verified;
 
   return (
     <div className="p-2 bg-amber-50 rounded border flex flex-col">
@@ -108,13 +109,16 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
         <Clipboardable content={userName} />
       </span>
 
-      <hr className="my-2" />
-
-      <Clipboardable content={email} />
-      <Clipboardable content={name} />
-      <Clipboardable content={title} />
-      <Clipboardable content={orgName} />
-      <Clipboardable content={orgUrl} url={orgUrl} />
+      {userEmailVerified && (
+        <>
+          <hr className="my-2" />
+          <Clipboardable content={email} />
+          <Clipboardable content={name} />
+          <Clipboardable content={title} />
+          <Clipboardable content={orgName} />
+          <Clipboardable content={orgUrl} url={orgUrl} />
+        </>
+      )}
 
       <hr className="my-2" />
 
