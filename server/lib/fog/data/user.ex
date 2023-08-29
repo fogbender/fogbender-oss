@@ -8,6 +8,8 @@ defmodule Fog.Data.User do
              :name,
              :email,
              :external_uid,
+             :last_activity_at,
+             :inserted_at,
              :deleted_at,
              :deleted_by_agent_id,
              :is_visitor,

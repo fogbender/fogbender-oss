@@ -46,14 +46,14 @@ defmodule Fog.Api.Auth do
   defmsg(LogoutOk, [])
   deferr(Err)
 
-  def info(%User{} = auth, %Session.Guest{}) do
-    login_user(auth)
+  def info(%User{} = auth, %Session.Guest{headers: headers}) do
+    login_user(auth, headers)
   end
 
   def info(%User{}, _), do: {:reply, Err.forbidden()}
 
-  def info(%Visitor{} = auth, %Session.Guest{}) do
-    login_user(auth)
+  def info(%Visitor{} = auth, %Session.Guest{headers: headers}) do
+    login_user(auth, headers)
   end
 
   def info(
@@ -95,21 +95,25 @@ defmodule Fog.Api.Auth do
 
   def info(_, _), do: :skip
 
-  def login_user(%User{widgetId: widget_id} = auth) do
+  def login_user(%User{} = auth), do: login_user(auth, %{})
+
+  def login_user(%User{widgetId: widget_id} = auth, headers) do
     with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
          {signature_type, signature} <- signature(auth, workspace.signature_type),
          :ok <- check_user_signature(auth, signature, signature_type, workspace.signature_secret),
-         %Data.User{} = user <- import_user(auth, workspace) do
+         %Data.User{} = user <- import_user(auth, workspace),
+         :ok = Fog.Service.UserAuthTask.schedule(user_id: user.id, headers: headers) do
       login_response(user, workspace)
     else
       _ -> {:reply, Err.not_authorized()}
     end
   end
 
-  def login_user(%Visitor{widgetId: widget_id} = auth) do
+  def login_user(%Visitor{widgetId: widget_id} = auth, headers) do
     with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
          {:ok, user_id} <- check_visitor_signature(auth.token, "jwt", workspace.signature_secret),
-         %Data.User{} = user <- load_visitor(user_id, workspace) do
+         %Data.User{} = user <- load_visitor(user_id, workspace),
+         :ok = Fog.Service.UserAuthTask.schedule(user_id: user.id, headers: headers) do
       login_response(user, workspace)
     else
       _ -> {:reply, Err.not_authorized()}

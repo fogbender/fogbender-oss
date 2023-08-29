@@ -1,16 +1,20 @@
 defmodule Fog.Geoapify.Api do
   @api_url "https://api.geoapify.com/v1/ipinfo"
 
-  def locate(ip) do
+  def locate(ip, fictionalize \\ false) do
     api_key = Fog.env(:geoapify_api_key)
-    locate(ip, api_key)
+    locate(ip, api_key, fictionalize)
   end
 
-  def locate(_, nil) do
+  def locate(_, nil, false) do
+    nil
+  end
+
+  def locate(_, nil, true) do
     Fog.Geoapify.Fictional.place()
   end
 
-  def locate(ip, api_key) do
+  def locate(ip, api_key, fictionalize) do
     r =
       client()
       |> Tesla.get("/",
@@ -24,8 +28,14 @@ defmodule Fog.Geoapify.Api do
       {:ok, %Tesla.Env{status: 200, body: body}} ->
         {:ok, body}
 
-      _ ->
-        Fog.Geoapify.Fictional.place()
+      err ->
+        case fictionalize do
+          true ->
+            Fog.Geoapify.Fictional.place()
+
+          false ->
+            {:error, err}
+        end
     end
   end
 

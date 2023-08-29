@@ -12,10 +12,10 @@ defmodule Fog.Api.Transport.Ws do
     session =
       case agent_session(req) do
         {:ok, agent_id} ->
-          Api.Session.guest_agent(agent_id)
+          Api.Session.guest_agent(agent_id, req.headers)
 
         _ ->
-          Api.Session.guest()
+          Api.Session.guest(req.headers)
       end
 
     {:ok, Api.init(session)}

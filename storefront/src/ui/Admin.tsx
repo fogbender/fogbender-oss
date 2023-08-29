@@ -76,6 +76,7 @@ import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
 import { Team } from "./Admin/Team";
 import { UpdateVendorForm } from "./Admin/UpdateVendorForm";
 import { UpdateWorkspaceForm } from "./Admin/UpdateWorkspaceForm";
+import { UsersInfoPane } from "./Admin/UsersInfoPane";
 import { AcceptInviteButton, BadInviteModal, DeclineInviteButton } from "./Admin/VendorInvite";
 import { apiServer, queryClient, queryKeys } from "./client";
 import { useDesignatedVendorNameCache, useDesignatedWorkspaceNameCache } from "./store";
@@ -683,6 +684,13 @@ export const Admin = () => {
                                     vendorId={designatedVendorId}
                                   />
                                 );
+                              }
+
+                              return null;
+                            }}
+                            renderUsersInfoPane={({ room }) => {
+                              if (designatedWorkspaceId && designatedVendorId) {
+                                return <UsersInfoPane room={room} />;
                               }
 
                               return null;

@@ -1,6 +1,8 @@
 defmodule Fog.Repo.User do
   import Ecto.Query
 
+  require Logger
+
   alias Fog.{Data, Repo}
 
   def get(id), do: Data.User |> Fog.Repo.get(id)
@@ -116,5 +118,65 @@ defmodule Fog.Repo.User do
 
   def with_helpdesk(query \\ Data.User, helpdesk_id) do
     where(query, [u], u.helpdesk_id == ^helpdesk_id)
+  end
+
+  def intel(%Data.User{email: email, id: user_id} = user) do
+    infos = Fog.Repo.UserInfoCache.get(user_id)
+
+    apollo = intel_apollo(email)
+    headers = intel_headers(infos)
+    geoapify = intel_geoapify(user_id, headers, infos)
+
+    %{
+      "user" => user,
+      "apollo" => apollo,
+      "headers" => headers,
+      "geoapify" => geoapify
+    }
+  end
+
+  defp intel_apollo(email) do
+    # TODO: check for user with verified email only
+    case Fog.Apollo.Api.match(email) do
+      {:ok, %{"person" => info}} ->
+        info
+
+      _ ->
+        %{}
+    end
+  end
+
+  defp intel_headers(infos) do
+    case infos |> Enum.find(&(&1.provider === "headers")) do
+      nil ->
+        %{}
+
+      %Data.UserInfoCache{info: info} ->
+        info
+    end
+  end
+
+  defp intel_geoapify(user_id, headers, infos) do
+    case headers["ip"] do
+      nil ->
+        %{}
+
+      ip when is_binary(ip) ->
+        case infos |> Enum.find(&(&1.provider === "geoapify")) do
+          %Data.UserInfoCache{info: %{"ip" => ^ip} = info} ->
+            info
+
+          nil ->
+            case Fog.Geoapify.Api.locate(ip) do
+              {:ok, info} ->
+                :ok = Fog.Repo.UserInfoCache.add(user_id, "geoapify", info)
+                info
+
+              err ->
+                Logger.error("Geoapify failed: #{inspect(err)}")
+                %{}
+            end
+        end
+    end
   end
 end

@@ -30,6 +30,7 @@ export type User = {
   external_uid: string;
   avatar_url?: string;
   tags: Tag[];
+  last_activity_at: string;
   inserted_at: string;
   deleted_at: string;
   deleted_by_agent_id: string;

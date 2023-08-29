@@ -281,6 +281,39 @@ CREATE TABLE public.detective (
 
 
 --
+-- Name: email_info_cache; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.email_info_cache (
+    id bigint NOT NULL,
+    email text NOT NULL,
+    provider text NOT NULL,
+    info jsonb NOT NULL,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: email_info_cache_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.email_info_cache_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: email_info_cache_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.email_info_cache_id_seq OWNED BY public.email_info_cache.id;
+
+
+--
 -- Name: embeddings_cache; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1022,6 +1055,39 @@ CREATE TABLE public.user_event (
 
 
 --
+-- Name: user_info_cache; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_info_cache (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    provider text NOT NULL,
+    info jsonb NOT NULL,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: user_info_cache_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.user_info_cache_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_info_cache_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.user_info_cache_id_seq OWNED BY public.user_info_cache.id;
+
+
+--
 -- Name: vendor; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1302,6 +1368,13 @@ ALTER TABLE ONLY public.customer_info_log ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- Name: email_info_cache id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.email_info_cache ALTER COLUMN id SET DEFAULT nextval('public.email_info_cache_id_seq'::regclass);
+
+
+--
 -- Name: feature_option id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1369,6 +1442,13 @@ ALTER TABLE ONLY public.seen ALTER COLUMN id SET DEFAULT nextval('public.seen_id
 --
 
 ALTER TABLE ONLY public.subscription_emails ALTER COLUMN id SET DEFAULT nextval('public.subsciption_emails_id_seq'::regclass);
+
+
+--
+-- Name: user_info_cache id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_info_cache ALTER COLUMN id SET DEFAULT nextval('public.user_info_cache_id_seq'::regclass);
 
 
 --
@@ -1469,6 +1549,14 @@ ALTER TABLE ONLY public.deleted_vendor_agent_role
 
 ALTER TABLE ONLY public.detective
     ADD CONSTRAINT detective_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_info_cache email_info_cache_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.email_info_cache
+    ADD CONSTRAINT email_info_cache_pkey PRIMARY KEY (id);
 
 
 --
@@ -1672,6 +1760,14 @@ ALTER TABLE ONLY public.user_event
 
 
 --
+-- Name: user_info_cache user_info_cache_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_info_cache
+    ADD CONSTRAINT user_info_cache_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1835,6 +1931,13 @@ CREATE UNIQUE INDEX customer_vendor_id_external_uid_index ON public.customer USI
 --
 
 CREATE UNIQUE INDEX detective_email_index ON public.detective USING btree (email);
+
+
+--
+-- Name: email_provider_uq_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX email_provider_uq_index ON public.email_info_cache USING btree (email, provider);
 
 
 --
@@ -2237,6 +2340,13 @@ CREATE UNIQUE INDEX user_external_uid_uniq_index ON public."user" USING btree (h
 
 
 --
+-- Name: user_id_provider_uq_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX user_id_provider_uq_index ON public.user_info_cache USING btree (user_id, provider);
+
+
+--
 -- Name: vendor_agent_group_uq_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2419,4 +2529,6 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230507192311);
 INSERT INTO public."schema_migrations" (version) VALUES (20230720040621);
 INSERT INTO public."schema_migrations" (version) VALUES (20230806172529);
 INSERT INTO public."schema_migrations" (version) VALUES (20230806192239);
+INSERT INTO public."schema_migrations" (version) VALUES (20230819195419);
+INSERT INTO public."schema_migrations" (version) VALUES (20230821003054);
 INSERT INTO public."schema_migrations" (version) VALUES (20230826185752);

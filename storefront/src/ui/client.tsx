@@ -38,6 +38,7 @@ export const queryKeys = {
   vendorIntegrations: (vendorId: string | undefined) => ["vendor_integrations", vendorId],
   onboardingChecklist: (vendorId: string | undefined) => ["onboarding_checklist", vendorId],
   billing: (vendorId: string) => ["billing", vendorId],
+  userInfo: (userId: string) => ["user_info", userId],
 };
 
 export async function fetchData<T>(url: string): Promise<T> {

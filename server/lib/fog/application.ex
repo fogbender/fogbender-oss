@@ -19,6 +19,7 @@ defmodule Fog.Application do
         Fog.Merge.EventTask.child_spec(),
         Fog.Ai.EventTask.child_spec(),
         Fog.Ai.FetcherTask.child_spec(),
+        Fog.Service.UserAuthTask.child_spec(),
         Fog.Integration.PagerDutyOncallSyncEventTask.child_spec()
       ] ++
         optional(

@@ -69,6 +69,8 @@ import { Roster } from "./Roster";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
 import { SectionRoster } from "./SectionRoster";
+import { RenderUsersInfoCb } from "./UsersInfo";
+import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
 
 // tslint:disable-next-line:ordered-imports
@@ -92,6 +94,7 @@ export const App: React.FC<{
   roomIdToOpen?: string | undefined;
   setRoomIdToOpen?: (roomId: string) => void;
   renderCustomerInfoPane?: RenderCustomerInfoCb;
+  renderUsersInfoPane?: RenderUsersInfoCb;
 }> = ({
   authorMe,
   billing,
@@ -104,6 +107,7 @@ export const App: React.FC<{
   roomIdToOpen,
   setRoomIdToOpen,
   renderCustomerInfoPane,
+  renderUsersInfoPane,
   isIdle,
 }) => {
   const {
@@ -843,6 +847,24 @@ export const App: React.FC<{
   const [selectedSectionId, setSelectedSectionId] = React.useState<string>();
   const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
 
+  const infoPane: "issue" | "customer" | "user" | undefined = React.useMemo(() => {
+    if (vendorId) {
+      if (
+        activeRoomId &&
+        isExternalHelpdesk(roomById(activeRoomId)?.customerName) &&
+        !showIssueInfo
+      ) {
+        return "user";
+      } else if (activeRoomId && !showIssueInfo) {
+        return "customer";
+      } else if (showIssueInfo && workspaceId) {
+        return "issue";
+      }
+    }
+
+    return undefined;
+  }, [activeRoomId, vendorId, showIssueInfo, workspaceId]);
+
   const onGoFullScreen =
     isIframe && token && ("userId" in token || "visitor" in token)
       ? () => handleGoFullScreen(token)
@@ -1267,9 +1289,9 @@ export const App: React.FC<{
             ))}
           </ResponsiveReactGridLayout>
         </div>
-        {isAgent && (
+        {isAgent && vendorId && (
           <div className="resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2">
-            {activeRoomId && vendorId && !showIssueInfo && (
+            {activeRoomId && infoPane === "customer" && (
               // TODO: without key=, useHelpdeskUsers and useHelpdeskRooms hooks accumulate rooms/users across helpdesks
               <CustomerInfoPane
                 key={roomById(activeRoomId)?.helpdeskId}
@@ -1285,7 +1307,15 @@ export const App: React.FC<{
               />
             )}
 
-            {showIssueInfo && workspaceId && vendorId && (
+            {activeRoomId && infoPane === "user" && (
+              <UsersInfoPane
+                key={roomById(activeRoomId)?.helpdeskId}
+                room={roomById(activeRoomId)}
+                renderUsersInfoPane={renderUsersInfoPane}
+              />
+            )}
+
+            {workspaceId && showIssueInfo && infoPane === "issue" && (
               <IssueInfoPane
                 activeRoomId={activeRoomId}
                 key={showIssueInfo.workspace_id}

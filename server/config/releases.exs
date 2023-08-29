@@ -123,6 +123,7 @@ config :fog,
   stripe_price_id: System.get_env("STRIPE_PRICE_ID")
 
 config :fog,
+  apollo_api_key: System.get_env("APOLLO_API_KEY"),
   geoapify_api_key: System.get_env("GEOAPIFY_API_KEY")
 
 config :logger, :console,
