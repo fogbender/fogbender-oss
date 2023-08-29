@@ -87,7 +87,7 @@ defmodule Fog.Api.Visitor do
 
         Bamboo.Email.new_email(
           to: email,
-          from: Mailer.source(),
+          from: Mailer.source("#{vendor_name} Support"),
           subject: subject,
           text_body: text
         )
