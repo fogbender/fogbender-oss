@@ -48,8 +48,6 @@ defmodule Fog.Service.UserAuthTask do
           headers
       end
 
-    IO.inspect(headers)
-
     :ok = Fog.Repo.UserInfoCache.add(user_id, "headers", headers)
   end
 end
