@@ -16,9 +16,8 @@ defmodule Fog.Api.Session do
       is_visitor: false,
       email_verified: true,
       verification_code: nil,
-      verification_request_ts: nil,
-      verification_request_attempt: 0,
-      verification_email: nil
+      verification_email: nil,
+      verification_attempts: 0
     ]
   end
 

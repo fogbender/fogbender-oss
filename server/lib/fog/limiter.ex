@@ -1,5 +1,6 @@
 defmodule Fog.Limiter do
   use GenServer
+  require Logger
 
   @default_delay 5
 
@@ -15,12 +16,14 @@ defmodule Fog.Limiter do
 
   def handle_call({:put, key, delay}, _from, state) do
     case Map.get(state, key) do
-        nil ->
-            state = put_key(key, delay, state)
-            {:reply, :ok, state}
-        %{exp: exp} ->
-            diff = time_diff(exp)
-            {:reply, {:limit, diff}, state}
+      nil ->
+        state = put_key(key, delay, state)
+        {:reply, :ok, state}
+
+      %{exp: exp, delay: delay} ->
+        Logger.warn("Limit for #{key}: #{delay} sec")
+        diff = time_diff(exp)
+        {:reply, {:limit, diff}, state}
     end
   end
 

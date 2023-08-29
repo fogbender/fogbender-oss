@@ -21,7 +21,7 @@ defmodule Fog.Application do
         Fog.Ai.EventTask.child_spec(),
         Fog.Ai.FetcherTask.child_spec(),
         Fog.Service.UserAuthTask.child_spec(),
-        Fog.Integration.PagerDutyOncallSyncEventTask.child_spec(),
+        Fog.Integration.PagerDutyOncallSyncEventTask.child_spec()
       ] ++
         optional(
           Fog.env(:msteams_renew_job_enable),
