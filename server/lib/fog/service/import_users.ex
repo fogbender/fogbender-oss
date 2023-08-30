@@ -158,8 +158,7 @@ defmodule Fog.Service.ImportUsers do
            false ->
              %{
                id: h.id,
-               users: h.users,
-               triage: nil
+               users: h.users
              }
          end}
       end)
@@ -212,7 +211,6 @@ defmodule Fog.Service.ImportUsers do
           %{
             id: info[:id],
             customer_id: customer_id,
-            triage: nil,
             users: users
           }
       end

@@ -12,6 +12,18 @@ defmodule Fog.Repo.Room do
     |> Repo.one()
   end
 
+  def for_user(user_id) do
+    from(u in Data.User,
+      join: r in Data.Room,
+      on: r.helpdesk_id == u.helpdesk_id and r.type == "private",
+      join: m in assoc(r, :members),
+      on: m.user_id == u.id,
+      where: u.id == ^user_id,
+      select: r
+    )
+    |> Repo.all()
+  end
+
   def tags(rid) do
     from(rt in Data.RoomTag,
       where: rt.room_id == ^rid,

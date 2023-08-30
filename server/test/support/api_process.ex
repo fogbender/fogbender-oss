@@ -3,7 +3,10 @@ defmodule Fog.ApiProcess do
 
   use GenServer
 
-  # Callbacks
+  def start() do
+    session = Api.Session.guest()
+    start(session)
+  end
 
   def start(%Data.User{} = u) do
     u = Repo.preload(u, [:helpdesk, :vendor])
@@ -27,6 +30,8 @@ defmodule Fog.ApiProcess do
   def flush(pid), do: GenServer.call(pid, :flush)
   def session(pid), do: GenServer.call(pid, :session)
   def stop(pid), do: GenServer.stop(pid)
+
+  # Callbacks
 
   @impl true
   def init(session) do

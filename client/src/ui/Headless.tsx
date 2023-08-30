@@ -4,7 +4,7 @@ import { useClientNotifications, useOnNotifications, useSharedRoster, useWs } fr
 
 const Headless = () => {
   const { userId } = useWs();
-  const { badges, roomById } = useSharedRoster();
+  const { ourId, badges, roomById } = useSharedRoster();
 
   React.useEffect(() => {
     if (window.parent && window.parent !== window) {
@@ -14,7 +14,7 @@ const Headless = () => {
     }
   }, [badges]);
 
-  const { onNotification } = useClientNotifications({ roomById });
+  const { onNotification } = useClientNotifications({ roomById, ourId });
   useOnNotifications({ onNotification, userId });
   return <noscript />;
 };

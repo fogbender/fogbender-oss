@@ -2,7 +2,7 @@ import browser from "browser-detect";
 import classNames from "classnames";
 import React from "react";
 
-import { isExternal, isInternal } from "../utils/format";
+import { isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 
 import { Icons } from "./Icons";
 
@@ -144,7 +144,7 @@ export const CustomerAvatar: React.FC<{
   hasMentions?: boolean;
   showUnread?: boolean;
 }> = ({ name, unreadCount, hasMentions, showUnread }) => {
-  const isSpecial = isInternal(name) || isExternal(name);
+  const isSpecial = isInternalHelpdesk(name) || isExternalHelpdesk(name);
 
   const abbrName =
     name
@@ -172,7 +172,7 @@ export const CustomerAvatar: React.FC<{
     >
       {isSpecial ? (
         <span className="text-blue-700">
-          {isInternal(name) ? <Icons.ChatBubble /> : <Icons.Mail className="w-5" />}
+          {isInternalHelpdesk(name) ? <Icons.ChatBubble /> : <Icons.Mail className="w-5" />}
         </span>
       ) : (
         abbrName
@@ -181,7 +181,7 @@ export const CustomerAvatar: React.FC<{
         <span
           className={classNames(
             "absolute top-0 right-0 -mt-1 -mr-1 flex items-center justify-center border border-white rounded-full text-white text-2xs font-normal leading-none",
-            isInternal(name) ? "bg-green-500" : "bg-brand-orange-500",
+            isInternalHelpdesk(name) ? "bg-green-500" : "bg-brand-orange-500",
             hasMentions ? "w-3.5 h-3.5" : "w-3 h-3"
           )}
         >
@@ -681,17 +681,17 @@ export const TabWrapper: React.FC<{ selected: boolean }> = ({ selected, children
 };
 
 export const TabListHeaderWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <div className="w-full flex flex-wrap">{children}</div>;
+  return <div className="w-full flex flex-col lg:flex-row lg:flex-wrap">{children}</div>;
 };
 
 export const TabHeaderWrapper: React.FC<{ selected: boolean }> = ({ selected, children }) => {
   return (
     <div
       className={classNames(
-        "flex-1 md:flex-none justify-center fog:text-header3 leading-5 px-4 py-3 ml-4 text-center whitespace-nowrap cursor-pointer",
+        "flex-1 lg:flex-none justify-center fog:text-header4 leading-5 px-0 lg:px-4 py-0 lg:py-3 my-2 lg:my-0 ml-4 lg:text-center max-w-min lg:max-w-max whitespace-nowrap cursor-pointer",
         selected
-          ? "rounded-t-md border-brand-orange-500 text-black border-b-5"
-          : "text-blue-700 hover:text-red-500"
+          ? "rounded-t-md border-brand-orange-500 text-black border-b-2 lg:border-b-5"
+          : "text-blue-700 group-hover:text-red-500 border-b-2 lg:border-b-5 border-transparent"
       )}
     >
       {children}

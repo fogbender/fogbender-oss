@@ -42,7 +42,7 @@ export const useTxtAreaWithError = ({
         className={classNames(
           "relative flex w-full rounded-lg",
           "px-1 pt-1",
-          !disabled ? "bg-gray-100" : "bg-gray-200",
+          "bg-gray-100",
           txtAreaValue.length === 0 ? "flex-row items-center" : "flex-col items-start",
           "border",
           error || redErrorBorder ? "border-red-500" : "border-opacity-0",

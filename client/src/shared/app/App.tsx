@@ -40,7 +40,7 @@ import {
   showOutlookRosterAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
-import { isExternal, isInternal } from "../utils/format";
+import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -66,9 +66,12 @@ import { Room } from "./Room";
 import { RoomNameLine } from "./RoomHeader";
 import { RoomSettings } from "./RoomSettings";
 import { Roster } from "./Roster";
+import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
 import { SectionRoster } from "./SectionRoster";
+import { RenderUsersInfoCb } from "./UsersInfo";
+import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
 
 // tslint:disable-next-line:ordered-imports
@@ -92,6 +95,7 @@ export const App: React.FC<{
   roomIdToOpen?: string | undefined;
   setRoomIdToOpen?: (roomId: string) => void;
   renderCustomerInfoPane?: RenderCustomerInfoCb;
+  renderUsersInfoPane?: RenderUsersInfoCb;
 }> = ({
   authorMe,
   billing,
@@ -104,12 +108,14 @@ export const App: React.FC<{
   roomIdToOpen,
   setRoomIdToOpen,
   renderCustomerInfoPane,
+  renderUsersInfoPane,
   isIdle,
 }) => {
   const {
     agentRole,
     avatarLibraryUrl,
     isAgent,
+    userType,
     isAuthenticated,
     isConnected,
     isTokenWrong,
@@ -130,12 +136,13 @@ export const App: React.FC<{
   const myAuthor = React.useMemo(() => {
     const author: Author = {
       type: isAgent ? "agent" : "user",
+      userType,
       id: ourId || "",
       name: authorMe?.name || "",
       avatarUrl: userAvatarUrl || authorMe?.avatarUrl,
     };
     return author;
-  }, [authorMe, ourId, isAgent, userAvatarUrl]);
+  }, [authorMe, ourId, isAgent, userType, userAvatarUrl]);
 
   const version = getVersion();
 
@@ -590,6 +597,7 @@ export const App: React.FC<{
 
   const { onNotification: onAgentNotification } = useAgentNotifications({
     roomById,
+    ourId,
     notificationTitle: "Fogbender",
     setRoomToOpen: tryOpenRoom,
     isIdle,
@@ -601,6 +609,7 @@ export const App: React.FC<{
   );
   const { onNotification: onClientNotifications } = useClientNotifications({
     roomById,
+    ourId,
     notificationTitle,
     setRoomToOpen: setRoomIdToOpen ? ({ id }) => setRoomIdToOpen(id) : undefined,
   });
@@ -628,16 +637,23 @@ export const App: React.FC<{
   }, [ourId, userAvatarUrl, lastIncomingMessage]);
 
   const userInfo = React.useMemo(() => {
-    if (token && "userId" in token && ourId) {
+    if (token && "userId" in token && ourId && !("visitor" in token) && authorMe) {
       return {
         id: ourId,
         name: token.userName,
         avatarUrl: avatarUrl || userAvatarUrl,
-        customerName: token.customerName,
+        customerName: authorMe.customerName,
+      };
+    } else if (ourId && token && "visitor" in token && authorMe) {
+      return {
+        id: ourId,
+        name: authorMe.name,
+        avatarUrl: avatarUrl || userAvatarUrl || authorMe.avatarUrl,
+        customerName: authorMe.customerName,
       };
     }
     return undefined;
-  }, [ourId, avatarUrl, userAvatarUrl, token]);
+  }, [ourId, avatarUrl, userAvatarUrl, token, authorMe]);
 
   React.useEffect(() => {
     workspaceId &&
@@ -812,7 +828,7 @@ export const App: React.FC<{
   }, [badges, recentBadge]);
 
   const internalHelpdeskId = React.useMemo(
-    () => customers.find(c => isInternal(c.name))?.helpdeskId,
+    () => customers.find(c => isInternalHelpdesk(c.name))?.helpdeskId,
     [customers]
   );
 
@@ -834,6 +850,31 @@ export const App: React.FC<{
   const [selectedSectionId, setSelectedSectionId] = React.useState<string>();
   const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
 
+  const infoPane: "issue" | "customer" | "user" | undefined = React.useMemo(() => {
+    if (vendorId) {
+      if (
+        activeRoomId &&
+        isExternalHelpdesk(roomById(activeRoomId)?.customerName) &&
+        !showIssueInfo
+      ) {
+        return "user";
+      } else if (activeRoomId && !showIssueInfo) {
+        return "customer";
+      } else if (showIssueInfo && workspaceId) {
+        return "issue";
+      }
+    }
+
+    return undefined;
+  }, [activeRoomId, vendorId, showIssueInfo, workspaceId]);
+
+  const onGoFullScreen =
+    isIframe && token && ("userId" in token || "visitor" in token)
+      ? () => handleGoFullScreen(token)
+      : undefined;
+
+  const roomName = roomToName(activeRoom, ourId, !!isAgent);
+
   return (
     <div ref={appRef} className="relative h-full max-h-screen flex-1 flex flex-col z-10">
       {isUser && userInfo && (
@@ -842,7 +883,7 @@ export const App: React.FC<{
           className="sm:hidden relatve flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose"
         >
           <div className="flex-1">
-            {activeRoom && (
+            {activeRoom && roomName && (
               <div className={classNames("h-8 flex items-center justify-center sm:hidden")}>
                 <RoomNameLine
                   mode="Room"
@@ -851,6 +892,7 @@ export const App: React.FC<{
                   onClose={onCloseRoom}
                   rosterVisible={rosterVisible}
                   unreadBadge={unreadBadge}
+                  roomName={roomName}
                 />
               </div>
             )}
@@ -873,7 +915,7 @@ export const App: React.FC<{
               {helpdesk?.vendorName}
             </span>
           </div>
-          {isIframe && token && "userId" in token && (
+          {isIframe && token && ("userId" in token || "visitor" in token) && (
             <div className="h-full flex items-center">
               <GoFullScreen token={token} />
             </div>
@@ -895,23 +937,37 @@ export const App: React.FC<{
                   <div className="flex flex-col text-right truncate">
                     <div className="flex items-center space-x-1">
                       <span className="flex-1 flex flex-col fog:text-caption-xl truncate">
-                        <span className="truncate">{userInfo.name}</span>
+                        <span
+                          title={userInfo.name}
+                          className={classNames(
+                            "truncate",
+                            userType && ["visitor-unverified"].includes(userType) && "text-sm"
+                          )}
+                        >
+                          {userInfo.name}
+                        </span>
                       </span>
                     </div>
-                    {userInfo.customerName && isExternal(userInfo.customerName) === false ? (
+                    {userInfo.customerName && userType === "user" ? (
                       <div className="fog:text-body-m truncate">{userInfo.customerName}</div>
                     ) : (
                       <div className="fog:text-body-m truncate">
-                        Talking with {helpdesk?.vendorName} support
+                        <span>{helpdesk?.vendorName} support chat</span>
                       </div>
                     )}
                   </div>
                   <div
-                    className="cursor-pointer"
+                    className={classNames(
+                      userType &&
+                        ["user", "visitor-verified"].includes(userType) &&
+                        "cursor-pointer"
+                    )}
                     onClick={e => {
-                      setShowUserWelcome(true);
-                      if (e.ctrlKey || e.metaKey) {
-                        setHideWelcome(false);
+                      if (userType && ["user", "visitor-verified"].includes(userType)) {
+                        setShowUserWelcome(true);
+                        if (e.ctrlKey || e.metaKey) {
+                          setHideWelcome(false);
+                        }
                       }
                     }}
                   >
@@ -936,9 +992,11 @@ export const App: React.FC<{
                   )}
                 </div>
               )}
-              {isExternal(userInfo?.customerName) !== true && (
-                <form onSubmit={rosterInputSubmit} className="bg-white">
+              <div className="flex gap-2 border-b border-gray-200">
+                {isAgent && <RosterMenu />}
+                <form onSubmit={rosterInputSubmit} className={classNames("bg-white")}>
                   <FilterInput
+                    noBorder={true}
                     placeholder="Search"
                     value={rosterSearch}
                     setValue={setRosterSearch}
@@ -948,7 +1006,7 @@ export const App: React.FC<{
                     }
                   />
                 </form>
-              )}
+              </div>
               {isAgent && !isOutlook && (
                 // roster and search for agents (old one)
                 <div className="h-full flex flex-col -mt-12 pt-12">
@@ -1192,6 +1250,7 @@ export const App: React.FC<{
                     paneId={el.i}
                     roomId={paneIdToRoomId(el.i)}
                     isAgent={isAgent}
+                    myAuthor={myAuthor}
                     activeRoomId={activeRoomId}
                     singleRoomMode={singleRoomMode}
                     isLayoutPinned={layoutPins.includes(el.i)}
@@ -1215,11 +1274,7 @@ export const App: React.FC<{
                     helpdesk={helpdesk}
                     activeRoomId={activeRoomId}
                     setActiveRoomId={setActiveRoomId}
-                    onGoFullScreen={
-                      isIframe && token && "userId" in token
-                        ? () => handleGoFullScreen(token)
-                        : undefined
-                    }
+                    onGoFullScreen={onGoFullScreen}
                     isLayoutPinned={layoutPins.includes(el.i)}
                     resizing={resizingRoomId === el.i}
                     dragging={dragging}
@@ -1249,9 +1304,9 @@ export const App: React.FC<{
             ))}
           </ResponsiveReactGridLayout>
         </div>
-        {isAgent && (
+        {isAgent && vendorId && (
           <div className="resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2">
-            {activeRoomId && vendorId && !showIssueInfo && (
+            {activeRoomId && infoPane === "customer" && (
               // TODO: without key=, useHelpdeskUsers and useHelpdeskRooms hooks accumulate rooms/users across helpdesks
               <CustomerInfoPane
                 key={roomById(activeRoomId)?.helpdeskId}
@@ -1267,7 +1322,15 @@ export const App: React.FC<{
               />
             )}
 
-            {showIssueInfo && workspaceId && vendorId && (
+            {activeRoomId && infoPane === "user" && (
+              <UsersInfoPane
+                key={roomById(activeRoomId)?.helpdeskId}
+                room={roomById(activeRoomId)}
+                renderUsersInfoPane={renderUsersInfoPane}
+              />
+            )}
+
+            {workspaceId && showIssueInfo && infoPane === "issue" && (
               <IssueInfoPane
                 activeRoomId={activeRoomId}
                 key={showIssueInfo.workspace_id}
@@ -1358,7 +1421,7 @@ export const App: React.FC<{
 };
 
 const isExternalTriage = (room: RoomT) => {
-  return room.isTriage === true && isExternal(room.customerName);
+  return room.isTriage === true && isExternalHelpdesk(room.customerName);
 };
 
 function filterRosterRooms(rooms: RoomT[], isAgent: boolean | undefined) {

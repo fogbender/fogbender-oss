@@ -143,7 +143,7 @@ export const SnippetControlsNew: React.FC<{
             This is your widgetId for creating a token client-side in Step 1 below.
           </p>
           <DemoButton widgetId={widgetId} widgetKey={widgetKey}>
-            🕵️ Try a live demo!
+            <span className="text-[4rem]">🕵️</span> Try a live demo!
           </DemoButton>{" "}
         </div>
 

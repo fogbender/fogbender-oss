@@ -13,7 +13,7 @@ import { useQuery } from "react-query";
 import { Icons } from "../components/Icons";
 import { Avatar, UnreadCircle } from "../components/lib";
 import { queryKeys } from "../utils/client";
-import { formatCustomerName, isInternal } from "../utils/format";
+import { formatCustomerName, isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
 import { LayoutOptions } from "./LayoutOptions";
@@ -90,8 +90,8 @@ export const Roster: React.FC<{
       )}
       <div className="flex-shrink fbr-scrollbar overflow-y-scroll">
         {rooms.length === 0 && (
-          <p className="fog:text-caption-xl flex items-center justify-center px-1 py-2 text-center">
-            Not found
+          <p className="fog:text-caption-xl flex items-center justify-center px-1 py-2 text-center text-gray-400 !font-light">
+            No matches
           </p>
         )}
         <div className="my-2">
@@ -146,12 +146,11 @@ export const RoomItem: React.FC<{
   const unreadCount = badge?.count;
   const unreadMentionsCount = badge?.mentionsCount;
   const previewMessage = room.relevantMessage || badge?.lastRoomMessage;
-  const showAsInternal = isInternal(room.customerName);
-  const isEmail = room?.tags?.some(t => t.name === ":email") || false;
+  const showAsInternal = isInternalHelpdesk(room.customerName);
+  const isExternal = isExternalHelpdesk(room.customerName);
   const isBug = room?.tags?.some(t => t.name === ":bug") || false;
   const isFeature = (room?.tags?.some(t => t.name === ":feature") && isBug !== true) || false;
-  const isBroadcast =
-    (isInternal(room?.customerName) && room?.tags?.some(t => t.name === ":triage")) || false;
+  const isBroadcast = (showAsInternal && room?.tags?.some(t => t.name === ":triage")) || false;
   const isDiscussion = room?.tags?.some(t => t.name === ":discussion") || false;
   const resolved = room.resolved;
 
@@ -193,12 +192,12 @@ export const RoomItem: React.FC<{
       )}
       <div className="flex items-center space-x-1">
         {room.type === "dialog" && <Avatar url={counterpart?.imageUrl} size={20} />}
-        {room.type === "private" && isEmail === false && (
+        {room.type === "private" && isExternal === false && (
           <span className="fog:text-caption-xs rounded-xl bg-gray-800 py-0.5 px-1.5 text-white">
             Private
           </span>
         )}
-        {room.type === "private" && isEmail === true && (
+        {room.type === "private" && isExternal === true && (
           <Icons.RoomExternal className="h-4 w-4 text-gray-500 hidden" />
         )}
         {room.isTriage ? (
@@ -244,7 +243,9 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!previewMessage && room.isTriage && <span className="text-gray-500">☝️ Start here</span>}
+          {!previewMessage && (room.isTriage || isExternal) && (
+            <span className="text-gray-500">☝️ Start here</span>
+          )}
         </span>
         <span className="whitespace-no-wrap fog:text-body-s text-gray-500">
           {formatRosterTs(previewMessage?.createdTs || room.createdTs)}

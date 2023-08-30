@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import {
+  calculateCounterpart,
   EventIssue,
+  EventRoom as Room,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
   Tag,
@@ -18,17 +20,45 @@ import {
   IconTrello,
 } from "../components/IntegrationIcons";
 export const INTERNAL_CONVERASTIONS = "Internal conversations";
-export function isInternal(name?: string) {
+export const VISITOR_INBOX = "Visitor inbox";
+export function isInternalHelpdesk(name?: string) {
   return name?.startsWith("$Cust_Internal") || false;
 }
 
-export function isExternal(name?: string) {
+export function isExternalHelpdesk(name?: string) {
   return name?.startsWith("$Cust_External") || false;
 }
 
 export function formatCustomerName(name?: string) {
-  return isInternal(name) ? INTERNAL_CONVERASTIONS : isExternal(name) ? "Shared Email Inbox" : name;
+  return isInternalHelpdesk(name)
+    ? INTERNAL_CONVERASTIONS
+    : isExternalHelpdesk(name)
+    ? VISITOR_INBOX
+    : name;
 }
+
+export function formatRoomName(room: Room, isAgent: boolean, name?: string) {
+  const isExternal = isExternalHelpdesk(room.customerName);
+
+  if (isExternal) {
+    if (isAgent) {
+      return name || room.displayNameForAgent || room.name;
+    } else {
+      return name || room.displayNameForUser || room.name;
+    }
+  } else {
+    return name || room.name;
+  }
+}
+
+export const roomToName = (room: Room | undefined, ourId: string | undefined, isAgent: boolean) => {
+  if (!room || !ourId) {
+    return undefined;
+  }
+
+  const counterpart = room && calculateCounterpart(room, ourId);
+  return room && formatRoomName(room, isAgent === true, counterpart?.name);
+};
 
 type RenderTagOpts = {
   asLink: boolean;

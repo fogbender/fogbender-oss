@@ -24,7 +24,12 @@ import { Icons } from "../components/Icons";
 import { Avatar, RosterChevronButton, UnreadCircle } from "../components/lib";
 import { showFocusedRosterAtom } from "../store/config.store";
 import { queryKeys } from "../utils/client";
-import { formatCustomerName, isInternal } from "../utils/format";
+import {
+  formatCustomerName,
+  formatRoomName,
+  isExternalHelpdesk,
+  isInternalHelpdesk,
+} from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
 import { LayoutOptions } from "./LayoutOptions";
@@ -150,7 +155,8 @@ const sectionTitles = (
       "DIRECT": "Direct",
       "ARCHIVED": "Archived",
       "CLOSED": "Closed",
-      "NEW": "New signups",
+      "NEW": "New customers",
+      "NEW VISITOR": "New visitors",
     }[sectionId] || "Unknown: " + sectionId
   );
 };
@@ -268,8 +274,8 @@ const RoomSection = (props: RoomSectionProps) => {
         style={expanded ? { minHeight: "4rem" } : undefined}
       >
         {(section.rooms?.length || 0) === 0 && (
-          <p className="flex items-center justify-center px-1 py-2 text-center fog:text-caption-xl">
-            <span>{searching ? "Not found" : "No conversations"}</span>
+          <p className="flex items-center justify-center px-1 py-2 text-center fog:text-caption-xl text-gray-400 !font-light">
+            <span>{searching ? "No matches" : "🕺"}</span>
           </p>
         )}
         <div
@@ -351,14 +357,14 @@ export const RoomItem: React.FC<{
   userId: string | undefined;
 }> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent, userId }) => {
   const counterpart = calculateCounterpart(room, userId);
-  const name = counterpart?.name || room.name;
+  const roomName = formatRoomName(room, isAgent === true, counterpart?.name);
 
   const unreadCount = badge?.count;
   const unreadMentionsCount = badge?.mentionsCount;
   const latestMessageText = badge?.lastRoomMessage?.plainText;
   const latestMessageAuthor = (badge?.lastRoomMessage?.fromName || "").split(/\s+/)[0];
-  const showAsInternal = isInternal(room.customerName);
-  const isEmail = room?.tags?.some(t => t.name === ":email") || false;
+  const showAsInternal = isInternalHelpdesk(room.customerName);
+  const isExternal = isExternalHelpdesk(room.customerName);
   const resolved = room.resolved;
 
   const priority = React.useMemo(() => {
@@ -416,21 +422,21 @@ export const RoomItem: React.FC<{
         {room.type === "dialog" && (
           <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={20} />
         )}
-        {room.type === "private" && isEmail === false && (
+        {room.type === "private" && isExternal === false && (
           <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
             Private
           </span>
         )}
-        {room.type === "private" && isEmail === true && (
+        {room.type === "private" && isExternal === false && (
           <Icons.RoomExternal className="w-4 h-4 text-gray-500" />
         )}
 
         <span className="flex-1 flex flex-col fog:text-body-m truncate">
           <span
             className={classNames(showAsInternal && "text-green-500", "leading-snug truncate")}
-            title={name}
+            title={roomName}
           >
-            {name}
+            {roomName}
           </span>
         </span>
         {!isAgent && priority && priority}
@@ -456,8 +462,15 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!(latestMessageText && latestMessageAuthor) && room.isTriage && (
+          {!latestMessageAuthor && (room.isTriage || isExternal) && (
             <span className="text-gray-500">☝️ Start here</span>
+          )}
+
+          {latestMessageAuthor && !latestMessageText && (
+            <>
+              <b className="fog:text-chat-username-s">{latestMessageAuthor}</b>:{" "}
+              <span className="text-gray-500 italic">Uploaded a file</span>
+            </>
           )}
         </span>
         <span className="text-gray-500 whitespace-no-wrap fog:text-body-s">
@@ -505,7 +518,16 @@ export const RosterViewSubscription = (props: { options: RosterViewOptions }) =>
 
   const options = React.useMemo(() => {
     return {
-      sections: ["ARCHIVED", "?PINNED", "NEW", "ASSIGNED TO ME", "ASSIGNED", "DIRECT", "*OPEN"],
+      sections: [
+        "ARCHIVED",
+        "PINNED",
+        "NEW VISITOR",
+        "NEW",
+        "ASSIGNED TO ME",
+        "ASSIGNED",
+        "DIRECT",
+        "*OPEN",
+      ],
       ...props.options,
     };
   }, [props.options]);

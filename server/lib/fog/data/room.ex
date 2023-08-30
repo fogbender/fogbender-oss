@@ -7,6 +7,8 @@ defmodule Fog.Data.Room do
   schema "room" do
     belongs_to(:helpdesk, Helpdesk, type: Fog.Types.HelpdeskId)
     field(:name, :string)
+    field(:display_name_for_user, :string)
+    field(:display_name_for_agent, :string)
     field(:status, :string, default: "active")
     field(:dialog_id, :string)
     field(:type, :string)
@@ -51,6 +53,8 @@ defmodule Fog.Data.Room do
       :id,
       :helpdesk_id,
       :name,
+      :display_name_for_user,
+      :display_name_for_agent,
       :status,
       :type,
       :dialog_id,

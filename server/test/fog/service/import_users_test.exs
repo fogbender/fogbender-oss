@@ -237,6 +237,20 @@ defmodule Test.Service.ImportUsersTest do
 
       assert rt == rt2
     end
+
+    test "import with with_triage=false shouldn't create triage" do
+      v = vendor()
+      ws = workspace(v)
+      assert :ok == Fog.Service.ImportUsers.import([csv(3, 1), csv(3, 2)], v.id, ws.id, false)
+      assert [] == Data.Room |> Repo.all()
+    end
+
+    test "import with with_triage=false shouldn't fail if triage already exists" do
+      v = vendor()
+      ws = workspace(v)
+      assert :ok == Fog.Service.ImportUsers.import([csv(3, 1), csv(3, 2)], v.id, ws.id)
+      assert :ok == Fog.Service.ImportUsers.import([csv(3, 1), csv(3, 2)], v.id, ws.id, false)
+    end
   end
 
   describe "Import customers without users" do

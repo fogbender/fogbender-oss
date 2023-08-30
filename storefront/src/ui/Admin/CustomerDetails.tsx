@@ -6,7 +6,7 @@ import {
   Customer,
   CustomerCrm,
   Icons,
-  isExternal,
+  isExternalHelpdesk,
   ThickButton,
   ThinButton,
   useInputWithError,
@@ -71,7 +71,7 @@ export const CustomerDetails: React.FC<{
       </div>
 
       <div className="flex flex-col gap-6">
-        {isExternal(customer.name) !== true && (mergeLinks || []).length > 0 && (
+        {isExternalHelpdesk(customer.name) !== true && (mergeLinks || []).length > 0 && (
           <div className="basis-2/5 rounded-lg">
             <h3 className="fog:text-header3 text-2xl mb-4">
               CRM account assignments for {customer.name}
@@ -326,7 +326,7 @@ const DomainsInfo = ({
     })
     .filter(c => c.customers.length > 0);
 
-  return isExternal(customer.name) !== true ? (
+  return isExternalHelpdesk(customer.name) !== true ? (
     <div className="border text-sm rounded-xl p-4">
       {customer.domains !== undefined && customer.domains.length > 0 && (
         <div className="flex mb-4 gap-2">

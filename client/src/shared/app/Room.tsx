@@ -40,6 +40,7 @@ import { useSelection } from "../messages/useSelection";
 import { showAiHelperAtom } from "../store/config.store";
 import { Agent, VendorBilling } from "../types";
 import { atomWithLocalStorage } from "../utils/atomWithLocalStorage";
+import { formatRoomName, isInternalHelpdesk } from "../utils/format";
 import { formatRoomTs } from "../utils/formatTs";
 import { getPreviousMessageId } from "../utils/serverBigInt";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -168,7 +169,7 @@ export const Room: React.FC<{
 }> = ({
   myAuthor,
   ourId,
-  isAgent,
+  isAgent, // TODO: this is reduntant, use myAuthor.type
   billing,
   agents,
   roomId,
@@ -368,7 +369,10 @@ export const Room: React.FC<{
     }
   }, [roomId, firstUnreadMentionId, updateLoadAround, jumpToBottom]);
 
-  const roomName = room?.counterpart?.name || room?.name;
+  const roomName =
+    room?.counterpart?.name ||
+    (room && room.name && room.createdTs && formatRoomName(room, !!isAgent)) ||
+    undefined;
 
   const { selection, handleMessageClick, handleSelectionCancel, handleLastMessageEdit } =
     useSelection({ messages, userId: ourId });
@@ -415,7 +419,7 @@ export const Room: React.FC<{
   );
   const handleUploadClick = React.useCallback(() => fileInputRef.current?.click(), []);
 
-  const isInternal = roomById(roomId)?.customerName.startsWith("$Cust_Internal");
+  const isInternal = isInternalHelpdesk(roomById(roomId)?.customerName);
 
   const showAiHelper = useAtomValue(showAiHelperAtom);
   const aiEnabled = workspaceIntegrations?.find(i => i.type === "ai") !== undefined;
@@ -661,6 +665,7 @@ export const Room: React.FC<{
           helpdesk={helpdesk}
           ourId={ourId}
           isAgent={isAgent}
+          myAuthor={myAuthor}
           agents={agents}
           singleRoomMode={singleRoomMode}
           onGoFullScreen={onGoFullScreen}

@@ -98,11 +98,11 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
   return (
     <>
       <div className="fog:text-body-m mt-4 flex max-w-screen-md flex-col gap-y-4 pr-16">
-        <p className="text-7xl">🥳</p>
+        <p className="text-7xl">🍭</p>
         <h1 className="fog:text-header2">Welcome to Fogbender!</h1>
         <p>{userName.split(/\s+/)[0]}—hello!</p>
         <p>
-          Fogbender is a new way to support your B2B customers—we’re so excited to have you and
+          Fogbender is a new way to communicate with your customers—we’re so excited to have you and
           can’t wait to show you around.
         </p>
         <form
@@ -128,7 +128,6 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       </div>
 
       <div className="mt-4 border-t border-gray-300">
-        <p className="mt-4 text-4xl">🖖</p>
         <p className="fog:text-caption-xl mt-2">We’re looking forward to working with you!</p>
         <p className="fog:text-caption-l mt-5 text-gray-500">The Fogbender team</p>
         <p className="fog:text-caption-l mt-1 text-gray-500">415&ndash;290&ndash;3979</p>

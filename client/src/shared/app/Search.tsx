@@ -1,11 +1,17 @@
 import classNames from "classnames";
-import { Room as RoomT, useLoadAround, useRoomHistory, useSearchHistory } from "fogbender-proto";
+import {
+  Author,
+  Room as RoomT,
+  useLoadAround,
+  useRoomHistory,
+  useSearchHistory,
+} from "fogbender-proto";
 import React from "react";
 import { throttle } from "throttle-debounce";
 
 import { FilterInput } from "../components/lib";
 import { MessageView } from "../messages/MessageView";
-import { isInternal as isInternalRoom } from "../utils/format";
+import { isInternalHelpdesk } from "../utils/format";
 
 import { RoomResizeHandle } from "./Room";
 import { RoomHeader } from "./RoomHeader";
@@ -14,6 +20,7 @@ export const Search: React.FC<{
   roomId: string;
   paneId: string;
   isAgent?: boolean;
+  myAuthor: Author;
   singleRoomMode?: boolean;
   activeRoomId?: string;
   isLayoutPinned: boolean;
@@ -27,6 +34,7 @@ export const Search: React.FC<{
   roomId,
   paneId,
   isAgent,
+  myAuthor,
   singleRoomMode,
   activeRoomId,
   isLayoutPinned,
@@ -38,7 +46,7 @@ export const Search: React.FC<{
   rosterVisible,
 }) => {
   const room = roomById(roomId);
-  const isInternal = isInternalRoom(room?.customerName);
+  const isInternal = isInternalHelpdesk(room?.customerName);
   const isActiveRoom = activeRoomId === paneId;
   const { loadAroundByRoom } = useLoadAround();
   const loadAroundMessage = loadAroundByRoom[roomId];
@@ -92,6 +100,7 @@ export const Search: React.FC<{
           mode="Search"
           helpdesk={undefined}
           isAgent={isAgent}
+          myAuthor={myAuthor}
           singleRoomMode={singleRoomMode || false}
           isActive={singleRoomMode || activeRoomId === paneId}
           isLayoutPinned={isLayoutPinned}

@@ -325,6 +325,18 @@ defmodule Test.Api.AuthTest do
     assert {:reply, %Fog.Api.Auth.Ok{}, _} = Api.request(user2, ctx.guest_api)
   end
 
+  describe "visitors auth" do
+    test "login new visitor", ctx do
+      v1 = %Api.Visitor.New{widgetId: ctx.widget_id, localTimestamp: "XYZ"}
+
+      assert {:reply, %Fog.Api.Visitor.Ok{token: token, userId: user_id}, _} =
+               Api.request(v1, ctx.guest_api)
+
+      auth = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
+      assert {:reply, %Fog.Api.Auth.Ok{userId: ^user_id}, _} = Api.request(auth, ctx.guest_api)
+    end
+  end
+
   defp auth_user_req(ws, ex_cid, ex_uid) do
     {:ok, widget_id} = Repo.Workspace.to_widget_id(ws.id)
 

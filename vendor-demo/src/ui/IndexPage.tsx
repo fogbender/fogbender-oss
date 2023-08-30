@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import classNames from "classnames";
 import React from "react";
-import { NavLink as NavLinkOriginal, useMatch } from "react-router-dom";
+import { NavLink as NavLinkOriginal, useLocation, useMatch } from "react-router-dom";
 
 import logo from "../logo.svg";
 import { useUserProfile, useVendorName } from "../store";
@@ -51,7 +51,11 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
   }, [showDropdown]);
   const { userEmail, userName, userPicture } = useUserProfile();
   const vendorName = useVendorName();
-  const isSupportPage = !!useMatch("/support");
+
+  const location = useLocation();
+
+  const isSupportPage = location.pathname.startsWith("/support");
+
   return (
     <div>
       <div className="bg-gray-800 pb-32">
@@ -92,14 +96,14 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                         to="/test-support-before"
                         className="ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (without Fogbender)
+                        Without Fogbender
                       </NavLink>
                       <NavLink
                         activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
                         to="/support"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (with Fogbender)
+                        With Fogbender
                         <div className="absolute top-1 right-0.5">
                           <Badge />
                         </div>
@@ -109,7 +113,21 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                         to="/support-unknown-user"
                         className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
                       >
-                        Support (Unknown User)
+                        Unknown User
+                      </NavLink>
+                      <NavLink
+                        activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
+                        to="/support-visitor"
+                        className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
+                      >
+                        Visitor roomy
+                      </NavLink>
+                      <NavLink
+                        activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
+                        to="/support-visitor-floaty"
+                        className="relative ml-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
+                      >
+                        Visitor floaty
                       </NavLink>
                     </div>
                   </div>

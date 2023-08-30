@@ -53,5 +53,6 @@ export * from "fogbender-proto";
 export * from "./context/isIdle";
 export { DetailedRoomsTable } from "./components/DetailedRoomsTable";
 export { RoomAssignees } from "./app/RoomAssignees";
+export { FancyMenuItem } from "./app/FancyMenuItem";
 
 export * from "./app/App";

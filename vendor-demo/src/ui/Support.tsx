@@ -66,6 +66,66 @@ export const SupportFallback = ({ headless }: { headless?: boolean }) => {
   );
 };
 
+export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
+  const fogbender = React.useRef(createNewFogbender());
+  const fullToken = useToken();
+  const token = React.useMemo<FallbackToken | undefined>(
+    () =>
+      fullToken && fullToken.widgetKey
+        ? {
+            widgetId: fullToken.widgetId,
+            widgetKey: fullToken.widgetKey,
+            versions: fullToken.versions,
+            visitor: true,
+          }
+        : undefined,
+    [fullToken]
+  );
+
+  const showWidget = useSelector(selectShowWidget);
+  if (headless && !showWidget) {
+    return null;
+  }
+  return (
+    <FogbenderProvider fogbender={fogbender.current}>
+      <FogbenderConfig clientUrl={clientUrl} token={token} />
+      <FogbenderIsConfigured>
+        {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />}
+        {headless ? <FogbenderFloatingWidget /> : null}
+      </FogbenderIsConfigured>
+    </FogbenderProvider>
+  );
+};
+
+export const SupportVisitorFloatie = ({}: { headless?: boolean }) => {
+  const fogbender = React.useRef(createNewFogbender());
+  const fullToken = useToken();
+  const token = React.useMemo<FallbackToken | undefined>(
+    () =>
+      fullToken && fullToken.widgetKey
+        ? {
+            widgetId: fullToken.widgetId,
+            widgetKey: fullToken.widgetKey,
+            versions: fullToken.versions,
+            visitor: true,
+          }
+        : undefined,
+    [fullToken]
+  );
+
+  return (
+    <>
+      <div className="min-h-screen bg-gray-300" />
+      <FogbenderProvider fogbender={fogbender.current}>
+        <FogbenderConfig clientUrl={clientUrl} token={token} />
+        <FogbenderIsConfigured>
+          <FogbenderFloatingWidget />
+        </FogbenderIsConfigured>
+      </FogbenderProvider>
+    </>
+  );
+};
+
 export const Badge = () => {
   const fogbender = React.useRef(createNewFogbender());
   const token = useToken();

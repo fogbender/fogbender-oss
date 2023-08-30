@@ -19,7 +19,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Icons } from "../components/Icons";
 import { Avatar, MessageCheckbox } from "../components/lib";
 import { UserInfoCard } from "../components/UserInfoCard";
-import { formatCustomerName } from "../utils/format";
+import { formatCustomerName, formatRoomName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 
 import { MessageFileThumbnail } from "./MessageFileThumbnail";
@@ -628,8 +628,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                     targetRoom.customerName
                   )})`}
                 >
-                  {link.author.name} forwarded to {targetRoom.counterpart?.name || targetRoom.name}{" "}
-                  ({formatCustomerName(targetRoom.customerName)})
+                  {link.author.name} forwarded to{" "}
+                  {targetRoom.counterpart?.name || formatRoomName(targetRoom, isAgent)}
+                  {isAgent && <span> ({formatCustomerName(targetRoom.customerName)})</span>}
                 </span>
                 <span className="pr-1 text-gray-500 whitespace-nowrap">
                   {formatTs(link.createdTs)}
@@ -793,8 +794,8 @@ export const SourceMessages: React.FC<{
           {sourceRoomName && (
             <React.Fragment>
               {" "}
-              from <span className="font-medium">{sourceRoomName}</span> (
-              {formatCustomerName(sourceLinkRoom.customerName)})
+              from <span className="font-medium">{formatRoomName(sourceLinkRoom, isAgent)}</span>
+              {isAgent && <span> ({formatCustomerName(sourceLinkRoom.customerName)})</span>}
             </React.Fragment>
           )}
         </div>

@@ -33,6 +33,7 @@ export const Folders: React.FC<{
       view: "customer_rooms_" + viewKey.current++,
       // TODO: figure out the right sections
       sections: [
+        "NEW VISITOR",
         "NEW",
         "CLOSED",
         "ARCHIVED",
@@ -118,7 +119,8 @@ const sectionTitles = (sectionId: string, isAgent: boolean) =>
     "DIRECT": "Direct",
     "ARCHIVED": "Archived",
     "INTERNAL": "Internal",
-    "NEW": "New signups",
+    "NEW": "New customers",
+    "NEW VISITOR": "New visitors",
     "CLOSED": "Closed",
   }[sectionId] || "Unknown: " + sectionId);
 

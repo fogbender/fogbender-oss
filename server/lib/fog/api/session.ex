@@ -11,7 +11,13 @@ defmodule Fog.Api.Session do
       eventId: 0,
       typing_ref: :undefined,
       lastActivityTs: 0,
-      pending_notifications: %{}
+      pending_notifications: %{},
+      headers: %{},
+      is_visitor: false,
+      email_verified: true,
+      verification_code: nil,
+      verification_email: nil,
+      verification_attempts: 0
     ]
   end
 
@@ -26,25 +32,27 @@ defmodule Fog.Api.Session do
       lastActivityTs: 0,
       pending_notifications: %{},
       groups: [],
-      groups_load_ts: nil
+      groups_load_ts: nil,
+      headers: %{}
     ]
   end
 
   defmodule Guest do
     defstruct [
       :agentId,
-      typing_ref: :undefined
+      typing_ref: :undefined,
+      headers: %{}
     ]
   end
 
   @type t :: %Guest{} | %User{} | %Agent{}
 
-  def guest() do
-    %Guest{}
+  def guest(headers \\ %{}) do
+    %Guest{headers: headers}
   end
 
-  def guest_agent(agent_id) do
-    %Guest{agentId: agent_id}
+  def guest_agent(agent_id, headers \\ %{}) do
+    %Guest{agentId: agent_id, headers: headers}
   end
 
   def for_user(vendor_id, helpdesk_id, user_id) do

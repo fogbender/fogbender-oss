@@ -1,6 +1,6 @@
 import { EventRoom } from "fogbender-proto";
 
-import { isInternal } from "../utils/format";
+import { isInternalHelpdesk } from "../utils/format";
 
 import { Icons } from "./Icons";
 
@@ -8,9 +8,10 @@ export const renderRoomTypeIcon = (room: EventRoom) => {
   const isBug = room?.tags?.some(t => t.name === ":bug") || false;
   const isFeature = (room?.tags?.some(t => t.name === ":feature") && isBug !== true) || false;
   const isBroadcast =
-    (isInternal(room?.customerName) && room?.tags?.some(t => t.name === ":triage")) || false;
+    (isInternalHelpdesk(room?.customerName) && room?.tags?.some(t => t.name === ":triage")) ||
+    false;
   const isDiscussion = room?.tags?.some(t => t.name === ":discussion") || false;
-  const showAsInternal = isInternal(room.customerName);
+  const showAsInternal = isInternalHelpdesk(room.customerName);
 
   return room.isTriage ? (
     <Icons.RoomTriage className="w-4 h-4 text-gray-500" />

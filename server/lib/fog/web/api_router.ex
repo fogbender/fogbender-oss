@@ -1486,6 +1486,33 @@ defmodule Fog.Web.APIRouter do
     ok_json(conn, data)
   end
 
+  get "/helpdesks/:helpdesk_id/intel/users/:user_id" do
+    case Repo.Helpdesk.get(helpdesk_id) |> Repo.preload(:vendor) do
+      nil ->
+        send_resp(conn, 404, "Not found")
+
+      %Data.Helpdesk{vendor: %Data.Vendor{id: vendor_id}} ->
+        our_role = our_role(conn, vendor_id)
+
+        if role_at_or_above(our_role, "reader") do
+          case Repo.User.get(user_id) do
+            nil ->
+              send_resp(conn, 404, "Not found")
+
+            %Data.User{helpdesk_id: ^helpdesk_id} = user ->
+              intel = Repo.User.intel(user)
+
+              ok_json(conn, intel |> Jason.encode!(pretty: true))
+
+            _ ->
+              forbid(conn)
+          end
+        else
+          forbid(conn)
+        end
+    end
+  end
+
   get "/helpdesks/:helpdesk_id" do
     case Data.Helpdesk |> Repo.get(helpdesk_id) |> Repo.preload([:vendor, :workspace]) do
       nil ->
@@ -1537,8 +1564,6 @@ defmodule Fog.Web.APIRouter do
             end
 
           data = data |> Jason.encode!(pretty: true)
-
-          Process.sleep(1000)
 
           ok_json(conn, data)
         else

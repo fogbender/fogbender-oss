@@ -5,11 +5,14 @@ import React from "react";
 import { muteSoundAtom, swNotificationsAtom } from "../store/config.store";
 import { getActiveSwRegistration } from "../store/notifications";
 
+import { roomToName } from "./format";
 import { usePrevious } from "./usePrevious";
 
 function prepareNotifications(
   message: EventNotificationMessage,
   roomById: (id: string) => RoomT | undefined,
+  isAgent: boolean,
+  ourId: string | undefined,
   setRoomToOpen?: (room: RoomT) => void
 ) {
   const room = roomById(message.roomId);
@@ -17,7 +20,7 @@ function prepareNotifications(
     const body =
       room.type === "dialog"
         ? `${message.fromName}: ${message.plainText}`
-        : `${message.fromName} [${room.name}]: ${message.plainText}`;
+        : `${message.fromName} [${roomToName(room, ourId, isAgent)}]: ${message.plainText}`;
     return {
       room,
       body,
@@ -34,14 +37,16 @@ export const useClientNotifications = ({
   roomById,
   notificationTitle = "",
   setRoomToOpen,
+  ourId,
 }: {
   setRoomToOpen?: (room: RoomT) => void;
   notificationTitle?: string;
   roomById: (id: string) => RoomT | undefined;
+  ourId: string | undefined;
 }) => {
   const onNotification = React.useCallback(
     (message: EventNotificationMessage) => {
-      const res = prepareNotifications(message, roomById, setRoomToOpen);
+      const res = prepareNotifications(message, roomById, false, ourId, setRoomToOpen);
       if (res) {
         const {
           room: { id: roomId },
@@ -72,17 +77,19 @@ export const useAgentNotifications = ({
   roomById,
   setRoomToOpen,
   isIdle,
+  ourId,
 }: {
   setRoomToOpen: (room: RoomT) => void;
   notificationTitle?: string;
   roomById: (id: string) => RoomT | undefined;
   isIdle: boolean | undefined;
+  ourId: string | undefined;
 }) => {
   const [swNotifications] = useAtom(swNotificationsAtom);
   const onNotification = React.useCallback(
     (message: EventNotificationMessage) => {
       if (window.Notification?.permission === "granted" && isIdle) {
-        const res = prepareNotifications(message, roomById, setRoomToOpen);
+        const res = prepareNotifications(message, roomById, true, ourId, setRoomToOpen);
         if (res) {
           const { body, onClick } = res;
           if (swNotifications) {

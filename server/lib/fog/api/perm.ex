@@ -48,14 +48,24 @@ defmodule Fog.Api.Perm do
   end
 
   def allowed?(sess, mod, action, data) do
-    effects = process_rules(sess, action, data, mod.rules())
-    res = :allow in effects && :deny not in effects
+    case process_rules(sess, action, data, mod.rules()) do
+      {:allow, _, _} ->
+        true
 
-    unless res do
-      Logger.warn("DENY #{mod_name(mod)}/#{action} for #{session_info(sess)}. #{inspect(data)}")
+      {:deny, mod, pred} ->
+        Logger.warn(
+          "DENY #{mod_name(mod)}/#{action} by #{pred} rule for #{session_info(sess)}. #{inspect(data)}"
+        )
+
+        false
+
+      [] ->
+        Logger.warn(
+          "DENY #{mod_name(mod)}/#{action} by no allow rule found for #{session_info(sess)}. #{inspect(data)}"
+        )
+
+        false
     end
-
-    res
   end
 
   defp session_info(%Session.Agent{agentId: id}), do: "agent #{id}"
@@ -70,7 +80,7 @@ defmodule Fog.Api.Perm do
       when rule_action == :* or rule_action == req_action do
     case {apply(mod, pred, [subject, data]), effect} do
       {false, _} -> process_rules(subject, req_action, data, rest)
-      {true, effect} -> [effect]
+      {true, effect} -> {effect, mod, pred}
     end
   end
 

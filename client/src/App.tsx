@@ -1,5 +1,11 @@
 import { isUserToken, Token } from "fogbender";
-import { getServerApiUrl, UserToken } from "fogbender-proto";
+import {
+  ClientSession,
+  getServerApiUrl,
+  UserToken,
+  VisitorInfo,
+  VisitorToken,
+} from "fogbender-proto";
 import { parse } from "query-string";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -22,6 +28,7 @@ import {
   WsProvider,
 } from "./shared";
 import { queryClient } from "./shared/utils/client";
+import { SafeLocalStorage } from "./shared/utils/SafeLocalStorage";
 import Headless from "./ui/Headless";
 
 const App = () => {
@@ -74,6 +81,18 @@ const App = () => {
     }
   }, [notificationsPermission]);
 
+  const setVisitorInfo = (info: VisitorInfo) => {
+    const { widgetId } = info;
+
+    SafeLocalStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
+  };
+
+  const getVisitorInfo = (widgetId: string) => {
+    const info = SafeLocalStorage.getItem(`visitor-${widgetId}`);
+
+    return info ? JSON.parse(info) : undefined;
+  };
+
   React.useLayoutEffect(() => {
     // we can't check origin because it's going to be different for each user
     // nosemgrep: javascript.browser.security.insufficient-postmessage-origin-validation.insufficient-postmessage-origin-validation
@@ -104,17 +123,22 @@ const App = () => {
 
   const userToken = isUserToken(token) ? token : undefined;
 
-  if (!userToken && token) {
-    return <NoTokenFallback clientEnv={clientEnv} token={token} />;
+  const isVisitorOk = token && "visitor" in token && token["visitor"] === true;
+
+  if (!userToken && !isVisitorOk && token) {
+    return <NoUserFallback clientEnv={clientEnv} token={token} />;
   }
+
   return (
     <ErrorBoundary FallbackComponent={ErrorPageFallback}>
       <IsIdleProvider>
         <ProviderWrapper
-          token={userToken}
+          token={isVisitorOk ? token : userToken}
           clientEnv={clientEnv}
           wrongToken={wrongToken}
           onWrongToken={onWrongToken}
+          setVisitorInfo={setVisitorInfo}
+          getVisitorInfo={getVisitorInfo}
           headless={headless}
           notificationsPermission={notificationsPermission}
           setNotificationsPermission={setNotificationsPermission}
@@ -127,10 +151,12 @@ const App = () => {
 };
 
 const ProviderWrapper: React.FC<{
-  token: UserToken | undefined;
+  token: UserToken | VisitorToken | undefined;
   clientEnv: string | undefined;
   wrongToken: boolean;
   onWrongToken: (token: UserToken) => void;
+  setVisitorInfo?: (x: VisitorInfo) => void;
+  getVisitorInfo?: (widgetId: string) => VisitorInfo | undefined;
   headless: boolean;
   notificationsPermission: NotificationPermission | "hide" | "request";
   setNotificationsPermission: (p: NotificationPermission | "hide" | "request") => void;
@@ -141,6 +167,8 @@ const ProviderWrapper: React.FC<{
   clientEnv,
   wrongToken,
   onWrongToken,
+  setVisitorInfo,
+  getVisitorInfo,
   headless,
   notificationsPermission,
   setNotificationsPermission,
@@ -150,23 +178,27 @@ const ProviderWrapper: React.FC<{
   const envRef = React.useRef(clientEnv);
   envRef.current = clientEnv;
   const isIdle = useIsIdle();
-  const authorMe = React.useMemo(() => {
-    if (token) {
-      const me: AuthorMe = {
-        name: token.userName,
-        email: token.userEmail,
-        avatarUrl: token.userAvatarUrl,
-      };
-      return me;
-    }
-    return;
-  }, [token]);
+
+  const [authorMe, setAuthorMe] = React.useState<AuthorMe>();
+
   return (
     <WsProvider
       token={token}
       client={{
         getEnv: () => envRef.current,
         onWrongToken,
+        getVisitorInfo,
+        setVisitorInfo,
+        setSession: ({ userAvatarUrl, userName, userEmail, customerName }: ClientSession) => {
+          if (userName && userEmail) {
+            setAuthorMe({
+              name: userName,
+              email: userEmail,
+              avatarUrl: userAvatarUrl,
+              customerName,
+            });
+          }
+        },
       }}
       isIdle={headless ? true : isIdle}
     >
@@ -193,7 +225,7 @@ const ProviderWrapper: React.FC<{
   );
 };
 
-const NoTokenFallback: React.FC<{
+const NoUserFallback: React.FC<{
   clientEnv: string | undefined;
   token: Token;
 }> = ({ clientEnv, token }) => {
