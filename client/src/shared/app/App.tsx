@@ -937,7 +937,13 @@ export const App: React.FC<{
                   <div className="flex flex-col text-right truncate">
                     <div className="flex items-center space-x-1">
                       <span className="flex-1 flex flex-col fog:text-caption-xl truncate">
-                        <span title={userInfo.name} className="truncate">
+                        <span
+                          title={userInfo.name}
+                          className={classNames(
+                            "truncate",
+                            userType && ["visitor-unverified"].includes(userType) && "text-sm"
+                          )}
+                        >
                           {userInfo.name}
                         </span>
                       </span>
