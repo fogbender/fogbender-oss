@@ -194,3 +194,35 @@ You can push your changes with
 Create pull request and make sure to name it as "sync with fogbender-oss xxxxxxx" where you get sha from
 
     git log -1 origin/main
+
+# Secret environment variables for GitHub Actions
+
+GitHub Actions require github token to be able to create `[ci] release` pull requests, and they require NPM token to be able to publish packages to NPM. If token is not set or expired 
+you will see actions failing in the following commands:
+
+- `/usr/bin/git push origin HEAD:changeset-release/main --force` (github token)
+- `/home/runner/work/fogbender-oss/fogbender-oss/node_modules/.bin/changeset publish` (npm token)
+
+## Create NPM token
+
+https://www.npmjs.com/settings/fogbender/tokens/granular-access-tokens/new 
+
+- `fogbender-oss` - name of the token
+- `7 days` - expiration
+- `read and write - permissions for packages and scopes
+- `no access` - organizations permissions
+- `generate token`
+
+Copy the token and save it as `NPM_TOKEN` in https://github.com/fogbender/fogbender-oss/settings/secrets/actions
+
+## Create GitHub token
+
+Run this command to generate a token (valid for 1 day):
+
+    ./scripts/fogbender-oss-token/github-app-token.mjs
+
+You might need to run it twice (once to install dependancies, and second time to actually run it).
+
+Copy the token and save it as `FOG_OSS_GITHUB_TOKEN` in https://github.com/fogbender/fogbender-oss/settings/secrets/actions
+
+> We are using approach described in this article https://wesbos.com/scoped-github-access-token and `github-app-token.mjs` exchanges `appId`, `installationId` and `privateKey` for a token that has read-write access to git, but scoped only to `fogbender-oss` repo. Secret value `privateKey` is stored through SOPS in the `nix/secrets/admin/github.env` file. The script has checks that allow you to run it from either inside Nix shell or outside of it.
