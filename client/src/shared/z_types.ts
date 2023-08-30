@@ -5,6 +5,11 @@ export type APICodeChallengeVerifier = {
   verifierEncoded: string;
 };
 
+export type APIFogbenderVisitor = {
+  widgetId: string;
+  widgetPaseto: string;
+};
+
 export type APIPagerdutyOauthCode = {
   code: string;
   verifierEncoded: string;

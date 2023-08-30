@@ -92,35 +92,24 @@ defmodule Fog.Web.PublicRouter do
   end
 
   get "/fogbender_visitor" do
-    id = conn.assigns[:agent_id]
-
-    user =
-      Data.Agent
-      |> Repo.get(id)
-
-    data =
-      user
-      |> Jason.encode!(pretty: true)
-
     # default workspace used to support customers of Fogbender
     workspace_id = Fog.env(:fogbender_workspace_id)
+    {:ok, widget_id} = Repo.Workspace.to_widget_id(workspace_id)
 
     %Fog.Data.Workspace{
       signature_secret: signature_secret
     } = Fog.Data.Workspace |> Fog.Repo.get!(workspace_id)
 
-    # user_hmac = Fog.UserSignature.hmac_digest(id, signature_secret)
-    user_paseto = Fog.UserSignature.paseto_encrypt(%{userId: id}, signature_secret)
-    # user_jwt = Fog.UserSignature.jwt_sign(id, signature_secret)
+    user_paseto = Fog.UserSignature.paseto_encrypt(%{visitor: true}, signature_secret)
 
-    # to extends Data.Agent on the output
-    data =
-      Jason.decode!(data)
-      # |> Map.merge(%{widget_hmac: user_hmac, widget_paseto: user_paseto, widget_jwt: user_jwt})
-      |> Map.merge(%{widget_paseto: user_paseto})
-      |> Jason.encode!(pretty: true)
-
-    ok_json(conn, data)
+    ok_json(
+      conn,
+      %Fog.Z.APIFogbenderVisitor{
+        widgetId: widget_id,
+        widgetPaseto: user_paseto
+      }
+      |> Fog.Z.APIFogbenderVisitor.to_json!()
+    )
   end
 
   match _ do
