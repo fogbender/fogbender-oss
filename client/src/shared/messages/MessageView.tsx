@@ -921,15 +921,7 @@ const MessageContent: React.FC<{
         )
       : parsed;
 
-  const rehypeHtml = String(
-    rehype()
-      .data("settings", { fragment: true })
-      .use(rehypeHighlight, { detect: true })
-      .processSync(parsedWithMyMention)
-  );
-
-  const finalHtml = DOMPurify.sanitize(rehypeHtml, {
-    RETURN_DOM: true,
+  const sanitized = DOMPurify.sanitize(parsedWithMyMention, {
     ALLOWED_TAGS: [
       "p",
       "b",
@@ -962,12 +954,14 @@ const MessageContent: React.FC<{
     ALLOW_DATA_ATTR: false,
   });
 
-  const first = finalHtml.firstChild;
-  // we have a single <p> tag
-  const isSingleEmoji =
-    first?.nodeName === "P" && first.nextSibling === null && first.textContent
-      ? /^\p{Extended_Pictographic}$/u.test(first.textContent)
-      : false;
+  const finalHtml = String(
+    rehype()
+      .data("settings", { fragment: true })
+      .use(rehypeHighlight, { detect: true })
+      .processSync(sanitized)
+  );
+
+  const isSingleEmoji = /^<p>\p{Extended_Pictographic}<\/p>$/u.test(finalHtml);
 
   const images = message.files.filter(
     file => "fileUrl" in file && file.type === "attachment:image"
@@ -1001,13 +995,7 @@ const MessageContent: React.FC<{
         </div>
       ) : (
         <div className={classNames("break-words", isSingleEmoji && !inReply && "text-6xl")}>
-          <div
-            ref={el => {
-              if (el) {
-                el.replaceChildren(DOMPurify.sanitize(finalHtml, { RETURN_DOM: true }));
-              }
-            }}
-          />
+          <div dangerouslySetInnerHTML={{ __html: finalHtml }} />
           {images.length > 0 && (
             <MessageImages
               message={message}
