@@ -193,12 +193,10 @@ defmodule Fog.Utils do
 
   def customer_name(%Data.Customer{name: "$Cust_Internal_" <> _}), do: @internal_customer_name
   def customer_name(%Data.Customer{name: "$Cust_External_" <> _}), do: @external_customer_name
-  def customer_name(%Data.Customer{name: "$Cust_Anonymous_" <> _}), do: @anonymous_customer_name
   def customer_name(%Data.Customer{name: name}), do: name
 
   def customer_name("$Cust_Internal_" <> _), do: @internal_customer_name
   def customer_name("$Cust_External_" <> _), do: @external_customer_name
-  def customer_name("$Cust_Anonymous_" <> _), do: @anonymous_customer_name
   def customer_name(name), do: name
 
   def safe_text_to_issue_title(text, maxWords \\ 8) do
