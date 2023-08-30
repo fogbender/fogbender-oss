@@ -2,7 +2,7 @@ defmodule Fog.Api.Visitor do
   use Fog.Api.Handler
 
   alias Fog.{Data, Repo, Mailer}
-  alias Fog.Api.{Session}
+  alias Fog.Api.{Session, Event}
   require Logger
 
   defmsg(New, [:widgetId, :localTimestamp])
@@ -41,7 +41,7 @@ defmodule Fog.Api.Visitor do
     display_name_for_agent = "#{user.name}"
     display_name_for_user = "Chat from #{localTimestamp}"
 
-    %Data.Room{} =
+    room = %Data.Room{} =
       Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
         helpdesk_id: user.helpdesk_id,
         name: room_name,
@@ -49,6 +49,8 @@ defmodule Fog.Api.Visitor do
         display_name_for_agent: display_name_for_agent,
         tags: []
       })
+
+    Event.publish(room)
 
     token =
       Fog.UserSignature.jwt_sign(
@@ -145,7 +147,7 @@ defmodule Fog.Api.Visitor do
     Repo.Room.for_user(old_user_id)
     |> Enum.each(fn r ->
       r = Repo.Room.update_members(r.id, [user.id], [])
-      Fog.Api.Event.Room.publish(r)
+      Event.Room.publish(r)
     end)
 
     {:reply, %Ok{userId: user.id, token: token}, reset_code(s)}
