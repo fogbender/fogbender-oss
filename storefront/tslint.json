@@ -8,7 +8,7 @@
     "no-console": [true, "log"],
     "variable-name": false,
     "jsx-no-lambda": false,
-    // "function-name": false,
+    "function-name": false,
     "no-increment-decrement": false,
     "ordered-imports": [true, { "grouped-imports": true }],
     "interface-name": [true, "never-prefix"],
