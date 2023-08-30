@@ -155,7 +155,8 @@ const sectionTitles = (
       "DIRECT": "Direct",
       "ARCHIVED": "Archived",
       "CLOSED": "Closed",
-      "NEW": "New signups",
+      "NEW": "New customers",
+      "NEW VISITOR": "New visitors",
     }[sectionId] || "Unknown: " + sectionId
   );
 };
@@ -510,7 +511,7 @@ export const RosterViewSubscription = (props: { options: RosterViewOptions }) =>
 
   const options = React.useMemo(() => {
     return {
-      sections: ["ARCHIVED", "?PINNED", "NEW", "ASSIGNED TO ME", "ASSIGNED", "DIRECT", "*OPEN"],
+      sections: ["ARCHIVED", "PINNED", "NEW VISITOR", "NEW", "ASSIGNED TO ME", "ASSIGNED", "DIRECT", "*OPEN"],
       ...props.options,
     };
   }, [props.options]);

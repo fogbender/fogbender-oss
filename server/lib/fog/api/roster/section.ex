@@ -63,6 +63,7 @@ defmodule Fog.Api.Roster.Section do
     "INBOX",
     "OTHER",
     "NEW",
+    "NEW VISITOR",
     "CUSTOMER",
     "TAG:",
     "CLOSED"
@@ -76,6 +77,7 @@ defmodule Fog.Api.Roster.Section do
     "CLOSED",
     "ARCHIVED",
     "NEW",
+    "NEW VISITOR",
     "?PINNED",
     "ASSIGNED TO ME",
     "ASSIGNED",
@@ -227,6 +229,9 @@ defmodule Fog.Api.Roster.Section do
 
   defp section("NEW", %Params{event: %Event.RosterRoom{room: room, badge: nil}}),
     do: not room.resolved and room.type == "public"
+
+  defp section("NEW VISITOR", %Params{event: %Event.RosterRoom{room: room, badge: nil}}),
+    do: not room.resolved and room.type == "private" and room.customerType == "visitor"
 
   defp section("CUSTOMER", %Params{event: %Event.RosterRoom{room: room}}),
     do: %Event.RosterSection{
