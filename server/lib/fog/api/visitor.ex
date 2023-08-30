@@ -5,7 +5,7 @@ defmodule Fog.Api.Visitor do
   alias Fog.Api.{Session}
   require Logger
 
-  defmsg(New, [:widgetId])
+  defmsg(New, [:widgetId, :localTimestamp])
   defmsg(VerifyEmail, [:email])
   defmsg(VerifyCode, [:emailCode])
 
@@ -15,7 +15,7 @@ defmodule Fog.Api.Visitor do
   @verify_delay 30
   @verify_attempts 3
 
-  def info(%New{widgetId: widget_id}, %Session.Guest{} = session) do
+  def info(%New{widgetId: widget_id, localTimestamp: localTimestamp}, %Session.Guest{} = session) do
     {:ok, %Data.Workspace{} = workspace} = Repo.Workspace.from_widget_id(widget_id)
     customer = Repo.Helpdesk.get_external(workspace.id).customer
     uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
@@ -38,11 +38,15 @@ defmodule Fog.Api.Visitor do
     user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
 
     room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
+    display_name_for_agent = "#{user.name}"
+    display_name_for_user = "Chat from #{localTimestamp}"
 
     %Data.Room{} =
       Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
         helpdesk_id: user.helpdesk_id,
         name: room_name,
+        display_name_for_user: display_name_for_user,
+        display_name_for_agent: display_name_for_agent,
         tags: []
       })
 

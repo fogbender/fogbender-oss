@@ -22,6 +22,8 @@ defmodule Fog.Api.Event.Room do
     :customerName,
     :customerDeletedTs,
     :name,
+    :displayNameForUser,
+    :displayNameForAgent,
     :email,
     :agentId,
     :userId,
@@ -242,6 +244,8 @@ defmodule Fog.Api.Event.Room do
       customerName: r.customer.name,
       customerDeletedTs: deleted_at(r.customer.deleted_at),
       name: r.name,
+      displayNameForUser: r.display_name_for_user,
+      displayNameForAgent: r.display_name_for_agent,
       # when searching, created == false for users/agents (search template)
       imageUrl: r.image_url,
       # search template:

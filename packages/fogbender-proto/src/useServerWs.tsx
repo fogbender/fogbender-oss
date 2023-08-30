@@ -193,6 +193,7 @@ export function useServerWs(
         serverCall<VisitorNew>({
           msgType: "Visitor.New",
           widgetId: token.widgetId,
+          localTimestamp: new Date().toLocaleString(),
         }).then(
           r => {
             if (r.msgType === "Visitor.Ok") {

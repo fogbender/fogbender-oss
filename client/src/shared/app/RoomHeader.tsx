@@ -11,7 +11,6 @@ import {
   SearchRoster,
   ServerCall,
   Tag,
-  useRosterActions,
   useWs,
   VisitorVerifyCode,
   VisitorVerifyEmail,
@@ -29,14 +28,13 @@ import { queryKeys } from "../utils/client";
 import {
   formatCustomerName,
   formatRoomName,
-  isAnonymousHelpdesk,
   isExternalHelpdesk,
   isInternalHelpdesk,
   renderTag,
 } from "../utils/format";
-import { useClickOutside } from "../utils/useClickOutside";
 
 import { RoomAssignees } from "./RoomAssignees";
+import { RoomMenu } from "./RoomMenu";
 import { RoomMode } from "./RoomMode";
 
 export const FontAwesomeCrown = ({ className = "" }: { className?: string }) => (
@@ -48,7 +46,7 @@ export const FontAwesomeCrown = ({ className = "" }: { className?: string }) => 
   </svg>
 );
 
-type RoomHeaderProps = {
+export type RoomHeaderProps = {
   room: EventRoom;
   roomId: string;
   paneId: string;
@@ -136,9 +134,6 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
   const issueTags = React.useMemo(() => tags.filter(t => t.meta_type === "issue"), [tags]);
 
   const isInternal = isInternalHelpdesk(room?.customerName);
-  const isExternal = isExternalHelpdesk(room?.customerName);
-  const isAnonymous = isAnonymousHelpdesk(room?.customerName);
-  const externalEmailUserName = isExternal && room?.members?.length === 1 && room.members[0].name;
 
   const publicRoomSubtitle =
     room && helpdesk
@@ -244,7 +239,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
   };
 
   const issueStatusButton = () => {
-    if (room.isTriage || (room.type === "dialog" && !isAnonymous)) {
+    if (room.isTriage || room.type === "dialog") {
       return null;
     }
 
@@ -252,7 +247,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
     if (isIssueClosed) {
       return reopenIssueButton();
-    } else if (isAgent && (isIssueOpen || !room.isTriage || showIfInternal || isAnonymous)) {
+    } else if (isAgent && (isIssueOpen || !room.isTriage || showIfInternal || isExternalHelpdesk)) {
       return closeIssueButton();
     } else {
       return null;
@@ -405,6 +400,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
     }
   }, [issueTags, showIssueInfo, onShowIssueInfo]);
 
+  const roomName = formatRoomName(room, isAgent === true, counterpart?.name);
+
   return (
     <>
       <div className="px-2.5 border-b border-gray-300 select-none">
@@ -415,8 +412,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             }}
           >
             <div className="flex items-center gap-2 text-xl">
-              {room && room.name && room.createdTs && (
-                <span className="font-medium">{formatRoomName(room, !!isAgent)}</span>
+              {room && roomName && room.createdTs && (
+                <span className="font-medium">{roomName}</span>
               )}
               <span>({formatCustomerName(room?.customerName)})</span>
             </div>
@@ -641,7 +638,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             }}
           >
             <div className="mt-4 text-xl">
-              Close <span className="font-medium">{room?.name}</span> (
+              Close <span className="font-medium">{roomName}</span> (
               {formatCustomerName(room?.customerName)})
             </div>
             <div className="mt-8 text-center border-b border-gray-200 leading-[0px] sm:leading-[0px] md:leading-[0px] lg:leading-[0px] w-full">
@@ -1020,7 +1017,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             isDraggable && "cursor-move"
           )}
         >
-          <RoomNameLine {...props} isAgent={isAgent === true} />
+          <RoomNameLine {...props} roomName={roomName} />
           <RoomMenu {...props} />
           <span
             className={classNames(
@@ -1066,12 +1063,6 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                   </span>
                   <span className="group-hover:text-brand-red-500 font-semibold truncate">
                     {formatCustomerName(room.customerName)}
-                    {isExternal && externalEmailUserName && (
-                      <>
-                        <span className="px-1">|</span>
-                        <span>{externalEmailUserName}</span>
-                      </>
-                    )}
                   </span>
                 </div>
               </div>
@@ -1166,7 +1157,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
               {room && (
                 <div className="flex gap-1.5 items-center">
                   {room.type === "dialog" && <div>1-1 with</div>}
-                  <div className="font-medium">{counterpart?.name || room.name}</div>
+                  <div className="font-medium">{roomName}</div>
                   {counterpart?.email && !counterpart?.email.startsWith(":") && (
                     <div>
                       <a href={`mailto:${counterpart.email}`} className="fog:text-link">
@@ -1317,7 +1308,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
         <div className="flex gap-2">
           {mode === "email" && (
             <input
-              data-1p-ignore
+              data-1p-ignore={true}
               autoFocus={true}
               title="Please enter a valid email address"
               id="emailToVerify"
@@ -1328,7 +1319,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
           )}
           {mode === "code" && (
             <input
-              data-1p-ignore
+              data-1p-ignore={true}
               id="codeToVerify"
               className="flex-grow border-1 rounded-md bg-yellow-50 px-2 leading-loose text-gray-800"
               type="text"
@@ -1361,21 +1352,17 @@ export const RoomNameLine: React.FC<
   Partial<RoomHeaderProps> & {
     unreadBadge?: React.ReactNode;
     mode: RoomMode;
-    isAgent: boolean;
+    roomName: string;
   }
-> = ({ room, paneId, onClose, mode, unreadBadge, rosterVisible, ourId, isAgent }) => {
+> = ({ room, paneId, onClose, mode, unreadBadge, rosterVisible, ourId, roomName }) => {
   const counterpart = room && calculateCounterpart(room, ourId);
   const isEmail = room?.tags?.some(t => t.name === ":email") || false;
   const isExternal = isExternalHelpdesk(room?.customerName);
-  const isAnonymous = isAnonymousHelpdesk(room?.customerName);
   const isBug = room?.tags?.some(t => t.name === ":bug") || false;
   const isFeature = (room?.tags?.some(t => t.name === ":feature") && isBug !== true) || false;
   const isDiscussion = room?.tags?.some(t => t.name === ":discussion") || false;
   const isBroadcast =
     isInternalHelpdesk(room?.customerName) && room?.tags?.some(t => t.name === ":triage");
-
-  const roomName =
-    (room && room.name && room.createdTs && formatRoomName(room, isAgent)) || undefined;
 
   return (
     <>
@@ -1402,16 +1389,13 @@ export const RoomNameLine: React.FC<
               <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={32} />
             </span>
           )}
-          {room?.type === "private" &&
-            isEmail === false &&
-            isAnonymous === false &&
-            isExternal === false && (
-              <span className="flex pr-1.5">
-                <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-s">
-                  Private
-                </span>
+          {room?.type === "private" && isEmail === false && isExternal === false && (
+            <span className="flex pr-1.5">
+              <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-s">
+                Private
               </span>
-            )}
+            </span>
+          )}
           {room?.type === "private" && isEmail === true && (
             <span className="pr-1.5">
               <Icons.RoomExternalLarge className="w-6 h-6" />
@@ -1461,173 +1445,5 @@ export const RoomNameLine: React.FC<
         {mode === "Customer" && room && room.customerName}
       </span>
     </>
-  );
-};
-
-const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
-  room,
-  roomId,
-  ourId,
-  workspaceId,
-  paneId,
-  isAgent,
-  isActive,
-  isLayoutPinned,
-  isExpanded,
-  singleRoomMode,
-  onClose,
-  onCloseOtherRooms,
-  onOpenSearch,
-  onSettings,
-  onUnseen,
-  onSetRoomPin,
-  onGoFullScreen,
-  mode,
-}) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const menuRef = React.useRef<HTMLDivElement>(null);
-  const myPinTag = ourId ? `:@${ourId}:pin` : undefined;
-
-  const { updateRoom } = useRosterActions({
-    workspaceId,
-  });
-
-  const isRosterPinned = room?.tags?.some(t => t.name === myPinTag) || false;
-
-  const onRosterPinRoom = () => {
-    if (!room || !myPinTag) {
-      return;
-    }
-
-    if (isRosterPinned) {
-      updateRoom({ roomId: room.id, tagsToRemove: [myPinTag] });
-    } else {
-      updateRoom({ roomId: room.id, tagsToAdd: [myPinTag] });
-    }
-  };
-
-  useClickOutside(menuRef, () => setExpanded(false), !expanded);
-
-  return (
-    <span
-      className={classNames(
-        "relative layout-nodrag sm:mr-2 cursor-pointer",
-        !singleRoomMode && isActive
-          ? "text-white hover:text-white"
-          : "text-gray-500 hover:text-black"
-      )}
-      onClick={() => setExpanded(x => !x)}
-    >
-      <Icons.Menu />
-      <div
-        ref={menuRef}
-        className={classNames(
-          "absolute z-20 top-full right-0 py-2 rounded-md fog:box-shadow-m bg-white text-black fog:text-body-m",
-          expanded ? "block" : "hidden"
-        )}
-      >
-        {onGoFullScreen && (
-          <div
-            onClick={onGoFullScreen}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-          >
-            <span>
-              <Icons.FullScreen className="w-6 text-gray-500 group-hover:text-gray-800" />
-            </span>
-            <span>Open in a new tab</span>
-          </div>
-        )}
-        {isAgent && (
-          <div
-            onClick={onRosterPinRoom}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-          >
-            <span>
-              <Icons.Pin
-                className="w-6 text-gray-500 group-hover:text-gray-800"
-                solidColor={isRosterPinned ? "currentColor" : undefined}
-                strokeWidth="1.5"
-              />
-            </span>
-            <span>{isRosterPinned ? "Unpin" : "Pin"} (roster)</span>
-          </div>
-        )}
-
-        <div
-          onClick={() => onSetRoomPin?.(paneId, !isLayoutPinned)}
-          className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-        >
-          <span>
-            <Icons.Pin
-              className="w-6 text-gray-500 group-hover:text-gray-800"
-              solidColor={isLayoutPinned ? "currentColor" : undefined}
-              strokeWidth="1.5"
-            />
-          </span>{" "}
-          <span>{isLayoutPinned ? "Unpin (layout)" : "Pin (layout)"}</span>
-        </div>
-        {roomId && onOpenSearch && (
-          <div
-            onClick={() => onOpenSearch(roomId)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-          >
-            <span>
-              <Icons.Search
-                strokeWidth="1.5"
-                className="w-6 text-gray-500 group-hover:text-gray-800"
-              />
-            </span>
-            <span>Search room</span>
-          </div>
-        )}
-        {room && room.type !== "dialog" && onSettings && (
-          <div
-            onClick={() => onSettings(room.id)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-          >
-            <span>
-              <Icons.GearNoFill className="w-6 text-gray-500 group-hover:text-gray-800" />
-            </span>
-            <span>Room settings</span>
-          </div>
-        )}
-        {room &&
-          mode === "Room" &&
-          (isInternalHelpdesk(room.customerName) || !isAgent) &&
-          room.type === "public" && (
-            <div
-              onClick={() => {
-                onUnseen?.();
-                if (paneId) {
-                  onClose?.(paneId);
-                }
-              }}
-              className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-            >
-              <span>
-                <Icons.Leave
-                  strokeWidth="1.5"
-                  className="w-6 text-gray-500 group-hover:text-gray-800"
-                />
-              </span>{" "}
-              <span>Unfollow</span>
-            </div>
-          )}
-        {paneId && !singleRoomMode && !isExpanded && (
-          <div
-            onClick={() => onCloseOtherRooms?.(paneId)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
-          >
-            <span>
-              <Icons.FullScreen
-                strokeWidth="1.5"
-                className="w-6 text-gray-500 group-hover:text-gray-800"
-              />
-            </span>{" "}
-            <span>Expand</span>
-          </div>
-        )}
-      </div>
-    </span>
   );
 };

@@ -40,7 +40,7 @@ import {
   showOutlookRosterAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
-import { isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
+import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
@@ -66,6 +66,7 @@ import { Room } from "./Room";
 import { RoomNameLine } from "./RoomHeader";
 import { RoomSettings } from "./RoomSettings";
 import { Roster } from "./Roster";
+import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
 import { SectionRoster } from "./SectionRoster";
@@ -596,6 +597,7 @@ export const App: React.FC<{
 
   const { onNotification: onAgentNotification } = useAgentNotifications({
     roomById,
+    ourId,
     notificationTitle: "Fogbender",
     setRoomToOpen: tryOpenRoom,
     isIdle,
@@ -607,6 +609,7 @@ export const App: React.FC<{
   );
   const { onNotification: onClientNotifications } = useClientNotifications({
     roomById,
+    ourId,
     notificationTitle,
     setRoomToOpen: setRoomIdToOpen ? ({ id }) => setRoomIdToOpen(id) : undefined,
   });
@@ -870,6 +873,8 @@ export const App: React.FC<{
       ? () => handleGoFullScreen(token)
       : undefined;
 
+  const roomName = roomToName(activeRoom, ourId, !!isAgent);
+
   return (
     <div ref={appRef} className="relative h-full max-h-screen flex-1 flex flex-col z-10">
       {isUser && userInfo && (
@@ -878,7 +883,7 @@ export const App: React.FC<{
           className="sm:hidden relatve flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose"
         >
           <div className="flex-1">
-            {activeRoom && (
+            {activeRoom && roomName && (
               <div className={classNames("h-8 flex items-center justify-center sm:hidden")}>
                 <RoomNameLine
                   mode="Room"
@@ -887,7 +892,7 @@ export const App: React.FC<{
                   onClose={onCloseRoom}
                   rosterVisible={rosterVisible}
                   unreadBadge={unreadBadge}
-                  isAgent={!!isAgent}
+                  roomName={roomName}
                 />
               </div>
             )}
@@ -981,17 +986,20 @@ export const App: React.FC<{
                   )}
                 </div>
               )}
-              <form onSubmit={rosterInputSubmit} className={classNames("bg-white")}>
-                <FilterInput
-                  placeholder="Search"
-                  value={rosterSearch}
-                  setValue={setRosterSearch}
-                  addButton={isAgent ? "CREATE ROOM" : undefined}
-                  onAddButtonClick={
-                    isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
-                  }
-                />
-              </form>
+              <div className="flex gap-2">
+                {isAgent && <RosterMenu />}
+                <form onSubmit={rosterInputSubmit} className={classNames("bg-white")}>
+                  <FilterInput
+                    placeholder="Search"
+                    value={rosterSearch}
+                    setValue={setRosterSearch}
+                    addButton={isAgent ? "CREATE ROOM" : undefined}
+                    onAddButtonClick={
+                      isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
+                    }
+                  />
+                </form>
+              </div>
               {isAgent && !isOutlook && (
                 // roster and search for agents (old one)
                 <div className="h-full flex flex-col -mt-12 pt-12">

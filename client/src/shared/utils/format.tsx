@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import dayjs from "dayjs";
 import {
+  calculateCounterpart,
   EventIssue,
   EventRoom as Room,
   KnownCommsIntegrations,
@@ -29,28 +29,36 @@ export function isExternalHelpdesk(name?: string) {
   return name?.startsWith("$Cust_External") || false;
 }
 
-export function isAnonymousHelpdesk(name?: string) {
-  return name?.startsWith("$Cust_Anonymous") || false;
-}
-
 export function formatCustomerName(name?: string) {
   return isInternalHelpdesk(name)
     ? INTERNAL_CONVERASTIONS
     : isExternalHelpdesk(name)
-    ? "Shared email inbox"
-    : isAnonymousHelpdesk(name)
     ? VISITOR_INBOX
     : name;
 }
 
 export function formatRoomName(room: Room, isAgent: boolean, name?: string) {
   const isExternal = isExternalHelpdesk(room.customerName);
-  const isAnonymous = isAnonymousHelpdesk(room.customerName);
 
-  return !isAgent && (isAnonymous || isExternal)
-    ? `Conversation from ${dayjs(room.createdTs / 1000).format("MMM D h:mm a")}`
-    : name || room.name;
+  if (isExternal) {
+    if (isAgent) {
+      return name || room.displayNameForAgent || room.name;
+    } else {
+      return name || room.displayNameForUser || room.name;
+    }
+  } else {
+    return name || room.name;
+  }
 }
+
+export const roomToName = (room: Room | undefined, ourId: string | undefined, isAgent: boolean) => {
+  if (!room || !ourId) {
+    return undefined;
+  }
+
+  const counterpart = room && calculateCounterpart(room, ourId);
+  return room && formatRoomName(room, isAgent === true, counterpart?.name);
+};
 
 type RenderTagOpts = {
   asLink: boolean;

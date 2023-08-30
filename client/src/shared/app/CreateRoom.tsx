@@ -10,12 +10,7 @@ import { CustomerAvatar, FilterInput, ThickButton } from "../components/lib";
 import { useInputWithError } from "../components/useInputWithError";
 import { Select } from "../ui/Select";
 import { queryKeys } from "../utils/client";
-import {
-  formatCustomerName,
-  isAnonymousHelpdesk,
-  isExternalHelpdesk,
-  isInternalHelpdesk,
-} from "../utils/format";
+import { formatCustomerName, isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 
 const tableHeaders = [
   { name: "Name", colSpan: 4 },
@@ -81,10 +76,7 @@ export const CreateRoom: React.FC<{
 
   const options = React.useMemo(() => {
     const filteredCustomers = (customers || []).filter(
-      ({ name }) =>
-        !isExternalHelpdesk(name) &&
-        !isAnonymousHelpdesk(name) &&
-        (!isInternalHelpdesk(name) || searchInputValue)
+      ({ name }) => !isExternalHelpdesk(name) && (!isInternalHelpdesk(name) || searchInputValue)
     );
     if (internalCustomerData && !searchInputValue) {
       filteredCustomers.unshift(internalCustomerData);

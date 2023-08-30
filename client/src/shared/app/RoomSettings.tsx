@@ -22,7 +22,13 @@ import { Icons } from "../components/Icons";
 import { IntegrationDetails } from "../components/IntegrationDetails";
 import { Avatar, FilterInput, ThickButton, ThinButton } from "../components/lib";
 import { useTxtAreaWithError } from "../components/useTxtAreaWithError";
-import { formatCustomerName, isInternalHelpdesk, renderTag } from "../utils/format";
+import {
+  formatCustomerName,
+  formatRoomName,
+  isExternalHelpdesk,
+  isInternalHelpdesk,
+  renderTag,
+} from "../utils/format";
 import { formatRoomTs } from "../utils/formatTs";
 
 import { Issue } from "./FileIssue";
@@ -72,16 +78,20 @@ export const RoomSettings: React.FC<{
 
   const [roomNameError, setRoomNameError] = React.useState<string>();
 
+  const isExternal = isExternalHelpdesk(room?.customerName);
+  const isReadOnly = !isAgent || isExternal;
+  const defaultTxtAreaValue = room && formatRoomName(room, !!isAgent);
+
   const {
     txtAreaValue: roomName,
     fieldElement: roomNameInput,
     resetTxtArea: resetRoomName,
     setValue: setRoomName,
   } = useTxtAreaWithError({
-    title: "Room name",
+    title: isReadOnly ? "Room name (read only)" : "Room name",
     error: roomNameError,
-    defaultValue: room?.name,
-    disabled: !isAgent,
+    defaultValue: defaultTxtAreaValue,
+    disabled: isReadOnly,
     className: !isAgent ? "!bg-gray-100 border-gray-100" : "",
   });
 

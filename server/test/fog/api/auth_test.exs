@@ -327,7 +327,7 @@ defmodule Test.Api.AuthTest do
 
   describe "visitors auth" do
     test "login new visitor", ctx do
-      v1 = %Api.Visitor.New{widgetId: ctx.widget_id}
+      v1 = %Api.Visitor.New{widgetId: ctx.widget_id, localTimestamp: "XYZ"}
 
       assert {:reply, %Fog.Api.Visitor.Ok{token: token, userId: user_id}, _} =
                Api.request(v1, ctx.guest_api)

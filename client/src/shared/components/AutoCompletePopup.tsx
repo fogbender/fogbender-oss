@@ -215,6 +215,8 @@ export const UserList: React.FC<{
         imageUrl: myAuthor.avatarUrl || "",
       },
       name: myAuthor.name,
+      displayNameForUser: null,
+      displayNameForAgent: null,
       status: "active",
       type: "dialog",
       id: "",

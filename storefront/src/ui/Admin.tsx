@@ -8,6 +8,7 @@ import {
   atomWithRealTimeLocalStorage,
   Avatar,
   ConfirmDialog,
+  FancyMenuItem,
   GalleryModal,
   IconGithub,
   Icons,
@@ -1633,7 +1634,7 @@ const UserMenu: React.FC<{
               >
                 Preferences
               </AgentMenuLink>
-              <AgentMenuItem
+              <FancyMenuItem
                 onClick={() => {
                   setIsMenuOpen(false);
                   setSuspendConnection(!suspendConnection);
@@ -1643,33 +1644,33 @@ const UserMenu: React.FC<{
               />
             </>
           )}
-          <AgentMenuItem
+          <FancyMenuItem
             onClick={() => setShowFocusedRoster(x => !x)}
             text="Focused roster"
             icon={
               !showFocusedRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
             }
           />
-          <AgentMenuItem
+          <FancyMenuItem
             onClick={() => setShowOutlookRoster(x => !x)}
             text="Expanded roster"
             icon={
               !showOutlookRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
             }
           />
-          <AgentMenuItem
+          <FancyMenuItem
             onClick={() => setMuteNotifications(x => !x)}
             text="Desktop notifications"
             icon={
               muteNotifications ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
             }
           />
-          <AgentMenuItem
+          <FancyMenuItem
             onClick={() => setMuteSound(x => !x)}
             text="Play sound"
             icon={muteSound ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />}
           />
-          <AgentMenuItem
+          <FancyMenuItem
             onClick={async () => {
               await logout();
               setIsMenuOpen(false);
@@ -1697,25 +1698,6 @@ const AgentMenuLink = (props: { onClick: () => void; to: string; children: React
       >
         {children}
       </Link>
-    </li>
-  );
-};
-
-const AgentMenuItem = ({
-  onClick,
-  text,
-  icon,
-}: {
-  onClick: () => void;
-  text: string;
-  icon: React.ReactNode;
-}) => {
-  return (
-    <li className="p-2 block text-gray-900 hover:text-brand-red-500">
-      <button className="flex w-full text-left gap-4 px-2 items-center" onClick={onClick}>
-        <span className="whitespace-nowrap grow">{text}</span>
-        {icon}
-      </button>
     </li>
   );
 };

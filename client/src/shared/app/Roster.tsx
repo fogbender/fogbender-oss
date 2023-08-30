@@ -27,7 +27,6 @@ import { queryKeys } from "../utils/client";
 import {
   formatCustomerName,
   formatRoomName,
-  isAnonymousHelpdesk,
   isExternalHelpdesk,
   isInternalHelpdesk,
 } from "../utils/format";
@@ -357,15 +356,13 @@ export const RoomItem: React.FC<{
   userId: string | undefined;
 }> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent, userId }) => {
   const counterpart = calculateCounterpart(room, userId);
-  const name = counterpart?.name || room.name;
+  const roomName = formatRoomName(room, isAgent === true, counterpart?.name);
 
   const unreadCount = badge?.count;
   const unreadMentionsCount = badge?.mentionsCount;
   const latestMessageText = badge?.lastRoomMessage?.plainText;
   const latestMessageAuthor = (badge?.lastRoomMessage?.fromName || "").split(/\s+/)[0];
   const showAsInternal = isInternalHelpdesk(room.customerName);
-  const isEmail = room?.tags?.some(t => t.name === ":email") || false;
-  const isAnonymous = isAnonymousHelpdesk(room.customerName);
   const isExternal = isExternalHelpdesk(room.customerName);
   const resolved = room.resolved;
 
@@ -424,24 +421,21 @@ export const RoomItem: React.FC<{
         {room.type === "dialog" && (
           <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={20} />
         )}
-        {room.type === "private" &&
-          isEmail === false &&
-          isAnonymous === false &&
-          isExternal === false && (
-            <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
-              Private
-            </span>
-          )}
-        {room.type === "private" && isEmail === true && (
+        {room.type === "private" && isExternal === false && (
+          <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
+            Private
+          </span>
+        )}
+        {room.type === "private" && isExternal === false && (
           <Icons.RoomExternal className="w-4 h-4 text-gray-500" />
         )}
 
         <span className="flex-1 flex flex-col fog:text-body-m truncate">
           <span
             className={classNames(showAsInternal && "text-green-500", "leading-snug truncate")}
-            title={name}
+            title={roomName}
           >
-            {formatRoomName(room, isAgent === true, name)}
+            {roomName}
           </span>
         </span>
         {!isAgent && priority && priority}
@@ -467,10 +461,9 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!(latestMessageText && latestMessageAuthor) &&
-            (room.isTriage || isAnonymous || isExternal) && (
-              <span className="text-gray-500">☝️ Start here</span>
-            )}
+          {!(latestMessageText && latestMessageAuthor) && (room.isTriage || isExternal) && (
+            <span className="text-gray-500">☝️ Start here</span>
+          )}
         </span>
         <span className="text-gray-500 whitespace-no-wrap fog:text-body-s">
           {formatRosterTs(badge?.lastRoomMessage?.createdTs || room.createdTs)}

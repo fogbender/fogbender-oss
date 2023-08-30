@@ -730,6 +730,7 @@ export type VisitorNew = {
   msgId?: string;
   msgType: "Visitor.New";
   widgetId: string;
+  localTimestamp: string;
 };
 
 export type VisitorVerifyEmail = {
@@ -950,6 +951,8 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
+  displayNameForUser: string | null;
+  displayNameForAgent: string | null;
   isTriage?: boolean;
   imageUrl: string; // search template
   email: string; // search template

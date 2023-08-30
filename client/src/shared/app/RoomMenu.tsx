@@ -1,0 +1,177 @@
+import classNames from "classnames";
+import { useRosterActions } from "fogbender-proto";
+import React from "react";
+
+import { Icons } from "../components/Icons";
+import { isInternalHelpdesk } from "../utils/format";
+import { useClickOutside } from "../utils/useClickOutside";
+
+import { RoomHeaderProps } from "./RoomHeader";
+
+export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
+  room,
+  roomId,
+  ourId,
+  workspaceId,
+  paneId,
+  isAgent,
+  isActive,
+  isLayoutPinned,
+  isExpanded,
+  singleRoomMode,
+  onClose,
+  onCloseOtherRooms,
+  onOpenSearch,
+  onSettings,
+  onUnseen,
+  onSetRoomPin,
+  onGoFullScreen,
+  mode,
+}) => {
+  const [expanded, setExpanded] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const myPinTag = ourId ? `:@${ourId}:pin` : undefined;
+
+  const { updateRoom } = useRosterActions({
+    workspaceId,
+  });
+
+  const isRosterPinned = room?.tags?.some(t => t.name === myPinTag) || false;
+
+  const onRosterPinRoom = () => {
+    if (!room || !myPinTag) {
+      return;
+    }
+
+    if (isRosterPinned) {
+      updateRoom({ roomId: room.id, tagsToRemove: [myPinTag] });
+    } else {
+      updateRoom({ roomId: room.id, tagsToAdd: [myPinTag] });
+    }
+  };
+
+  useClickOutside(menuRef, () => setExpanded(false), !expanded);
+
+  return (
+    <span
+      className={classNames(
+        "relative layout-nodrag sm:mr-2 cursor-pointer",
+        !singleRoomMode && isActive
+          ? "text-white hover:text-white"
+          : "text-gray-500 hover:text-black"
+      )}
+      onClick={() => setExpanded(x => !x)}
+    >
+      <Icons.Menu />
+      <div
+        ref={menuRef}
+        className={classNames(
+          "absolute z-20 top-full right-0 py-2 rounded-md fog:box-shadow-m bg-white text-black fog:text-body-m",
+          expanded ? "block" : "hidden"
+        )}
+      >
+        {onGoFullScreen && (
+          <div
+            onClick={onGoFullScreen}
+            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          >
+            <span>
+              <Icons.FullScreen className="w-6 text-gray-500 group-hover:text-gray-800" />
+            </span>
+            <span>Open in a new tab</span>
+          </div>
+        )}
+        {isAgent && (
+          <div
+            onClick={onRosterPinRoom}
+            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          >
+            <span>
+              <Icons.Pin
+                className="w-6 text-gray-500 group-hover:text-gray-800"
+                solidColor={isRosterPinned ? "currentColor" : undefined}
+                strokeWidth="1.5"
+              />
+            </span>
+            <span>{isRosterPinned ? "Unpin" : "Pin"} (roster)</span>
+          </div>
+        )}
+
+        <div
+          onClick={() => onSetRoomPin?.(paneId, !isLayoutPinned)}
+          className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+        >
+          <span>
+            <Icons.Pin
+              className="w-6 text-gray-500 group-hover:text-gray-800"
+              solidColor={isLayoutPinned ? "currentColor" : undefined}
+              strokeWidth="1.5"
+            />
+          </span>{" "}
+          <span>{isLayoutPinned ? "Unpin (layout)" : "Pin (layout)"}</span>
+        </div>
+        {roomId && onOpenSearch && (
+          <div
+            onClick={() => onOpenSearch(roomId)}
+            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          >
+            <span>
+              <Icons.Search
+                strokeWidth="1.5"
+                className="w-6 text-gray-500 group-hover:text-gray-800"
+              />
+            </span>
+            <span>Search room</span>
+          </div>
+        )}
+        {room && room.type !== "dialog" && onSettings && (
+          <div
+            onClick={() => onSettings(room.id)}
+            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          >
+            <span>
+              <Icons.GearNoFill className="w-6 text-gray-500 group-hover:text-gray-800" />
+            </span>
+            <span>Room settings</span>
+          </div>
+        )}
+        {room &&
+          mode === "Room" &&
+          (isInternalHelpdesk(room.customerName) || !isAgent) &&
+          room.type === "public" && (
+            <div
+              onClick={() => {
+                onUnseen?.();
+                if (paneId) {
+                  onClose?.(paneId);
+                }
+              }}
+              className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            >
+              <span>
+                <Icons.Leave
+                  strokeWidth="1.5"
+                  className="w-6 text-gray-500 group-hover:text-gray-800"
+                />
+              </span>{" "}
+              <span>Unfollow</span>
+            </div>
+          )}
+        {paneId && !singleRoomMode && !isExpanded && (
+          <div
+            onClick={() => onCloseOtherRooms?.(paneId)}
+            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          >
+            <span>
+              <Icons.FullScreen
+                strokeWidth="1.5"
+                className="w-6 text-gray-500 group-hover:text-gray-800"
+              />
+            </span>{" "}
+            <span>Expand</span>
+          </div>
+        )}
+      </div>
+    </span>
+  );
+};

@@ -809,7 +809,9 @@ CREATE TABLE public.room (
     resolved_at timestamp without time zone,
     resolved_til timestamp without time zone,
     created_by_agent_id bigint,
-    created_by_user_id bigint
+    created_by_user_id bigint,
+    display_name_for_user text,
+    display_name_for_agent text
 );
 
 
@@ -2532,3 +2534,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230806192239);
 INSERT INTO public."schema_migrations" (version) VALUES (20230819195419);
 INSERT INTO public."schema_migrations" (version) VALUES (20230821003054);
 INSERT INTO public."schema_migrations" (version) VALUES (20230826185752);
+INSERT INTO public."schema_migrations" (version) VALUES (20230829180104);
