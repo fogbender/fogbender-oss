@@ -462,8 +462,15 @@ export const RoomItem: React.FC<{
             </>
           )}
 
-          {!(latestMessageText && latestMessageAuthor) && (room.isTriage || isExternal) && (
+          {!latestMessageAuthor && (room.isTriage || isExternal) && (
             <span className="text-gray-500">☝️ Start here</span>
+          )}
+
+          {latestMessageAuthor && !latestMessageText && (
+            <>
+              <b className="fog:text-chat-username-s">{latestMessageAuthor}</b>:{" "}
+              <span className="text-gray-500 italic">Uploaded a file</span>
+            </>
           )}
         </span>
         <span className="text-gray-500 whitespace-no-wrap fog:text-body-s">
