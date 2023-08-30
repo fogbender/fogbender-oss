@@ -511,7 +511,16 @@ export const RosterViewSubscription = (props: { options: RosterViewOptions }) =>
 
   const options = React.useMemo(() => {
     return {
-      sections: ["ARCHIVED", "PINNED", "NEW VISITOR", "NEW", "ASSIGNED TO ME", "ASSIGNED", "DIRECT", "*OPEN"],
+      sections: [
+        "ARCHIVED",
+        "PINNED",
+        "NEW VISITOR",
+        "NEW",
+        "ASSIGNED TO ME",
+        "ASSIGNED",
+        "DIRECT",
+        "*OPEN",
+      ],
       ...props.options,
     };
   }, [props.options]);

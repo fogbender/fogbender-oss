@@ -74,10 +74,11 @@ defmodule Fog.Api.VisitorTest do
     assert %Api.Auth.Ok{} = ApiProcess.request(ctx.api, req)
 
     items = ApiProcess.flush(agent_api) |> Enum.sort_by(fn %struct{} -> struct end)
+
     assert [
-      %Api.Event.Room{},
-      %Api.Event.RosterRoom{},
-      %Api.Event.RosterSection{name: "NEW VISITOR"}
-    ] = items
+             %Api.Event.Room{},
+             %Api.Event.RosterRoom{},
+             %Api.Event.RosterSection{name: "NEW VISITOR"}
+           ] = items
   end
 end

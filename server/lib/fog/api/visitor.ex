@@ -41,7 +41,8 @@ defmodule Fog.Api.Visitor do
     display_name_for_agent = "#{user.name}"
     display_name_for_user = "Chat from #{localTimestamp}"
 
-    room = %Data.Room{} =
+    room =
+      %Data.Room{} =
       Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
         helpdesk_id: user.helpdesk_id,
         name: room_name,
