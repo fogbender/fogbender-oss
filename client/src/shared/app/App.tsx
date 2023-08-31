@@ -992,9 +992,12 @@ export const App: React.FC<{
                   )}
                 </div>
               )}
-              <div className="flex gap-2 border-b border-gray-200">
-                {isAgent && <RosterMenu />}
-                <form onSubmit={rosterInputSubmit} className={classNames("bg-white")}>
+              <div className="flex gap-2 border-b border-gray-200 w-full">
+                <form
+                  onSubmit={rosterInputSubmit}
+                  className={classNames("flex gap-2 bg-white w-full")}
+                >
+                  {isAgent && <RosterMenu />}
                   <FilterInput
                     noBorder={true}
                     placeholder="Search"
