@@ -2,10 +2,10 @@ defmodule Fog.Api.Visitor do
   use Fog.Api.Handler
 
   alias Fog.{Data, Repo, Mailer}
-  alias Fog.Api.{Session, Event}
+  alias Fog.Api.{Auth, Event, Session}
   require Logger
 
-  defmsg(New, [:widgetId, :localTimestamp])
+  defmsg(New, [:widgetId, :localTimestamp, :userPaseto, :userJWT, :widgetKey, :visitor])
   defmsg(VerifyEmail, [:email])
   defmsg(VerifyCode, [:emailCode])
 
@@ -15,53 +15,14 @@ defmodule Fog.Api.Visitor do
   @verify_delay 30
   @verify_attempts 3
 
-  def info(%New{widgetId: widget_id, localTimestamp: localTimestamp}, %Session.Guest{} = session) do
-    {:ok, %Data.Workspace{} = workspace} = Repo.Workspace.from_widget_id(widget_id)
-    customer = Repo.Helpdesk.get_external(workspace.id).customer
-    uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
-
-    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
-
-    user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
-    user_email = "#{uexid}@example.com"
-
-    user =
-      Repo.User.import_external(
-        workspace.vendor_id,
-        workspace.id,
-        customer.external_uid,
-        uexid,
-        {user_email, user_name, user_picture, customer.name},
-        false
-      )
-
-    user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
-
-    room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
-    display_name_for_agent = "#{user.name}"
-    display_name_for_user = "Chat from #{localTimestamp}"
-
-    room =
-      %Data.Room{} =
-      Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
-        helpdesk_id: user.helpdesk_id,
-        name: room_name,
-        display_name_for_user: display_name_for_user,
-        display_name_for_agent: display_name_for_agent,
-        tags: []
-      })
-
-    Event.publish(room)
-
-    token =
-      Fog.UserSignature.jwt_sign(
-        %{widgetId: widget_id, userId: user.id, visitor: true},
-        workspace.signature_secret
-      )
-
-    res = %Ok{userId: user.id, token: token}
-
-    {:reply, res, session}
+  def info(%New{widgetId: widget_id} = auth, %Session.Guest{} = session) do
+    with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
+         {signature_type, signature} <- signature(auth, workspace.signature_type),
+         :ok <- check_signature(auth, signature, signature_type, workspace.signature_secret) do
+      provision_visitor(workspace, auth, session)
+    else
+      _ -> {:reply, Err.not_authorized()}
+    end
   end
 
   def info(
@@ -174,6 +135,58 @@ defmodule Fog.Api.Visitor do
   def is_visitor?(%Data.User{external_uid: "visitor-" <> _}), do: true
   def is_visitor?(%Data.User{}), do: false
 
+  defp provision_visitor(
+         workspace,
+         %New{widgetId: widget_id, localTimestamp: localTimestamp},
+         session
+       ) do
+    customer = Repo.Helpdesk.get_external(workspace.id).customer
+    uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
+
+    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
+
+    user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
+    user_email = "#{uexid}@example.com"
+
+    user =
+      Repo.User.import_external(
+        workspace.vendor_id,
+        workspace.id,
+        customer.external_uid,
+        uexid,
+        {user_email, user_name, user_picture, customer.name},
+        false
+      )
+
+    user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
+
+    room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
+    display_name_for_agent = "#{user.name}"
+    display_name_for_user = "Chat from #{localTimestamp}"
+
+    room =
+      %Data.Room{} =
+      Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
+        helpdesk_id: user.helpdesk_id,
+        name: room_name,
+        display_name_for_user: display_name_for_user,
+        display_name_for_agent: display_name_for_agent,
+        tags: []
+      })
+
+    Event.publish(room)
+
+    token =
+      Fog.UserSignature.jwt_sign(
+        %{widgetId: widget_id, userId: user.id, visitor: true},
+        workspace.signature_secret
+      )
+
+    res = %Ok{userId: user.id, token: token}
+
+    {:reply, res, session}
+  end
+
   def email_verified?(%Data.User{email: email}), do: not String.match?(email, ~r/.*@example.com/)
 
   defp reset_code(%Session.User{} = s) do
@@ -190,5 +203,32 @@ defmodule Fog.Api.Visitor do
       s
       | verification_attempts: s.verification_attempts + 1
     }
+  end
+
+  defp signature(%New{userJWT: jwt}, "jwt" = t), do: {t, jwt}
+  defp signature(%New{userPaseto: paseto}, "paseto" = t), do: {t, paseto}
+
+  defp check_signature(auth, signature, signature_type, signature_secret) do
+    case Fog.UserSignature.verify_user_signature(
+           signature,
+           %{userId: ""},
+           signature_type,
+           signature_secret
+         ) do
+      {:error, :signature_is_nil} ->
+        Auth.check_widget_key(auth, signature_secret)
+
+      {:claims, %{"visitor" => true}} ->
+        :ok
+
+      {:claims, claims} ->
+        error = "invalid visitor token: #{inspect(claims)}"
+        Logger.error(error)
+        {:error, error}
+
+      error ->
+        Logger.error("visitor signature check failed: #{inspect(error)}")
+        error
+    end
   end
 end

@@ -160,7 +160,7 @@ defmodule Fog.Api.Auth do
     end
   end
 
-  defp check_widget_key(%User{widgetKey: widget_key}, signature_secret) do
+  def check_widget_key(%{widgetKey: widget_key}, signature_secret) do
     case Fog.UserSignature.verify_widget_key(widget_key, signature_secret) do
       :ok ->
         :ok

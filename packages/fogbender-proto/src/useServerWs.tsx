@@ -190,9 +190,13 @@ export function useServerWs(
       const visitorInfo = getVisitorInfo(token);
 
       if ("widgetId" in token && "visitor" in token && !visitorInfo) {
+        const clone = { ...token };
+
+        console.log(token);
+
         serverCall<VisitorNew>({
+          ...clone,
           msgType: "Visitor.New",
-          widgetId: token.widgetId,
           localTimestamp: new Date().toLocaleString(),
         }).then(
           r => {
