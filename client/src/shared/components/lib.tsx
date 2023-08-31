@@ -455,7 +455,7 @@ export const FilterInput = React.forwardRef<HTMLInputElement, FilterInputProps>(
               ref.current = node;
             }
           }}
-          className="flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm"
+          className="flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm w-[98%]"
           placeholder={placeholder || "Search"}
           onChange={e => setValue(e.target.value)}
           value={value || ""}
