@@ -2,10 +2,10 @@ defmodule Fog.Api.Visitor do
   use Fog.Api.Handler
 
   alias Fog.{Data, Repo, Mailer}
-  alias Fog.Api.{Auth, Event, Session}
+  alias Fog.Api.{Event, Session}
   require Logger
 
-  defmsg(New, [:widgetId, :localTimestamp, :userPaseto, :userJWT, :widgetKey, :visitor])
+  defmsg(New, [:widgetId, :visitorKey, :localTimestamp])
   defmsg(VerifyEmail, [:email])
   defmsg(VerifyCode, [:emailCode])
 
@@ -16,9 +16,9 @@ defmodule Fog.Api.Visitor do
   @verify_attempts 3
 
   def info(%New{widgetId: widget_id} = auth, %Session.Guest{} = session) do
-    with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
-         {signature_type, signature} <- signature(auth, workspace.signature_type),
-         :ok <- check_signature(auth, signature, signature_type, workspace.signature_secret) do
+    with {:ok, %Data.Workspace{visitor_enabled: true} = workspace} <-
+           Repo.Workspace.from_widget_id(widget_id),
+         true <- workspace.visitor_key == auth.visitorKey do
       provision_visitor(workspace, auth, session)
     else
       _ -> {:reply, Err.not_authorized()}
@@ -203,32 +203,5 @@ defmodule Fog.Api.Visitor do
       s
       | verification_attempts: s.verification_attempts + 1
     }
-  end
-
-  defp signature(%New{userJWT: jwt}, "jwt" = t), do: {t, jwt}
-  defp signature(%New{userPaseto: paseto}, "paseto" = t), do: {t, paseto}
-
-  defp check_signature(auth, signature, signature_type, signature_secret) do
-    case Fog.UserSignature.verify_user_signature(
-           signature,
-           %{userId: ""},
-           signature_type,
-           signature_secret
-         ) do
-      {:error, :signature_is_nil} ->
-        Auth.check_widget_key(auth, signature_secret)
-
-      {:claims, %{"visitor" => true}} ->
-        :ok
-
-      {:claims, claims} ->
-        error = "invalid visitor token: #{inspect(claims)}"
-        Logger.error(error)
-        {:error, error}
-
-      error ->
-        Logger.error("visitor signature check failed: #{inspect(error)}")
-        error
-    end
   end
 end

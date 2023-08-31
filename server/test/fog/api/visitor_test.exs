@@ -5,7 +5,14 @@ defmodule Fog.Api.VisitorTest do
 
   setup do
     vendor = vendor()
-    workspace = workspace(vendor)
+
+    workspace =
+      workspace(vendor)
+      |> Data.Workspace.update(
+        visitor_key: Fog.UserSignature.generate_192bit_secret(),
+        visitor_enabled: true
+      )
+      |> Repo.update!()
 
     api = ApiProcess.start()
     {:ok, widget_id} = Repo.Workspace.to_widget_id(workspace.id)
@@ -14,8 +21,7 @@ defmodule Fog.Api.VisitorTest do
   end
 
   test "VerifyEmail is rate limited per email", ctx do
-    widget_key = Fog.UserSignature.get_widget_key(ctx.workspace.signature_secret)
-    req = %Api.Visitor.New{widgetId: ctx.widget_id, widgetKey: widget_key}
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
     assert %Api.Visitor.Ok{token: token} = ApiProcess.request(ctx.api, req)
 
     req = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
@@ -27,8 +33,7 @@ defmodule Fog.Api.VisitorTest do
   end
 
   test "VerifyCode allows 3 attemtps", ctx do
-    widget_key = Fog.UserSignature.get_widget_key(ctx.workspace.signature_secret)
-    req = %Api.Visitor.New{widgetId: ctx.widget_id, widgetKey: widget_key}
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
     assert %Api.Visitor.Ok{token: token} = ApiProcess.request(ctx.api, req)
 
     req = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
@@ -46,8 +51,7 @@ defmodule Fog.Api.VisitorTest do
   end
 
   test "Verification", ctx do
-    widget_key = Fog.UserSignature.get_widget_key(ctx.workspace.signature_secret)
-    req = %Api.Visitor.New{widgetId: ctx.widget_id, widgetKey: widget_key}
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
     assert %Api.Visitor.Ok{token: token} = ApiProcess.request(ctx.api, req)
 
     req = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
@@ -70,8 +74,7 @@ defmodule Fog.Api.VisitorTest do
     req = %Api.Roster.Sub{topic: "workspace/#{ctx.workspace.id}/roster"}
     assert %Api.Roster.SubOk{items: []} = ApiProcess.request(agent_api, req)
 
-    widget_key = Fog.UserSignature.get_widget_key(ctx.workspace.signature_secret)
-    req = %Api.Visitor.New{widgetId: ctx.widget_id, widgetKey: widget_key}
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
     assert %Api.Visitor.Ok{token: token} = ApiProcess.request(ctx.api, req)
 
     req = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
@@ -84,5 +87,18 @@ defmodule Fog.Api.VisitorTest do
              %Api.Event.RosterRoom{},
              %Api.Event.RosterSection{name: "NEW VISITOR"}
            ] = items
+  end
+
+  test "New returns error if visitor is not enabled", ctx do
+    Data.Workspace.update(ctx.workspace, visitor_enabled: false)
+    |> Repo.update!()
+
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
+    assert %Api.Visitor.Err{} = ApiProcess.request(ctx.api, req)
+  end
+
+  test "New returns error if visitor key is invalid", ctx do
+    req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: "FAKE"}
+    assert %Api.Visitor.Err{} = ApiProcess.request(ctx.api, req)
   end
 end

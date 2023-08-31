@@ -326,10 +326,22 @@ defmodule Test.Api.AuthTest do
   end
 
   describe "visitors auth" do
+    setup ctx do
+      workspace =
+        ctx.workspace
+        |> Data.Workspace.update(
+          visitor_key: Fog.UserSignature.generate_192bit_secret(),
+          visitor_enabled: true
+        )
+        |> Repo.update!()
+
+      [workspace: workspace]
+    end
+
     test "login new visitor", ctx do
       v1 = %Api.Visitor.New{
         widgetId: ctx.widget_id,
-        userJWT: Fog.UserSignature.jwt_sign(%{visitor: true}, ctx.workspace.signature_secret),
+        visitorKey: ctx.workspace.visitor_key,
         localTimestamp: "XYZ"
       }
 
