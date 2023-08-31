@@ -859,6 +859,8 @@ defmodule Fog.Web.APIRouter do
             vendor_id: vendor_id,
             signature_type: "jwt",
             signature_secret: Fog.UserSignature.generate_192bit_secret(),
+            visitor_key: Fog.UserSignature.generate_192bit_secret(),
+            visitor_enabled: false,
             name: new_workspace_name,
             description: new_workspace_description,
             triage_name: new_workspace_triage_name
@@ -1227,6 +1229,62 @@ defmodule Fog.Web.APIRouter do
           "update workspace set signature_type=$2, signature_secret=$3 where id=$1",
           [id, signature_type, signature_secret]
         )
+
+      ok_no_content(conn)
+    else
+      forbid(conn)
+    end
+  end
+
+  post "/workspaces/:workspace_id/visitor_enable" do
+    workspace = Data.Workspace |> Repo.get(workspace_id)
+    our_role = our_role(conn, workspace.vendor_id)
+
+    if role_at_or_above(our_role, "admin") do
+      {:ok, data, conn} = Plug.Conn.read_body(conn)
+
+      {:ok, %{"enable" => enable}} = Jason.decode(data)
+
+      case enable do
+        true ->
+          # generate new key if old one is too short or not set
+          visitor_key =
+            if Fog.UserSignature.valid_192bit_secret?(workspace.visitor_key || "") do
+              workspace.visitor_key
+            else
+              Fog.UserSignature.generate_192bit_secret()
+            end
+
+          Data.Workspace.update(workspace,
+            visitor_enabled: true,
+            visitor_key: visitor_key
+          )
+          |> Repo.update!()
+
+        false ->
+          Data.Workspace.update(workspace,
+            visitor_enabled: false
+          )
+          |> Repo.update!()
+      end
+
+      ok_no_content(conn)
+    else
+      forbid(conn)
+    end
+  end
+
+  post "/workspaces/:workspace_id/visitor_key_reset" do
+    workspace = Data.Workspace |> Repo.get(workspace_id)
+    our_role = our_role(conn, workspace.vendor_id)
+
+    if role_at_or_above(our_role, "admin") do
+      visitor_key = Fog.UserSignature.generate_192bit_secret()
+
+      Data.Workspace.update(workspace,
+        visitor_key: visitor_key
+      )
+      |> Repo.update!()
 
       ok_no_content(conn)
     else

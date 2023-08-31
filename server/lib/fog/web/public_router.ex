@@ -106,7 +106,7 @@ defmodule Fog.Web.PublicRouter do
         conn,
         %Fog.Z.APIFogbenderVisitor{
           widgetId: widget_id,
-          visitorKey: visitor_key,
+          visitorKey: visitor_key
         }
         |> Fog.Z.APIFogbenderVisitor.to_json!()
       )
