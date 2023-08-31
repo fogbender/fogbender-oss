@@ -191,8 +191,8 @@ export function useServerWs(
 
       if ("widgetId" in token && "visitor" in token && !visitorInfo) {
         serverCall<VisitorNew>({
+          ...token,
           msgType: "Visitor.New",
-          widgetId: token.widgetId,
           localTimestamp: new Date().toLocaleString(),
         }).then(
           r => {

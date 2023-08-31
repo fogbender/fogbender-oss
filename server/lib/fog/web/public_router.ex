@@ -91,6 +91,27 @@ defmodule Fog.Web.PublicRouter do
     forward("/emails", to: Bamboo.SentEmailViewerPlug)
   end
 
+  get "/fogbender_visitor" do
+    # default workspace used to support customers of Fogbender
+    workspace_id = Fog.env(:fogbender_workspace_id)
+    {:ok, widget_id} = Repo.Workspace.to_widget_id(workspace_id)
+
+    %Fog.Data.Workspace{
+      signature_secret: signature_secret
+    } = Fog.Data.Workspace |> Fog.Repo.get!(workspace_id)
+
+    user_paseto = Fog.UserSignature.paseto_encrypt(%{visitor: true}, signature_secret)
+
+    ok_json(
+      conn,
+      %Fog.Z.APIFogbenderVisitor{
+        widgetId: widget_id,
+        widgetPaseto: user_paseto
+      }
+      |> Fog.Z.APIFogbenderVisitor.to_json!()
+    )
+  end
+
   match _ do
     send_resp(conn, 404, "Not found")
   end

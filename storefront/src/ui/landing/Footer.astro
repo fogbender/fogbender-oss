@@ -1,8 +1,10 @@
 ---
 import * as Icons from "./Icons";
+import { VisitorWidget } from "./_VisitorWidget";
 const year = new Date().getFullYear();
 ---
 
+<VisitorWidget client:only="react" />
 <footer class="font-body text-sm w-full pb-4 lg:pb-0 px-3 md:px-8 lg:max-xl:px-20 xl:px-5">
   <div
     class:list={[

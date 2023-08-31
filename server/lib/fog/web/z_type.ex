@@ -112,3 +112,12 @@ defmodule Fog.Z.APIPagerdutyOauthCode do
     field(:verifierEncoded, :string, [:required])
   end
 end
+
+defmodule Fog.Z.APIFogbenderVisitor do
+  use Fog.Z
+
+  schema do
+    field(:widgetId, :string, [:required])
+    field(:widgetPaseto, :string, [:required])
+  end
+end
