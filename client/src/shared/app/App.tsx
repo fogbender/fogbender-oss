@@ -1007,6 +1007,7 @@ export const App: React.FC<{
                     onAddButtonClick={
                       isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
                     }
+                    wrapperClassName="flex-1"
                   />
                 </form>
               </div>
