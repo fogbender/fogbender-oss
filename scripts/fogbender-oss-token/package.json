@@ -1,0 +1,11 @@
+{
+  "name": "github-token",
+  "type": "module",
+  "scripts": {
+    "start": "node ./github-app-token.mjs"
+  },
+  "dependencies": {
+    "github-app-installation-token": "^1.2.0",
+    "zx": "^7.2.3"
+  }
+}
