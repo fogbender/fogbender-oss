@@ -1116,9 +1116,12 @@ defmodule Fog.Web.APIRouter do
 
             Map.merge(data, %{
               widget_id: widget_id,
-              forward_email_address: Repo.Workspace.forward_email_address(workspace_id)
+              forward_email_address: Repo.Workspace.forward_email_address(workspace_id),
+              visitor_key: workspace.visitor_key,
+              visitor_enabled: workspace.visitor_enabled
             })
         end
+
 
       data = data |> Jason.encode!(pretty: true)
 

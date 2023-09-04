@@ -43,6 +43,8 @@ export const SnippetControlsNew: React.FC<{
         forward_email_address: string;
         signature_secret: string;
         signature_type: SignatureType;
+        visitor_key: string;
+        visitor_enabled: boolean;
         user_data: {
           userId: string;
           customerId: string;
@@ -57,6 +59,9 @@ export const SnippetControlsNew: React.FC<{
   const serverSignature = (serverData && serverData.signature_type) || undefined;
   const serverSecret = (serverData && serverData.signature_secret) || undefined;
 
+  const visitorKey = (serverData && serverData.visitor_key) || undefined;
+  const visitorEnabled = (serverData && serverData.visitor_enabled) || false;
+
   const signature = selectedSignatureOption?.id || serverSignature;
   const selectedOption = selectedSignatureOption ?? signatureOptions.find(o => o.id === signature);
 
@@ -70,6 +75,15 @@ export const SnippetControlsNew: React.FC<{
   const [res2, call2] = useServerApiPost<void>(`/api/workspaces/${workspace.id}/signature_secret`, {
     signature_type: signature,
   });
+
+  const [res3, call3] = useServerApiPost<void>(`/api/workspaces/${workspace.id}/visitor_enable`, {
+    enable: !visitorEnabled,
+  });
+
+  const [res4, call4] = useServerApiPost<void>(
+    `/api/workspaces/${workspace.id}/visitor_key_reset`,
+    {}
+  );
 
   const title = <h2 className="fog:text-header2">Embed and configure the support widget</h2>;
 
@@ -219,6 +233,60 @@ export const SnippetControlsNew: React.FC<{
         </div>
       </div>
 
+      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+        <p className="mb-4 fog:text-header3">Visitor key</p>
+        <div className="flex">
+          <code className="font-bold py-0.5 px-1 bg-green-100 rounded">
+            ••••••••••••••••••••••••••••••••
+          </code>
+          <div className="py-0.5 px-1">
+            <ClipboardCopy text={visitorKey}>
+              <Icons.Clipboard />
+            </ClipboardCopy>
+          </div>
+        </div>
+        <p className="my-4">
+          This is the key for visitor widget. You can generate a new one by clicking the "RESET KEY"
+          button below. Make sure to update your code to use the new key.
+        </p>
+
+        <span className="mt-4 fog:text-header3">Status: </span>
+        <span className={`py-0.5 px-1 bg-${visitorEnabled ? "green" : "red"}-100 rounded`}>
+          {" "}
+          {visitorEnabled ? "Enabled" : "Disabled"}{" "}
+        </span>
+
+        <div className="my-4">
+          <ThinButton
+            onClick={() => {
+              if (
+                window.confirm(
+                  `Are you sure to ${visitorEnabled ? "DISABLE" : "ENABLE"} visitor widget? `
+                ) === true
+              ) {
+                call3().finally(() => refetch());
+              }
+            }}
+          >
+            {visitorEnabled ? "Disable" : "Enable"}
+          </ThinButton>
+          <ThinButton
+            className="ml-4"
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Are you sure? Visitor support widget using this workspace will stop working until you update your code with the new key"
+                ) === true
+              ) {
+                call4().finally(() => refetch());
+              }
+            }}
+          >
+            Reset key
+          </ThinButton>
+        </div>
+      </div>
+
       <div className="mt-4">
         {import.meta.env.NODE_ENV === "development" && (
           <ThickButton
@@ -302,7 +370,7 @@ export const SnippetControlsNew: React.FC<{
 ${constTokenWithKey}
 
 <FogbenderSimpleWidget${defaultEnv === "prod" ? "" : ` clientUrl="${clientUrl}"`} token={token} />
-`}
+                             `}
               </HighlightCode>
             </>
           }
@@ -427,7 +495,7 @@ fogbender.setToken(token);
 <FogbenderProvider fogbender={fogbender}>
   <FogbenderWidget />
 </FogbenderProvider>
-`}
+                               `}
                 </HighlightCode>
               </div>
             </>
