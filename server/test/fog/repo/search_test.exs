@@ -116,5 +116,25 @@ defmodule Test.Repo.Search do
                "Test 2"
              ] = res
     end
+
+    test "respect forwarded messages text", ctx do
+      r2 = public_room(ctx.ha, "R2")
+      blue = message(r2, ctx.a1, "Test blue")
+      red = message(r2, ctx.a1, "Test red")
+      green = message(ctx.ha_public, ctx.a1, "Test green")
+      yellow = message(ctx.ha_public, ctx.a1, "Test yellow")
+      f = forward(ctx.ha_public, ctx.a1, [blue, red])
+      _zero = message(ctx.ha_public, ctx.a1, "ZERO")
+
+      res =
+        Repo.Search.room_messages(%{room_id: ctx.ha_public.id, term: "blue red yel", limit: 5})
+        |> Enum.map(& &1.id)
+
+      assert [
+               f.id,
+               yellow.id,
+               green.id
+             ] == res
+    end
   end
 end

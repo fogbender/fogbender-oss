@@ -107,7 +107,7 @@ These are going to be the changes that are already published to NPM and now need
 ### Find last sync checkpoint
 
 Find the latest pull request https://gitlab.com/fogbender/fogbender/-/merge_requests?scope=all&state=merged&search=sync+with+fogbender-oss and copy it's SHA (the one from the title). And save it to make comands below easier to copy/paste.
-    
+
         GIT_OSS=bb6b077a8d62cd66a41a2246d3f4b1286dbd3298
 
 ### Create sync branch
@@ -197,7 +197,7 @@ Create pull request and make sure to name it as "sync with fogbender-oss xxxxxxx
 
 # Secret environment variables for GitHub Actions
 
-GitHub Actions require github token to be able to create `[ci] release` pull requests, and they require NPM token to be able to publish packages to NPM. If token is not set or expired 
+GitHub Actions require github token to be able to create `[ci] release` pull requests, and they require NPM token to be able to publish packages to NPM. If token is not set or expired
 you will see actions failing in the following commands:
 
 - `/usr/bin/git push origin HEAD:changeset-release/main --force` (github token)
@@ -205,7 +205,7 @@ you will see actions failing in the following commands:
 
 ## Create NPM token
 
-https://www.npmjs.com/settings/fogbender/tokens/granular-access-tokens/new 
+https://www.npmjs.com/settings/fogbender/tokens/granular-access-tokens/new
 
 - `fogbender-oss` - name of the token
 - `7 days` - expiration
