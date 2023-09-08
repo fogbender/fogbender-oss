@@ -17,6 +17,7 @@ Help()
    echo "  repl  Open shell to remote db."
    echo "  report <report_file.sql>  Run a report_file.sql and print output in CSV format on stdout."
    echo "  psql <psql options>   Run next command as raw to psql on remote db."
+   echo "  dump-export <pg_dump options>  Dump export schema with provided options"
    echo "  help  Print current help."
    echo
    echo "Examples:"
@@ -65,13 +66,18 @@ case $CMD in
 
     report)
         Connect
-        PGPASSWORD=$PASS psql -h localhost -p ${PGPORT} -U fogbender -w -f "$@" -F "," -A -q --csv -v footer=off
+        PGPASSWORD=$PASS psql -h localhost -p ${PGPORT} -U fogbender -w -v ON_ERROR_STOP=1 -f "$@" -F "," -A -q --csv -v footer=off
         kill $PID
         ;;
 
     psql)
         Connect
-        PGPASSWORD=$PASS psql -h localhost -p ${PGPORT} -U fogbender -w "$@"
+        PGPASSWORD=$PASS psql -h localhost -p ${PGPORT} -U fogbender -w -v ON_ERROR_STOP=1 "$@"
+        kill $PID
+        ;;
+    dump-export)
+        Connect
+        PGPASSWORD=$PASS pg_dump -h localhost -p ${PGPORT} -U fogbender -w -O -n export "$@"
         kill $PID
         ;;
     *)

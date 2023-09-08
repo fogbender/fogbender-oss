@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+Help() {
+   echo
+   echo "Export vendor data in PostgreSQL dump format"
+   echo
+   echo "Syntax: export <env> <vendorId>"
+   echo
+   echo "It will output dump to stdout."
+   echo
+   echo "env: test | prod | dev"
+   echo
+   echo "Example:"
+   echo
+   echo "  > vendor-export test 1234 > /tmp/vendor-1234.dump"
+   echo
+}
+
+Export() {
+   echo "`date -Iseconds` ${env}: start export of vendor [$vendor_id]..." >&2
+   case $env in
+      test)
+         scripts/db-test psql -f reports/export_schema_prepare.sql -v vendor_id=$vendor_id >&2
+         scripts/db-test dump-export -Fc
+         scripts/db-test psql -f reports/export_schema_drop.sql >&2
+         ;;
+      prod)
+         scripts/db-prod psql -f reports/export_schema_prepare.sql -v vendor_id=$vendor_id >&2
+         scripts/db-prod dump-export -Fc
+         scripts/db-prod psql -f reports/export_schema_drop.sql >&2
+         ;;
+      dev)
+         psql -h $PG_HOST -p $PG_PORT -U $PG_USER -f reports/export_schema_prepare.sql -v vendor_id=$vendor_id >&2
+         pg_dump -h $PG_HOST -p $PG_PORT -U $PG_USER -n export -O -Fc
+         psql -h $PG_HOST -p $PG_PORT -U $PG_USER -f reports/export_schema_drop.sql -v vendor_id=$vendor_id >&2
+   esac
+   echo "`date -Iseconds` ${env}: done export of vendor [$vendor_id]" >&2
+}
+
+if [ $# -eq 2 ]
+then
+   env=$1
+   vendor_id=$2
+   Export
+else
+   Help >&2
+fi
