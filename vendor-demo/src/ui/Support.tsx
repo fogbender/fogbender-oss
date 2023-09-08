@@ -74,7 +74,7 @@ export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
       fullToken && fullToken.widgetKey
         ? {
             widgetId: fullToken.widgetId,
-            widgetKey: fullToken.widgetKey,
+            visitorKey: fullToken.visitorKey,
             versions: fullToken.versions,
             visitor: true,
           }
@@ -105,7 +105,7 @@ export const SupportVisitorFloatie = ({}: { headless?: boolean }) => {
       fullToken && fullToken.widgetKey
         ? {
             widgetId: fullToken.widgetId,
-            widgetKey: fullToken.widgetKey,
+            visitorKey: fullToken.visitorKey,
             versions: fullToken.versions,
             visitor: true,
           }
@@ -160,6 +160,7 @@ function useLSToken() {
     [
       "widgetId",
       "widgetKey",
+      "visitorKey",
       "customerId",
       "customerName",
       "userId",

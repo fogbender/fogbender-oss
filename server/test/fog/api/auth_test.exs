@@ -331,7 +331,7 @@ defmodule Test.Api.AuthTest do
         ctx.workspace
         |> Data.Workspace.update(
           visitor_key: Fog.UserSignature.generate_192bit_secret(),
-          visitor_enabled: true
+          visitors_enabled: true
         )
         |> Repo.update!()
 

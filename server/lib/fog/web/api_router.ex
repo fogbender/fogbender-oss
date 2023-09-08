@@ -860,7 +860,7 @@ defmodule Fog.Web.APIRouter do
             signature_type: "jwt",
             signature_secret: Fog.UserSignature.generate_192bit_secret(),
             visitor_key: Fog.UserSignature.generate_192bit_secret(),
-            visitor_enabled: false,
+            visitors_enabled: false,
             name: new_workspace_name,
             description: new_workspace_description,
             triage_name: new_workspace_triage_name
@@ -1118,10 +1118,9 @@ defmodule Fog.Web.APIRouter do
               widget_id: widget_id,
               forward_email_address: Repo.Workspace.forward_email_address(workspace_id),
               visitor_key: workspace.visitor_key,
-              visitor_enabled: workspace.visitor_enabled
+              visitors_enabled: workspace.visitors_enabled
             })
         end
-
 
       data = data |> Jason.encode!(pretty: true)
 
@@ -1239,16 +1238,14 @@ defmodule Fog.Web.APIRouter do
     end
   end
 
-  post "/workspaces/:workspace_id/visitor_enable" do
+  post "/workspaces/:workspace_id/visitor_config" do
     workspace = Data.Workspace |> Repo.get(workspace_id)
     our_role = our_role(conn, workspace.vendor_id)
 
     if role_at_or_above(our_role, "admin") do
-      {:ok, data, conn} = Plug.Conn.read_body(conn)
+      enabled = conn.params["enabled"]
 
-      {:ok, %{"enable" => enable}} = Jason.decode(data)
-
-      case enable do
+      case enabled do
         true ->
           # generate new key if old one is too short or not set
           visitor_key =
@@ -1259,14 +1256,14 @@ defmodule Fog.Web.APIRouter do
             end
 
           Data.Workspace.update(workspace,
-            visitor_enabled: true,
+            visitors_enabled: true,
             visitor_key: visitor_key
           )
           |> Repo.update!()
 
         false ->
           Data.Workspace.update(workspace,
-            visitor_enabled: false
+            visitors_enabled: false
           )
           |> Repo.update!()
       end

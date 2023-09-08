@@ -1262,7 +1262,7 @@ CREATE TABLE public.workspace (
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
     visitor_key text,
-    visitor_enabled boolean DEFAULT false
+    visitors_enabled boolean DEFAULT false
 );
 
 

@@ -25,9 +25,7 @@ export type VisitorToken = {
   widgetId: string;
   visitor: true;
   userId?: string;
-  widgetKey?: string;
-  userJWT?: string;
-  userPaseto?: string;
+  visitorKey?: string;
   versions?: { [key: string]: string };
 };
 

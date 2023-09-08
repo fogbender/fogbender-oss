@@ -10,7 +10,7 @@ defmodule Fog.Api.VisitorTest do
       workspace(vendor)
       |> Data.Workspace.update(
         visitor_key: Fog.UserSignature.generate_192bit_secret(),
-        visitor_enabled: true
+        visitors_enabled: true
       )
       |> Repo.update!()
 
@@ -90,7 +90,7 @@ defmodule Fog.Api.VisitorTest do
   end
 
   test "New returns error if visitor is not enabled", ctx do
-    Data.Workspace.update(ctx.workspace, visitor_enabled: false)
+    Data.Workspace.update(ctx.workspace, visitors_enabled: false)
     |> Repo.update!()
 
     req = %Api.Visitor.New{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}

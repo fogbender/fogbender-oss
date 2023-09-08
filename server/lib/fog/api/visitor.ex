@@ -16,7 +16,7 @@ defmodule Fog.Api.Visitor do
   @verify_attempts 3
 
   def info(%New{widgetId: widget_id} = auth, %Session.Guest{} = session) do
-    with {:ok, %Data.Workspace{visitor_enabled: true} = workspace} <-
+    with {:ok, %Data.Workspace{visitors_enabled: true} = workspace} <-
            Repo.Workspace.from_widget_id(widget_id),
          true <- workspace.visitor_key == auth.visitorKey do
       provision_visitor(workspace, auth, session)

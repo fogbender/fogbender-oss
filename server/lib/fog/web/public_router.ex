@@ -98,10 +98,10 @@ defmodule Fog.Web.PublicRouter do
 
     %Data.Workspace{
       visitor_key: visitor_key,
-      visitor_enabled: visitor_enabled
+      visitors_enabled: visitors_enabled
     } = Repo.Workspace.get(workspace_id)
 
-    if visitor_enabled do
+    if visitors_enabled do
       ok_json(
         conn,
         %Fog.Z.APIFogbenderVisitor{
