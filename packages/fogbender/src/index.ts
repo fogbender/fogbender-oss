@@ -7,6 +7,7 @@ export type {
   Env,
   Token,
   FallbackToken,
+  VisitorToken,
   UserToken,
   Badge,
   Fogbender,
