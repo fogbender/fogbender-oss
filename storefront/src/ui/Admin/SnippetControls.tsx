@@ -267,7 +267,7 @@ export const SnippetControlsNew: React.FC<{
         </p>
 
         <span className="mt-4 fog:text-header3">Status: </span>
-        <span className={`py-0.5 px-1 bg-${visitorsEnabled ? "green" : "red"}-100 rounded`}>
+        <span className={`py-0.5 px-1 ${visitorsEnabled ? "bg-green-100" : "bg-red-100"} rounded`}>
           {" "}
           {visitorsEnabled ? "Enabled" : "Disabled"}{" "}
         </span>
