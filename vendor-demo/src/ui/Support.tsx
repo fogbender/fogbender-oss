@@ -1,4 +1,4 @@
-import { createNewFogbender, FallbackToken } from "fogbender";
+import { createNewFogbender, FallbackToken, VisitorToken } from "fogbender";
 import {
   FogbenderConfig,
   FogbenderFloatingWidget,
@@ -69,12 +69,12 @@ export const SupportFallback = ({ headless }: { headless?: boolean }) => {
 export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
   const fogbender = React.useRef(createNewFogbender());
   const fullToken = useToken();
-  const token = React.useMemo<FallbackToken | undefined>(
+  const token = React.useMemo<VisitorToken | undefined>(
     () =>
       fullToken && fullToken.widgetKey
         ? {
             widgetId: fullToken.widgetId,
-            widgetKey: fullToken.widgetKey,
+            visitorKey: fullToken.visitorKey,
             versions: fullToken.versions,
             visitor: true,
           }
@@ -100,12 +100,12 @@ export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
 export const SupportVisitorFloatie = ({}: { headless?: boolean }) => {
   const fogbender = React.useRef(createNewFogbender());
   const fullToken = useToken();
-  const token = React.useMemo<FallbackToken | undefined>(
+  const token = React.useMemo<VisitorToken | undefined>(
     () =>
       fullToken && fullToken.widgetKey
         ? {
             widgetId: fullToken.widgetId,
-            widgetKey: fullToken.widgetKey,
+            visitorKey: fullToken.visitorKey,
             versions: fullToken.versions,
             visitor: true,
           }
@@ -160,6 +160,7 @@ function useLSToken() {
     [
       "widgetId",
       "widgetKey",
+      "visitorKey",
       "customerId",
       "customerName",
       "userId",

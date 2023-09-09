@@ -1,4 +1,4 @@
-import { isUserToken, Token } from "fogbender";
+import { isUserToken, isVisitorToken, Token } from "fogbender";
 import {
   ClientSession,
   getServerApiUrl,
@@ -122,10 +122,9 @@ const App = () => {
   }, []);
 
   const userToken = isUserToken(token) ? token : undefined;
+  const visitorToken = isVisitorToken(token) ? token : undefined;
 
-  const isVisitorOk = token && "visitor" in token && token["visitor"] === true;
-
-  if (!userToken && !isVisitorOk && token) {
+  if (!userToken && !visitorToken && token) {
     return <NoUserFallback clientEnv={clientEnv} token={token} />;
   }
 
@@ -133,7 +132,7 @@ const App = () => {
     <ErrorBoundary FallbackComponent={ErrorPageFallback}>
       <IsIdleProvider>
         <ProviderWrapper
-          token={isVisitorOk ? token : userToken}
+          token={userToken || visitorToken}
           clientEnv={clientEnv}
           wrongToken={wrongToken}
           onWrongToken={onWrongToken}

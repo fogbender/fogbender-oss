@@ -7,7 +7,7 @@ export type APICodeChallengeVerifier = {
 
 export type APIFogbenderVisitor = {
   widgetId: string;
-  widgetPaseto: string;
+  visitorKey: string;
 };
 
 export type APIPagerdutyOauthCode = {

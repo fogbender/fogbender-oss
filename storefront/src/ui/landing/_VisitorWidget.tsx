@@ -40,9 +40,7 @@ export function VisitorWidget() {
             clientUrl={clientUrl}
             token={{
               widgetId: visitor.widgetId,
-              widgetKey: "not used", // TODO: remove this
-              userPaseto: visitor.widgetPaseto,
-              // @ts-ignore
+              visitorKey: visitor.visitorKey,
               visitor: true,
               versions: {
                 storefront: getVersion().debugVersion,

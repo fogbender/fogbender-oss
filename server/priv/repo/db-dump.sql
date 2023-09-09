@@ -1260,7 +1260,9 @@ CREATE TABLE public.workspace (
     description character varying(255),
     triage_name text DEFAULT 'Triage'::text NOT NULL,
     deleted_at timestamp without time zone,
-    deleted_by_agent_id bigint
+    deleted_by_agent_id bigint,
+    visitor_key text,
+    visitors_enabled boolean DEFAULT false
 );
 
 
@@ -2535,3 +2537,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230819195419);
 INSERT INTO public."schema_migrations" (version) VALUES (20230821003054);
 INSERT INTO public."schema_migrations" (version) VALUES (20230826185752);
 INSERT INTO public."schema_migrations" (version) VALUES (20230829180104);
+INSERT INTO public."schema_migrations" (version) VALUES (20230831172052);

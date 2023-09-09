@@ -90,6 +90,7 @@ export const LoginPage = () => {
                       | Exclude<
                           keyof Token,
                           | "visitor"
+                          | "visitorKey"
                           | "widgetId"
                           | "userAvatarUrl"
                           | "userHMAC"

@@ -3,6 +3,7 @@ import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardC
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import { stringifyUrl } from "query-string";
 import React from "react";
+import { useMutation } from "react-query";
 import { useSearchParams } from "react-router-dom";
 
 import { defaultEnv, getClientUrl, getDemoUrl, getServerUrl } from "../../config";
@@ -13,6 +14,7 @@ import { useDedicatedVendorId, useVendorById } from "../useVendor";
 import { useFullScreenClientUrl } from "./HeadlessForSupport";
 import { HighlightCode } from "./HighlightCode";
 import { ServerSnippetTabs, SnippetTabs } from "./snippet/SnippetTabs";
+import { apiServer } from "../client";
 
 const clientUrl = getClientUrl();
 
@@ -43,6 +45,8 @@ export const SnippetControlsNew: React.FC<{
         forward_email_address: string;
         signature_secret: string;
         signature_type: SignatureType;
+        visitor_key: string;
+        visitors_enabled: boolean;
         user_data: {
           userId: string;
           customerId: string;
@@ -56,6 +60,8 @@ export const SnippetControlsNew: React.FC<{
   const serverData = (!loading && data && "signature_type" in data && data) || undefined;
   const serverSignature = (serverData && serverData.signature_type) || undefined;
   const serverSecret = (serverData && serverData.signature_secret) || undefined;
+
+  const visitorsEnabled = (serverData && serverData.visitors_enabled) || false;
 
   const signature = selectedSignatureOption?.id || serverSignature;
   const selectedOption = selectedSignatureOption ?? signatureOptions.find(o => o.id === signature);
@@ -71,6 +77,29 @@ export const SnippetControlsNew: React.FC<{
     signature_type: signature,
   });
 
+  const setVisitorConfigMutation = useMutation({
+    mutationFn: () => {
+      return apiServer
+        .url(`/api/workspaces/${workspace.id}/visitor_config`)
+        .post({ enabled: !visitorsEnabled })
+        .text();
+    },
+    onSuccess: () => {
+      // TODO: replace this with query keys
+      refetch();
+    },
+  });
+
+  const resetVisitorKeyMutation = useMutation({
+    mutationFn: () => {
+      return apiServer.url(`/api/workspaces/${workspace.id}/visitor_key_reset`).post().text();
+    },
+    onSuccess: () => {
+      // TODO: replace this with query keys
+      refetch();
+    },
+  });
+
   const title = <h2 className="fog:text-header2">Embed and configure the support widget</h2>;
 
   if (res.error || res2.error || err) {
@@ -84,6 +113,7 @@ export const SnippetControlsNew: React.FC<{
   const {
     widget_id: widgetId,
     widget_key: widgetKey,
+    visitor_key: visitorKey,
     user_data: { userId, customerId },
     user_jwt: userJWT,
     user_hash: userHMAC,
@@ -142,7 +172,7 @@ export const SnippetControlsNew: React.FC<{
           <p className="my-4">
             This is your widgetId for creating a token client-side in Step 1 below.
           </p>
-          <DemoButton widgetId={widgetId} widgetKey={widgetKey}>
+          <DemoButton widgetId={widgetId} widgetKey={widgetKey} visitorKey={visitorKey}>
             <span className="text-[4rem]">🕵️</span> Try a live demo!
           </DemoButton>{" "}
         </div>
@@ -219,6 +249,62 @@ export const SnippetControlsNew: React.FC<{
         </div>
       </div>
 
+      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+        <p className="mb-4 fog:text-header3">Visitor key</p>
+        <div className="flex">
+          <code className="font-bold py-0.5 px-1 bg-green-100 rounded">
+            ••••••••••••••••••••••••••••••••
+          </code>
+          <div className="py-0.5 px-1">
+            <ClipboardCopy text={visitorKey}>
+              <Icons.Clipboard />
+            </ClipboardCopy>
+          </div>
+        </div>
+        <p className="my-4">
+          The visitor widget can be used by unauthenticated users&mdash;for example, on your landing
+          page.
+        </p>
+
+        <span className="mt-4 fog:text-header3">Status: </span>
+        <span className={`py-0.5 px-1 ${visitorsEnabled ? "bg-green-100" : "bg-red-100"} rounded`}>
+          {" "}
+          {visitorsEnabled ? "Enabled" : "Disabled"}{" "}
+        </span>
+
+        <div className="my-4">
+          <ThinButton
+            onClick={() => {
+              if (
+                window.confirm(
+                  `Are you sure you want to ${
+                    visitorsEnabled ? "DISABLE" : "ENABLE"
+                  } the visitor widget?`
+                ) === true
+              ) {
+                setVisitorConfigMutation.mutate();
+              }
+            }}
+          >
+            {visitorsEnabled ? "Disable" : "Enable"}
+          </ThinButton>
+          <ThinButton
+            className="ml-4"
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Are you sure? This will break your visitor support widget for this workspace until you update your code with the new visitorKey"
+                ) === true
+              ) {
+                resetVisitorKeyMutation.mutate();
+              }
+            }}
+          >
+            Reset key
+          </ThinButton>
+        </div>
+      </div>
+
       <div className="mt-4">
         {import.meta.env.NODE_ENV === "development" && (
           <ThickButton
@@ -285,7 +371,12 @@ export const SnippetControlsNew: React.FC<{
               <div className="pb-2">
                 3️⃣ (Optional) To learn about our Intercom-style floating support widget, check out{" "}
                 {
-                  <DemoButton widgetId={widgetId} widgetKey={widgetKey} path="showcase">
+                  <DemoButton
+                    widgetId={widgetId}
+                    widgetKey={widgetKey}
+                    visitorKey={visitorKey}
+                    path="showcase"
+                  >
                     our interactive showcase
                   </DemoButton>
                 }
@@ -302,7 +393,7 @@ export const SnippetControlsNew: React.FC<{
 ${constTokenWithKey}
 
 <FogbenderSimpleWidget${defaultEnv === "prod" ? "" : ` clientUrl="${clientUrl}"`} token={token} />
-`}
+                             `}
               </HighlightCode>
             </>
           }
@@ -388,7 +479,12 @@ fogbender.renderIframe({ rootEl });`}
                 </div>
                 <div className="pb-2">
                   2️⃣ Create a user token, see code samples below and{" "}
-                  <DemoButton widgetId={widgetId} widgetKey={widgetKey} path="showcase">
+                  <DemoButton
+                    widgetId={widgetId}
+                    widgetKey={widgetKey}
+                    visitorKey={visitorKey}
+                    path="showcase"
+                  >
                     our interactive showcase
                   </DemoButton>{" "}
                   for possible widget options
@@ -427,7 +523,7 @@ fogbender.setToken(token);
 <FogbenderProvider fogbender={fogbender}>
   <FogbenderWidget />
 </FogbenderProvider>
-`}
+                               `}
                 </HighlightCode>
               </div>
             </>
@@ -696,11 +792,13 @@ const DemoButton = ({
   children,
   widgetId,
   widgetKey,
+  visitorKey,
   path = "login",
 }: {
   children: React.ReactNode;
   widgetId?: string;
   widgetKey?: string;
+  visitorKey?: string;
   path?: string;
 }) => {
   const demoUrl = getDemoUrl();
@@ -715,10 +813,13 @@ const DemoButton = ({
       if (vendorName) {
         p.set("vendorName", vendorName);
       }
+      if (visitorKey) {
+        p.set("visitorKey", visitorKey);
+      }
       return p;
     }
     return "";
-  }, [widgetId, widgetKey, vendorName]);
+  }, [widgetId, widgetKey, visitorKey, vendorName]);
   const supportUrl = `${demoUrl}/${redirectToDemo || path}?${params}`;
 
   React.useEffect(() => {

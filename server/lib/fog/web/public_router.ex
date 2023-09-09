@@ -1,6 +1,6 @@
 defmodule Fog.Web.PublicRouter do
   use Plug.Router
-  alias Fog.{Repo}
+  alias Fog.{Data, Repo}
 
   plug(:match)
 
@@ -96,20 +96,23 @@ defmodule Fog.Web.PublicRouter do
     workspace_id = Fog.env(:fogbender_workspace_id)
     {:ok, widget_id} = Repo.Workspace.to_widget_id(workspace_id)
 
-    %Fog.Data.Workspace{
-      signature_secret: signature_secret
-    } = Fog.Data.Workspace |> Fog.Repo.get!(workspace_id)
+    %Data.Workspace{
+      visitor_key: visitor_key,
+      visitors_enabled: visitors_enabled
+    } = Repo.Workspace.get(workspace_id)
 
-    user_paseto = Fog.UserSignature.paseto_encrypt(%{visitor: true}, signature_secret)
-
-    ok_json(
-      conn,
-      %Fog.Z.APIFogbenderVisitor{
-        widgetId: widget_id,
-        widgetPaseto: user_paseto
-      }
-      |> Fog.Z.APIFogbenderVisitor.to_json!()
-    )
+    if visitors_enabled do
+      ok_json(
+        conn,
+        %Fog.Z.APIFogbenderVisitor{
+          widgetId: widget_id,
+          visitorKey: visitor_key
+        }
+        |> Fog.Z.APIFogbenderVisitor.to_json!()
+      )
+    else
+      send_resp(conn, 404, "Not found")
+    end
   end
 
   match _ do

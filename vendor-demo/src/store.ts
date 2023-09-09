@@ -87,6 +87,7 @@ export const tokenAtom = atomWithStorageAndQsOverride<Partial<Token>>(
         [
           "widgetId",
           "widgetKey",
+          "visitorKey",
           "customerId",
           "customerName",
           "userId",

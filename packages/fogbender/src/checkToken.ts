@@ -1,10 +1,10 @@
-import { UserToken, Token } from "./types";
+import { UserToken, Token, VisitorToken } from "./types";
 
 export function checkToken(token: Token | undefined) {
   if (token !== undefined) {
     const errors: { [key: string]: string } = {};
 
-    ["userAvatarUrl", "widgetKey", "userJWT", "userHMAC", "userPaseto"].forEach(
+    ["userAvatarUrl", "widgetKey", "userJWT", "userHMAC", "userPaseto", "visitorKey"].forEach(
       x =>
         typeof token[x] !== "string" &&
         typeof token[x] !== "undefined" &&
@@ -23,6 +23,8 @@ export function checkToken(token: Token | undefined) {
       if (!(token.userJWT || token.userHMAC || token.userPaseto || token.widgetKey)) {
         errors.userJWT = "userJWT or widgetKey should be set";
       }
+    } else if (isVisitorToken(token)) {
+      ["visitorKey"].forEach(isString);
     } else {
       ["widgetKey"].forEach(isString);
     }
@@ -35,4 +37,8 @@ export function checkToken(token: Token | undefined) {
 
 export function isUserToken(token: Token | undefined): token is UserToken {
   return token ? "userId" in token : false;
+}
+
+export function isVisitorToken(token: Token | undefined): token is VisitorToken {
+  return token ? "visitor" in token : false;
 }

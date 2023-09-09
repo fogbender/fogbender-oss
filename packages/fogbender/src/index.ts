@@ -7,13 +7,14 @@ export type {
   Env,
   Token,
   FallbackToken,
+  VisitorToken,
   UserToken,
   Badge,
   Fogbender,
   FogbenderLoader,
   Snapshot,
 } from "./types";
-export { checkToken, isUserToken } from "./checkToken";
+export { checkToken, isUserToken, isVisitorToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";

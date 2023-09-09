@@ -118,6 +118,6 @@ defmodule Fog.Z.APIFogbenderVisitor do
 
   schema do
     field(:widgetId, :string, [:required])
-    field(:widgetPaseto, :string, [:required])
+    field(:visitorKey, :string, [:required])
   end
 end
