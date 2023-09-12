@@ -84,14 +84,11 @@ fog-bump:
 	git commit -m "Fog $$(cat server/VERSION)"
 	git tag -a "FOG-$$(cat server/VERSION)" -m "Fog version bump"
 
-fog-agent-boot:
-	$(eval agent_id := $(shell psql -c "select id from agent limit 1;" -t -h ${PG_HOST} -p ${PG_PORT} -U ${PG_USER} ${PG_DB}))
-	$(eval fogbender_vendor_id := $(shell psql -c "select id from vendor where name='Fogbender' limit 1;" -t -h ${PG_HOST} -p ${PG_PORT} -U ${PG_USER} ${PG_DB}))
-	psql -c "insert into vendor_agent_role (agent_id, vendor_id, role, updated_at, inserted_at) values ($(agent_id), $(fogbender_vendor_id), 'owner', now()::timestamp, now()::timestamp);" -h ${PG_HOST} -p ${PG_PORT} -U ${PG_USER} ${PG_DB}
+fog-agent-boot: db-start
+	cd server && mix db.boot agent
 
-fog-detective-boot:
-	$(eval agent_id := $(shell psql -c "select id from agent limit 1;" -t -h ${PG_HOST} -p ${PG_PORT} -U ${PG_USER} ${PG_DB}))
-	psql -c "insert into detective values ($(agent_id), (select email from agent where id='$(agent_id)'), (select name from agent where id='$(agent_id)'), now()::timestamp, now()::timestamp);" -h ${PG_HOST} -p ${PG_PORT} -U ${PG_USER} ${PG_DB}
+fog-detective-boot: db-start
+	cd server && mix db.boot detective
 
 fog-gettext:
 	cd server && mix gettext.extract
