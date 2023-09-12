@@ -427,7 +427,7 @@ export const RoomItem: React.FC<{
             Private
           </span>
         )}
-        {room.type === "private" && isExternal === false && (
+        {room.type === "private" && isExternal === true && (
           <Icons.RoomExternal className="w-4 h-4 text-gray-500" />
         )}
 
