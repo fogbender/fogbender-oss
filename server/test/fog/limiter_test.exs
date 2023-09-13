@@ -3,9 +3,14 @@ defmodule Fog.LimiterTest do
 
   test "limit requests per key" do
     key = {:visitor, "test@example.com"}
-    assert :ok == Fog.Limiter.put(key, 1)
+    assert :ok == Fog.Limiter.put(key, 10000)
     assert {:limit, _} = Fog.Limiter.put(key, 1)
-    Process.sleep(1000)
-    assert :ok == Fog.Limiter.put(key, 1)
+  end
+
+  test "request allowed after limit" do
+    key = {:visitor, "test2@example.com"}
+    assert :ok == Fog.Limiter.put(key, 100)
+    Process.sleep(500)
+    assert :ok == Fog.Limiter.put(key, 100)
   end
 end

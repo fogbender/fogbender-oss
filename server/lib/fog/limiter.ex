@@ -2,7 +2,7 @@ defmodule Fog.Limiter do
   use GenServer
   require Logger
 
-  @default_delay 5
+  @default_delay 5000
 
   def start_link([]), do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
 
@@ -20,9 +20,9 @@ defmodule Fog.Limiter do
         state = put_key(key, delay, state)
         {:reply, :ok, state}
 
-      %{exp: exp, delay: delay} ->
-        Logger.warn("Limit for #{key}: #{delay} sec")
+      %{exp: exp} ->
         diff = time_diff(exp)
+        Logger.warn("Limit for #{key}: #{diff} msec")
         {:reply, {:limit, diff}, state}
     end
   end
@@ -35,9 +35,9 @@ defmodule Fog.Limiter do
   # Helpers
   defp put_key(key, delay, state) do
     iss = DateTime.utc_now()
-    exp = DateTime.add(iss, delay, :second)
+    exp = DateTime.add(iss, delay, :millisecond)
     rec = %{delay: delay, iss: iss, exp: exp}
-    Process.send_after(self(), {:timeout, key}, delay * 1000)
+    Process.send_after(self(), {:timeout, key}, delay)
     Map.put(state, key, rec)
   end
 

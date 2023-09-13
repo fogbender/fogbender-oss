@@ -12,7 +12,7 @@ defmodule Fog.Api.Visitor do
   defmsg(Ok, [:userId, :token])
   deferr(Err)
 
-  @verify_delay 30
+  @verify_delay 30000
   @verify_attempts 3
 
   def info(%New{widgetId: widget_id} = auth, %Session.Guest{} = session) do
