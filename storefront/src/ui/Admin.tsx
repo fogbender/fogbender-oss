@@ -749,7 +749,15 @@ export const Admin = () => {
                             onboardingChecklistDone && "mt-16"
                           )}
                         >
-                          <Team vendor={designatedVendor} />
+                          <WsProvider
+                            token={agentToken}
+                            workspaceId={designatedWorkspaceId}
+                            isIdle={isIdle}
+                            suspendConnection={suspendConnection}
+                            client={client}
+                          >
+                            <Team vendor={designatedVendor} />
+                          </WsProvider>
                         </div>
                       </div>
                     ) : (

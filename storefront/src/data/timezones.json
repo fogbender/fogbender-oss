@@ -1,0 +1,107 @@
+[
+  {
+    "label": "Time zone UTC -10:00",
+    "offset": "-10:00",
+    "value": "Pacific/Honolulu"
+  },
+  {
+    "label": "Time zone UTC -09:00",
+    "offset": "-09:00",
+    "value": "America/Anchorage"
+  },
+  {
+    "label": "Time zone UTC -08:00",
+    "offset": "-08:00",
+    "value": "America/Los_Angeles"
+  },
+  {
+    "label": "Time zone UTC -07:00",
+    "offset": "-07:00",
+    "value": "America/Denver"
+  },
+  {
+    "label": "Time zone UTC -06:00",
+    "offset": "-06:00",
+    "value": "America/Chicago"
+  },
+  {
+    "label": "Time zone UTC -05:00",
+    "offset": "-05:00",
+    "value": "America/New_York"
+  },
+  {
+    "label": "Time zone UTC -04:00",
+    "offset": "-04:00",
+    "value": "America/Puerto_Rico"
+  },
+  {
+    "label": "Time zone UTC -03:30",
+    "offset": "-03:30",
+    "value": "America/St_Johns"
+  },
+  {
+    "label": "Time zone UTC -03:00",
+    "offset": "-03:00",
+    "value": "America/Rio_Branco"
+  },
+  {
+    "label": "Time zone UTC +00:00",
+    "offset": "+00:00",
+    "value": "UTC"
+  },
+  {
+    "label": "Time zone UTC +01:00",
+    "offset": "+01:00",
+    "value": "Europe/Berlin"
+  },
+  {
+    "label": "Time zone UTC +01:00",
+    "offset": "+01:00",
+    "value": "Europe/London"
+  },
+  {
+    "label": "Time zone UTC +02:00",
+    "offset": "+02:00",
+    "value": "Europe/Athens"
+  },
+  {
+    "label": "Time zone UTC +02:00",
+    "offset": "+02:00",
+    "value": "Africa/Johannesburg"
+  },
+  {
+    "label": "Time zone UTC +03:00",
+    "offset": "+03:00",
+    "value": "Europe/Moscow"
+  },
+  {
+    "label": "Time zone UTC +03:00",
+    "offset": "+03:00",
+    "value": "Africa/Nairobi"
+  },
+  {
+    "label": "Time zone UTC +05:30",
+    "offset": "+05:30",
+    "value": "Asia/Kolkata"
+  },
+  {
+    "label": "Time zone UTC +08:00",
+    "offset": "+08:00",
+    "value": "Asia/Shanghai"
+  },
+  {
+    "label": "Time zone UTC +09:00",
+    "offset": "+09:00",
+    "value": "Asia/Tokyo"
+  },
+  {
+    "label": "Time zone UTC +10:00",
+    "offset": "+10:00",
+    "value": "Australia/Sydney"
+  },
+  {
+    "label": "Time zone UTC +12:00",
+    "offset": "+12:00",
+    "value": "Pacific/Auckland"
+  }
+]
