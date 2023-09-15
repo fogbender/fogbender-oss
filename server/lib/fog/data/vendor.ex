@@ -12,10 +12,20 @@ defmodule Fog.Data.Vendor do
     Workspace
   }
 
-  @derive {Jason.Encoder, only: [:id, :name, :status, :inserted_at, :updated_at, :deleted_at]}
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :agent_scheduling_enabled,
+             :name,
+             :status,
+             :inserted_at,
+             :updated_at,
+             :deleted_at
+           ]}
   @primary_key {:id, Fog.Types.VendorId, autogenerate: true}
   schema "vendor" do
     field(:name, :string)
+    field(:agent_scheduling_enabled, :boolean, default: false)
     field(:free_seats, :integer, default: 2)
     has_many(:agents, VendorAgentRole)
     has_many(:workspaces, Workspace)
