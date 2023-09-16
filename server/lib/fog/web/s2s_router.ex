@@ -147,6 +147,37 @@ defmodule Fog.Web.S2SRouter do
     |> send_resp(200, data)
   end
 
+  get "/add_tag_to_room" do
+    params = fetch_query_params(conn).params
+    rid = params["room_id"]
+    new_tag_name = params["tag_name"]
+
+    case {rid, new_tag_name} do
+      {room_id, _} when room_id in ["", nil] ->
+        error_resp(conn, Jason.encode!(%{"error" => "room_id parameter missing or empty"}))
+
+      {_, new_tag_name} when new_tag_name in ["", nil] ->
+        error_resp(conn, Jason.encode!(%{"error" => "tag_name parameter missing or empty"}))
+
+      {room_id, _} ->
+        room = Fog.Repo.Room.get(room_id) |> Fog.Repo.preload(:workspace)
+
+        case room do
+          nil ->
+            error_resp(conn, Jason.encode!(%{"error" => "No such room"}))
+
+          room ->
+            tag = Fog.Repo.Tag.create(room.workspace.id, new_tag_name)
+
+            %Fog.Data.Room{} = Fog.Repo.Room.update_tags(rid, [tag.id], [], nil, nil)
+
+            conn
+            |> put_resp_content_type("application/json")
+            |> send_resp(200, Jason.encode!("ok"))
+        end
+    end
+  end
+
   get "/remove_tag_from_user" do
     params = fetch_query_params(conn).params
     tag_id = params["tag_id"]
