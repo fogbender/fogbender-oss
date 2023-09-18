@@ -47,6 +47,10 @@ defmodule Fog.CORS do
       {"http", "localhost", 3100} ->
         true
 
+      {"http", "localhost", 3101} ->
+        # 'yarn start' will start on 3101 if 3100 is taken by 'yarn dev'
+        true
+
       {"http", "localhost", 5173} ->
         true
 
