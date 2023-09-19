@@ -31,6 +31,7 @@ import { fetchServerApiPost } from "../useServerApi";
 import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
 import { AgentGroups } from "./AgentGroups";
+import { Schedules } from "./agent-schedules/Schedules";
 
 export const Team: React.FC<{
   vendor: Vendor;
@@ -97,6 +98,17 @@ export const Team: React.FC<{
           </>
         }
       />
+      {vendor.agent_scheduling_enabled && (
+        <Route
+          path="schedules"
+          element={
+            <div className="flex flex-col gap-8">
+              <TeamTabs tab="schedules" />
+              {ourAgentId && ourAgent && <Schedules />}
+            </div>
+          }
+        />
+      )}
     </Routes>
   );
 };
