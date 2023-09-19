@@ -70,7 +70,7 @@ export const Team: React.FC<{
         path="*"
         element={
           <>
-            <TeamTabs tab="team" />
+            <TeamTabs vendor={vendor} tab="team" />
             {ourAgent && (
               <>
                 <TeamMembers
@@ -91,7 +91,7 @@ export const Team: React.FC<{
         path="groups"
         element={
           <>
-            <TeamTabs tab="groups" />
+            <TeamTabs vendor={vendor} tab="groups" />
             {ourAgentId && ourAgent && (
               <AgentGroups vendor={vendor} ourId={ourAgentId} ourRole={ourAgent.role} />
             )}
@@ -103,7 +103,7 @@ export const Team: React.FC<{
           path="schedules"
           element={
             <div className="flex flex-col gap-8">
-              <TeamTabs tab="schedules" />
+              <TeamTabs vendor={vendor} tab="schedules" />
               {ourAgentId && ourAgent && <Schedules />}
             </div>
           }
@@ -115,17 +115,21 @@ export const Team: React.FC<{
 
 const TeamTabs: React.FC<{
   tab: "team" | "groups" | "schedules";
-}> = ({ tab }) => {
+  vendor: Vendor;
+}> = ({ tab, vendor }) => {
   const isSecondaryTab = ["groups", "schedules"].includes(tab);
 
   const tabs = [
     { name: "team", to: tab === "team" ? "." : ".." },
     { name: "groups", to: tab === "groups" ? "." : isSecondaryTab ? "../groups" : "groups" },
-    {
+  ];
+
+  if (vendor.agent_scheduling_enabled) {
+    tabs.push({
       name: "schedules",
       to: tab === "schedules" ? "." : isSecondaryTab ? "../schedules" : "schedules",
-    },
-  ];
+    });
+  }
 
   return (
     <div className="w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
