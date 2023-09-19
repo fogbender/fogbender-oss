@@ -33,14 +33,18 @@
 
       overlay_module = ({ pkgs, ... }: {
         nixpkgs = {
-          overlays = [ overlay ];
+          overlays = [
+            overlay
+          ];
         };
       });
 
       sysPkgs = (system :
         import nixpkgs {
           inherit system;
-          overlays = [ overlay ];
+          overlays = [
+            overlay
+          ];
         }
       );
 
