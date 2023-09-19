@@ -102,9 +102,9 @@ export const Team: React.FC<{
 };
 
 const TeamTabs: React.FC<{
-  tab: "team" | "groups";
+  tab: "team" | "groups" | "schedules";
 }> = ({ tab }) => {
-  const secondaryTabs = ["groups"];
+  const secondaryTabs = ["groups", "schedules"];
   return (
     <div className="w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <div className="w-full md:w-auto flex flex-wrap">
@@ -136,6 +136,21 @@ const TeamTabs: React.FC<{
             )}
           >
             Groups
+          </div>
+        </Link>
+        <Link
+          to={tab === "schedules" ? "." : secondaryTabs.includes(tab) ? "../schedules" : "schedules"}
+          className="flex-1 md:flex-none no-underline text-red-500"
+        >
+          <div
+            className={classNames(
+              "flex-1 md:flex-none fog:text-header3 justify-center text-sm leading-5 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
+              tab === "schedules"
+                ? "rounded-t-md border-brand-orange-500 border-b-5 text-black"
+                : "text-blue-700 hover:text-red-500"
+            )}
+          >
+            Schedules
           </div>
         </Link>
       </div>
