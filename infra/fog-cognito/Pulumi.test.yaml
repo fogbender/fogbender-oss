@@ -1,4 +1,0 @@
-config:
-  aws:region: us-east-1
-  fog-cognito:sourceDomain: fogbender-test.com
-  fog-cognito:sourceEmail: noreply@fogbender-test.com

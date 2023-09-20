@@ -1,6 +1,6 @@
 -- Result format:
 --
--- type, inserted_date, count, vendor_name, workspace_name
+-- type, inserted_date, count, vendor_name, workspace_name, customer_type
 --
 -- Types:
 --
