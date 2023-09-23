@@ -26,6 +26,7 @@ export type VisitorToken = {
   visitor: true;
   userId?: string;
   visitorKey?: string;
+  visitorToken?: string;
   versions?: { [key: string]: string };
 };
 
@@ -723,7 +724,8 @@ export type AuthVisitor = {
   msgId?: string;
   msgType: "Auth.Visitor";
   widgetId: string;
-  token: string;
+  token?: string;
+  visitorKey?: string;
 };
 
 export type VisitorNew = {
@@ -765,6 +767,7 @@ export type AuthOk = {
   customerName?: string;
   isVisitor?: boolean;
   emailVerified?: boolean;
+  visitorToken?: string;
 };
 
 export type VisitorOk = {

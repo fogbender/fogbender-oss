@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
-import { Badge, Env, Token } from ".";
+import { Badge, Env, Token, VisitorInfo } from ".";
 
 type FogbenderEventMap = {
   "configured": boolean;
@@ -88,6 +88,17 @@ export function renderIframe(
       window.Notification?.requestPermission().then(function (permission) {
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
+    } else if (e.data?.type === "VISITOR_INFO") {
+      const visitorInfo: VisitorInfo = JSON.parse(e.data.visitorInfo);
+      const { widgetId } = visitorInfo;
+      try {
+        localStorage.setItem(`visitor-${widgetId}`, e.data.visitorInfo);
+      } catch (e) {
+        // console.log(e);
+      }
+    } else if (e.data?.type === "BRUTAL_RELOAD") {
+      // TODO: this is not great
+      window.location.reload();
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
       const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
       events.badges = badges;

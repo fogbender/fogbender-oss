@@ -14,6 +14,7 @@ export type Token = {
   userEmail?: string;
   versions?: { [key: string]: string };
   visitor?: true;
+  visitorToken?: string;
 };
 
 // make sure to keep in sync with fogbender-ptoto schema
@@ -37,7 +38,14 @@ export type VisitorToken = {
   visitor: true;
   userId?: string;
   visitorKey?: string;
+  visitorToken?: string;
   versions?: { [key: string]: string };
+};
+
+export type VisitorInfo = {
+  widgetId: string;
+  token: string;
+  userId: string;
 };
 
 export type FallbackToken = {

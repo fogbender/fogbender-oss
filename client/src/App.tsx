@@ -28,7 +28,6 @@ import {
   WsProvider,
 } from "./shared";
 import { queryClient } from "./shared/utils/client";
-import { SafeLocalStorage } from "./shared/utils/SafeLocalStorage";
 import Headless from "./ui/Headless";
 
 const App = () => {
@@ -82,15 +81,10 @@ const App = () => {
   }, [notificationsPermission]);
 
   const setVisitorInfo = (info: VisitorInfo) => {
-    const { widgetId } = info;
-
-    SafeLocalStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
-  };
-
-  const getVisitorInfo = (widgetId: string) => {
-    const info = SafeLocalStorage.getItem(`visitor-${widgetId}`);
-
-    return info ? JSON.parse(info) : undefined;
+    if (window.parent && window.parent !== window) {
+      // this is used for communication with parent window which is going to be different for each user
+      window.parent.postMessage({ type: "VISITOR_INFO", visitorInfo: JSON.stringify(info) }, "*"); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
+    }
   };
 
   React.useLayoutEffect(() => {
@@ -137,7 +131,6 @@ const App = () => {
           wrongToken={wrongToken}
           onWrongToken={onWrongToken}
           setVisitorInfo={setVisitorInfo}
-          getVisitorInfo={getVisitorInfo}
           headless={headless}
           notificationsPermission={notificationsPermission}
           setNotificationsPermission={setNotificationsPermission}
@@ -155,7 +148,6 @@ const ProviderWrapper: React.FC<{
   wrongToken: boolean;
   onWrongToken: (token: UserToken) => void;
   setVisitorInfo?: (x: VisitorInfo) => void;
-  getVisitorInfo?: (widgetId: string) => VisitorInfo | undefined;
   headless: boolean;
   notificationsPermission: NotificationPermission | "hide" | "request";
   setNotificationsPermission: (p: NotificationPermission | "hide" | "request") => void;
@@ -167,7 +159,6 @@ const ProviderWrapper: React.FC<{
   wrongToken,
   onWrongToken,
   setVisitorInfo,
-  getVisitorInfo,
   headless,
   notificationsPermission,
   setNotificationsPermission,
@@ -186,7 +177,6 @@ const ProviderWrapper: React.FC<{
       client={{
         getEnv: () => envRef.current,
         onWrongToken,
-        getVisitorInfo,
         setVisitorInfo,
         setSession: ({ userAvatarUrl, userName, userEmail, customerName }: ClientSession) => {
           if (userName && userEmail) {

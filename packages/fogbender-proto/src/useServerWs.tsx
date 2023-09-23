@@ -13,7 +13,6 @@ import type {
   PingPing,
   ServerCalls,
   ServerEvents,
-  VisitorNew,
   AuthVisitor,
 } from "./schema";
 import type { Client } from "./client";
@@ -180,71 +179,13 @@ export function useServerWs(
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
-    const getVisitorInfo = (token: AnyToken) => {
-      return "widgetId" in token && client?.getVisitorInfo
-        ? client?.getVisitorInfo(token.widgetId)
-        : undefined;
-    };
-
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
-      const visitorInfo = getVisitorInfo(token);
-
-      if ("widgetId" in token && "visitor" in token && !visitorInfo) {
-        serverCall<VisitorNew>({
-          ...token,
-          msgType: "Visitor.New",
-          localTimestamp: new Date().toLocaleString(),
-        }).then(
-          r => {
-            if (r.msgType === "Visitor.Ok") {
-              const { token: visitorToken, userId } = r;
-              if (visitorToken && userId) {
-                client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
-                const visitorInfo2 = getVisitorInfo(token);
-
-                if (visitorInfo2 && "token" in visitorInfo2) {
-                  window.location.reload();
-                }
-              } else {
-                onError(
-                  "error",
-                  "other",
-                  new Error("Expected a token in Visitor.Ok, but got nothing")
-                );
-              }
-            } else if (r.msgType === "Visitor.Err") {
-              if (r.code === 401 || r.code === 403) {
-                onWrongToken(token);
-              } else {
-                onError(
-                  "error",
-                  "other",
-                  new Error("Failed to create new visitor " + JSON.stringify(r))
-                );
-              }
-            } else if (r.msgType === "Error.Fatal") {
-              if ("code" in r && r.code === 409) {
-                onWrongToken(token);
-              } else {
-                onError(
-                  "error",
-                  "other",
-                  new Error("Fatal error while creating visitor " + JSON.stringify(r))
-                );
-              }
-            }
-          },
-          r => {
-            onError("error", "other", r);
-          }
-        );
-      }
-
-      if ("widgetId" in token && "visitor" in token && visitorInfo && "token" in visitorInfo) {
+      if ("widgetId" in token && "visitor" in token) {
         serverCall<AuthVisitor>({
           msgType: "Auth.Visitor",
           widgetId: token.widgetId,
-          token: visitorInfo.token,
+          visitorKey: token.visitorKey,
+          token: token.visitorToken,
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
@@ -257,7 +198,11 @@ export function useServerWs(
                 userAvatarUrl,
                 customerName,
                 emailVerified,
+                visitorToken,
               } = r;
+              if (visitorToken) {
+                client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
+              }
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
               setAvatarLibraryUrl(r.avatarLibraryUrl);

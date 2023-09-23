@@ -1,4 +1,4 @@
-import { checkToken } from "./checkToken";
+import { checkToken, checkVisitorToken, isVisitorToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
@@ -58,6 +58,7 @@ export const createNewFogbender = (): Fogbender => {
     },
     async setToken(token) {
       const tokenCheck = checkToken(token);
+      // true means bad
       if (tokenCheck) {
         throw new Error("Wrong token format:\n" + JSON.stringify(tokenCheck, null, 1));
       }
@@ -67,6 +68,24 @@ export const createNewFogbender = (): Fogbender => {
           ...state.token,
           versions: { ...state.token.versions, ...state.versions, fogbender: "0.2.3" },
         };
+      }
+      const visitorTokenCheck = checkVisitorToken(token);
+      // true means bad
+      if (visitorTokenCheck) {
+        throw new Error("Visitors won't work, need localStorage access");
+      } else if (isVisitorToken(token)) {
+        const { widgetId } = token;
+        const key = `visitor-${widgetId}`;
+        const visitorInfo = localStorage.getItem(key);
+        if (visitorInfo) {
+          const { token: visitorToken } = JSON.parse(visitorInfo);
+          if (state.token) {
+            state.token = {
+              ...state.token,
+              visitorToken,
+            };
+          }
+        }
       }
       updateConfigured();
       return fogbender;
