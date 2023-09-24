@@ -98,34 +98,60 @@ export const createNewFogbender = (): Fogbender => {
       return snapshot;
     },
     async createFloatingWidget(opts = {}) {
-      if (!state.url) {
-        throw new Error("Fogbender: no url given");
-      }
-      if (!state.token) {
-        throw new Error("Fogbender: no token given");
-      }
-      const { token, url, env } = state;
-      const cleanup = createFloatingWidget(
-        state,
-        openWindow,
-        el => renderIframe(state, { rootEl: el, env, token, url, disableFit: true }, openWindow),
-        opts
-      );
-      return cleanup;
+      const rerender = () => {
+        if (!state.url) {
+          throw new Error("Fogbender: no url given");
+        }
+        if (!state.token) {
+          throw new Error("Fogbender: no token given");
+        }
+        const { token, url, env } = state;
+        return createFloatingWidget(
+          state,
+          openWindow,
+          el =>
+            renderIframe(
+              state,
+              {
+                rootEl: el,
+                env,
+                token,
+                url,
+                disableFit: true,
+              },
+              openWindow
+            ),
+          opts
+        );
+      };
+      const cleanup = rerender();
+      return () => {
+        cleanup();
+      };
     },
     async renderIframe(opts) {
-      if (!state.url) {
-        throw new Error("Fogbender: no url given");
-      }
-      if (!state.token) {
-        throw new Error("Fogbender: no token given");
-      }
-      const cleanup = renderIframe(
-        state,
-        { ...opts, env: state.env, token: state.token, url: state.url },
-        openWindow
-      );
-      return cleanup;
+      const rerender = () => {
+        if (!state.url) {
+          throw new Error("Fogbender: no url given");
+        }
+        if (!state.token) {
+          throw new Error("Fogbender: no token given");
+        }
+        return renderIframe(
+          state,
+          {
+            ...opts,
+            env: state.env,
+            token: state.token,
+            url: state.url,
+          },
+          openWindow
+        );
+      };
+      const cleanup = rerender();
+      return () => {
+        cleanup();
+      };
     },
     async renderUnreadBadge(opts) {
       const cleanup = renderUnreadBadge(state, openWindow, opts);
