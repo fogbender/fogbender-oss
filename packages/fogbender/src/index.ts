@@ -63,29 +63,26 @@ export const createNewFogbender = (): Fogbender => {
         throw new Error("Wrong token format:\n" + JSON.stringify(tokenCheck, null, 1));
       }
       state.token = token;
+      let visitorToken = undefined as undefined | string;
+      if (isVisitorToken(token)) {
+        const { widgetId } = token;
+        const key = `visitor-${widgetId}`;
+        try {
+          const visitorInfo = localStorage.getItem(key);
+          if (visitorInfo) {
+            const info = JSON.parse(visitorInfo);
+            visitorToken = info.token;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
       if (state.token) {
         state.token = {
           ...state.token,
           versions: { ...state.token.versions, ...state.versions, fogbender: "0.2.3" },
+          visitorToken,
         };
-      }
-      if (isVisitorToken(token)) {
-        const { widgetId } = token;
-        const key = `visitor-${widgetId}`;
-        const visitorInfo = localStorage.getItem(key);
-        if (visitorInfo) {
-          try {
-            const { token: visitorToken } = JSON.parse(visitorInfo);
-            if (state.token) {
-              state.token = {
-                ...state.token,
-                visitorToken,
-              };
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
       }
       updateConfigured();
       return fogbender;
