@@ -200,7 +200,7 @@ export function useServerWs(
                 emailVerified,
                 visitorToken,
               } = r;
-              if (visitorToken) {
+              if (visitorToken && visitorToken !== token.visitorToken) {
                 client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
               }
               authenticated.current = true;
