@@ -14,7 +14,6 @@ import {
   useWs,
   VisitorVerifyCode,
   VisitorVerifyEmail,
-  AuthVisitor,
 } from "fogbender-proto";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
