@@ -78,12 +78,16 @@ export const createNewFogbender = (): Fogbender => {
         const key = `visitor-${widgetId}`;
         const visitorInfo = localStorage.getItem(key);
         if (visitorInfo) {
-          const { token: visitorToken } = JSON.parse(visitorInfo);
-          if (state.token) {
-            state.token = {
-              ...state.token,
-              visitorToken,
-            };
+          try {
+            const { token: visitorToken } = JSON.parse(visitorInfo);
+            if (state.token) {
+              state.token = {
+                ...state.token,
+                visitorToken,
+              };
+            }
+          } catch (e) {
+            console.error(e);
           }
         }
       }
