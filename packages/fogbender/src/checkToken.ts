@@ -35,28 +35,6 @@ export function checkToken(token: Token | undefined) {
   return;
 }
 
-export function checkVisitorToken(token: Token | undefined) {
-  if (token !== undefined && "visitor" in token) {
-    const { widgetId } = token;
-    const key = `visitor-test-${widgetId}`;
-    const proof = Math.random().toString();
-
-    try {
-      localStorage.setItem(key, proof);
-      if (localStorage.getItem(key) === proof) {
-        localStorage.removeItem(key);
-        return false;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      return true;
-    }
-  } else {
-    return false;
-  }
-}
-
 export function isUserToken(token: Token | undefined): token is UserToken {
   return token ? "userId" in token : false;
 }
