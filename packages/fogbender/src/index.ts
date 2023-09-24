@@ -2,7 +2,7 @@ import { checkToken, isVisitorToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Env, Fogbender, Token } from "./types";
+import type { Env, Fogbender, Token, VisitorInfo } from "./types";
 export type {
   Env,
   Token,
@@ -35,6 +35,17 @@ export const createNewFogbender = (): Fogbender => {
       );
     }
     state.chatWindow?.focus();
+  };
+  const storeVisitorInfo = (info: VisitorInfo) => {
+    if (state.token) {
+      state.token.visitorToken = info.token;
+    }
+    const { widgetId } = info;
+    try {
+      localStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
+    } catch (e) {
+      console.error(e);
+    }
   };
   const updateConfigured = () => {
     const configured = !!state.url && !!state.token;
@@ -118,13 +129,20 @@ export const createNewFogbender = (): Fogbender => {
                 token,
                 url,
                 disableFit: true,
+                onVisitorInfo: (info, reload) => {
+                  storeVisitorInfo(info);
+                  if (reload) {
+                    cleanup();
+                    cleanup = rerender();
+                  }
+                },
               },
               openWindow
             ),
           opts
         );
       };
-      const cleanup = rerender();
+      let cleanup = rerender();
       return () => {
         cleanup();
       };
@@ -144,11 +162,18 @@ export const createNewFogbender = (): Fogbender => {
             env: state.env,
             token: state.token,
             url: state.url,
+            onVisitorInfo: (info, reload) => {
+              storeVisitorInfo(info);
+              if (reload) {
+                cleanup();
+                cleanup = rerender();
+              }
+            },
           },
           openWindow
         );
       };
-      const cleanup = rerender();
+      let cleanup = rerender();
       return () => {
         cleanup();
       };

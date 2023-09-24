@@ -80,10 +80,13 @@ const App = () => {
     }
   }, [notificationsPermission]);
 
-  const setVisitorInfo = (info: VisitorInfo) => {
+  const setVisitorInfo = (info: VisitorInfo, reload?: boolean) => {
     if (window.parent && window.parent !== window) {
       // this is used for communication with parent window which is going to be different for each user
-      window.parent.postMessage({ type: "VISITOR_INFO", visitorInfo: JSON.stringify(info) }, "*"); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
+      window.parent.postMessage(
+        { type: "VISITOR_INFO", visitorInfo: JSON.stringify(info), reload },
+        "*"
+      ); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
     }
   };
 
@@ -147,7 +150,7 @@ const ProviderWrapper: React.FC<{
   clientEnv: string | undefined;
   wrongToken: boolean;
   onWrongToken: (token: UserToken) => void;
-  setVisitorInfo?: (x: VisitorInfo) => void;
+  setVisitorInfo?: (x: VisitorInfo, reload?: boolean) => void;
   headless: boolean;
   notificationsPermission: NotificationPermission | "hide" | "request";
   setNotificationsPermission: (p: NotificationPermission | "hide" | "request") => void;

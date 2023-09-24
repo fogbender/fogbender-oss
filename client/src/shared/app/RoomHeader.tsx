@@ -1271,12 +1271,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
                 const { token, userId } = res;
 
                 if (widgetId && token && userId) {
-                  client.setVisitorInfo({ token, widgetId, userId });
-
-                  if (window.parent && window.parent !== window) {
-                    // this is used for communication with parent window which is going to be different for each user
-                    window.parent.postMessage({ type: "BRUTAL_RELOAD" }, "*"); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
-                  }
+                  client.setVisitorInfo({ token, widgetId, userId }, true);
                 }
               }
             }
