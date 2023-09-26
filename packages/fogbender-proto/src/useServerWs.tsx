@@ -188,6 +188,7 @@ export function useServerWs(
           widgetId: token.widgetId,
           visitorKey: token.visitorKey,
           token: visitorTokenRef.current || token.visitorToken,
+          localTimestamp: new Date().toLocaleString(),
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
