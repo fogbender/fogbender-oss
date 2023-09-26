@@ -176,6 +176,8 @@ export function useServerWs(
     getWebSocket()?.close();
   };
 
+  const visitorTokenRef = React.useRef<string>();
+
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
@@ -185,7 +187,7 @@ export function useServerWs(
           msgType: "Auth.Visitor",
           widgetId: token.widgetId,
           visitorKey: token.visitorKey,
-          token: token.visitorToken,
+          token: visitorTokenRef.current || token.visitorToken,
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
@@ -201,6 +203,7 @@ export function useServerWs(
                 visitorToken,
               } = r;
               if (visitorToken && visitorToken !== token.visitorToken) {
+                visitorTokenRef.current = visitorToken;
                 client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
               }
               authenticated.current = true;
