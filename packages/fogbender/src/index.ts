@@ -109,19 +109,19 @@ export const createNewFogbender = (): Fogbender => {
       return snapshot;
     },
     async createFloatingWidget(opts = {}) {
-      const rerender = () => {
-        if (!state.url) {
-          throw new Error("Fogbender: no url given");
-        }
-        if (!state.token) {
-          throw new Error("Fogbender: no token given");
-        }
-        const { token, url, env } = state;
-        return createFloatingWidget(
-          state,
-          openWindow,
-          el =>
-            renderIframe(
+      if (!state.url) {
+        throw new Error("Fogbender: no url given");
+      }
+      if (!state.token) {
+        throw new Error("Fogbender: no token given");
+      }
+      const { token, url, env } = state;
+      return createFloatingWidget(
+        state,
+        openWindow,
+        el => {
+          const rerender = () => {
+            return renderIframe(
               state,
               {
                 rootEl: el,
@@ -138,14 +138,15 @@ export const createNewFogbender = (): Fogbender => {
                 },
               },
               openWindow
-            ),
-          opts
-        );
-      };
-      let cleanup = rerender();
-      return () => {
-        cleanup();
-      };
+            );
+          };
+          let cleanup = rerender();
+          return () => {
+            cleanup();
+          };
+        },
+        opts
+      );
     },
     async renderIframe(opts) {
       const rerender = () => {
