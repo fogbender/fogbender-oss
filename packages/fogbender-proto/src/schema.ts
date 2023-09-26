@@ -726,6 +726,7 @@ export type AuthVisitor = {
   widgetId: string;
   token?: string;
   visitorKey?: string;
+  localTimestamp?: string;
 };
 
 export type VisitorNew = {
