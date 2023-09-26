@@ -28,7 +28,7 @@ export interface Client {
 
   getVisitorInfo?(widgetId: string): VisitorInfo | undefined;
 
-  setVisitorInfo?(x: VisitorInfo): void;
+  setVisitorInfo?(x: VisitorInfo, reload?: boolean): void;
 
   onWrongToken?(token: AnyToken): void;
 }

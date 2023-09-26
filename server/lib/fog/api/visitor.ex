@@ -137,9 +137,24 @@ defmodule Fog.Api.Visitor do
 
   defp provision_visitor(
          workspace,
-         %New{widgetId: widget_id, localTimestamp: localTimestamp},
+         %New{widgetId: widget_id, localTimestamp: local_timestamp},
          session
        ) do
+    {:ok, res} =
+      provision_visitor(
+        workspace: workspace,
+        widget_id: widget_id,
+        local_timestamp: local_timestamp
+      )
+
+    {:reply, res, session}
+  end
+
+  def provision_visitor(
+        workspace: workspace,
+        widget_id: widget_id,
+        local_timestamp: local_timestamp
+      ) do
     customer = Repo.Helpdesk.get_external(workspace.id).customer
     uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
 
@@ -162,7 +177,7 @@ defmodule Fog.Api.Visitor do
 
     room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
     display_name_for_agent = "#{user.name}"
-    display_name_for_user = "Chat from #{localTimestamp}"
+    display_name_for_user = "Chat from #{local_timestamp}"
 
     room =
       %Data.Room{} =
@@ -184,7 +199,7 @@ defmodule Fog.Api.Visitor do
 
     res = %Ok{userId: user.id, token: token}
 
-    {:reply, res, session}
+    {:ok, res}
   end
 
   def email_verified?(%Data.User{email: email}), do: not String.match?(email, ~r/.*@example.com/)

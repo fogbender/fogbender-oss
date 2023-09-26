@@ -91,6 +91,7 @@ export const LoginPage = () => {
                           keyof Token,
                           | "visitor"
                           | "visitorKey"
+                          | "visitorToken"
                           | "widgetId"
                           | "userAvatarUrl"
                           | "userHMAC"

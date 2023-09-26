@@ -20,7 +20,7 @@ defmodule Fog.Api.Auth do
     :userEmail
   ])
 
-  defmsg(Visitor, [:widgetId, :token])
+  defmsg(Visitor, [:widgetId, :localTimestamp, :token, :visitorKey])
 
   defmsg(Agent, [:vendorId, :agentId, :token])
 
@@ -40,7 +40,8 @@ defmodule Fog.Api.Auth do
     :userEmail,
     :widgetId,
     :isVisitor,
-    :emailVerified
+    :emailVerified,
+    :visitorToken
   ])
 
   defmsg(LogoutOk, [])
@@ -52,8 +53,28 @@ defmodule Fog.Api.Auth do
 
   def info(%User{}, _), do: {:reply, Err.forbidden()}
 
-  def info(%Visitor{} = auth, %Session.Guest{headers: headers}) do
+  def info(%Visitor{token: token} = auth, %Session.Guest{headers: headers})
+      when not is_nil(token) do
     login_user(auth, headers)
+  end
+
+  def info(
+        %Visitor{widgetId: widget_id, token: nil, localTimestamp: local_timestamp} = auth,
+        %Session.Guest{headers: headers}
+      ) do
+    with {:ok, %Data.Workspace{visitors_enabled: true} = workspace} <-
+           Repo.Workspace.from_widget_id(widget_id),
+         true <- workspace.visitor_key == auth.visitorKey,
+         {:ok, %Api.Visitor.Ok{token: visitor_token}} <-
+           Api.Visitor.provision_visitor(
+             workspace: workspace,
+             widget_id: widget_id,
+             local_timestamp: local_timestamp
+           ) do
+      login_user(%Visitor{widgetId: widget_id, token: visitor_token}, headers)
+    else
+      _ -> {:reply, Err.not_authorized()}
+    end
   end
 
   def info(
@@ -109,12 +130,12 @@ defmodule Fog.Api.Auth do
     end
   end
 
-  def login_user(%Visitor{widgetId: widget_id} = auth, headers) do
+  def login_user(%Visitor{widgetId: widget_id, token: visitor_token} = auth, headers) do
     with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
          {:ok, user_id} <- check_visitor_signature(auth.token, "jwt", workspace.signature_secret),
          %Data.User{} = user <- load_visitor(user_id, workspace),
          :ok = Fog.Service.UserAuthTask.schedule(user_id: user.id, headers: headers) do
-      login_response(user, workspace)
+      login_response(user, workspace, visitor_token)
     else
       _ -> {:reply, Err.not_authorized()}
     end
@@ -204,7 +225,7 @@ defmodule Fog.Api.Auth do
     Repo.User.from_helpdesk(helpdesk.id, user_id)
   end
 
-  defp login_response(%Data.User{} = user, workspace) do
+  defp login_response(%Data.User{} = user, workspace, visitor_token \\ nil) do
     session = Session.for_user(workspace.vendor_id, user.helpdesk_id, user.id)
 
     session = %Session.User{
@@ -242,6 +263,7 @@ defmodule Fog.Api.Auth do
         vendorName: user.helpdesk.vendor.name
       },
       isVisitor: user.is_visitor,
+      visitorToken: visitor_token,
       emailVerified: user.email_verified
     }
 

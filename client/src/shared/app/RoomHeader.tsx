@@ -1271,17 +1271,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
                 const { token, userId } = res;
 
                 if (widgetId && token && userId) {
-                  client.setVisitorInfo({ token, widgetId, userId });
-
-                  const visitorInfo = client.getVisitorInfo && client.getVisitorInfo(widgetId);
-
-                  if (visitorInfo) {
-                    const { token: newToken } = visitorInfo;
-
-                    if (newToken === token) {
-                      window.location.reload();
-                    }
-                  }
+                  client.setVisitorInfo({ token, widgetId, userId }, true);
                 }
               }
             }
