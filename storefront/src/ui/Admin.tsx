@@ -293,7 +293,7 @@ export const Admin = () => {
     enabled: !!designatedVendorId,
   });
 
-  const freeSeats = billing?.free_seats || 2;
+  const freeSeats = (billing && billing.free_seats !== undefined) ? billing.free_seats : 2;
 
   const paidSeats = billing?.paid_seats || 0;
 
