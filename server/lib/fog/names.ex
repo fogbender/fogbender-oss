@@ -148,7 +148,7 @@ defmodule Fog.Names do
                "roaring", "gleaming", "tenacious", "enchanting", "mystic", "serene", "valiant",
                "eloquent", "courageous", "graceful", "captivating", "lively", "charismatic",
                "ebullient", "insightful", "free-spirited", "benevolent", "effervescent", "fierce",
-               "resilient", "bountiful", "ebony", "blazing", "effulgent", "witty", "enlightened",
+               "resilient", "bountiful", "blazing", "effulgent", "witty", "enlightened",
                "vivacious", "unwavering", "ambrosial", "resolute", "intrepid", "nurturing",
                "soothing", "spirited", "prudent", "reverent", "inquisitive", "vigilant",
                "ephemeral", "indomitable", "undaunted", "steadfast", "mirthful", "illustrious",
