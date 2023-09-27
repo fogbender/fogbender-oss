@@ -14,7 +14,7 @@ Hello, <%= to.name %>,
 You have <%= t_unread_messages(unread_count)%><%= if mentions_count > 0 do %> and <%= t_mentions(mentions_count)%><% end %> in <%= t_rooms(rooms_count)%>:
 
 <%= for b <- badges do %>
-  <%= badge_room_name(b) %> <%= if data.to_type == "agent" do %> (<%= Fog.Utils.customer_name(b.room.customer) %>) <% end %>
+  <%= badge_room_name(b) %> <%= if data.to_type == "agent" do %> (<%= Repo.Helpdesk.printable_customer_name(b.room.customer) %>) <% end %>
 
   <%= if b.count > length(b.room.messages) do %>
     ...<%= t_earlier_messages(b.count - length(b.room.messages)) %><%= if b.mentions_count > 0 do %> with <%= t_mentions(b.mentions_count) %><% end %>

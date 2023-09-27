@@ -900,7 +900,7 @@ defmodule Fog.Integration do
     room = Repo.Room.get(room_id) |> Repo.preload([:vendor, :workspace, :customer])
     room_url = Utils.room_url(room.vendor.id, room.workspace.id, room.id)
 
-    "New issue from **[#{Utils.customer_name(room.customer.name)}](#{room_url})**"
+    "New issue from **[#{Repo.Helpdesk.printable_customer_name(room.customer.name)}](#{room_url})**"
   end
 
   defp issue_body(link_room_id, link_start_message_id, link_end_message, opts) do
@@ -924,7 +924,8 @@ defmodule Fog.Integration do
 
     url = Utils.message_url(room.vendor.id, room.workspace.id, room.id, link_start_message_id)
 
-    text = "New issue from **[#{Utils.customer_name(room.customer.name)}](#{url})**\n\n"
+    text =
+      "New issue from **[#{Repo.Helpdesk.printable_customer_name(room.customer.name)}](#{url})**\n\n"
 
     body(messages, text, opts)
   end

@@ -5,9 +5,6 @@ defmodule Fog.Utils do
 
   alias Fog.{Api, Data, Repo}
 
-  @internal_customer_name "Internal conversations"
-  @external_customer_name "Shared email inbox"
-
   def time_us do
     {megs, sec, usec} = :os.timestamp()
     megs * 1_000_000_000_000 + sec * 1_000_000 + usec
@@ -189,19 +186,6 @@ defmodule Fog.Utils do
   def message_url(vendor_id, workspace_id, room_id, message_id) do
     "#{Fog.env(:fog_storefront_url)}/admin/vendor/#{vendor_id}/workspace/#{workspace_id}/chat/#{room_id}/#{message_id}"
   end
-
-  def customer_name(%Data.Customer{name: "$Cust_Internal_" <> _}), do: @internal_customer_name
-  def customer_name(%Data.Customer{name: "$Cust_External_" <> _}), do: @external_customer_name
-  def customer_name(%Data.Customer{name: name}), do: name
-
-  def customer_name("$Cust_Internal_" <> _), do: @internal_customer_name
-  def customer_name("$Cust_External_" <> _), do: @external_customer_name
-  def customer_name(name), do: name
-
-  def customer_type(%Data.Customer{name: name}), do: customer_type(name)
-  def customer_type("$Cust_Internal_" <> _), do: "agent"
-  def customer_type("$Cust_External_" <> _), do: "visitor"
-  def customer_type(_), do: "user"
 
   def safe_text_to_issue_title(text, maxWords \\ 8) do
     case text_to_issue_title(text, maxWords) do

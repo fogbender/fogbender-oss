@@ -2,7 +2,7 @@ defmodule Fog.Email.Digest do
   import Fog.Gettext, only: [ngettext: 3]
   require EEx
   require Logger
-  alias Fog.{Data, Mailer, Email}
+  alias Fog.{Repo, Data, Mailer, Email}
 
   @template "priv/emails/email_digest"
   @template2 "priv/emails/email_digest2"
@@ -83,7 +83,15 @@ defmodule Fog.Email.Digest do
     "Dialog with #{author(b.first_unread_message).name}"
   end
 
-  defp badge_room_name(b), do: b.room.name
+  defp badge_room_name(%Data.Badge{room: %Data.Room{} = r} = b) do
+    display_name(b.agent_id, r.display_name_for_agent) ||
+      display_name(b.user_id, r.display_name_for_user) ||
+      b.room.name
+  end
+
+  defp display_name(nil, _), do: nil
+  defp display_name(_, nil), do: nil
+  defp display_name(_, name), do: name
 
   def message_text(message, sep \\ "\n")
 

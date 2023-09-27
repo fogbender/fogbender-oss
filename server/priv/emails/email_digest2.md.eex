@@ -10,7 +10,7 @@ rooms_no_messages = length(badges_no_messages)
 %>
 You have <%= t_new_messages(unread_count)%><%= if mentions_count > 0 do %> and <%= t_mentions(mentions_count)%><% end %> in <%= t_rooms(rooms_count)%>:
     <%= for b <- badges, b.room.messages != [] do %>
-    <<%= fogbender_message_link(data, b) %>|<%= badge_room_name(b) %>> <%= if data.to_type == "agent" do %> (<%= Fog.Utils.customer_name(b.room.customer) %>) <% end %> - <<%= fogbender_message_link(data, b) %>|Respond in Fogbender> <%= slack_message_link(access_token, b) %>
+    <<%= fogbender_message_link(data, b) %>|<%= badge_room_name(b) %>> <%= if data.to_type == "agent" do %> (<%= Repo.Helpdesk.printable_customer_name(b.room.customer) %>) <% end %> - <<%= fogbender_message_link(data, b) %>|Respond in Fogbender> <%= slack_message_link(access_token, b) %>
     <%= if b.count > length(b.room.messages) do %>
     ...<%= t_earlier_messages(b.count - length(b.room.messages)) %><%= if b.mentions_count > 0 do %> with <%= t_mentions(b.mentions_count) %><% end %>
     <% end %>

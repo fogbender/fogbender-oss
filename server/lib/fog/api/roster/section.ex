@@ -236,9 +236,12 @@ defmodule Fog.Api.Roster.Section do
   defp section("CUSTOMER", %Params{event: %Event.RosterRoom{room: room}}),
     do: %Event.RosterSection{
       id: "CUSTOMER:#{room.customerId}",
-      name: Fog.Utils.customer_name(room.customerName),
+      name: Repo.Helpdesk.printable_customer_name(room.customerName),
       entityType: "CUSTOMER",
-      entity: %{id: room.customerId, name: Fog.Utils.customer_name(room.customerName)}
+      entity: %{
+        id: room.customerId,
+        name: Repo.Helpdesk.printable_customer_name(room.customerName)
+      }
     }
 
   defp section("TAG:" <> tag, %Params{parsed_tags: tags}) do

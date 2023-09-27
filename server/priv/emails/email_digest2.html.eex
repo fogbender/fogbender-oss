@@ -18,7 +18,7 @@ in <%= t_rooms(rooms_count)%>:
         <br><br>
         <li>
             <bold><%= content_tag :a, badge_room_name(b), href: link_room_name(data, b) %></bold>
-            <%= if data.to_type == "agent" do %> (<%= Fog.Utils.customer_name(b.room.customer) %>) <% end %>
+            <%= if data.to_type == "agent" do %> (<%= Repo.Helpdesk.printable_customer_name(b.room.customer) %>) <% end %>
             -
             <%= content_tag :a, "Click to respond", href: link_room_name(data, b) %>
             <br><br>

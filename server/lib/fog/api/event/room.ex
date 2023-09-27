@@ -243,7 +243,7 @@ defmodule Fog.Api.Event.Room do
       helpdeskId: r.helpdesk_id,
       customerId: r.customer.id,
       customerName: r.customer.name,
-      customerType: Utils.customer_type(r.customer),
+      customerType: Repo.Helpdesk.customer_type(r.customer),
       customerDeletedTs: deleted_at(r.customer.deleted_at),
       name: r.name,
       displayNameForUser: r.display_name_for_user,
