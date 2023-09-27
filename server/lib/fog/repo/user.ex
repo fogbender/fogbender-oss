@@ -135,6 +135,48 @@ defmodule Fog.Repo.User do
     }
   end
 
+  def provision_visitor(
+        vendor_id,
+        workspace_id,
+        local_timestamp
+      ) do
+    customer = Repo.Helpdesk.get_external(workspace_id).customer
+    uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
+
+    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
+
+    user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
+    user_email = "#{uexid}@example.com"
+
+    user =
+      import_external(
+        vendor_id,
+        workspace_id,
+        customer.external_uid,
+        uexid,
+        {user_email, user_name, user_picture, customer.name},
+        false
+      )
+
+    user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
+
+    room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
+    display_name_for_agent = "#{user.name}"
+    display_name_for_user = "Chat from #{local_timestamp}"
+
+    room =
+      %Data.Room{} =
+      Repo.Room.create_private(workspace_id, [user.id], ["all"], %{
+        helpdesk_id: user.helpdesk_id,
+        name: room_name,
+        display_name_for_user: display_name_for_user,
+        display_name_for_agent: display_name_for_agent,
+        tags: []
+      })
+
+    %{user: user, room: room}
+  end
+
   defp intel_apollo(email) do
     # TODO: check for user with verified email only
     case Fog.Apollo.Api.match(email) do

@@ -1,7 +1,7 @@
 defmodule Fog.Api.Auth do
   use Fog.Api.Handler
 
-  alias Fog.Api.{Session}
+  alias Fog.Api.{Session, Event}
   alias Fog.{Repo, Data, Api}
   require Logger
 
@@ -65,13 +65,17 @@ defmodule Fog.Api.Auth do
     with {:ok, %Data.Workspace{visitors_enabled: true} = workspace} <-
            Repo.Workspace.from_widget_id(widget_id),
          true <- workspace.visitor_key == auth.visitorKey,
-         {:ok, %Api.Visitor.Ok{token: visitor_token}} <-
-           Api.Visitor.provision_visitor(
-             workspace: workspace,
-             widget_id: widget_id,
-             local_timestamp: local_timestamp
-           ) do
-      login_user(%Visitor{widgetId: widget_id, token: visitor_token}, headers)
+         %{user: user, room: room} <-
+           Repo.User.provision_visitor(workspace.vendor_id, workspace.id, local_timestamp) do
+      Event.publish(room)
+
+      token =
+        Fog.UserSignature.jwt_sign(
+          %{widgetId: widget_id, userId: user.id, visitor: true},
+          workspace.signature_secret
+        )
+
+      login_user(%Visitor{widgetId: widget_id, token: token}, headers)
     else
       _ -> {:reply, Err.not_authorized()}
     end
