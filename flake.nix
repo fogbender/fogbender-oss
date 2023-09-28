@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    unstable.url = "github:nixos/nixpkgs/nixos-23.05";
+    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     utils.url = "github:numtide/flake-utils";
 
@@ -25,7 +25,7 @@
       overlay = final: prev: {
         inherit (gitignore.lib) gitignoreSource;
         unstable = unstable.legacyPackages.${final.system};
-        beamPackages = final.unstable.beam_nox.packages.erlang;
+        beamPackages = final.unstable.beam_nox.packages.erlang_26;
         mkMixDeps = final.callPackage ./nix/lib/mk-mix-deps.nix { };
         fogbender = final.callPackage ./nix/lib/fogbender.nix {  };
       };
