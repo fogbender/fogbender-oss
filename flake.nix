@@ -25,7 +25,8 @@
       overlay = final: prev: {
         inherit (gitignore.lib) gitignoreSource;
         unstable = unstable.legacyPackages.${final.system};
-        beamPackages = final.unstable.beam_nox.packages.erlang_26;
+        # TODO switch to beam_nox.packages.erlang_26 when available in nix cache
+        beamPackages = final.unstable.beam.packages.erlang_26;
         mkMixDeps = final.callPackage ./nix/lib/mk-mix-deps.nix { };
         fogbender = final.callPackage ./nix/lib/fogbender.nix {  };
       };
