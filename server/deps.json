@@ -187,8 +187,8 @@
     "fetcher": "hex",
     "name": "decimal",
     "pkg": "decimal",
-    "sha256": "sha256-NGZunFXeqBAT532dhzcP5stikdHvMvRqFgAjCx1E9Xc=",
-    "version": "2.0.0"
+    "sha256": "sha256-U8/l9JftDndxrhpHVXVgPXdCUJm6X675OUkys1Ag/8w=",
+    "version": "2.1.1"
   },
   "earmark": {
     "builder": "mix",
@@ -220,8 +220,8 @@
     "fetcher": "hex",
     "name": "ecto",
     "pkg": "ecto",
-    "sha256": "sha256-3l+YjBQqOqTsGLhaTsNKI5C2WyTwI4XBFEJS/2/47nU=",
-    "version": "3.9.4"
+    "sha256": "sha256-3xe8BrpveKe3ZOShTvh3/l9EmTMsWhBazhH+cBO3LIQ=",
+    "version": "3.9.6"
   },
   "ecto_sql": {
     "builder": "mix",
@@ -459,8 +459,8 @@
     "fetcher": "hex",
     "name": "jason",
     "pkg": "jason",
-    "sha256": "sha256-eaN5EIWyoPdDygTOwPe+JkQ3OHedCTAuATGPl724ISE=",
-    "version": "1.4.0"
+    "sha256": "sha256-+7Aezf1WW1YmEwL34fzCfE+48y1W6rdNtiH8FUYEp6E=",
+    "version": "1.4.1"
   },
   "joken": {
     "builder": "mix",
