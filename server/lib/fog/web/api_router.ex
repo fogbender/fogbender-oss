@@ -5138,8 +5138,8 @@ defmodule Fog.Web.APIRouter do
     from(
       h in Data.Helpdesk,
       join: v in assoc(h, :vendor),
-      join: c in Data.Customer,
-      on: c.id == h.customer_id,
+      join: c in assoc(h, :customer),
+      on: not like(c.name, "$Cust_External_%"),
       where: h.workspace_id == ^workspace_id,
       left_join: d in assoc(c, :domains),
       left_join: cd in Data.CustomerDomain,
