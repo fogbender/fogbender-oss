@@ -5,7 +5,6 @@ defmodule Fog.Api.Visitor do
   alias Fog.Api.{Event, Session}
   require Logger
 
-  defmsg(New, [:widgetId, :visitorKey, :localTimestamp])
   defmsg(VerifyEmail, [:email])
   defmsg(VerifyCode, [:emailCode])
 
@@ -14,16 +13,6 @@ defmodule Fog.Api.Visitor do
 
   @verify_delay 30000
   @verify_attempts 3
-
-  def info(%New{widgetId: widget_id} = auth, %Session.Guest{} = session) do
-    with {:ok, %Data.Workspace{visitors_enabled: true} = workspace} <-
-           Repo.Workspace.from_widget_id(widget_id),
-         true <- workspace.visitor_key == auth.visitorKey do
-      provision_visitor(workspace, auth, session)
-    else
-      _ -> {:reply, Err.not_authorized()}
-    end
-  end
 
   def info(
         %VerifyEmail{email: email},
@@ -127,80 +116,12 @@ defmodule Fog.Api.Visitor do
     end
   end
 
-  def info(%New{}, _), do: {:reply, Err.forbidden()}
   def info(%VerifyEmail{}, _), do: {:reply, Err.forbidden()}
 
   def info(_, _), do: :skip
 
   def is_visitor?(%Data.User{external_uid: "visitor-" <> _}), do: true
   def is_visitor?(%Data.User{}), do: false
-
-  defp provision_visitor(
-         workspace,
-         %New{widgetId: widget_id, localTimestamp: local_timestamp},
-         session
-       ) do
-    {:ok, res} =
-      provision_visitor(
-        workspace: workspace,
-        widget_id: widget_id,
-        local_timestamp: local_timestamp
-      )
-
-    {:reply, res, session}
-  end
-
-  def provision_visitor(
-        workspace: workspace,
-        widget_id: widget_id,
-        local_timestamp: local_timestamp
-      ) do
-    customer = Repo.Helpdesk.get_external(workspace.id).customer
-    uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
-
-    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
-
-    user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
-    user_email = "#{uexid}@example.com"
-
-    user =
-      Repo.User.import_external(
-        workspace.vendor_id,
-        workspace.id,
-        customer.external_uid,
-        uexid,
-        {user_email, user_name, user_picture, customer.name},
-        false
-      )
-
-    user = Repo.User.update(user.id, is_visitor: true, email_verified: false)
-
-    room_name = "#{user.name} [#{Fog.Types.UserId.dump(user.id) |> elem(1)}]"
-    display_name_for_agent = "#{user.name}"
-    display_name_for_user = "Chat from #{local_timestamp}"
-
-    room =
-      %Data.Room{} =
-      Repo.Room.create_private(workspace.id, [user.id], ["all"], %{
-        helpdesk_id: user.helpdesk_id,
-        name: room_name,
-        display_name_for_user: display_name_for_user,
-        display_name_for_agent: display_name_for_agent,
-        tags: []
-      })
-
-    Event.publish(room)
-
-    token =
-      Fog.UserSignature.jwt_sign(
-        %{widgetId: widget_id, userId: user.id, visitor: true},
-        workspace.signature_secret
-      )
-
-    res = %Ok{userId: user.id, token: token}
-
-    {:ok, res}
-  end
 
   def email_verified?(%Data.User{email: email}), do: not String.match?(email, ~r/.*@example.com/)
 

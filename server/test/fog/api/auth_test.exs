@@ -339,17 +339,18 @@ defmodule Test.Api.AuthTest do
     end
 
     test "login new visitor", ctx do
-      v1 = %Api.Visitor.New{
+      auth = %Api.Auth.Visitor{
         widgetId: ctx.widget_id,
         visitorKey: ctx.workspace.visitor_key,
         localTimestamp: "XYZ"
       }
 
-      assert {:reply, %Fog.Api.Visitor.Ok{token: token, userId: user_id}, _} =
-               Api.request(v1, ctx.guest_api)
+      assert {:reply, %Fog.Api.Auth.Ok{visitorToken: token, userId: user_id}, _} =
+               Api.request(auth, ctx.guest_api)
 
+      s2 = Api.init(Api.Session.guest())
       auth = %Api.Auth.Visitor{widgetId: ctx.widget_id, token: token}
-      assert {:reply, %Fog.Api.Auth.Ok{userId: ^user_id}, _} = Api.request(auth, ctx.guest_api)
+      assert {:reply, %Fog.Api.Auth.Ok{userId: ^user_id}, _} = Api.request(auth, s2)
     end
   end
 

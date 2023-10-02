@@ -110,9 +110,15 @@ defmodule Fog.Repo.Helpdesk do
     |> internal?
   end
 
+  def printable_customer_name(%Data.Customer{name: name}), do: printable_customer_name(name)
   def printable_customer_name("$Cust_Internal_" <> _), do: "Internal Conversations"
-  def printable_customer_name("$Cust_External_" <> _), do: "Shared Email Inbox"
+  def printable_customer_name("$Cust_External_" <> _), do: "Visitor Inbox"
   def printable_customer_name(name), do: name
+
+  def customer_type(%Data.Customer{name: name}), do: customer_type(name)
+  def customer_type("$Cust_Internal_" <> _), do: "agent"
+  def customer_type("$Cust_External_" <> _), do: "visitor"
+  def customer_type(_), do: "user"
 
   def search(workspace_id, ids, term, limit) do
     from(h in Data.Helpdesk,
