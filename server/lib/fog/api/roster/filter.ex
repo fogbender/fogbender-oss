@@ -1,22 +1,32 @@
 defmodule Fog.Api.Roster.Filter do
-  alias Fog.Api.Event
+  alias Fog.Api.{Event, Session}
 
   @type t() :: (%Event.RosterRoom{} -> boolean())
 
   @filters [
     "customerIds",
-    "focused"
+    "focused",
+    "maxNewVisitorAge"
   ]
 
-  def new(nil, _session), do: {:ok, p_empty()}
+  @max_visitor_age 30
 
-  def new(cfg, _session) do
+  def valid?(nil), do: true
+  def valid?(filter), do: Map.keys(filter) -- @filters == []
+
+  def new(nil, session) do
+    filter = p_new_visitor_age(session, nil)
+    {:ok, filter}
+  end
+
+  def new(cfg, session) do
     case Map.keys(cfg) -- @filters do
       [] ->
         filter =
           p_and([
             p_customers(cfg["customerIds"]),
-            p_focused(cfg["focused"])
+            p_focused(cfg["focused"]),
+            p_new_visitor_age(session, cfg["maxNewVisitorAge"])
           ])
 
         {:ok, filter}
@@ -32,9 +42,9 @@ defmodule Fog.Api.Roster.Filter do
 
   defp p_and(preds) do
     case List.flatten(preds) do
-      [] -> p_empty()
+      [] -> p_true()
       [pred] -> pred
-      preds -> fn e -> Enum.all?(preds, & &1.(e)) end
+      preds when is_list(preds) -> fn e -> Enum.all?(preds, & &1.(e)) end
     end
   end
 
@@ -53,9 +63,24 @@ defmodule Fog.Api.Roster.Filter do
 
   defp p_focused(_), do: []
 
-  defp p_empty() do
-    fn _ -> true end
+  defp p_new_visitor_age(_sess, 0), do: p_true()
+  defp p_new_visitor_age(sess, nil), do: p_new_visitor_age(sess, @max_visitor_age)
+
+  defp p_new_visitor_age(%Session.Agent{}, max_age) do
+    fn
+      %Event.RosterRoom{room: %Event.Room{} = r, badge: nil} ->
+        is_new_visitor = not r.resolved and r.type == "private" and r.customerType == "visitor"
+        not is_new_visitor or Fog.Utils.time_diff(r.createdTs, :minute) < max_age
+
+      _ ->
+        true
+    end
   end
+
+  defp p_new_visitor_age(_, _), do: p_true()
+
+  defp p_const(value), do: fn _ -> value end
+  defp p_true(), do: p_const(true)
 
   defp active_badge?(%Event.Badge{} = b) do
     b.count > 0 or b.mentionsCount > 0

@@ -245,4 +245,14 @@ defmodule Fog.Utils do
       |> Repo.insert!()
     end
   end
+
+  def time_diff(d, unit \\ :second)
+
+  def time_diff(%DateTime{} = d, unit) do
+    DateTime.diff(DateTime.utc_now(), d, unit)
+  end
+
+  def time_diff(unix, unit) when is_integer(unix) do
+    time_diff(from_unix(unix), unit)
+  end
 end

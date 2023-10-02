@@ -233,7 +233,7 @@ defmodule Fog.Api.Roster do
   defp valid_cmd(%OpenView{} = cmd) do
     is_binary(cmd.view) and cmd.view != "" and
       is_list(cmd.sections) and cmd.sections != [] and
-      (is_nil(cmd.filters) or Map.keys(cmd.filters) -- ["customerIds", "focused"] == [])
+      Roster.Filter.valid?(cmd.filters)
   end
 
   defp valid_cmd(%CloseView{} = cmd) do
