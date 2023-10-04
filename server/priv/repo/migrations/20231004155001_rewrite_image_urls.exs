@@ -7,7 +7,8 @@ defmodule Fog.Repo.Migrations.RewriteImageUrls do
       update public.user
       set image_url=regexp_replace(image_url, '^https://avatars\.dicebear\.com/api/(.+)/(.+)\.svg$', 'https://api.dicebear.com/7.x/\1/svg?seed=\2');
       """,
-    [])
+      []
+    )
   end
 
   defp query!(q, args) do
