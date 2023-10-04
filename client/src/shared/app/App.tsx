@@ -725,7 +725,7 @@ export const App: React.FC<{
     setShowUserWelcome(false);
   }, [setHideWelcome]);
 
-  const initialsUrl = "https://avatars.dicebear.com/api/initials/";
+  const initialsUrl = "https://api.dicebear.com/7.x/initials/";
 
   React.useEffect(() => {
     if (
@@ -750,8 +750,8 @@ export const App: React.FC<{
     if (userInfo !== undefined && ourId !== undefined && token !== undefined) {
       const newUrl =
         avatarLibraryUrl === initialsUrl
-          ? `${avatarLibraryUrl}${userInfo.name}${Date.now().toString()}.svg`
-          : `${avatarLibraryUrl}${Date.now().toString()}.svg`;
+          ? `${avatarLibraryUrl}svg?seed=${userInfo.name}${Date.now().toString()}`
+          : `${avatarLibraryUrl}svg?seed=${Date.now().toString()}`;
 
       if (avatarLibraryUrl !== undefined && newUrl !== undefined && newUrl !== null) {
         updateUser({

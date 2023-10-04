@@ -137,7 +137,7 @@ export const SnippetControlsNew: React.FC<{
   userId: "${userId}",
   userEmail: "jim@netflix.com",
   userName: "Jim Lee", // Don’t know the name? Reuse email here
-  userAvatarUrl: "https://avatars.dicebear.com/api/pixel-art/${userId}.png" // optional
+  userAvatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=${userId}" // optional
 };`;
 
   const constTokenWithKey = constTokenWithoutSignature.replace(

@@ -9,7 +9,8 @@ defmodule Fog.Data.FeatureOption do
     email_digest_template: "email_digest2",
     agent_customer_following: true,
     user_triage_following: true,
-    avatar_library_url: "https://avatars.dicebear.com/api/pixel-art/",
+    avatar_library_url: "https://api.dicebear.com/7.x/pixel-art/",
+    visitor_avatar_library_url: "https://api.dicebear.com/7.x/adventurer/",
     default_group_assignment: nil
   ]
 
@@ -18,6 +19,7 @@ defmodule Fog.Data.FeatureOption do
              :email_digest_enabled,
              :email_digest_period,
              :avatar_library_url,
+             :visitor_avatar_library_url,
              :default_group_assignment
            ]}
   schema "feature_option" do
@@ -33,6 +35,7 @@ defmodule Fog.Data.FeatureOption do
     field(:agent_customer_following, :boolean)
     field(:user_triage_following, :boolean)
     field(:avatar_library_url, :string)
+    field(:visitor_avatar_library_url, :string)
     field(:default_group_assignment, :string)
 
     timestamps()

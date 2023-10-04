@@ -209,7 +209,7 @@ export function useServerWs(
               }
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
-              setAvatarLibraryUrl(r.avatarLibraryUrl);
+              setAvatarLibraryUrl(r.visitorAvatarLibraryUrl);
               if (emailVerified) {
                 setUserType("visitor-verified");
               } else {

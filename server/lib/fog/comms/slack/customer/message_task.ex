@@ -775,7 +775,7 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
   defp avatar_url(author) do
     case author do
       %Data.User{image_url: "https://avatars.dicebear.com" <> _ = image_url} ->
-        image_url |> String.replace(".svg", ".png")
+        image_url |> String.replace("/svg?", "/png?")
 
       _ ->
         author.image_url

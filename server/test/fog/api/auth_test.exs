@@ -266,7 +266,7 @@ defmodule Test.Api.AuthTest do
     # server will generate a random avatar url instead
     assert {:reply,
             %Fog.Api.Auth.Ok{
-              userAvatarUrl: "https://avatars.dicebear.com/api/pixel-art/" <> _
+              userAvatarUrl: "https://api.dicebear.com/7.x/pixel-art/" <> _
             }, _} = Api.request(request, ctx.guest_api)
   end
 
