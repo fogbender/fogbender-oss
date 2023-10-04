@@ -552,7 +552,7 @@ export const App: React.FC<{
     notificationsRef,
     () => setShowNotificationsSettings(false),
     showNotificationsSettings === false,
-    true
+    false
   );
 
   const gridContainerRef = React.useRef<HTMLDivElement>(null);
