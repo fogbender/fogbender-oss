@@ -10,7 +10,7 @@ import {
   ConfirmDialog,
   FancyMenuItem,
   GalleryModal,
-  IconGithub,
+  // IconGithub,
   Icons,
   Integration,
   IsIdleProvider,
