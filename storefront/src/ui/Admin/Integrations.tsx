@@ -228,7 +228,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
           }}
         >
           <div>
-            <div className="mb-2 fog:text-header2">Add Integration</div>
+            <div className="mb-2 fog:text-header2">Add integration</div>
             <div className="my-4">
               <Select
                 onChange={setSelectedIntegration}
