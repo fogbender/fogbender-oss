@@ -31,6 +31,7 @@ import { fetchServerApiPost } from "../useServerApi";
 import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
 import { AgentGroups } from "./AgentGroups";
+import { Schedules } from "./agent-schedules/Schedules";
 
 export const Team: React.FC<{
   vendor: Vendor;
@@ -69,7 +70,7 @@ export const Team: React.FC<{
         path="*"
         element={
           <>
-            <TeamTabs tab="team" />
+            <TeamTabs vendor={vendor} tab="team" />
             {ourAgent && (
               <>
                 <TeamMembers
@@ -90,58 +91,71 @@ export const Team: React.FC<{
         path="groups"
         element={
           <>
-            <TeamTabs tab="groups" />
+            <TeamTabs vendor={vendor} tab="groups" />
             {ourAgentId && ourAgent && (
               <AgentGroups vendor={vendor} ourId={ourAgentId} ourRole={ourAgent.role} />
             )}
           </>
         }
       />
+      {vendor.agent_scheduling_enabled && (
+        <Route
+          path="schedules"
+          element={
+            <div className="flex flex-col gap-8">
+              <TeamTabs vendor={vendor} tab="schedules" />
+              {ourAgentId && ourAgent && <Schedules />}
+            </div>
+          }
+        />
+      )}
     </Routes>
   );
 };
 
 const TeamTabs: React.FC<{
-  tab: "team" | "groups";
-}> = ({ tab }) => {
-  const secondaryTabs = ["groups"];
+  tab: "team" | "groups" | "schedules";
+  vendor: Vendor;
+}> = ({ tab, vendor }) => {
+  const isSecondaryTab = ["groups", "schedules"].includes(tab);
+
+  const tabs = [
+    { name: "team", to: tab === "team" ? "." : ".." },
+    { name: "groups", to: tab === "groups" ? "." : isSecondaryTab ? "../groups" : "groups" },
+  ];
+
+  if (vendor.agent_scheduling_enabled) {
+    tabs.push({
+      name: "schedules",
+      to: tab === "schedules" ? "." : isSecondaryTab ? "../schedules" : "schedules",
+    });
+  }
+
   return (
     <div className="w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <div className="w-full md:w-auto flex flex-wrap">
-        <Link
-          to={secondaryTabs.includes(tab) ? ".." : "."}
-          className="flex-1 md:flex-none no-underline"
-        >
-          <div
-            className={classNames(
-              "flex-1 md:flex-none fog:text-header3 justify-center leading-5 ml-4 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
-              tab === "team"
-                ? "rounded-t-md border-brand-orange-500 border-b-5 text-black"
-                : "text-blue-700 hover:text-red-500"
-            )}
-          >
-            Team
-          </div>
-        </Link>
-        <Link
-          to={tab === "groups" ? "." : secondaryTabs.includes(tab) ? "../groups" : "groups"}
-          className="flex-1 md:flex-none no-underline text-red-500"
-        >
-          <div
-            className={classNames(
-              "flex-1 md:flex-none fog:text-header3 justify-center text-sm leading-5 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
-              tab === "groups"
-                ? "rounded-t-md border-brand-orange-500 border-b-5 text-black"
-                : "text-blue-700 hover:text-red-500"
-            )}
-          >
-            Groups
-          </div>
-        </Link>
+        {tabs.map(t => {
+          const tabTitle = t.name.substring(0, 1).toUpperCase() + t.name.substring(1);
+          return (
+            <Link to={t.to} className="flex-1 md:flex-none no-underline">
+              <div
+                className={classNames(
+                  "flex-1 md:flex-none fog:text-header3 justify-center leading-5 ml-4 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
+                  tab === t.name
+                    ? "rounded-t-md border-brand-orange-500 border-b-5 text-black"
+                    : "text-blue-700 hover:text-red-500"
+                )}
+              >
+                {tabTitle}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 const TeamMembers: React.FC<{
   invitesAndAgents: (Agent | Invite)[];
   ourAgent: Agent | undefined;

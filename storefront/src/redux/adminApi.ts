@@ -8,6 +8,7 @@ export type { Agent, Tag };
 export type Vendor = {
   id: string;
   name: string;
+  agent_scheduling_enabled?: boolean;
   status: "active" | "archived";
   inserted_at: number;
   updated_at: number;
