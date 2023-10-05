@@ -3265,9 +3265,7 @@ defmodule Fog.Web.APIRouter do
           ok_json(conn, data |> Jason.encode!())
 
         "check-access" ->
-          {:ok, data, conn} = Plug.Conn.read_body(conn)
-          {:ok, data} = Jason.decode(data)
-          user_token = data["userToken"]
+          user_token = conn.params["userToken"]
           {:ok, %{"access_token" => access_token}} = Fog.Integration.OAuth.decrypt(user_token)
 
           case Slack.Api.check_access(access_token) do
@@ -3279,9 +3277,7 @@ defmodule Fog.Web.APIRouter do
           end
 
         "create-channel" ->
-          {:ok, data, conn} = Plug.Conn.read_body(conn)
-          {:ok, data} = Jason.decode(data)
-          user_token = data["userToken"]
+          user_token = conn.params["userToken"]
           {:ok, %{"access_token" => access_token}} = Fog.Integration.OAuth.decrypt(user_token)
 
           case Slack.Api.create_channel(access_token, "fogbender") do
@@ -3294,11 +3290,10 @@ defmodule Fog.Web.APIRouter do
           end
 
         "invite-to-channel" ->
-          {:ok, data, conn} = Plug.Conn.read_body(conn)
-          {:ok, data} = Jason.decode(data)
-          user_token = data["userToken"]
-          channel_id = data["channelId"]
-          user_id = data["userId"]
+          user_token = conn.params["userToken"]
+          channel_id = conn.params["channelId"]
+          user_id = conn.params["userId"]
+
           {:ok, %{"access_token" => access_token}} = Fog.Integration.OAuth.decrypt(user_token)
 
           case Slack.Api.invite_user_to_channel(access_token, channel_id, user_id) do
@@ -3317,16 +3312,14 @@ defmodule Fog.Web.APIRouter do
                )
                |> Repo.all() do
             [] ->
-              # XXX: this is a race condition
-              {:ok, data, conn} = Plug.Conn.read_body(conn)
-              {:ok, data} = Jason.decode(data)
-              # teamId
-              project_id = data["projectId"]
-              project_name = data["projectName"]
-              project_url = data["projectUrl"]
-              user_token = data["userToken"]
-              %{"botUserId" => slack_bot_user_id} = user_info = data["userInfo"]
-              channel_id = data["channelId"]
+              project_id = conn.params["projectId"]
+              project_name = conn.params["projectName"]
+              project_url = conn.params["projectUrl"]
+              user_token = conn.params["userToken"]
+              channel_id = conn.params["channelId"]
+              user_info = conn.params["userInfo"]
+
+              %{"botUserId" => slack_bot_user_id} = user_info
 
               {:ok, %{"access_token" => access_token}} = Fog.Integration.OAuth.decrypt(user_token)
 
@@ -4506,6 +4499,18 @@ defmodule Fog.Web.APIRouter do
 
         case Slack.Api.check_access(access_token) do
           {:ok, data, nil} ->
+            ok_json(conn, data |> Jason.encode!())
+
+          {:error, _} ->
+            forbid(conn)
+        end
+
+      "linked-channel-info" ->
+        access_token = integration.specifics["access_token"]
+        linked_channel_id = integration.specifics["linked_channel_id"]
+
+        case Slack.Api.channel_info(access_token, linked_channel_id) do
+          {:ok, data} ->
             ok_json(conn, data |> Jason.encode!())
 
           {:error, _} ->

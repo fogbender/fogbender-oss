@@ -142,7 +142,7 @@ export function useUserProfile() {
   const userPicture =
     localToken?.userAvatarUrl ||
     defaultToken.userAvatarUrl ||
-    `https://avatars.dicebear.com/api/pixel-art/${btoa(userId || "")}.svg`;
+    `https://api.dicebear.com/7.x/pixel-art/svg?seed=${btoa(userId || "")}`;
 
   return { userName, userEmail, userPicture };
 }

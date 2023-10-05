@@ -1,7 +1,7 @@
 import { Avatar, Icons, Integration } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import React from "react";
-import { UseMutationResult } from "react-query";
+import { UseMutationResult, UseQueryResult } from "react-query";
 
 import { FontAwesomeCheck } from "../../../shared/font-awesome/Check";
 
@@ -21,6 +21,25 @@ export function operationStatus<DataIn>(
         {done && res.error === null && <span className="font-bold text-green-500">OK</span>}
         {done && res.error !== null && <span className="font-bold text-red-500">ERROR</span>}
         {progressElem && !done && <Icons.Spinner className="w-4 text-blue-500" />}
+      </span>
+    </div>
+  );
+}
+
+export function operationStatusMutation0<T>(
+  operation: string | JSX.Element,
+  mutation: UseMutationResult<Response, unknown, T, unknown>
+) {
+  const { isLoading, isSuccess, isError } = mutation;
+  return (
+    <div className="flex justify-between">
+      {(isLoading || isSuccess || isError) && (
+        <span className="whitespace-nowrap mr-1">{operation}</span>
+      )}
+      <span className="ml-1">
+        {isSuccess && <span className="font-bold text-green-500">OK</span>}
+        {isError && <span className="font-bold text-red-500">ERROR</span>}
+        {isLoading && <Icons.Spinner className="w-4 text-blue-500" />}
       </span>
     </div>
   );
@@ -46,6 +65,24 @@ export function operationStatusMutation<T>(
   );
 }
 
+export function operationStatusQuery<T>(operation: string | JSX.Element, query: UseQueryResult<T>) {
+  const { isLoading, error, isFetchedAfterMount } = query;
+  return isFetchedAfterMount || isLoading ? (
+    <div className="flex justify-between">
+      <span className="whitespace-nowrap mr-1">{operation}</span>
+      <span className="ml-1">
+        {error === null && isFetchedAfterMount && (
+          <span className="font-bold text-green-500">OK</span>
+        )}
+        {error !== null && isFetchedAfterMount && (
+          <span className="font-bold text-red-500">ERROR</span>
+        )}
+        {isLoading && !isFetchedAfterMount && <Icons.Spinner className="w-4 text-blue-500" />}
+      </span>
+    </div>
+  ) : null;
+}
+
 export function useProgress(processing: boolean, clearDone: number, maxProgress = 200) {
   const [progress, setProgress] = React.useState<number>();
   const intervalIdRef = React.useRef<number | null>(null);
@@ -69,7 +106,7 @@ export function useProgress(processing: boolean, clearDone: number, maxProgress 
         setProgress(() => {
           return undefined;
         });
-        intervalIdRef.current = window.setInterval(progressTick, 20);
+        intervalIdRef.current = window.setInterval(progressTick, 5);
       }
     }
   }, [progressTick, processing]);

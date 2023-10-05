@@ -32,6 +32,7 @@ defmodule Fog.Api.Auth do
     :userId,
     :userAvatarUrl,
     :avatarLibraryUrl,
+    :visitorAvatarLibraryUrl,
     :helpdesk,
     :helpdeskId,
     :customerName,
@@ -244,6 +245,7 @@ defmodule Fog.Api.Auth do
       do: Repo.User.update_last_activity(user.id, DateTime.utc_now())
 
     avatar_library_url = Repo.FeatureOption.get(workspace).avatar_library_url
+    visitor_avatar_library_url = Repo.FeatureOption.get(workspace).visitor_avatar_library_url
 
     res = %Ok{
       sessionId: session.id,
@@ -253,6 +255,7 @@ defmodule Fog.Api.Auth do
       userAvatarUrl: user.image_url,
       customerName: user.helpdesk.customer.name,
       avatarLibraryUrl: avatar_library_url,
+      visitorAvatarLibraryUrl: visitor_avatar_library_url,
       helpdeskId: user.helpdesk_id,
       helpdesk: %{
         id: user.helpdesk_id,
@@ -274,8 +277,8 @@ defmodule Fog.Api.Auth do
     {:reply, res, session}
   end
 
-  defp user_picture_url("https://avatars.dicebear.com/api/initials/" = url, %{userName: user_name}) do
-    "#{url}#{user_name}.svg"
+  defp user_picture_url("https://api.dicebear.com/7.x/initials/" = url, %{userName: user_name}) do
+    "#{url}svg?seed=#{user_name}"
   end
 
   defp user_picture_url(_, %{userId: nil}) do
@@ -283,6 +286,6 @@ defmodule Fog.Api.Auth do
   end
 
   defp user_picture_url(url, %{userId: uexid}) do
-    "#{url}#{Base.url_encode64(uexid)}.svg"
+    "#{url}svg?seed=#{Base.url_encode64(uexid)}"
   end
 end

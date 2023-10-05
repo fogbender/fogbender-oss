@@ -378,7 +378,8 @@ CREATE TABLE public.feature_option (
     agent_customer_following boolean,
     user_triage_following boolean,
     avatar_library_url text,
-    default_group_assignment text
+    default_group_assignment text,
+    visitor_avatar_library_url text
 );
 
 
@@ -1101,7 +1102,8 @@ CREATE TABLE public.vendor (
     status text DEFAULT 'active'::text NOT NULL,
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
-    free_seats integer DEFAULT 2
+    free_seats integer DEFAULT 2,
+    agent_scheduling_enabled boolean DEFAULT false
 );
 
 
@@ -2538,3 +2540,6 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230821003054);
 INSERT INTO public."schema_migrations" (version) VALUES (20230826185752);
 INSERT INTO public."schema_migrations" (version) VALUES (20230829180104);
 INSERT INTO public."schema_migrations" (version) VALUES (20230831172052);
+INSERT INTO public."schema_migrations" (version) VALUES (20230915213638);
+INSERT INTO public."schema_migrations" (version) VALUES (20231004060737);
+INSERT INTO public."schema_migrations" (version) VALUES (20231004155001);

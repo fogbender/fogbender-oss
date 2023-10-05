@@ -12,27 +12,27 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
     {
       id: "initials",
       name: "Initials",
-      url: "https://avatars.dicebear.com/api/initials/",
+      url: "https://api.dicebear.com/7.x/initials/svg?seed=",
     },
     {
       id: "avataars",
       name: "Avataars",
-      url: "https://avatars.dicebear.com/api/avataaars/",
+      url: "https://api.dicebear.com/7.x/avataaars/svg?seed=",
     },
     {
       id: "pixel-art",
       name: "Pixel Art",
-      url: "https://avatars.dicebear.com/api/pixel-art/",
+      url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=",
     },
     {
       id: "identicon",
       name: "Identicon",
-      url: "https://avatars.dicebear.com/api/identicon/",
+      url: "https://api.dicebear.com/7.x/identicon/svg?seed=",
     },
     {
       id: "bottts",
       name: "Bottts",
-      url: "https://avatars.dicebear.com/api/bottts/",
+      url: "https://api.dicebear.com/7.x/bottts/svg?seed=",
     },
   ];
 
@@ -92,7 +92,7 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
 
       <small>
         See{" "}
-        <a href="https://avatars.dicebear.com/styles" target="_blank" rel="noopener">
+        <a href="https://www.dicebear.com/styles" target="_blank" rel="noopener">
           DiceBear Avatars
         </a>{" "}
         for more
@@ -124,16 +124,16 @@ const Library: React.FC<{
         </label>
       </div>
       <div className="flex gap-2 overflow-x-auto">
-        <Avatar imageSize={40} className="w-4" url={`${url}jimi-hendrix.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}sharon-jones.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}macy-gray.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}tom-petty.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}paul-mccartney.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}john-lennon.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}george-harrison.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}ringo-starr.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}neil-young.svg`} />
-        <Avatar imageSize={40} className="w-4" url={`${url}willie-nelson.svg`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}jimi-hendrix`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}sharon-jones`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}macy-gray`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}tom-petty`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}paul-mccartney`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}john-lennon`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}george-harrison`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}ringo-starr`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}neil-young`} />
+        <Avatar imageSize={40} className="w-4" url={`${url}willie-nelson`} />
       </div>
     </div>
   );

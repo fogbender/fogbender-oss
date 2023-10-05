@@ -8,14 +8,15 @@ import { getServerUrl } from "../../../config";
 import { Workspace } from "../../../redux/adminApi";
 import { FontAwesomeHashtag } from "../../../shared/font-awesome/Hashtag";
 import { FontAwesomeLock } from "../../../shared/font-awesome/Lock";
-import { queryClient, queryKeys } from "../../client";
-import {
-  fetchServerApiPost,
-  filterOutResponse,
-  useServerApiPostWithPayload,
-} from "../../useServerApi";
+import { queryClient, queryKeys, apiServer } from "../../client";
+import { fetchServerApiPost, filterOutResponse } from "../../useServerApi";
 
-import { error, IntegrationUser, operationStatus, readOnlyItem, useProgress } from "./Utils";
+import {
+  IntegrationUser,
+  readOnlyItem,
+  operationStatusQuery,
+  operationStatusMutation0,
+} from "./Utils";
 
 export const AddSlackIntegration: React.FC<{
   workspace: Workspace;
@@ -25,157 +26,86 @@ export const AddSlackIntegration: React.FC<{
   const [newOauthConnection, setNewOauthConnection] = React.useState<OauthCodeExchange>();
   const userToken = newOauthConnection?.userToken || "";
   const userInfo = newOauthConnection?.userInfo; // to make typescript happy
-  const [checkAccessRes, checkAccessCall] = useServerApiPostWithPayload<any, { userToken: string }>(
-    `/api/workspaces/${workspace.id}/integrations/slack/check-access`
-  );
 
-  const [checkAccessRes0, checkAccessCall0] = useServerApiPostWithPayload<
-    any,
-    { userToken: string }
-  >(`/api/workspaces/${workspace.id}/integrations/slack/check-access`);
+  const checkAccessQuery = useQuery({
+    queryKey: ["slack_user_token", workspace.id],
+    queryFn: async () => {
+      const url = `/api/workspaces/${workspace.id}/integrations/slack/check-access`;
 
-  const [createChannelRes, createChannelCall] = useServerApiPostWithPayload<
-    any,
-    { userToken: string }
-  >(`/api/workspaces/${workspace.id}/integrations/slack/create-channel`);
-
-  const [inviteToChannelRes, inviteToChannelCall] = useServerApiPostWithPayload<
-    any,
-    { userToken: string; channelId: string; userId: string }
-  >(`/api/workspaces/${workspace.id}/integrations/slack/invite-to-channel`);
-
-  const [addIntegrationRes, addIntegrationCall] = useServerApiPostWithPayload<
-    any,
-    {
-      projectId: string;
-      projectName: string;
-      projectUrl: string;
-      userToken: string;
-      userInfo: Integration["userInfo"];
-      channelId: string;
-    }
-  >(`/api/workspaces/${workspace.id}/integrations/slack/add-integration`);
-
-  const [steps, setSteps] = React.useState<{
-    check_access: number;
-    create_channel: number;
-    invite_to_channel: number;
-  }>({
-    check_access: 0,
-    create_channel: 0,
-    invite_to_channel: 0,
+      return await apiServer
+        .url(url)
+        .post(newOauthConnection)
+        .json<{ team: { id: string; name: string; url: string } }>();
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    enabled: !!userToken,
   });
 
-  /*
-  const [cancelSteps, setCancelSteps] = React.useState<{
-    delete_webhook: number;
-  }>({
-    delete_webhook: 0,
+  const createChannelQuery = useQuery({
+    queryKey: ["create_channel", workspace.id],
+    queryFn: async () => {
+      const url = `/api/workspaces/${workspace.id}/integrations/slack/create-channel`;
+
+      return await apiServer.url(url).post(newOauthConnection).json<{ channel: { id: string } }>();
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    enabled: checkAccessQuery.isSuccess,
   });
-  */
 
-  const [clear, setClear] = React.useState(0);
-
-  const { progressElem: checkAccessProgressElem, progressDone: checkAccessProgressDone } =
-    useProgress(checkAccessRes.loading === true, clear);
-
-  const { progressElem: createChannelProgressElem, progressDone: createChannelProgressDone } =
-    useProgress(createChannelRes.loading === true, clear, 1000);
-
-  const { progressElem: inviteToChannelProgressElem, progressDone: inviteToChannelProgressDone } =
-    useProgress(inviteToChannelRes.loading === true, clear);
-
-  const {
-    progressElem: addIntegrationProgressElem,
-    progressDone: addIntegrationProgressDone,
-    inProgress: addIntegrationInProgress,
-  } = useProgress(addIntegrationRes.loading === true, clear);
-
-  React.useEffect(() => {
-    if (checkAccessProgressDone) {
-      setSteps(x => {
-        return { ...x, check_access: x.check_access + 1 };
-      });
-    }
-  }, [checkAccessProgressDone]);
-
-  React.useEffect(() => {
-    if (createChannelProgressDone) {
-      setSteps(x => {
-        return { ...x, create_channel: x.create_channel + 1 };
-      });
-    }
-  }, [createChannelProgressDone]);
-
-  React.useEffect(() => {
-    if (inviteToChannelProgressDone) {
-      setSteps(x => {
-        return { ...x, invite_to_channel: x.invite_to_channel + 1 };
-      });
-    }
-  }, [inviteToChannelProgressDone]);
-
-  const testIsAGo = !!newOauthConnection;
-
-  const lockStep = Object.values(steps).filter((v, i, a) => a.indexOf(v) === i);
-
-  const addIsAGo =
-    !checkAccessRes.error &&
-    lockStep.length === 1 &&
-    lockStep[0] > 0 &&
-    checkAccessProgressDone === true &&
-    addIntegrationProgressDone === false &&
-    addIntegrationInProgress === false;
-
-  React.useEffect(() => {
-    if (steps.create_channel === steps.check_access - 1 && checkAccessRes.error === null) {
-      if (userToken) {
-        createChannelCall({ userToken });
-      }
-    }
-  }, [
-    steps,
-    checkAccessProgressDone,
-    checkAccessRes.data,
-    checkAccessRes.error,
-    createChannelCall,
-    userToken,
-  ]);
-
-  React.useEffect(() => {
-    if (steps.invite_to_channel === steps.create_channel - 1 && createChannelRes.error === null) {
-      if (userToken && createChannelRes.data) {
+  const inviteToChannelQuery = useQuery({
+    queryKey: ["invite_to_channel", workspace.id],
+    queryFn: async () => {
+      if (createChannelQuery.data && userInfo) {
+        const url = `/api/workspaces/${workspace.id}/integrations/slack/invite-to-channel`;
         const {
           channel: { id: channelId },
-        } = createChannelRes.data;
-        const userId = userInfo?.userId;
+        } = createChannelQuery.data;
+        const userId = userInfo.userId;
 
-        if (userToken && channelId && userId) {
-          inviteToChannelCall({ userToken, channelId, userId });
-        }
+        return await apiServer
+          .url(url)
+          .post({ ...newOauthConnection, channelId, userId })
+          .json();
       }
-    }
-  }, [
-    steps,
-    createChannelProgressDone,
-    createChannelRes.data,
-    createChannelRes.error,
-    inviteToChannelCall,
-    userToken,
-    userInfo,
-  ]);
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    enabled: createChannelQuery.isSuccess,
+  });
 
-  React.useEffect(() => {
-    if (addIntegrationProgressDone && addIntegrationRes.error === null) {
-      setTimeout(() => onDone(), 0);
-    }
-  }, [onDone, addIntegrationProgressDone, addIntegrationRes.error]);
+  const addIntegrationQuery = useQuery({
+    queryKey: ["add_slack_integration", workspace.id],
+    queryFn: async () => {
+      if (checkAccessQuery.data && createChannelQuery.data && userInfo) {
+        const url = `/api/workspaces/${workspace.id}/integrations/slack/add-integration`;
+        const {
+          team: { id: projectId, name: projectName, url: projectUrl },
+        } = checkAccessQuery.data;
+        const {
+          channel: { id: channelId },
+        } = createChannelQuery.data;
 
-  React.useEffect(() => {
-    if (newOauthConnection?.userToken) {
-      checkAccessCall0({ userToken: newOauthConnection?.userToken });
-    }
-  }, [checkAccessCall0, newOauthConnection?.userToken]);
+        return await apiServer
+          .url(url)
+          .post({ ...newOauthConnection, projectId, projectName, projectUrl, channelId })
+          .res();
+      } else {
+        return;
+      }
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    enabled: inviteToChannelQuery.isSuccess,
+    onSuccess: () => {
+      onDone();
+    },
+  });
 
   React.useEffect(() => {
     if (closing === true) {
@@ -183,17 +113,17 @@ export const AddSlackIntegration: React.FC<{
     }
   }, [closing, onDone]);
 
-  const teamAnchor = () => (
+  const teamAnchor = checkAccessQuery.data ? (
     <a
-      href={checkAccessRes0.data.team.url}
+      href={checkAccessQuery?.data.team.url}
       className="fog:text-link"
-      title={checkAccessRes0.data.team.name}
+      title={checkAccessQuery?.data.team.name}
       target="_blank"
       rel="noopener"
     >
-      {checkAccessRes0.data.team.name}
+      {checkAccessQuery.data.team.name}
     </a>
-  );
+  ) : null;
 
   const creatingText = () => (
     <span>
@@ -219,98 +149,12 @@ export const AddSlackIntegration: React.FC<{
         <SlackOauth workspaceId={workspace.id} onSuccess={setNewOauthConnection} />
       </div>
 
-      {checkAccessRes0.loading !== true &&
-        checkAccessRes0.data !== null &&
-        checkAccessRes0.error === null &&
-        readOnlyItem("Slack workspace:", teamAnchor())}
+      {teamAnchor && readOnlyItem("Slack workspace:", teamAnchor)}
 
-      <div className="flex justify-end">
-        <ThinButton
-          disabled={!testIsAGo}
-          onClick={() => {
-            setClear(x => x + 1);
-            setSteps(x => {
-              const y = x.check_access;
-              return {
-                check_access: y,
-                create_channel: y,
-                invite_to_channel: y,
-              };
-            });
-            /*
-            setCancelSteps(x => {
-              return {
-                delete_webhook: 0,
-              };
-            });
-            */
-
-            checkAccessCall(newOauthConnection);
-          }}
-        >
-          Test
-        </ThinButton>
-      </div>
-
-      {operationStatus(
-        "Checking access",
-        checkAccessProgressDone,
-        checkAccessRes,
-        checkAccessProgressElem
-      )}
-      {checkAccessProgressDone &&
-        operationStatus(
-          creatingText(),
-          createChannelProgressDone,
-          createChannelRes,
-          createChannelProgressElem
-        )}
-      {checkAccessProgressDone &&
-        createChannelProgressDone &&
-        operationStatus(
-          invitingText(),
-          inviteToChannelProgressDone,
-          inviteToChannelRes,
-          inviteToChannelProgressElem
-        )}
-      {operationStatus(
-        "Adding integration",
-        addIntegrationProgressDone,
-        addIntegrationRes,
-        addIntegrationProgressElem
-      )}
-      {checkAccessProgressDone && checkAccessRes.error && error("Auth error")}
-      {addIntegrationProgressDone &&
-        addIntegrationRes.error &&
-        error(<span>Duplicate integration</span>)}
-
-      <div className="mt-6 flex flex-row-reverse">
-        <ThinButton
-          disabled={addIsAGo !== true}
-          onClick={() => {
-            const {
-              team: { id, name, url },
-            } = checkAccessRes.data;
-
-            const {
-              channel: { id: channelId },
-            } = createChannelRes.data;
-
-            if ([id, name, url, channelId].some(x => x === undefined) === false) {
-              addIntegrationCall({
-                projectId: id,
-                projectName: name,
-                projectUrl: url,
-                userToken,
-                userInfo,
-                channelId,
-              });
-            }
-          }}
-        >
-          Add integration
-        </ThinButton>
-      </div>
+      {operationStatusQuery("Checking access", checkAccessQuery)}
+      {operationStatusQuery(creatingText(), createChannelQuery)}
+      {operationStatusQuery(invitingText(), inviteToChannelQuery)}
+      {operationStatusQuery("Adding integration", addIntegrationQuery)}
     </div>
   );
 };
@@ -323,16 +167,27 @@ type SharedChannel = {
   connected_team_names: string[];
 };
 
+type SlackChannel = SharedChannel;
+
 export const ShowSlackIntegration: React.FC<{
   i: Integration;
   onDeleted: () => void;
 }> = ({ i, onDeleted }) => {
-  const [checkAccessRes, checkAccessCall] = useServerApiPostWithPayload<any, {}>(
-    `/api/workspaces/${i.workspace_id}/integrations/${i.id}/check-access`
-  );
+  const linkedChannelInfoQuery = useQuery({
+    queryKey: ["linked_channel_info", i.id],
+    queryFn: async () => {
+      const url = `/api/workspaces/${i.workspace_id}/integrations/${i.id}/linked-channel-info`;
 
-  const updateApiKeyMutation = useMutation(
-    (params: { newOauthConnection: OauthCodeExchange }) => {
+      return await apiServer.url(url).post(newOauthConnection).json<{ channel: SlackChannel }>();
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    retry: false,
+    enabled: !!i,
+  });
+
+  const updateApiKeyMutation = useMutation({
+    mutationFn: (params: { newOauthConnection: OauthCodeExchange }) => {
       const { newOauthConnection } = params;
       return fetch(
         `${getServerUrl()}/api/workspaces/${i.workspace_id}/integrations/${i.id}/update-api-key`,
@@ -343,65 +198,29 @@ export const ShowSlackIntegration: React.FC<{
         }
       );
     },
-    {
-      onSuccess: async (r, params) => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.sharedChannels(i.workspace_id));
-        } else {
-          console.error(`Couldn't update api key ${params}`);
-        }
-      },
-    }
-  );
-
-  const [deleteIntegrationRes, deleteIntegrationCall] = useServerApiPostWithPayload<any, {}>(
-    `/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete`
-  );
-
-  const [steps, setSteps] = React.useState<{
-    check_access: number;
-    delete_integration: number;
-  }>({
-    check_access: 0,
-    delete_integration: 0,
+    onSuccess: async (r, params) => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries(queryKeys.sharedChannels(i.workspace_id));
+      } else {
+        console.error(`Couldn't update api key ${params}`);
+      }
+    },
   });
 
-  React.useEffect(() => {}, [steps]);
-
-  const [clear, setClear] = React.useState(0);
-
-  const [deleting, setDeleting] = React.useState(false);
-
-  const { progressElem: checkAccessProgressElem, progressDone: checkAccessProgressDone } =
-    useProgress(checkAccessRes.loading === true, clear);
-
-  const {
-    progressElem: deleteIntegrationProgressElem,
-    progressDone: deleteIntegrationProgressDone,
-  } = useProgress(deleteIntegrationRes.loading === true, clear);
-
-  /* --- */
-
-  React.useEffect(() => {
-    if (checkAccessProgressDone) {
-      setSteps(x => {
-        return { ...x, check_access: x.check_access + 1 };
-      });
-    }
-  }, [checkAccessProgressDone]);
+  const deleteIntegrationMutation = useMutation({
+    mutationFn: async () => {
+      const url = `/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete`;
+      return await apiServer.url(url).post().res();
+    },
+    onSuccess: () => {
+      onDeleted();
+    },
+  });
 
   // TODO: we expect this value to be always set after all users migrate, so let's remove this check in July 2022
   const existingOauthUser = i.userInfo;
 
   const [newOauthConnection, setNewOauthConnection] = React.useState<OauthCodeExchange>();
-
-  /* --- */
-
-  React.useEffect(() => {
-    if (deleteIntegrationProgressDone === true && deleteIntegrationRes.error === null) {
-      setTimeout(() => onDeleted(), 0);
-    }
-  }, [deleteIntegrationProgressDone, deleteIntegrationRes, onDeleted]);
 
   /* --- shared channels --- */
 
@@ -539,6 +358,16 @@ export const ShowSlackIntegration: React.FC<{
             workspaceId={i.workspace_id}
             onSuccess={setNewOauthConnection}
           />
+        </div>
+
+        <div
+          className={classNames(
+            "flex items-center gap-4",
+            linkedChannelInfoQuery.data ? "visible" : "invisible"
+          )}
+        >
+          <span>Connected channel:</span>
+          {linkedChannelInfoQuery.data && <Channel channel={linkedChannelInfoQuery.data.channel} />}
         </div>
 
         <div className="flex gap-4">
@@ -702,31 +531,12 @@ export const ShowSlackIntegration: React.FC<{
               <ThinButton
                 className="h-6 w-24 text-center"
                 onClick={() => {
-                  setClear(x => x + 1);
-                  setSteps(x => {
-                    const y = x.check_access;
-                    return {
-                      check_access: y,
-                      delete_integration: y,
-                    };
-                  });
-                  checkAccessCall({});
-                }}
-              >
-                Test
-              </ThinButton>
-            </div>
-            <div className="flex justify-end">
-              <ThinButton
-                className="h-6 w-24 text-center"
-                onClick={() => {
                   if (
                     window.confirm(
                       "Warning: This will remove all shared channel-customer mappings. Are you sure?"
                     ) === true
                   ) {
-                    deleteIntegrationCall();
-                    setDeleting(true);
+                    deleteIntegrationMutation.mutate();
                   }
                 }}
               >
@@ -736,24 +546,7 @@ export const ShowSlackIntegration: React.FC<{
           </div>
         </div>
       </div>
-      <div>
-        {operationStatus(
-          "Checking access",
-          checkAccessProgressDone,
-          checkAccessRes,
-          checkAccessProgressElem
-        )}
-        {checkAccessProgressDone &&
-          checkAccessRes.error &&
-          error("Auth error, please sign in again")}
-        {deleting &&
-          operationStatus(
-            "Deleting integration",
-            deleteIntegrationProgressDone,
-            deleteIntegrationRes,
-            deleteIntegrationProgressElem
-          )}
-      </div>
+      <div>{operationStatusMutation0("Deleting", deleteIntegrationMutation)}</div>
     </div>
   );
 };

@@ -763,6 +763,7 @@ export type AuthOk = {
   helpdesk?: Helpdesk;
   userAvatarUrl?: string;
   avatarLibraryUrl?: string;
+  visitorAvatarLibraryUrl?: string;
   role?: string;
   widgetId?: string;
   customerName?: string;
