@@ -973,11 +973,12 @@ const SubscriptionRequiredBanner = ({
             >
               subscribe
             </button>
-          )}
-          ,{" "}
+          )}{" "}
+          or{" "}
           <Link className="hover:text-red-300" to={`/admin/-/team`}>
             downgrade to free tier
           </Link>
+          {/*
           , or{" "}
           <a
             className="hover:text-red-300"
@@ -986,6 +987,7 @@ const SubscriptionRequiredBanner = ({
           >
             host your own Fogbender <IconGithub className="ml-1 w-5 inline-block" />
           </a>
+          */}
         </span>
       </div>
     );

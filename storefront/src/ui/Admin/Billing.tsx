@@ -107,6 +107,7 @@ export const Billing = ({
                 </a>{" "}
                 for details.
               </span>
+              {/*
               <span>
                 Alternatively&mdash;since Fogbender is free and open-source software&mdash;you can{" "}
                 <a className="fog:text-link" href="https://github.com/fogbender/fogbender">
@@ -114,6 +115,7 @@ export const Billing = ({
                 </a>
                 .
               </span>
+              */}
             </>
 
             {countInViolation > 0 && (
