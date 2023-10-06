@@ -516,6 +516,7 @@ const UpdateRoleModal: React.FC<{
     {
       onSuccess: async r => {
         if (r.status === 204) {
+          queryClient.invalidateQueries(queryKeys.invites(vendor.id));
           queryClient.invalidateQueries(queryKeys.agents(vendor.id));
           queryClient.invalidateQueries(queryKeys.billing(vendor.id));
           onClose();
