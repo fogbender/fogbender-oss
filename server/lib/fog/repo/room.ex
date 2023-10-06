@@ -275,7 +275,7 @@ defmodule Fog.Repo.Room do
       )
 
     new =
-      members_to_add
+      (members_to_add -- Enum.map(room.members, &(&1.agent_id || &1.user_id)))
       |> Enum.map(
         &%{
           room_id: id,

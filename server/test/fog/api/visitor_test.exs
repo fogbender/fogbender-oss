@@ -77,6 +77,39 @@ defmodule Fog.Api.VisitorTest do
            ] = items
   end
 
+  test "Verification should work even if user is already a room member", ctx do
+    api = ctx.api
+    req = %Api.Auth.Visitor{widgetId: ctx.widget_id, visitorKey: ctx.workspace.visitor_key}
+    assert %Api.Auth.Ok{visitorToken: token} = ApiProcess.request(api, req)
+
+    req = %Api.Visitor.VerifyEmail{email: "test20@example.com"}
+    assert %Api.Visitor.Ok{} = ApiProcess.request(api, req)
+
+    req = %Api.Visitor.VerifyCode{emailCode: ApiProcess.session(api).verification_code}
+    assert %Api.Visitor.Ok{userId: user_id} = ApiProcess.request(api, req)
+
+    # avoid verification request limit
+    Repo.User.get(user_id)
+    |> Data.User.update(email: "test21@example.com")
+    |> Repo.update!()
+
+    api = ApiProcess.start()
+
+    req = %Api.Auth.Visitor{
+      widgetId: ctx.widget_id,
+      visitorKey: ctx.workspace.visitor_key,
+      token: token
+    }
+
+    assert %Api.Auth.Ok{} = ApiProcess.request(api, req)
+
+    req = %Api.Visitor.VerifyEmail{email: "test23@example.com"}
+    assert %Api.Visitor.Ok{} = ApiProcess.request(api, req)
+
+    req = %Api.Visitor.VerifyCode{emailCode: ApiProcess.session(api).verification_code}
+    assert %Api.Visitor.Ok{} = ApiProcess.request(api, req)
+  end
+
   test "New returns error if visitor is not enabled", ctx do
     Data.Workspace.update(ctx.workspace, visitors_enabled: false)
     |> Repo.update!()
