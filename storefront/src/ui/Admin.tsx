@@ -290,7 +290,7 @@ export const Admin = () => {
     queryKey: queryKeys.billing(designatedVendorId || "N/A"),
     queryFn: () =>
       apiServer.get(`/api/vendors/${designatedVendorId}/billing`).json<VendorBilling>(),
-    enabled: !!designatedVendorId,
+    enabled: !!designatedVendorId && !!ourRole && ["owner", "admin", "agent"].includes(ourRole),
   });
 
   const freeSeats = billing && billing.free_seats !== undefined ? billing.free_seats : 2;
