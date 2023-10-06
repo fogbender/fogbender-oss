@@ -51,7 +51,7 @@ tig upstream/main...${GIT_FB} ./packages/{fogbender,fogbender-react,fogbender-pr
 
 ### Find last sync checkpoint
 
-Find the latest pull request https://github.com/fogbender/fogbender-oss/pulls?q=is%3Apr+sync+with+fogbender and copy it's SHA (the one from the title). And save it to make comands below easier to copy/paste.
+Find the latest pull request https://github.com/fogbender/fogbender-oss/pulls?q=is%3Apr+sync+with+fogbender and copy its SHA (the one from the title). And save it to make comands below easier to copy/paste.
 
     GIT_FB=efba6d388d7db7d150db6f81b35d9f57fed3565d
 
