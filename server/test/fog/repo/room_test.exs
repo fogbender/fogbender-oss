@@ -109,4 +109,20 @@ defmodule Test.Repo.Room do
       assert %Data.Room{name: "TEST"} = r
     end
   end
+
+  describe "update_members" do
+    test "don't add already existing members", ctx do
+      a1 = agent(ctx.w)
+      a2 = agent(ctx.w)
+      u1 = user(ctx.h)
+      u2 = user(ctx.h)
+      r = private_room(ctx.h, [a1, u1])
+
+      assert %Data.Room{members: members} =
+               Repo.Room.update_members(r.id, [a1.id, u1.id, a2.id, u2.id], [])
+
+      assert [a1.id, a2.id, u1.id, u2.id] ==
+               Enum.map(members, &(&1.agent_id || &1.user_id)) |> Enum.sort()
+    end
+  end
 end
