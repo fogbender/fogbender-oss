@@ -137,7 +137,7 @@ const TeamTabs: React.FC<{
         {tabs.map(t => {
           const tabTitle = t.name.substring(0, 1).toUpperCase() + t.name.substring(1);
           return (
-            <Link to={t.to} className="flex-1 md:flex-none no-underline">
+            <Link key={t.name} to={t.to} className="flex-1 md:flex-none no-underline">
               <div
                 className={classNames(
                   "flex-1 md:flex-none fog:text-header3 justify-center leading-5 ml-4 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
