@@ -97,7 +97,7 @@ const App = () => {
       // we're in full-screen client mode
       if (isUserToken(token) || isVisitorToken(token)) {
         const { token: visitorJWT } = info;
-        handleGoFullScreen(token, visitorJWT);
+        handleGoFullScreen(token, visitorJWT, true);
       }
     }
   };
