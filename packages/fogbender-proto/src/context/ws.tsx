@@ -210,6 +210,7 @@ function useProviderValue(
       workspaceId,
       userAvatarUrl,
       agentRole: ws.agentRole,
+      visitorJWT: ws.visitorJWT,
     };
   }, [
     client,
@@ -225,6 +226,7 @@ function useProviderValue(
     ws.isAgent,
     ws.userType,
     ws.avatarLibraryUrl,
+    ws.visitorJWT,
     token,
     fogSessionId,
     userId,

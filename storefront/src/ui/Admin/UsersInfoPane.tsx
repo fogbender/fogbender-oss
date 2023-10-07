@@ -111,6 +111,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
       {userEmailVerified && (
         <>
           <hr className="my-2" />
+          {email === undefined && <span className="italic">Email enrichment info unavailable</span>}
           <Clipboardable content={email} />
           <Clipboardable content={name} />
           <Clipboardable content={title} />

@@ -126,6 +126,7 @@ export const App: React.FC<{
     helpdesk,
     token,
     serverCall,
+    visitorJWT,
   } = useWs();
   useDebug("serverCall", serverCall);
 
@@ -870,7 +871,7 @@ export const App: React.FC<{
 
   const onGoFullScreen =
     isIframe && token && ("userId" in token || "visitor" in token)
-      ? () => handleGoFullScreen(token)
+      ? () => handleGoFullScreen(token, visitorJWT)
       : undefined;
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
@@ -917,7 +918,7 @@ export const App: React.FC<{
           </div>
           {isIframe && token && ("userId" in token || "visitor" in token) && (
             <div className="h-full flex items-center">
-              <GoFullScreen token={token} />
+              <GoFullScreen token={token} visitorJWT={visitorJWT} />
             </div>
           )}
         </div>
