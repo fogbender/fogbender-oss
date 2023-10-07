@@ -1,4 +1,6 @@
 defmodule Fog.Apollo.Api do
+  require Logger
+
   @api_url "https://api.apollo.io/v1"
 
   def match(email) do
@@ -40,7 +42,10 @@ defmodule Fog.Apollo.Api do
         match(email)
 
       e ->
-        Logger.error(Exception.format(:error, e, __STACKTRACE__))
+        Logger.error(
+          "Apollo error: #{e}, Stacktrace: #{Process.info(self(), :current_stacktrace)}"
+        )
+
         {:error, e}
     end
   end
