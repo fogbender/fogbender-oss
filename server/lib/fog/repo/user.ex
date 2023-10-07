@@ -120,10 +120,10 @@ defmodule Fog.Repo.User do
     where(query, [u], u.helpdesk_id == ^helpdesk_id)
   end
 
-  def intel(%Data.User{email: email, id: user_id} = user) do
+  def intel(%Data.User{email: email, id: user_id, email_verified: email_verified} = user) do
     infos = Fog.Repo.UserInfoCache.get(user_id)
 
-    apollo = intel_apollo(email)
+    apollo = intel_apollo(email, email_verified)
     headers = intel_headers(infos)
     geoapify = intel_geoapify(user_id, headers, infos)
 
@@ -177,8 +177,11 @@ defmodule Fog.Repo.User do
     %{user: user, room: room}
   end
 
-  defp intel_apollo(email) do
-    # TODO: check for user with verified email only
+  defp intel_apollo(_, false) do
+    %{}
+  end
+
+  defp intel_apollo(email, true) do
     case Fog.Apollo.Api.match(email) do
       {:ok, %{"person" => info}} ->
         info
