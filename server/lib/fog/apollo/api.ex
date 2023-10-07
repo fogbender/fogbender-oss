@@ -38,6 +38,10 @@ defmodule Fog.Apollo.Api do
       {:ok, %Tesla.Env{status: 200, body: body}} ->
         :ok = Fog.Repo.EmailInfoCache.add(email, "apollo", body)
         match(email)
+
+      e ->
+        Logger.error(Exception.format(:error, e, __STACKTRACE__))
+        {:error, e}
     end
   end
 
