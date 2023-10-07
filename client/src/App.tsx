@@ -29,6 +29,7 @@ import {
 } from "./shared";
 import { queryClient } from "./shared/utils/client";
 import Headless from "./ui/Headless";
+import { handleGoFullScreen } from "./shared/components/GoFullScreen";
 
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
@@ -60,7 +61,12 @@ const App = () => {
     }
     if (typeof parsedSearch.token === "string") {
       const userData = JSON.parse(unescape(parsedSearch.token));
-      setToken(userData as Token);
+      if (typeof parsedSearch.visitorJWT === "string") {
+        const visitorJWT = JSON.parse(unescape(parsedSearch.visitorJWT));
+        setToken({ ...userData, visitorToken: visitorJWT } as Token);
+      } else {
+        setToken(userData as Token);
+      }
     }
     if (typeof parsedSearch.room_id === "string") {
       setRoomIdToOpen(parsedSearch.room_id);
@@ -87,6 +93,11 @@ const App = () => {
         { type: "VISITOR_INFO", visitorInfo: JSON.stringify(info), reload },
         "*"
       ); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
+    } else {
+      if (isUserToken(token) || isVisitorToken(token)) {
+        const { token: visitorJWT } = info;
+        handleGoFullScreen(token, visitorJWT);
+      }
     }
   };
 

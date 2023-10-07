@@ -454,6 +454,7 @@ export function useServerWs(
     agentRole: agentRole,
     userType,
     widgetId: token && "widgetId" in token && token["widgetId"],
+    visitorJWT: visitorTokenRef.current,
   };
 }
 
