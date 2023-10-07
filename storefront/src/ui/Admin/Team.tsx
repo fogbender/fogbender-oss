@@ -32,6 +32,7 @@ import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
 import { AgentGroups } from "./AgentGroups";
 import { Schedules } from "./agent-schedules/Schedules";
+import { ScheduleOverview } from "./agent-schedules/ScheduleOverview";
 
 export const Team: React.FC<{
   vendor: Vendor;
@@ -99,22 +100,33 @@ export const Team: React.FC<{
         }
       />
       {vendor.agent_scheduling_enabled && (
-        <Route
-          path="schedules"
-          element={
-            <div className="flex flex-col gap-8">
-              <TeamTabs vendor={vendor} tab="schedules" />
-              {ourAgentId && ourAgent && <Schedules />}
-            </div>
-          }
-        />
+        <>
+          <Route
+            path="schedules"
+            element={
+              <div className="flex flex-col gap-8">
+                <TeamTabs vendor={vendor} tab="schedules" />
+                {ourAgentId && ourAgent && <Schedules />}
+              </div>
+            }
+          />
+          <Route
+            path="schedule-overview"
+            element={
+              <div className="flex flex-col gap-8">
+                <TeamTabs vendor={vendor} tab="schedule-overview" />
+                {ourAgentId && ourAgent && <ScheduleOverview />}
+              </div>
+            }
+          />
+        </>
       )}
     </Routes>
   );
 };
 
 const TeamTabs: React.FC<{
-  tab: "team" | "groups" | "schedules";
+  tab: "team" | "groups" | "schedules" | "schedule-overview";
   vendor: Vendor;
 }> = ({ tab, vendor }) => {
   const isSecondaryTab = ["groups", "schedules"].includes(tab);
@@ -125,10 +137,21 @@ const TeamTabs: React.FC<{
   ];
 
   if (vendor.agent_scheduling_enabled) {
-    tabs.push({
-      name: "schedules",
-      to: tab === "schedules" ? "." : isSecondaryTab ? "../schedules" : "schedules",
-    });
+    tabs.push(
+      {
+        name: "schedules",
+        to: tab === "schedules" ? "." : isSecondaryTab ? "../schedules" : "schedules",
+      },
+      {
+        name: "schedule-overview",
+        to:
+          tab === "schedule-overview"
+            ? "."
+            : isSecondaryTab
+            ? "../schedule-overview"
+            : "schedule-overview",
+      }
+    );
   }
 
   return (
