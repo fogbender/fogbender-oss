@@ -43,7 +43,7 @@ defmodule Fog.Apollo.Api do
 
       e ->
         Logger.error(
-          "Apollo error: #{e}, Stacktrace: #{Process.info(self(), :current_stacktrace)}"
+          "Apollo error: #{inspect(e)}, Stacktrace: #{inspect(Process.info(self(), :current_stacktrace))}"
         )
 
         {:error, e}
