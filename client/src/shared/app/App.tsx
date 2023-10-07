@@ -959,11 +959,14 @@ export const App: React.FC<{
                   <div
                     className={classNames(
                       userType &&
-                        ["user", "visitor-verified"].includes(userType) &&
+                        ["user", "visitor-verified", "visitor-unverified"].includes(userType) &&
                         "cursor-pointer"
                     )}
                     onClick={e => {
-                      if (userType && ["user", "visitor-verified"].includes(userType)) {
+                      if (
+                        userType &&
+                        ["user", "visitor-verified", "visitor-unverified"].includes(userType)
+                      ) {
                         setShowUserWelcome(true);
                         if (e.ctrlKey || e.metaKey) {
                           setHideWelcome(false);
