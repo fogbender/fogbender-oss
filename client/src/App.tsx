@@ -94,6 +94,7 @@ const App = () => {
         "*"
       ); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
     } else {
+      // we're in full-screen client mode
       if (isUserToken(token) || isVisitorToken(token)) {
         const { token: visitorJWT } = info;
         handleGoFullScreen(token, visitorJWT);
