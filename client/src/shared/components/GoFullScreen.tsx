@@ -28,7 +28,7 @@ export const handleGoFullScreen = (
     },
   });
   if (sameTab) {
-    window.open(url)?.focus();
+    window.location.href = url;
   } else {
     window.open(url, "_blank")?.focus();
   }
