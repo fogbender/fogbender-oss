@@ -448,12 +448,15 @@ export const useTextarea = ({
     return color;
   };
 
-  const placeholder =
-    isCustomerInternal === true
+  let placeholder = "";
+
+  if (roomName && roomId) {
+    placeholder = !!isCustomerInternal
       ? roomName
       : isAgent
       ? roomName + " " + `(${formatCustomerName(roomById(roomId)?.customerName)})`
       : roomName;
+  }
 
   const Textarea = React.useMemo(() => {
     return (
