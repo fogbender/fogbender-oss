@@ -1,6 +1,6 @@
 import clsx from "classnames";
 import dayjs from "dayjs";
-import { Icons } from "fogbender-client/src/shared";
+import { Icons, ThinButton } from "fogbender-client/src/shared";
 import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
@@ -24,12 +24,14 @@ const monthTitleAtom = atom<MonthTitle>({});
 export const ScheduleOverview = React.memo(() => {
   const { tzDayjs, setTzDayjs } = useDayjsInTimezone(selectedTimezoneAtom);
 
+  const weekStartDayjs = tzDayjs.startOf("isoWeek");
+
   const monthStartDayjs = tzDayjs.startOf("month");
   return (
     <Layout>
       <HiddenOnSmallScreen>
         <Header dayjs={monthStartDayjs} setDayjs={setTzDayjs} />
-        <Main />
+        <Main dayjs={weekStartDayjs} setDayjs={setTzDayjs} />
       </HiddenOnSmallScreen>
     </Layout>
   );
@@ -100,11 +102,33 @@ const Header = (props: HeaderProps) => {
   );
 };
 
-const Main = () => {
+const Main = (props: HeaderProps) => {
+  const { dayjs: tzDayjs, setDayjs } = props;
+
+  const [timezone] = useAtom(selectedTimezoneAtom);
+
+  const [today] = React.useState(dayjs.tz(Date.now(), timezone));
+
+  const formattedWeekString =
+    tzDayjs.format("MMM DD") + " - " + tzDayjs.add(6, "day").format("MMM DD");
+
   return (
     <div className="h-[500px] overflow-auto fbr-scrollbar mt-6 relative w-[874px]">
       <div className="flex sticky top-0 bg-white mb-4 z-10 pb-2">
-        <div className="w-28 flex flex-col gap-2" />
+        <div className="w-28 flex flex-col gap-2">
+          <div className="whitespace-nowrap">{formattedWeekString}</div>
+          <div className="flex gap-2 items-center">
+            <ThinButton title="Previous Week" className="rotate-180">
+              <Icons.ChevronRight />
+            </ThinButton>
+            <ThinButton title="Current Week" onClick={() => setDayjs(today)}>
+              <span className=" block h-[14px] w-[14px] rotate-180">&#x21bb;</span>
+            </ThinButton>
+            <ThinButton title="Next Week">
+              <Icons.ChevronRight />
+            </ThinButton>
+          </div>
+        </div>
       </div>
     </div>
   );
