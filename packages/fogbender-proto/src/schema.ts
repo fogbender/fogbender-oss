@@ -27,6 +27,7 @@ export type VisitorToken = {
   userId?: string;
   visitorKey?: string;
   visitorToken?: string;
+  visitUrl?: string;
   versions?: { [key: string]: string };
 };
 
@@ -727,6 +728,7 @@ export type AuthVisitor = {
   token?: string;
   visitorKey?: string;
   localTimestamp?: string;
+  visitUrl?: string;
 };
 
 export type VisitorNew = {

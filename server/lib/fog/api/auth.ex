@@ -20,7 +20,7 @@ defmodule Fog.Api.Auth do
     :userEmail
   ])
 
-  defmsg(Visitor, [:widgetId, :localTimestamp, :token, :visitorKey])
+  defmsg(Visitor, [:widgetId, :localTimestamp, :visitUrl, :token, :visitorKey])
 
   defmsg(Agent, [:vendorId, :agentId, :token])
 
@@ -135,11 +135,19 @@ defmodule Fog.Api.Auth do
     end
   end
 
-  def login_user(%Visitor{widgetId: widget_id, token: visitor_token} = auth, headers) do
+  def login_user(
+        %Visitor{widgetId: widget_id, token: visitor_token, visitUrl: visit_url} = auth,
+        headers
+      ) do
     with {:ok, workspace} <- Repo.Workspace.from_widget_id(widget_id),
          {:ok, user_id} <- check_visitor_signature(auth.token, "jwt", workspace.signature_secret),
          %Data.User{} = user <- load_visitor(user_id, workspace),
-         :ok = Fog.Service.UserAuthTask.schedule(user_id: user.id, headers: headers) do
+         :ok =
+           Fog.Service.UserAuthTask.schedule(
+             user_id: user.id,
+             headers: headers,
+             visit_url: visit_url
+           ) do
       login_response(user, workspace, visitor_token)
     else
       _ -> {:reply, Err.not_authorized()}

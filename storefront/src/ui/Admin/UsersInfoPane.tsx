@@ -50,6 +50,7 @@ type Geoapify = {
 
 type Headers = {
   origin: string;
+  visitUrl: string;
 };
 
 type UserInfo = {
@@ -79,7 +80,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
     enabled: !!userId,
   });
 
-  const origin = userInfo?.headers?.origin;
+  const visitUrl = userInfo?.headers?.visitUrl;
 
   const email = userInfo?.apollo?.email;
   const name = userInfo?.apollo?.name;
@@ -128,7 +129,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
         <Clipboardable content={`${visitorCity}, ${visitorCountry}`} url={gMapUrl} />
       )}
 
-      <Clipboardable content={origin} />
+      <Clipboardable content={visitUrl} />
 
       {userInsertedAt && <span>First seen {dayjs(userInsertedAt).fromNow()}</span>}
 
