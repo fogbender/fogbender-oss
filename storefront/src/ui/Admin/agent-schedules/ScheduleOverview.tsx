@@ -1,7 +1,7 @@
 import clsx from "classnames";
 import dayjs from "dayjs";
-import { Icons, ThinButton } from "fogbender-client/src/shared";
 import isoWeek from "dayjs/plugin/isoWeek";
+import { Avatar, Icons, ThinButton } from "fogbender-client/src/shared";
 import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
@@ -9,6 +9,9 @@ import { Layout } from "./Schedules";
 import { DaysOfWeek, HiddenOnSmallScreen } from "./Utils";
 
 dayjs.extend(isoWeek); // Gets or sets the ISO day of the week with 1 being Monday and 7 being Sunday.
+
+const SUNDAY_KEY = 7;
+
 type DayKeys = keyof typeof DaysOfWeek;
 
 type Dayjs = dayjs.Dayjs;
@@ -148,6 +151,9 @@ const Main = (props: HeaderProps) => {
         </div>
         <WeekView weekDays={weekDays} dayjs={tzDayjs} setDayjs={setDayjs} />
       </div>
+      <div>
+        <AgentsView weekDays={weekDays} />
+      </div>
     </div>
   );
 };
@@ -189,6 +195,49 @@ const WeekView = (props: WeekViewProps) => {
           );
         })}
       </ul>
+    </div>
+  );
+};
+
+const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
+  const { weekDays } = props;
+
+  return (
+    <div className="flex relative">
+      <div className="w-28 mr-[1px]">
+        <ul>
+          {Array.from({ length: 15 }, (_, i) => i).map(i => (
+            <li
+              className="text-center odd:bg-gray-100 leading-6 py-2 flex items-center rounded-l-xl px-1 gap-2"
+              key={i}
+            >
+              <Avatar withTitle={false} name={"Soroker"} size={24} />
+              <span className="text-sm truncate">Soroker</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex-1">
+        <ul className="flex justify-around h-full">
+          {weekDays.map((weekDay, idx) => (
+            <li className="text-center relative" key={idx}>
+              <div className="flex flex-col text-center ">
+                {Array.from({ length: 15 }, (_, j) => j).map(j => (
+                  <span
+                    className={clsx(
+                      "leading-6 py-2 px-8 odd:bg-gray-100",
+                      weekDay.dateObj.isoWeekday() === SUNDAY_KEY && "odd:rounded-r-xl"
+                    )}
+                    key={j}
+                  >
+                    00:08
+                  </span>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
