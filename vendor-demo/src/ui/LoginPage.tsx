@@ -92,6 +92,7 @@ export const LoginPage = () => {
                           | "visitor"
                           | "visitorKey"
                           | "visitorToken"
+                          | "visitUrl"
                           | "widgetId"
                           | "userAvatarUrl"
                           | "userHMAC"

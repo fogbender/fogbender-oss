@@ -15,6 +15,7 @@ export type Token = {
   versions?: { [key: string]: string };
   visitor?: true;
   visitorToken?: string;
+  visitUrl?: string;
 };
 
 // make sure to keep in sync with fogbender-ptoto schema
@@ -39,6 +40,7 @@ export type VisitorToken = {
   userId?: string;
   visitorKey?: string;
   visitorToken?: string;
+  visitUrl?: string;
   versions?: { [key: string]: string };
 };
 
