@@ -27,9 +27,9 @@ import {
   useIsIdle,
   WsProvider,
 } from "./shared";
+import { handleGoFullScreen } from "./shared/components/GoFullScreen";
 import { queryClient } from "./shared/utils/client";
 import Headless from "./ui/Headless";
-import { handleGoFullScreen } from "./shared/components/GoFullScreen";
 
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);

@@ -3,8 +3,7 @@ import { useAtom } from "jotai";
 import React from "react";
 
 import { showFocusedRosterAtom, showOutlookRosterAtom } from "..";
-import { Icons } from "../components/Icons";
-import { SwitchOff, SwitchOn } from "../components/Icons";
+import { Icons, SwitchOff, SwitchOn } from "../components/Icons";
 import { useClickOutside } from "../utils/useClickOutside";
 
 import { FancyMenuItem } from "./FancyMenuItem";

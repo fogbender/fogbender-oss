@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import React from "react";
 import { ThinButton } from "fogbender-client/src/shared";
+import React from "react";
 
 type ShiftModes = "add" | "edit" | undefined;
 

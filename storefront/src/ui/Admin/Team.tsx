@@ -30,9 +30,9 @@ import { DeleteMemberModal } from "../components/modals/DeleteMemberModal";
 import { fetchServerApiPost } from "../useServerApi";
 import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
 
-import { AgentGroups } from "./AgentGroups";
-import { Schedules } from "./agent-schedules/Schedules";
 import { ScheduleOverview } from "./agent-schedules/ScheduleOverview";
+import { Schedules } from "./agent-schedules/Schedules";
+import { AgentGroups } from "./AgentGroups";
 
 export const Team: React.FC<{
   vendor: Vendor;
