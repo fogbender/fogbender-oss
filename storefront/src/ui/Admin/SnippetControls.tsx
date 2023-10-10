@@ -8,13 +8,13 @@ import { useSearchParams } from "react-router-dom";
 
 import { defaultEnv, getClientUrl, getDemoUrl, getServerUrl } from "../../config";
 import { Workspace } from "../../redux/adminApi";
+import { apiServer } from "../client";
 import { useServerApiGet, useServerApiPost } from "../useServerApi";
 import { useDedicatedVendorId, useVendorById } from "../useVendor";
 
 import { useFullScreenClientUrl } from "./HeadlessForSupport";
 import { HighlightCode } from "./HighlightCode";
 import { ServerSnippetTabs, SnippetTabs } from "./snippet/SnippetTabs";
-import { apiServer } from "../client";
 
 const clientUrl = getClientUrl();
 

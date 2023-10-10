@@ -8,14 +8,14 @@ import { getServerUrl } from "../../../config";
 import { Workspace } from "../../../redux/adminApi";
 import { FontAwesomeHashtag } from "../../../shared/font-awesome/Hashtag";
 import { FontAwesomeLock } from "../../../shared/font-awesome/Lock";
-import { queryClient, queryKeys, apiServer } from "../../client";
+import { apiServer, queryClient, queryKeys } from "../../client";
 import { fetchServerApiPost, filterOutResponse } from "../../useServerApi";
 
 import {
   IntegrationUser,
-  readOnlyItem,
-  operationStatusQuery,
   operationStatusMutation0,
+  operationStatusQuery,
+  readOnlyItem,
 } from "./Utils";
 
 export const AddSlackIntegration: React.FC<{
