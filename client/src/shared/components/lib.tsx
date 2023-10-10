@@ -271,10 +271,12 @@ export const ThinButton: React.FC<{
   loading?: boolean;
   className?: string | undefined;
   colorClassName?: string | undefined;
+  title?: string;
 }> = props => {
-  const { small, onClick, disabled, loading, className, colorClassName } = props;
+  const { small, onClick, disabled, loading, className, colorClassName, title } = props;
   return (
     <button
+      title={title}
       onClick={disabled || loading ? undefined : onClick}
       className={classNames(
         `relative inline-block border rounded-md whitespace-nowrap uppercase leading-none`,

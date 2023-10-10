@@ -129,7 +129,7 @@ const TeamTabs: React.FC<{
   tab: "team" | "groups" | "schedules" | "schedule-overview";
   vendor: Vendor;
 }> = ({ tab, vendor }) => {
-  const isSecondaryTab = ["groups", "schedules"].includes(tab);
+  const isSecondaryTab = ["groups", "schedules", "schedule-overview"].includes(tab);
 
   const tabs = [
     { name: "team", to: tab === "team" ? "." : ".." },
