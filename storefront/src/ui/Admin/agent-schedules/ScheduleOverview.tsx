@@ -1,11 +1,15 @@
 import clsx from "classnames";
 import dayjs from "dayjs";
 import { Icons, ThinButton } from "fogbender-client/src/shared";
+import isoWeek from "dayjs/plugin/isoWeek";
 import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 import { Layout } from "./Schedules";
-import { HiddenOnSmallScreen } from "./Utils";
+import { DaysOfWeek, HiddenOnSmallScreen } from "./Utils";
+
+dayjs.extend(isoWeek); // Gets or sets the ISO day of the week with 1 being Monday and 7 being Sunday.
+type DayKeys = keyof typeof DaysOfWeek;
 
 type Dayjs = dayjs.Dayjs;
 
@@ -17,6 +21,17 @@ type HeaderProps = {
 type MonthTitle = Record<string, Dayjs>;
 
 type MonthTransition = "next" | "prev";
+
+type WeekDays = {
+  date: number;
+  day: string;
+  today: boolean;
+  dateObj: dayjs.Dayjs;
+};
+
+type WeekViewProps = HeaderProps & {
+  weekDays: WeekDays[];
+};
 
 export const selectedTimezoneAtom = atom<string>(dayjs.tz.guess());
 const monthTitleAtom = atom<MonthTitle>({});
@@ -109,6 +124,8 @@ const Main = (props: HeaderProps) => {
 
   const [today] = React.useState(dayjs.tz(Date.now(), timezone));
 
+  const weekDays = React.useMemo(() => getWeekDays(tzDayjs, today), [tzDayjs, today]);
+
   const formattedWeekString =
     tzDayjs.format("MMM DD") + " - " + tzDayjs.add(6, "day").format("MMM DD");
 
@@ -129,7 +146,76 @@ const Main = (props: HeaderProps) => {
             </ThinButton>
           </div>
         </div>
+        <WeekView weekDays={weekDays} dayjs={tzDayjs} setDayjs={setDayjs} />
       </div>
     </div>
   );
+};
+
+const WeekView = (props: WeekViewProps) => {
+  const { weekDays } = props;
+
+  const [, setWeekTitle] = useAtom(monthTitleAtom);
+
+  React.useEffect(() => {
+    const monthtTitles = weekDays.map(wd => [wd.dateObj.format("MMMM"), wd.dateObj]);
+
+    setWeekTitle(Object.fromEntries(monthtTitles));
+  }, [weekDays, setWeekTitle]);
+
+  return (
+    <div className="w-[calc(100%-96px)]">
+      <ul className="flex list-none justify-around">
+        {weekDays.map((w, i) => {
+          return (
+            <li
+              title={w.dateObj.format("DD MMMM")}
+              key={i}
+              className={clsx(
+                "w-10 gap-2 flex flex-col text-center text-black flex-shrink-0",
+                w.today && "text-brand-pink-500"
+              )}
+            >
+              <span>{w.day}</span>
+              <span
+                className={clsx("rounded-full", {
+                  "bg-brand-pink-500 text-white": w.today,
+                  "hover:bg-gray-100 cursor-pointer": !w.today,
+                })}
+              >
+                {w.date}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+const getWeekDays = (tzDayjs: dayjs.Dayjs, today: dayjs.Dayjs) => {
+  const endOfWeek = tzDayjs.endOf("isoWeek");
+
+  const week = [];
+
+  let dateToCompare = tzDayjs.clone();
+
+  while (dateToCompare.isSame(endOfWeek, "day") || dateToCompare.isBefore(endOfWeek, "day")) {
+    const date = dateToCompare.get("date");
+
+    const weekDay = dateToCompare.isoWeekday();
+
+    const day = DaysOfWeek[weekDay as DayKeys];
+
+    week.push({
+      date: date,
+      day: day?.substring(0, 3).toUpperCase(),
+      today: today.isSame(dateToCompare, "day"),
+      dateObj: dateToCompare,
+    });
+
+    dateToCompare = dateToCompare.add(1, "day");
+  }
+
+  return week;
 };
