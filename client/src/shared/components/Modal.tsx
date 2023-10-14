@@ -19,13 +19,13 @@ export const Modal: React.FC<{
       {/* FIXME add ariaLabel prop to Modal component and use it here */}
       <DialogContent aria-label="Modal window content">
         <div
-          className="fbr-scrollbar fixed inset-0 z-10 overflow-auto bg-black bg-opacity-20 p-4"
+          className="fbr-scrollbar fixed -inset-y-1 -inset-x-3 sm:inset-0 z-10 overflow-auto bg-black bg-opacity-20 p-1 sm:p-4"
           onClick={skipOverlayClick ? undefined : onClose}
         >
-          <div className="flex min-h-full w-full items-start justify-center">
+          <div className="flex min-h-full h-full sm:h-auto w-full items-start justify-center">
             <div
               className={classNames(
-                "fog:box-shadow-m relative z-40 flex rounded-2xl bg-white",
+                "fog:box-shadow-m relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
                 restricted
                   ? "min-w-full sm:min-w-0"
                   : "sm:min-w-0 sm:max-w-1/2 min-w-full max-w-full"
@@ -39,7 +39,7 @@ export const Modal: React.FC<{
                 {children}
               </div>
               <div className="sticky top-0 right-0 h-full w-0" onClick={onClose}>
-                <div className="absolute -top-4 -right-4 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16">
+                <div className="absolute top-0 right-0 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16">
                   <Icons.XClose />
                 </div>
               </div>
