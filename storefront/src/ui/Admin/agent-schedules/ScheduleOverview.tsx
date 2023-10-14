@@ -26,7 +26,7 @@ type HeaderProps = {
 
 type MonthTitle = Record<string, Dayjs>;
 
-type MonthTransition = "next" | "prev";
+type ChangeTime = "next" | "prev";
 
 type WeekDays = {
   date: number;
@@ -84,7 +84,7 @@ const Header = (props: HeaderProps) => {
     return d2.isAfter(d1) ? d2 : d1;
   };
 
-  const changeMonth = (m: MonthTransition) => {
+  const changeMonth = (m: ChangeTime) => {
     const titleValues = Object.values(monthTitle);
 
     const newDayjs = titleValues.length > 1 ? findMaxDate(titleValues) : dayjs;
