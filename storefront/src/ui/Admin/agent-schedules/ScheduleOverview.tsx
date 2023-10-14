@@ -132,6 +132,21 @@ const Main = (props: HeaderProps) => {
 
   const weekDays = React.useMemo(() => getWeekDays(tzDayjs, today), [tzDayjs, today]);
 
+  const changeWeek = (week: ChangeTime) => {
+    switch (week) {
+      case "prev": {
+        const prevWeek = tzDayjs.subtract(7, "day");
+        setDayjs(prevWeek);
+        break;
+      }
+      case "next": {
+        const nextWeek = tzDayjs.add(7, "day");
+        setDayjs(nextWeek);
+        break;
+      }
+    }
+  };
+
   const formattedWeekString =
     tzDayjs.format("MMM DD") + " - " + tzDayjs.add(6, "day").format("MMM DD");
 
@@ -141,13 +156,17 @@ const Main = (props: HeaderProps) => {
         <div className="w-28 flex flex-col gap-2">
           <div className="whitespace-nowrap">{formattedWeekString}</div>
           <div className="flex gap-2 items-center">
-            <ThinButton title="Previous Week" className="rotate-180">
+            <ThinButton
+              title="Previous Week"
+              onClick={() => changeWeek("prev")}
+              className="rotate-180"
+            >
               <Icons.ChevronRight />
             </ThinButton>
             <ThinButton title="Current Week" onClick={() => setDayjs(today)}>
               <span className=" block h-[14px] w-[14px] rotate-180">&#x21bb;</span>
             </ThinButton>
-            <ThinButton title="Next Week">
+            <ThinButton title="Next Week" onClick={() => changeWeek("next")}>
               <Icons.ChevronRight />
             </ThinButton>
           </div>
