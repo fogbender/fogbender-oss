@@ -6,11 +6,14 @@ import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 import { Layout } from "./Schedules";
-import { DaysOfWeek, HiddenOnSmallScreen } from "./Utils";
+import { DaysOfWeek, getTotalDisplacement, HiddenOnSmallScreen, TimeLapse } from "./Utils";
 
 dayjs.extend(isoWeek); // Gets or sets the ISO day of the week with 1 being Monday and 7 being Sunday.
 
+const CELL_WIDTH = 105; // width of each grid cell.
 const SUNDAY_KEY = 7;
+
+const getDisplacement = getTotalDisplacement(CELL_WIDTH);
 
 type DayKeys = keyof typeof DaysOfWeek;
 
@@ -202,6 +205,26 @@ const WeekView = (props: WeekViewProps) => {
 const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
   const { weekDays } = props;
 
+  const [timezone] = useAtom(selectedTimezoneAtom);
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezoneAtom);
+
+  const { currentDisplacement, distanceCoveredInSec } = React.useMemo(() => {
+    return getDisplacement(timezone);
+  }, [timezone]);
+
+  const options = {
+    activeLinePosition: currentDisplacement,
+    className: "after:-translate-y-1/2 after:bottom-0 after:-translate-x-1/2 w-[1px] h-full top-0",
+    currentTime: tzDayjs.format("hh:mm:ss"),
+    distanceCoveredInSec,
+    getDisplacement,
+    initialPosition: 0,
+    timezone,
+    totalDistance: CELL_WIDTH,
+    position: "left",
+  };
+
   return (
     <div className="flex relative">
       <div className="w-28 mr-[1px]">
@@ -234,6 +257,14 @@ const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
                   </span>
                 ))}
               </div>
+              {weekDay.today && (
+                <TimeLapse
+                  options={{
+                    ...options,
+                    className: clsx(options.className),
+                  }}
+                />
+              )}
             </li>
           ))}
         </ul>
