@@ -6,11 +6,14 @@ import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 import { Layout } from "./Schedules";
-import { DaysOfWeek, HiddenOnSmallScreen } from "./Utils";
+import { DaysOfWeek, getTotalDisplacement, HiddenOnSmallScreen, TimeLapse } from "./Utils";
 
 dayjs.extend(isoWeek); // Gets or sets the ISO day of the week with 1 being Monday and 7 being Sunday.
 
+const CELL_WIDTH = 105; // width of each grid cell.
 const SUNDAY_KEY = 7;
+
+const getDisplacement = getTotalDisplacement(CELL_WIDTH);
 
 type DayKeys = keyof typeof DaysOfWeek;
 
@@ -23,7 +26,7 @@ type HeaderProps = {
 
 type MonthTitle = Record<string, Dayjs>;
 
-type MonthTransition = "next" | "prev";
+type ChangeTime = "next" | "prev";
 
 type WeekDays = {
   date: number;
@@ -81,7 +84,7 @@ const Header = (props: HeaderProps) => {
     return d2.isAfter(d1) ? d2 : d1;
   };
 
-  const changeMonth = (m: MonthTransition) => {
+  const changeMonth = (m: ChangeTime) => {
     const titleValues = Object.values(monthTitle);
 
     const newDayjs = titleValues.length > 1 ? findMaxDate(titleValues) : dayjs;
@@ -129,6 +132,21 @@ const Main = (props: HeaderProps) => {
 
   const weekDays = React.useMemo(() => getWeekDays(tzDayjs, today), [tzDayjs, today]);
 
+  const changeWeek = (week: ChangeTime) => {
+    switch (week) {
+      case "prev": {
+        const prevWeek = tzDayjs.subtract(7, "day");
+        setDayjs(prevWeek);
+        break;
+      }
+      case "next": {
+        const nextWeek = tzDayjs.add(7, "day");
+        setDayjs(nextWeek);
+        break;
+      }
+    }
+  };
+
   const formattedWeekString =
     tzDayjs.format("MMM DD") + " - " + tzDayjs.add(6, "day").format("MMM DD");
 
@@ -138,13 +156,17 @@ const Main = (props: HeaderProps) => {
         <div className="w-28 flex flex-col gap-2">
           <div className="whitespace-nowrap">{formattedWeekString}</div>
           <div className="flex gap-2 items-center">
-            <ThinButton title="Previous Week" className="rotate-180">
+            <ThinButton
+              title="Previous Week"
+              onClick={() => changeWeek("prev")}
+              className="rotate-180"
+            >
               <Icons.ChevronRight />
             </ThinButton>
             <ThinButton title="Current Week" onClick={() => setDayjs(today)}>
               <span className=" block h-[14px] w-[14px] rotate-180">&#x21bb;</span>
             </ThinButton>
-            <ThinButton title="Next Week">
+            <ThinButton title="Next Week" onClick={() => changeWeek("next")}>
               <Icons.ChevronRight />
             </ThinButton>
           </div>
@@ -202,6 +224,26 @@ const WeekView = (props: WeekViewProps) => {
 const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
   const { weekDays } = props;
 
+  const [timezone] = useAtom(selectedTimezoneAtom);
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezoneAtom);
+
+  const { currentDisplacement, distanceCoveredInSec } = React.useMemo(() => {
+    return getDisplacement(timezone);
+  }, [timezone]);
+
+  const options = {
+    activeLinePosition: currentDisplacement,
+    className: "after:-translate-y-1/2 after:bottom-0 after:-translate-x-1/2 w-[1px] h-full top-0",
+    currentTime: tzDayjs.format("hh:mm:ss"),
+    distanceCoveredInSec,
+    getDisplacement,
+    initialPosition: 0,
+    timezone,
+    totalDistance: CELL_WIDTH,
+    position: "left",
+  };
+
   return (
     <div className="flex relative">
       <div className="w-28 mr-[1px]">
@@ -234,6 +276,14 @@ const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
                   </span>
                 ))}
               </div>
+              {weekDay.today && (
+                <TimeLapse
+                  options={{
+                    ...options,
+                    className: clsx(options.className),
+                  }}
+                />
+              )}
             </li>
           ))}
         </ul>
