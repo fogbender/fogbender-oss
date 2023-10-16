@@ -6,7 +6,13 @@ import { atom, useAtom } from "jotai";
 import React from "react";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 import { Layout } from "./Schedules";
-import { DaysOfWeek, getTotalDisplacement, HiddenOnSmallScreen, TimeLapse } from "./Utils";
+import {
+  DaysOfWeek,
+  getTotalDisplacement,
+  HiddenOnSmallScreen,
+  TimeLapse,
+  TimezoneSelector,
+} from "./Utils";
 
 dayjs.extend(isoWeek); // Gets or sets the ISO day of the week with 1 being Monday and 7 being Sunday.
 
@@ -119,6 +125,7 @@ const Header = (props: HeaderProps) => {
         </div>
         <div>{month}</div>
       </div>
+      <TimezoneSelector selectedTimezone={selectedTimezoneAtom} />
     </div>
   );
 };
