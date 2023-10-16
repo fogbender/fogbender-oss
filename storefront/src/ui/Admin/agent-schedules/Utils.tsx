@@ -1,6 +1,11 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
+import { useClickOutside } from "fogbender-client/src/shared";
+import { ChevronButton } from "fogbender-client/src/shared/ui/ChevronButton";
 import React from "react";
+import TimeZones from "../../../data/timezones.json";
+import SelectSearch from "./SelectSearch";
+import { useAtom, PrimitiveAtom } from "jotai";
 
 export const DaysOfWeek = {
   1: "monday",
@@ -24,6 +29,30 @@ type TimeLapseIndicator = {
     position: string;
     getDisplacement: (timezone: string) => any;
   };
+};
+
+type WithInitialValue<Value> = {
+  init: Value;
+};
+
+type TimezoneSelectorProps = {
+  selectedTimezone: PrimitiveAtom<string> & WithInitialValue<string>;
+};
+
+const filterTimezones = (
+  searchedTimezone: string | undefined,
+  selectedTimezone: string | undefined
+) => {
+  const lowerCaseSearchedTimezone = searchedTimezone?.toLowerCase() || "";
+  const lowerCaseSelectedTimezone = selectedTimezone?.toLowerCase() || "";
+
+  return TimeZones.filter(t => {
+    const lowerCaseTimezone = t.value.toLowerCase();
+    return (
+      lowerCaseTimezone.includes(lowerCaseSearchedTimezone) &&
+      !lowerCaseTimezone.includes(lowerCaseSelectedTimezone)
+    );
+  });
 };
 
 const getFixed = (totalDistance: number) => {
@@ -113,6 +142,62 @@ export const TimeLapse = (props: TimeLapseIndicator) => {
         className={classNames(defaultClassNames, className)}
       />
     </>
+  );
+};
+
+export const TimezoneSelector = ({ selectedTimezone }: TimezoneSelectorProps) => {
+  const [timezone, setTimezone] = useAtom(selectedTimezone);
+
+  const [searchTimezone, setSearchTimezone] = React.useState<undefined | string>();
+  const [showTimezoneMenu, setShowTimezoneMenu] = React.useState(false);
+
+  const menuRef = React.useRef<HTMLDivElement>(null);
+
+  useClickOutside(menuRef, () => setShowTimezoneMenu(false), !showTimezoneMenu);
+
+  const timezonesToShow = React.useMemo(() => {
+    return filterTimezones(searchTimezone, timezone).map((t, i) => ({
+      id: `${i}`,
+      displayLabel: t.label,
+      option: <div className="p-2">{t.value}</div>,
+      value: t.value,
+    }));
+  }, [searchTimezone, timezone]);
+
+  return (
+    <div ref={menuRef} className="relative cursor-pointer">
+      <div
+        className="w-52 p-2 cursor-pointer bg-gray-100 font-body flex justify-between text-sm rounded-lg pl-4 "
+        onClick={() => {
+          setShowTimezoneMenu(s => !s);
+        }}
+      >
+        <span>{timezone || "Select timezone"}</span>
+        <span>
+          <ChevronButton isOpen={showTimezoneMenu} />
+        </span>
+      </div>
+      {showTimezoneMenu && (
+        <div
+          className={classNames(
+            "z-20 absolute top-12 rounded-md left-0 max-w-80 py-2 bg-white fog:box-shadow-m"
+          )}
+        >
+          <SelectSearch
+            placeholder="Search timezone"
+            inputSearchValue={searchTimezone}
+            setInputSearchValue={setSearchTimezone}
+            options={timezonesToShow}
+            onChange={o => {
+              setTimezone(o.value);
+              setSearchTimezone(undefined);
+              setShowTimezoneMenu(false);
+            }}
+            showOptions={!!timezonesToShow.length}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 
