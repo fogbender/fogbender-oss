@@ -1,5 +1,0 @@
-config:
-  aws:region: us-east-1
-  ssl:domainName: fogbender-test.com
-  ssl:serverDomain: server.fogbender-test.com
-  ssl:server2Domain: server2.fogbender-test.com

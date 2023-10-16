@@ -1,4 +1,0 @@
-config:
-  aws:region: us-east-1
-  vendordemo:domainName: fogbender-test.com
-  vendordemo:netlifyDomain: fb-vendordemo.netlify.com

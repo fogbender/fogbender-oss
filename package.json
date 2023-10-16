@@ -14,14 +14,6 @@
     "fmt": "prettier --write --ignore-unknown ."
   },
   "workspaces": [
-    "pulumi/client",
-    "pulumi/infra",
-    "pulumi/storefront",
-    "pulumi/server",
-    "pulumi/ssl",
-    "pulumi/vendordemo",
-    "pulumi/storefront-api-cognito",
-    "pulumi/api",
     "packages/fogbender",
     "packages/fogbender-proto",
     "packages/fogbender-react",
