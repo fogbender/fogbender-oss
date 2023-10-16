@@ -39,7 +39,7 @@ export const Modal: React.FC<{
                 {children}
               </div>
               <div className="sticky top-0 right-0 h-full w-0" onClick={onClose}>
-                <div className="absolute top-0 right-0 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16">
+                <div className="absolute top-0 right-2 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16">
                   <Icons.XClose />
                 </div>
               </div>
