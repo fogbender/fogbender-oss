@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  storefront:domainName: fogbender-test.com
+  storefront:betaDomain: fb-storefront-beta.netlify.com
+  storefront:fixedDomain: fb-storefront.netlify.com

@@ -1,0 +1,3 @@
+name: storefront
+runtime: nodejs
+description: Storefront infrastructure
