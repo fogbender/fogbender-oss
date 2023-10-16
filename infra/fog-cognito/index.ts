@@ -1,22 +1,22 @@
+// Exported from fogbender pulumi project
+
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 import * as cloud from "@pulumi/cloud";
 import type { CognitoUserPoolTriggerEvent } from "aws-lambda";
-
-const config = new pulumi.Config();
+import { resourceName } from "../lib/utils";
 
 const project = "fog";
 const stack = pulumi.getStack();
 
+const config = new pulumi.Config();
+
 const sourceDomain = config.require("sourceDomain");
 const sourceEmail = config.require("sourceEmail");
-
-const sesDomainIdentity = pulumi.output(
-  aws.ses.getDomainIdentity({
-    domain: sourceDomain,
-  })
-);
+const sesDomainIdentity = aws.ses.getDomainIdentityOutput({
+  domain: sourceDomain,
+});
 
 // identity pool is needed to keep track of anonymous accounts (no email/password)
 // const identityPool = new aws.cognito.IdentityPool(`${project}-${stack}-identity-pool`, {

@@ -26,21 +26,27 @@
         inherit (gitignore.lib) gitignoreSource;
         unstable = unstable.legacyPackages.${final.system};
         # TODO switch to beam_nox.packages.erlang_26 when available in nix cache
-        beamPackages = final.unstable.beam.packages.erlang_26;
+        beamPackages = final.unstable.beam.packages.erlang_26.extend(new: old: {
+          rebar3 = old.rebar3.overrideAttrs{ doCheck = false; };
+        });
         mkMixDeps = final.callPackage ./nix/lib/mk-mix-deps.nix { };
         fogbender = final.callPackage ./nix/lib/fogbender.nix {  };
       };
 
       overlay_module = ({ pkgs, ... }: {
         nixpkgs = {
-          overlays = [ overlay ];
+          overlays = [
+            overlay
+          ];
         };
       });
 
       sysPkgs = (system :
         import nixpkgs {
           inherit system;
-          overlays = [ overlay ];
+          overlays = [
+            overlay
+          ];
         }
       );
 
