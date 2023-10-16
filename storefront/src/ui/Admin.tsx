@@ -949,7 +949,7 @@ const SubscriptionRequiredBanner = ({
   if (billing.delinquent || countInViolation > 0) {
     return (
       <div
-        className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-white px-4 py-3 relative text-center"
+        className="bg-[rgb(32,86,143)] border-[rgb(32,86,143)] text-sm sm:text-base text-white px-4 py-3 relative text-center"
         role="alert"
       >
         <span className="block sm:inline font-medium">
