@@ -951,7 +951,7 @@ export const Room: React.FC<{
 
       {showFileIssue && selection.length > 0 && (
         <Modal restricted={false} onClose={() => setShowFileIssue(false)}>
-          <div className="max-w-[620px]">
+          <div className="max-w-[620px] h-full sm:h-auto">
             <FileIssue
               room={room}
               fromRoomId={roomId}

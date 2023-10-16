@@ -550,7 +550,7 @@ export const FileIssue: React.FC<{
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full sm:h-auto">
       <div className="flex items-center justify-between gap-2">
         <div className="flex-col">
           <div className="fog:text-header3">{room?.name}</div>
