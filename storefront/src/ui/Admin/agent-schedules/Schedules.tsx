@@ -18,7 +18,7 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
 };
 
 export const Schedules = () => {
-  const [shiftMode, setShiftMode] = React.useState<ShiftModes>();
+  const [, setShiftMode] = React.useState<ShiftModes>();
 
   return (
     <Layout className="px-4 py-4">
