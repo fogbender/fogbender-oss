@@ -942,6 +942,7 @@ export const Room: React.FC<{
               roomId={roomId}
               fileUploadAtom={fileUploadAtom}
               deleteFileIdsAtom={deletedFileIdsAtom}
+              afterRemove={filterInputFiles}
               editingMessage={
                 selectedSingleMessageId && mode === "Edit"
                   ? messages.find(m => m.id === selectedSingleMessageId)
