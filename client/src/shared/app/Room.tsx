@@ -417,6 +417,24 @@ export const Room: React.FC<{
     () => <input {...getInputProps()} ref={fileInputRef} />,
     [getInputProps]
   );
+
+  const filterInputFiles = (fileName?: string) => {
+    const fileInput = fileInputRef.current;
+
+    const newFileList = new DataTransfer();
+
+    if (fileName && fileInput?.files) {
+      for (const file of fileInput.files) {
+        if (file.name !== fileName) {
+          newFileList.items.add(file); // Exclude the file from the list of files before sending;
+        }
+      }
+      fileInput.files = newFileList.files;
+    } else if (fileInput?.files) {
+      fileInput.files = newFileList.files; // Clear the current input's file list
+    }
+  };
+
   const handleUploadClick = React.useCallback(() => fileInputRef.current?.click(), []);
 
   const isInternal = isInternalHelpdesk(roomById(roomId)?.customerName);
@@ -503,7 +521,10 @@ export const Room: React.FC<{
         updateTyping();
       }
     },
-    afterSend: jumpToBottom,
+    afterSend: () => {
+      jumpToBottom();
+      filterInputFiles();
+    },
     messageCreate: messageCreateWithPending,
     messageUpdate,
     handleUploadClick,
@@ -921,6 +942,7 @@ export const Room: React.FC<{
               roomId={roomId}
               fileUploadAtom={fileUploadAtom}
               deleteFileIdsAtom={deletedFileIdsAtom}
+              afterRemove={filterInputFiles}
               editingMessage={
                 selectedSingleMessageId && mode === "Edit"
                   ? messages.find(m => m.id === selectedSingleMessageId)

@@ -20,16 +20,26 @@ export const FileUploadPreview: React.FC<{
   deleteFileIdsAtom: PrimitiveAtom<string[]>;
   editingMessage: Message | undefined;
   isTextAreaEmpty: boolean;
-}> = ({ roomId, fileUploadAtom, deleteFileIdsAtom, editingMessage, isTextAreaEmpty }) => {
+  afterRemove: (fileName: string) => void;
+}> = ({
+  afterRemove,
+  roomId,
+  fileUploadAtom,
+  deleteFileIdsAtom,
+  editingMessage,
+  isTextAreaEmpty,
+}) => {
   const [deleteFileIds, setDeleteFileIds] = useImmerAtom(deleteFileIdsAtom);
   const [fileUpload, set] = useImmerAtom(fileUploadAtom);
 
-  const remove = (file: File) =>
+  const remove = (file: File) => {
     set(d => {
       if (d) {
         d.files = d.files.filter(f => f.file !== file);
       }
     });
+    afterRemove(file.name); // Ensure that the specified file is removed from the input's file list as well
+  };
   const { files: uploads } = fileUpload;
 
   const messageFiles = React.useMemo(
