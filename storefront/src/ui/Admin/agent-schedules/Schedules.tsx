@@ -1,4 +1,6 @@
 import classNames from "classnames";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
 import {
   Agent,
   Avatar,
@@ -8,12 +10,16 @@ import {
   ThinButton,
   useInputWithError,
 } from "fogbender-client/src/shared";
+import { atom } from "jotai";
 import React from "react";
 import { useQuery } from "react-query";
 
 import { Vendor } from "../../../redux/adminApi";
 import { apiServer, queryKeys } from "../../client";
-import { DaysOfWeek, HiddenOnSmallScreen } from "./Utils";
+
+import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector } from "./Utils";
+
+dayjs.extend(timezone);
 
 const AgentLaneDefaultValue = [
   { num: 0, agent: undefined },
@@ -37,6 +43,8 @@ type LaneAssignmentState = {
   agent: Agent | undefined;
   num: number;
 };
+
+const selectedTimezone = atom<string>(dayjs.tz.guess());
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
   const { children, className } = props;
@@ -175,6 +183,7 @@ const Shift = ({
             </div>
           )}
           <div className="flex items-center gap-8">
+            <TimezoneSelector selectedTimezone={selectedTimezone} />
             {shiftMode === "edit" && (
               <div
                 onClick={deleteSchedule}
