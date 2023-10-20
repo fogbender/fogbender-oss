@@ -1,8 +1,11 @@
 import classNames from "classnames";
-import { Avatar, ThinButton } from "fogbender-client/src/shared";
+import { Agent, Avatar, ThinButton } from "fogbender-client/src/shared";
 import React from "react";
+import { useQuery } from "react-query";
 
 import { DaysOfWeek } from "./Utils";
+import { Vendor } from "../../../redux/adminApi";
+import { apiServer, queryKeys } from "../../client";
 
 type ShiftModes = "add" | "edit" | undefined;
 
@@ -17,13 +20,32 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
   );
 };
 
-export const Schedules = () => {
-  const [, setShiftMode] = React.useState<ShiftModes>();
+export const Schedules = ({ vendor }: { vendor: Vendor; ourId: string }) => {
+  const [shiftMode, setShiftMode] = React.useState<ShiftModes>();
+
+  const { data: agents } = useQuery({
+    queryKey: queryKeys.agents(vendor.id),
+    queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/agents`).json<Agent[]>(),
+  });
 
   return (
-    <Layout className="px-4 py-4">
-      <ScheduleList onEditSchedule={() => setShiftMode("edit")} />
-    </Layout>
+    <>
+      <Layout className="py-4">
+        {shiftMode === "edit" && agents ? (
+          <div></div>
+        ) : (
+          <ScheduleList onEditSchedule={() => setShiftMode("edit")} />
+        )}
+      </Layout>
+
+      {shiftMode === "add" && agents && <div></div>}
+
+      <Layout className="px-4 py-4">
+        <ThinButton disabled={shiftMode === "add"} onClick={() => setShiftMode("add")}>
+          Add a shift
+        </ThinButton>
+      </Layout>
+    </>
   );
 };
 
