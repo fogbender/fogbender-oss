@@ -79,6 +79,7 @@ export interface Fogbender {
   setEnv(env: Env | undefined): Promise<Fogbender>;
   setClientUrl(url: string | undefined): Promise<Fogbender>;
   setToken(token: Token | undefined): Promise<Fogbender>;
+  setMode(mode: "light" | "dark"): Promise<Fogbender>;
   isClientConfigured(): Promise<Snapshot<boolean>>;
   renderIframe(opts: {
     rootEl: HTMLElement;

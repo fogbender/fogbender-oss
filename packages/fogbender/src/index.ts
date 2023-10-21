@@ -23,9 +23,10 @@ export const createNewFogbender = (): Fogbender => {
     env: undefined as Env | undefined,
     token: undefined as Token | undefined,
     url: defaultUrl as string | undefined,
-    iframe: undefined as HTMLIFrameElement | undefined,
     events: createEvents(),
     chatWindow: null as null | Window,
+    mode: "light" as "light" | "dark",
+    setIframeMode: undefined as ((mode: "light" | "dark") => void) | undefined,
   };
   const openWindow = () => {
     if (!state.chatWindow || state.chatWindow.closed) {
@@ -65,6 +66,13 @@ export const createNewFogbender = (): Fogbender => {
     async setClientUrl(_url) {
       state.url = _url === undefined ? defaultUrl : _url;
       updateConfigured();
+      return fogbender;
+    },
+    async setMode(mode) {
+      state.mode = mode;
+      if (state.setIframeMode) {
+        state.setIframeMode(mode);
+      }
       return fogbender;
     },
     async setToken(token) {
@@ -134,14 +142,19 @@ export const createNewFogbender = (): Fogbender => {
                   storeVisitorInfo(info);
                   if (reload) {
                     cleanup();
-                    cleanup = rerender();
+                    const { cleanup: cleanup2, setIframeMode } = rerender();
+                    state.setIframeMode = setIframeMode;
+                    cleanup = cleanup2;
                   }
                 },
+                initialMode: () => state.mode,
               },
               openWindow
             );
           };
-          let cleanup = rerender();
+          const { cleanup: cleanup0, setIframeMode } = rerender();
+          state.setIframeMode = setIframeMode;
+          let cleanup = cleanup0;
           return () => {
             cleanup();
           };
@@ -168,14 +181,19 @@ export const createNewFogbender = (): Fogbender => {
               storeVisitorInfo(info);
               if (reload) {
                 cleanup();
-                cleanup = rerender();
+                const { cleanup: cleanup3, setIframeMode } = rerender();
+                state.setIframeMode = setIframeMode;
+                cleanup = cleanup3;
               }
             },
+            initialMode: () => state.mode,
           },
           openWindow
         );
       };
-      let cleanup = rerender();
+      const { cleanup: cleanup1, setIframeMode } = rerender();
+      state.setIframeMode = setIframeMode;
+      let cleanup = cleanup1;
       return () => {
         cleanup();
       };
