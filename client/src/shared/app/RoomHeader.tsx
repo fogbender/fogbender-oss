@@ -152,8 +152,14 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
     if (t) {
       const [, , priorityType] = t.name.split(":");
       return (
-        <span className="bg-blue-50 text-gray-500 font-semibold px-1 rounded">
-          Priority: <span className="uppercase">{priorityType}</span>
+        <span
+          className={classNames(
+            "bg-blue-50 text-gray-500 font-semibold px-1 rounded text-xs flex items-center gap-1",
+            "dark:bg-gray-800 dark:text-gray-400"
+          )}
+        >
+          <span>Priority:</span>
+          <span className="uppercase">{priorityType}</span>
         </span>
       );
     }
@@ -404,7 +410,12 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
   return (
     <>
-      <div className="px-2.5 border-b border-gray-300 select-none">
+      <div
+        className={classNames(
+          "px-2.5 border-b border-gray-300 select-none",
+          "dark:border-gray-500 dark:text-white"
+        )}
+      >
         {showReopenIssueModal && (
           <Modal
             onClose={() => {

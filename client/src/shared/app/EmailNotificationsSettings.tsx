@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Icons, muteSoundAtom, ThickButton } from "fogbender-client/src/shared";
 import { GetSettings, useWs } from "fogbender-proto";
 import { useAtom } from "jotai";
@@ -112,14 +113,19 @@ export const EmailNotificationsSettings = ({
   const [muteSound, setMuteSound] = useAtom(muteSoundAtom);
 
   return (
-    <div className="flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white">
+    <div
+      className={classNames(
+        "flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white",
+        "dark:bg-gray-800"
+      )}
+    >
       {userId && (
         <div
           className="text-blue-500 flex items-center gap-3 cursor-pointer"
           onClick={() => setMuteSound(x => !x)}
         >
           {muteSound ? <Icons.CheckboxOff className="w-5" /> : <Icons.CheckboxOn className="w-5" />}
-          <span className="text-black">Sound notifications</span>
+          <span className="text-black dark:text-white">Sound notifications</span>
         </div>
       )}
       <div className="flex gap-3">
@@ -212,7 +218,7 @@ const Frequency: React.FC<{
       onClick={() => onChange(id)}
     >
       {checked ? <Icons.RadioFull /> : <Icons.RadioEmpty />}
-      <span className="text-black">{name}</span>
+      <span className="text-black dark:text-white">{name}</span>
     </div>
   );
 };

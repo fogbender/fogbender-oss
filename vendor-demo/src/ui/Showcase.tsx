@@ -22,6 +22,7 @@ export const Showcase = () => {
   const [isClosable, setIsClosable] = React.useState(false);
   const [defaultOpen, setDefaultOpen] = React.useState(false);
   const [isFallback, setIsFallback] = React.useState(false);
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [unreadCount, setUnreadCount] = React.useState(0);
   const token = useToken();
   const tokenReadable =
@@ -130,6 +131,16 @@ const token = ${tokenReadable};
             />{" "}
             Unknown user flow
           </label>
+          <label className="m-2 flex gap-2">
+            <input
+              type="checkbox"
+              checked={isDarkMode}
+              onChange={() => {
+                setIsDarkMode(x => !x);
+              }}
+            />{" "}
+            Dark mode
+          </label>
 
           <HighlightCode className="language-js rounded">
             {`import { FogbenderProvider, FogbenderConfig, FogbenderIsConfigured,
@@ -138,7 +149,7 @@ const token = ${tokenReadable};
 const token = ${tokenReadable};
 
 <FogbenderProvider>
-  <FogbenderConfig token={token} />
+  <FogbenderConfig token={token}${isDarkMode ? ' mode="dark"' : ""} />
   <FogbenderIsConfigured>
     <FogbenderHeadlessWidget />
     <FogbenderFloatingWidget${isVerbose ? " verbose={true}" : ""}${
@@ -159,6 +170,7 @@ const token = ${tokenReadable};
           closeable={isClosable}
           defaultOpen={defaultOpen}
           isFallback={isFallback}
+          isDarkMode={isDarkMode}
         />
       </div>
     </div>
@@ -175,6 +187,7 @@ export const FBShowcase = ({
   closeable,
   defaultOpen,
   isFallback,
+  isDarkMode,
 }: {
   headless?: boolean;
   unreadCount?: number;
@@ -183,6 +196,7 @@ export const FBShowcase = ({
   closeable?: boolean;
   defaultOpen: boolean;
   isFallback?: boolean;
+  isDarkMode?: boolean;
 }) => {
   const fogbender = React.useRef(createNewFogbender());
   const token = useToken();
@@ -199,7 +213,11 @@ export const FBShowcase = ({
   }, [unreadCount, verbose]);
   return (
     <FogbenderProvider fogbender={fogbender.current}>
-      <FogbenderConfig clientUrl={clientUrl} token={isFallback ? fallbackToken : token} />
+      <FogbenderConfig
+        clientUrl={clientUrl}
+        token={isFallback ? fallbackToken : token}
+        mode={isDarkMode ? "dark" : "light"}
+      />
       <FogbenderIsConfigured>
         {/* {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />} */}
         {headless ? (

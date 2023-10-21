@@ -512,8 +512,8 @@ const EmojiPickerStandalone = () => {
         {showEmojiSelect && (
           <div ref={emojiPickerRef} className="absolute left-0 bottom-full z-10 mb-1">
             <Picker
-              disableSearchBar={true}
-              onEmojiClick={(e, emoji) => {
+              searchDisabled={true}
+              onEmojiClick={(emoji, e) => {
                 e.stopPropagation();
                 setEmoji(emoji.emoji);
               }}

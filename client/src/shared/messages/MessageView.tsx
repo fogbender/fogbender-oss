@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { useAtomValue } from "jotai";
 import DOMPurify from "dompurify";
 import {
   Attachment,
@@ -27,6 +28,7 @@ import { AddMessageReaction, EmojiPicker, MessageReactions } from "./MessageReac
 import { NewMessagesBelowIndicator } from "./NewMessagesBelowIndicator";
 import { NoActivityIndicator } from "./NoActivityIndicator";
 import { dayjs, formatTs, isTsCloseEnough } from "./times";
+import { modeAtom } from "../store/config.store";
 
 type MessageViewProps = {
   message: MessageT;
@@ -111,6 +113,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     pinToRoom,
     askAi,
   } = props;
+  const themeMode = useAtomValue(modeAtom);
 
   const { id, tags, targets, linkStartMessageId, linkEndMessageId, linkRoomId, linkType } = message;
 
@@ -246,11 +249,12 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
       <div
         className={classNames(
           "fog:chat-message relative my-1 border-transparent text-black fog:text-body-m",
+          "dark:text-white",
           nonInteractive ? "ml-0 border-l-0" : "ml-2 border-l-5",
           !selected && !nonInteractive && "hover:border-gray-300",
           isFirst && "mt-auto",
           tags && tags.some(t => highlightedTags.includes(t)) && "bg-red-200",
-          highlight && "bg-yellow-100",
+          // (highlight || true) && "bg-yellow-100 dark:bg-amber-700",
           isSearchView && !nonInteractive && "cursor-pointer"
         )}
         key={id}
@@ -258,6 +262,15 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
         id={id}
         onClick={isSearchView ? onClick : undefined}
       >
+        {highlight && (
+          <div
+            className={classNames(
+              "absolute w-full h-full z-50",
+              themeMode === "dark" && "dark",
+              "bg-yellow-100 dark:bg-amber-700 opacity-70"
+            )}
+          />
+        )}
         <div
           className={classNames(
             "selector group flex absolute inset-y-0 -left-4 w-12 border-l-3 border-transparent",
@@ -282,7 +295,12 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
               inInternalRoom ? "text-green-500" : "text-brand-orange-500"
             )}
           >
-            {!isSearchView && <MessageCheckbox checked={selected} />}
+            {!isSearchView && (
+              <MessageCheckbox
+                checked={selected}
+                solidColor={themeMode === "dark" ? "#cbd5e1" : "white"}
+              />
+            )}
           </div>
           <div className="h-full w-full flex flex-col justify-end">
             {isLastInContiguousBlock && (
@@ -345,6 +363,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                   <span
                     className={classNames(
                       "pr-1 text-gray-500 text-right fog:text-body-s",
+                      "dark:text-gray-400",
                       isPending && "invisible"
                     )}
                   >
@@ -356,6 +375,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
               <span
                 className={classNames(
                   "pr-1 text-gray-500 text-right fog:text-body-s",
+                  "dark:text-gray-400",
                   isPending && "invisible"
                 )}
               >
@@ -482,7 +502,12 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                 </div>
               </button>
             )}
-          <div className="max-w-min flex px-2 py-1 rounded-full bg-white fog:box-shadow-s">
+          <div
+            className={classNames(
+              "max-w-min flex px-2 py-1 rounded-full bg-white fog:box-shadow-s",
+              "dark:bg-black"
+            )}
+          >
             <div className={classNames("h-6 mt-0.5 flex items-center")}>
               {selectedSingle && !message.deletedTs && (
                 <span onClick={() => cancelSelection()}>
@@ -532,7 +557,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                   )}
                   {!selectedSingle && (
                     <span
-                      className="ml-2 text-gray-500 hover:text-gray-800 cursor-pointer"
+                      className="ml-2 text-gray-500 hover:text-brand-red-500 cursor-pointer"
                       onClick={e => {
                         e.stopPropagation();
                         cancelSelection();
@@ -614,7 +639,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
             return (
               <div
                 key={link.id}
-                className="flex items-center pl-10 border-l-5 border-transparent text-gray-500 fog:text-body-xs cursor-pointer"
+                className="flex items-center pl-10 border-l-5 border-transparent text-gray-500 dark:text-gray-400 fog:text-body-xs cursor-pointer"
                 onClick={e => {
                   e.stopPropagation();
                   if (!nonInteractive && targetRoom) {
@@ -632,7 +657,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                   {targetRoom.counterpart?.name || formatRoomName(targetRoom, isAgent)}
                   {isAgent && <span> ({formatCustomerName(targetRoom.customerName)})</span>}
                 </span>
-                <span className="pr-1 text-gray-500 whitespace-nowrap">
+                <span className="pr-1 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {formatTs(link.createdTs)}
                 </span>
               </div>
@@ -641,7 +666,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
             return (
               <div
                 key={link.id}
-                className="flex items-center pl-10 border-l-5 border-transparent text-gray-500 fog:text-body-xs cursor-pointer"
+                className="flex items-center pl-10 border-l-5 border-transparent text-gray-500 dark:text-gray-400 fog:text-body-xs cursor-pointer"
                 onClick={e => {
                   e.stopPropagation();
                   if (!nonInteractive) {
@@ -650,7 +675,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                 }}
               >
                 <span className="flex-1 truncate">{link.author.name} replied</span>
-                <span className="pr-1 text-gray-500 whitespace-nowrap">
+                <span className="pr-1 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {formatTs(link.createdTs)}
                 </span>
               </div>
@@ -804,8 +829,8 @@ export const SourceMessages: React.FC<{
       <div
         className={classNames(
           "fog:chat-message fbr-link-preview ml-8 py-1 px-2 rounded-md cursor-pointer",
-          linkType === "forward" && "bg-indigo-50",
-          linkType === "reply" && "bg-green-50 fog:text-body-s",
+          linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
+          linkType === "reply" && "bg-green-50 fog:text-body-s dark:bg-cyan-950",
           linkType === "broadcast" && "bg-red-50"
         )}
         onClick={!isSearchView ? onClick : undefined}
@@ -1033,7 +1058,9 @@ const MessageContent: React.FC<{
             <ClipboardCopy text={codeSnippetText}>
               <div
                 className={classNames(
-                  "cursor-pointer flex items-center justify-center absolute right-2 h-8 w-8 bg-white rounded-lg fog:box-shadow-s z-10",
+                  "cursor-pointer flex items-center justify-center absolute right-2 h-8 w-8 rounded-lg fog:box-shadow-s z-10",
+                  "bg-white",
+                  "dark:bg-gray-600",
                   "group",
                   isContiguous ? "top-2" : "top-12"
                 )}
@@ -1162,60 +1189,85 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
         onClick={() => {
           setShowMenu(x => !x);
         }}
-        className="text-gray-500 hover:text-gray-800 cursor-pointer"
+        className="text-gray-500 hover:text-brand-red-500 cursor-pointer"
       >
         <Icons.Menu className="w-4" />
       </div>
       {showMenu && (
         <div
           ref={menuRef}
-          className="absolute z-10 bottom-8 right-0 flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m"
+          className={classNames(
+            "absolute z-10 bottom-8 right-0 flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m",
+            "dark:bg-gray-600 dark:text-white"
+          )}
         >
           {!isGroupPinned && !isPinned && (
             <button
-              className="hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap"
+              className={classNames(
+                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                "dark:hover:bg-gray-500"
+              )}
               onClick={onGroupPinRoom}
             >
               <span className="pr-2">
-                <Icons.Pin className="w-6 text-gray-500 group-hover:text-gray-800" />
+                <Icons.Pin
+                  className={classNames(
+                    "w-6 text-gray-500 group-hover:text-gray-800",
+                    "dark:text-gray-200 dark:group-hover:text-gray-200"
+                  )}
+                />
               </span>
               <span>Pin message for all </span>
             </button>
           )}
           {!isPinned && !isGroupPinned && (
             <button
-              className="hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap"
+              className={classNames(
+                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                "dark:hover:bg-gray-500"
+              )}
               onClick={onPinRoom}
             >
               <span className="pr-2">
-                <Icons.PinMe className="w-6 text-gray-500 group-hover:text-gray-800" />
+                <Icons.PinMe
+                  className={classNames(
+                    "w-6 text-gray-500 group-hover:text-gray-800",
+                    "dark:text-gray-200 dark:group-hover:text-gray-200"
+                  )}
+                />
               </span>
               <span>Pin only for me</span>
             </button>
           )}
           {(isPinned || isGroupPinned) && (
             <button
-              className="hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap"
+              className={classNames(
+                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                "dark:hover:bg-gray-500"
+              )}
               onClick={isPinned ? onPinRoom : onGroupPinRoom}
             >
-              <span className="pr-2 text-gray-500">
-                <Icons.Unpin className="w-6 text-gray-500 group-hover:text-gray-800" />
+              <span className="pr-2 text-gray-500 dark:text-gray-200">
+                <Icons.Unpin className="w-5 group-hover:text-gray-800 dark:group-hover:text-gray-200" />
               </span>
               <span>Unpin message</span>
             </button>
           )}
           <button
-            className="hover:bg-gray-100 px-4 py-2 text-left whitespace-nowrap"
+            className={classNames(
+              "hover:bg-gray-100 px-4 py-2 text-left whitespace-nowrap",
+              "dark:hover:bg-gray-500"
+            )}
             onClick={() => onMarkMessageUnread?.(message)}
           >
             Mark as unread and close pane
           </button>
           <ClipboardCopy
-            className="hover:bg-gray-100"
+            className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-500")}
             text={`${window.location.href}/${message.roomId}/${message.id}`}
             onCopy={() => setCopied(true)}
           >
-            <button className="px-4 py-2 text-left text-black w-full whitespace-nowrap">
+            <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
               {!copied ? "Copy link to message" : "Copied"}
             </button>
           </ClipboardCopy>
