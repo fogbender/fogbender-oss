@@ -28,6 +28,7 @@ export const Roster: React.FC<{
   isAgent: boolean;
   searchString: string;
   searchForMessages: boolean;
+  ourId?: string;
 }> = ({
   rooms: roomsProp,
   openRoomIds,
@@ -38,6 +39,7 @@ export const Roster: React.FC<{
   isAgent,
   searchString,
   searchForMessages,
+  ourId,
 }) => {
   const countRef = React.useRef(0);
   const { serverCall, workspaceId, helpdeskId } = useWs();
@@ -105,6 +107,7 @@ export const Roster: React.FC<{
               onSettingsClick={onRoomSettingsClick}
               badge={badges[room.id]}
               isAgent={isAgent}
+              ourId={ourId}
             />
           ))}
         </div>
@@ -139,8 +142,9 @@ export const RoomItem: React.FC<{
   onSettingsClick: (id: string) => void;
   badge?: EventBadge;
   isAgent: boolean | undefined;
-}> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent }) => {
-  const counterpart = calculateCounterpart(room);
+  ourId?: string;
+}> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent, ourId }) => {
+  const counterpart = calculateCounterpart(room, ourId);
   const name = counterpart?.name || room.name;
 
   const unreadCount = badge?.count;
