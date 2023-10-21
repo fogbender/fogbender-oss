@@ -1,5 +1,15 @@
 # fogbender-vue
 
+## 0.1.4
+
+### Patch Changes
+
+- 524b866: Update README to point to a new client url (staging)
+- Updated dependencies [568ec86]
+- Updated dependencies [c1c5dd3]
+- Updated dependencies [524b866]
+  - fogbender@0.3.0
+
 ## 0.1.3
 
 ### Patch Changes

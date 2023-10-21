@@ -1,5 +1,16 @@
 # fogbender
 
+## 0.3.0
+
+### Minor Changes
+
+- c1c5dd3: Visitor (anon user) support
+
+### Patch Changes
+
+- 568ec86: add nosemgrep comment to ignore false positive security report
+- 524b866: Update README to point to a new client url (staging)
+
 ## 0.2.3
 
 ### Patch Changes

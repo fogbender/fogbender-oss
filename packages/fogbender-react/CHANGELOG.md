@@ -1,5 +1,28 @@
 # fogbender-react
 
+## 0.3.0
+
+### Minor Changes
+
+- 4236a38: We're working on standardizing the naming of the widgets, therefore:
+
+  - The nameless full-width widget is now known as Roomy (lots of room)
+  - The floating widget (Floatie) is now known as Floaty (to match the spelling of Roomy)
+  - We're exporting new names as aliases
+
+  FogbenderWidget -> FogbenderRoomyWidget
+  FogbenderSimpleWidget -> FogbenderSimpleRoomyWidget
+  FogbenderFloatingWidget -> FogbenderFloatyWidget
+  FogbenderSimpleFloatie -> FogbenderSimpleFloatyWidget
+
+### Patch Changes
+
+- 524b866: Update README to point to a new client url (staging)
+- Updated dependencies [568ec86]
+- Updated dependencies [c1c5dd3]
+- Updated dependencies [524b866]
+  - fogbender@0.3.0
+
 ## 0.2.12
 
 ### Patch Changes
