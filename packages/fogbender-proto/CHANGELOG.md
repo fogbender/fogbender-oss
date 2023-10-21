@@ -1,5 +1,15 @@
 # fogbender-proto
 
+## 0.16.0
+
+### Minor Changes
+
+- c1c5dd3: Visitor (anon user) support
+
+### Patch Changes
+
+- bb6b077: add nosemgrep comment to ignore issue that should not be affecting production builds
+
 ## 0.15.0
 
 ### Minor Changes
