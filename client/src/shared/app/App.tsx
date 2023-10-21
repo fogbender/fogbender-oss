@@ -1029,6 +1029,7 @@ export const App: React.FC<{
                       isAgent={true}
                       searchString={searchString}
                       searchForMessages={false}
+                      ourId={ourId}
                     />
                   )}
                   {searching && <hr />}
@@ -1043,6 +1044,7 @@ export const App: React.FC<{
                       isAgent={true}
                       searchString={searchString}
                       searchForMessages={true}
+                      ourId={ourId}
                     />
                   )}
                   <Roster
@@ -1072,6 +1074,7 @@ export const App: React.FC<{
                       isAgent={true}
                       searchString={searchString}
                       searchForMessages={false}
+                      ourId={ourId}
                     />
                   )}
                   {searching && <hr />}
@@ -1086,6 +1089,7 @@ export const App: React.FC<{
                       isAgent={true}
                       searchString={searchString}
                       searchForMessages={true}
+                      ourId={ourId}
                     />
                   )}
                   {/* outlook fog agents */}
@@ -1157,6 +1161,7 @@ export const App: React.FC<{
                       isAgent={false}
                       searchString={searchString}
                       searchForMessages={false}
+                      ourId={ourId}
                     />
                   )}
                   {searching && <hr />}
@@ -1171,6 +1176,7 @@ export const App: React.FC<{
                       isAgent={false}
                       searchString={searchString}
                       searchForMessages={true}
+                      ourId={ourId}
                     />
                   )}
                   <Roster
