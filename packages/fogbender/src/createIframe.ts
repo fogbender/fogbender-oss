@@ -50,6 +50,7 @@ export function renderIframe(
     headless,
     disableFit,
     onVisitorInfo,
+    initialMode = "light",
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
@@ -58,9 +59,11 @@ export function renderIframe(
     onVisitorInfo: (info: VisitorInfo, reload: boolean) => void;
     headless?: boolean;
     disableFit?: boolean;
+    initialMode: () => "dark" | "light";
   },
   openWindow: () => void
 ) {
+  let _mode = initialMode();
   const iFrame = document.createElement("iframe");
 
   iFrame.src = url;
@@ -82,7 +85,7 @@ export function renderIframe(
       return;
     }
     if (e.data?.type === "APP_IS_READY") {
-      iFrame.contentWindow?.postMessage({ env, initToken: token, headless }, url);
+      iFrame.contentWindow?.postMessage({ env, initToken: token, headless, mode: _mode }, url);
       iFrame.contentWindow?.postMessage(
         { notificationsPermission: window.Notification?.permission },
         url
@@ -173,13 +176,21 @@ export function renderIframe(
     iFrame.style.height = height + "px";
   }
 
+  function setMode(mode: "light" | "dark") {
+    _mode = mode;
+    iFrame.contentWindow?.postMessage({ mode }, url);
+  }
+
   adaptIFrame();
 
   new ResizeSensor(rootEl, adaptIFrame);
   new ResizeSensor(document.body, adaptIFrame);
   window.addEventListener("resize", adaptIFrame);
-  return () => {
-    iFrame.src = "about:blank";
-    rootEl.removeChild(iFrame);
+  return {
+    setIframeMode: setMode,
+    cleanup: () => {
+      iFrame.src = "about:blank";
+      rootEl.removeChild(iFrame);
+    },
   };
 }
