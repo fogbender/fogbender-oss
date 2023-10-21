@@ -119,7 +119,8 @@ export const FogbenderConfig: React.FC<{
   clientUrl?: string;
   env?: Env;
   token: Token | undefined;
-}> = ({ clientUrl, env, token }) => {
+  mode?: "light" | "dark";
+}> = ({ clientUrl, env, token, mode = "light" }) => {
   const fogbender = useFogbender();
   React.useEffect(() => {
     fogbender.setClientUrl(clientUrl);
@@ -139,6 +140,9 @@ export const FogbenderConfig: React.FC<{
       fogbender.setToken(undefined);
     };
   }, [token]);
+  React.useEffect(() => {
+    fogbender.setMode(mode);
+  }, [mode]);
   return null;
 };
 
