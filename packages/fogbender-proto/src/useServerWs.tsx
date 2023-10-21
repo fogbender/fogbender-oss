@@ -6,7 +6,15 @@ import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
-import type { AnyToken, Helpdesk, FogSchema, PingPing, ServerCalls, ServerEvents } from "./schema";
+import type {
+  AnyToken,
+  Helpdesk,
+  FogSchema,
+  PingPing,
+  ServerCalls,
+  ServerEvents,
+  AuthVisitor,
+} from "./schema";
 import type { Client } from "./client";
 
 type Requests = {
@@ -34,7 +42,10 @@ const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) =
 };
 
 const isAuthMessage = (message: FogSchema["outbound"]) =>
-  message.msgType === "Auth.Agent" || message.msgType === "Auth.User";
+  message.msgType === "Auth.Agent" ||
+  message.msgType === "Auth.User" ||
+  message.msgType === "Auth.Visitor" ||
+  message.msgType === "Visitor.New";
 
 export function useServerWs(
   client: Client,
@@ -45,6 +56,9 @@ export function useServerWs(
   const [helpdesk, setHelpdesk] = React.useState<Helpdesk>();
   const [avatarLibraryUrl, setAvatarLibraryUrl] = React.useState<string>();
   const [agentRole, setAgentRole] = React.useState<string>();
+  const [userType, setUserType] = React.useState<
+    "user" | "visitor-verified" | "visitor-unverified"
+  >();
   const inFlight = React.useRef(new Map<string, Requests>());
   const queue = React.useRef<FogSchema["outbound"][]>([]);
   const ready = React.useRef<ReadyState>(0);
@@ -162,11 +176,78 @@ export function useServerWs(
     getWebSocket()?.close();
   };
 
+  const visitorTokenRef = React.useRef<string>();
+
   React.useEffect(() => {
     onError("other", "other", ReadyState[readyState]);
 
     if (token && !authenticated.current && readyState === ReadyState.OPEN) {
-      if ("widgetId" in token) {
+      if ("widgetId" in token && "visitor" in token) {
+        serverCall<AuthVisitor>({
+          msgType: "Auth.Visitor",
+          widgetId: token.widgetId,
+          visitorKey: token.visitorKey,
+          token: visitorTokenRef.current || token.visitorToken,
+          localTimestamp: new Date().toLocaleString(),
+          visitUrl: token.visitUrl,
+        }).then(
+          r => {
+            if (r.msgType === "Auth.Ok") {
+              const {
+                sessionId,
+                userId,
+                userName,
+                userEmail,
+                helpdeskId,
+                userAvatarUrl,
+                customerName,
+                emailVerified,
+                visitorToken,
+              } = r;
+              if (visitorToken && visitorToken !== token.visitorToken) {
+                visitorTokenRef.current = visitorToken;
+                client.setVisitorInfo?.({ widgetId: token.widgetId, token: visitorToken, userId });
+              }
+              authenticated.current = true;
+              setHelpdesk(r.helpdesk);
+              setAvatarLibraryUrl(r.visitorAvatarLibraryUrl);
+              if (emailVerified) {
+                setUserType("visitor-verified");
+              } else {
+                setUserType("visitor-unverified");
+              }
+              client.setSession?.({
+                sessionId,
+                userId,
+                helpdeskId,
+                userAvatarUrl,
+                userName,
+                userEmail,
+                customerName,
+              });
+            } else if (r.msgType === "Auth.Err") {
+              if (r.code === 401 || r.code === 403) {
+                onWrongToken(token);
+              } else {
+                onError("error", "other", new Error("Failed to authenticate " + JSON.stringify(r)));
+              }
+            } else if (r.msgType === "Error.Fatal") {
+              if ("code" in r && r.code === 409) {
+                onWrongToken(token);
+              } else {
+                onError(
+                  "error",
+                  "other",
+                  new Error("Fatal error while authenticating " + JSON.stringify(r))
+                );
+              }
+            }
+          },
+          r => {
+            onError("error", "other", r);
+          }
+        );
+      } else if ("widgetId" in token && !("visitor" in token)) {
         const clone = { ...token };
         clone.versions = { ...clone.versions, "fogbender-proto": "0.15.0" };
         serverCall({
@@ -176,11 +257,28 @@ export function useServerWs(
         }).then(
           r => {
             if (r.msgType === "Auth.Ok") {
-              const { sessionId, userId, helpdeskId, userAvatarUrl } = r;
+              const {
+                sessionId,
+                userId,
+                userName,
+                userEmail,
+                helpdeskId,
+                userAvatarUrl,
+                customerName,
+              } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
+              setUserType("user");
               setAvatarLibraryUrl(r.avatarLibraryUrl);
-              client.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
+              client.setSession?.({
+                sessionId,
+                userId,
+                helpdeskId,
+                userAvatarUrl,
+                userName,
+                userEmail,
+                customerName,
+              });
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
                 onWrongToken(token);
@@ -234,7 +332,7 @@ export function useServerWs(
                   authenticated.current = true;
                   setHelpdesk(r.helpdesk);
                   setAgentRole(r.role);
-                  client.setSession?.(sessionId);
+                  client.setSession?.({ sessionId });
                 } else if (r.msgType === "Auth.Err") {
                   if (r.code === 401 || r.code === 403) {
                     onWrongToken(token);
@@ -355,6 +453,9 @@ export function useServerWs(
     isAgent: token && "agentId" in token,
     avatarLibraryUrl: avatarLibraryUrl,
     agentRole: agentRole,
+    userType,
+    widgetId: token && "widgetId" in token && token["widgetId"],
+    visitorJWT: visitorTokenRef.current,
   };
 }
 

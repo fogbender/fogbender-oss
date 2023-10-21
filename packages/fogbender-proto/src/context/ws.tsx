@@ -36,6 +36,7 @@ export type Author = {
   id: string;
   name: string;
   type: AuthorType;
+  userType?: "visitor-verified" | "visitor-unverified" | "user";
   avatarUrl?: string;
 };
 
@@ -122,7 +123,15 @@ function useProviderValue(
   const [userAvatarUrl, setUserAvatarUrl] = React.useState<string>();
   const [providerClient] = React.useState<Client>(() => ({
     ...client,
-    setSession(sessionId, userId, helpdeskId, userAvatarUrl) {
+    setSession({
+      sessionId,
+      userId,
+      helpdeskId,
+      userAvatarUrl,
+      userName,
+      userEmail,
+      customerName,
+    }) {
       setFogSessionId(sessionId);
       if (userId) {
         setUserId(userId);
@@ -133,7 +142,15 @@ function useProviderValue(
       }
 
       setHelpdeskId(helpdeskId);
-      client?.setSession?.(sessionId, userId, helpdeskId, userAvatarUrl);
+      client?.setSession?.({
+        sessionId,
+        userId,
+        helpdeskId,
+        userAvatarUrl,
+        userName,
+        userEmail,
+        customerName,
+      });
     },
   }));
   React.useEffect(() => {
@@ -173,7 +190,9 @@ function useProviderValue(
 
   return React.useMemo(() => {
     return {
+      client: client,
       serverCall: ws.serverCall,
+      widgetId: ws.widgetId,
       lastIncomingMessageAtom: ws.lastIncomingMessageAtom,
       sharedRosterAtom,
       respondToMessage: ws.respondToMessage,
@@ -182,6 +201,7 @@ function useProviderValue(
       isAuthenticated: ws.isAuthenticated,
       isTokenWrong: ws.isTokenWrong,
       isAgent: ws.isAgent,
+      userType: ws.userType,
       avatarLibraryUrl: ws.avatarLibraryUrl,
       token,
       fogSessionId,
@@ -190,8 +210,11 @@ function useProviderValue(
       workspaceId,
       userAvatarUrl,
       agentRole: ws.agentRole,
+      visitorJWT: ws.visitorJWT,
     };
   }, [
+    client,
+    ws.widgetId,
     ws.serverCall,
     ws.lastIncomingMessageAtom,
     sharedRosterAtom,
@@ -201,7 +224,9 @@ function useProviderValue(
     ws.isAuthenticated,
     ws.isTokenWrong,
     ws.isAgent,
+    ws.userType,
     ws.avatarLibraryUrl,
+    ws.visitorJWT,
     token,
     fogSessionId,
     userId,
