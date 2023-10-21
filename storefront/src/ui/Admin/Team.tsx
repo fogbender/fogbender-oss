@@ -106,7 +106,7 @@ export const Team: React.FC<{
             element={
               <div className="flex flex-col gap-8">
                 <TeamTabs vendor={vendor} tab="schedules" />
-                {ourAgentId && ourAgent && <Schedules />}
+                {ourAgentId && ourAgent && <Schedules vendor={vendor} ourId={ourAgentId} />}
               </div>
             }
           />

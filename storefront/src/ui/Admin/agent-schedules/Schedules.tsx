@@ -1,10 +1,60 @@
 import classNames from "classnames";
-import { Avatar, ThinButton } from "fogbender-client/src/shared";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import {
+  Agent,
+  Avatar,
+  Icons,
+  LinkButton,
+  ThickButton,
+  ThinButton,
+  useClickOutside,
+  useInputWithError,
+} from "fogbender-client/src/shared";
+import { atom } from "jotai";
 import React from "react";
+import { useQuery } from "react-query";
 
-import { DaysOfWeek } from "./Utils";
+import { Vendor } from "../../../redux/adminApi";
+import { apiServer, queryKeys } from "../../client";
+
+import SelectSearch from "./SelectSearch";
+import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector } from "./Utils";
+
+dayjs.extend(timezone);
+
+const AgentLaneDefaultValue = [
+  { num: 0, agent: undefined },
+  { num: 1, agent: undefined },
+  { num: 2, agent: undefined },
+  { num: 3, agent: undefined },
+];
+
+type AgentLane = {
+  agent: Agent;
+  num: number;
+};
+
+type AgentViewProps = {
+  name: string;
+  image_url: string;
+  size: number;
+};
+
+type SetStateAction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type ShiftModes = "add" | "edit" | undefined;
+
+type ShiftName = {
+  name: string | undefined;
+};
+
+type LaneAssignmentState = {
+  agent: Agent | undefined;
+  num: number;
+};
+
+const selectedTimezone = atom<string>(dayjs.tz.guess());
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
   const { children, className } = props;
@@ -17,13 +67,278 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
   );
 };
 
-export const Schedules = () => {
-  const [, setShiftMode] = React.useState<ShiftModes>();
+export const Schedules = ({ vendor }: { vendor: Vendor; ourId: string }) => {
+  const [shiftMode, setShiftMode] = React.useState<ShiftModes>();
+
+  const { data: agents } = useQuery({
+    queryKey: queryKeys.agents(vendor.id),
+    queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/agents`).json<Agent[]>(),
+  });
 
   return (
-    <Layout className="px-4 py-4">
-      <ScheduleList onEditSchedule={() => setShiftMode("edit")} />
-    </Layout>
+    <>
+      <Layout className="py-4">
+        {shiftMode === "edit" && agents ? (
+          <Shift
+            shift={{ name: undefined }}
+            vendor={vendor}
+            agents={agents}
+            shiftMode={shiftMode}
+            setShiftMode={mode => setShiftMode(mode)}
+          />
+        ) : (
+          <ScheduleList onEditSchedule={() => setShiftMode("edit")} />
+        )}
+      </Layout>
+
+      {shiftMode === "add" && agents && (
+        <Layout className="py-4">
+          <Shift
+            shift={{ name: undefined }}
+            vendor={vendor}
+            agents={agents}
+            shiftMode={shiftMode}
+            setShiftMode={mode => setShiftMode(mode)}
+          />
+        </Layout>
+      )}
+
+      <Layout className="px-4 py-4">
+        <ThinButton disabled={shiftMode === "add"} onClick={() => setShiftMode("add")}>
+          Add a shift
+        </ThinButton>
+      </Layout>
+    </>
+  );
+};
+
+const Shift = ({
+  shift,
+  shiftMode,
+  agents,
+  setShiftMode,
+}: {
+  shift: ShiftName;
+  vendor: Vendor;
+  agents: Agent[];
+  shiftMode: ShiftModes;
+  setShiftMode: (mode: ShiftModes) => void;
+}) => {
+  const [laneAssignments, setLaneAssignments] =
+    React.useState<LaneAssignmentState[]>(AgentLaneDefaultValue);
+
+  const [newShiftName, setNewShiftName] = React.useState<string>();
+
+  const [editingShiftName, setEditingShiftName] = React.useState(false);
+
+  const [shiftName, shiftNameInput, ,] = useInputWithError({
+    className: "!h-12 border-0 w-60",
+    title: "Shift name",
+    placeholder: shift.name || "Shift name", // XXX fix this
+    onEnter: () => {
+      if (shiftName) {
+        setEditingShiftName(false);
+        setNewShiftName(shiftName);
+      }
+    },
+  });
+
+  const assignedAgents = React.useMemo(
+    () => laneAssignments.filter(la => !!la.agent) as AgentLane[],
+    [laneAssignments]
+  );
+
+  const deleteSchedule = () => {};
+
+  return (
+    <HiddenOnSmallScreen>
+      <div className="flex flex-col gap-4 h-full">
+        <div className="flex justify-between items-center h-12">
+          {editingShiftName ? (
+            <div className="flex gap-2 items-center">
+              {shiftNameInput}
+              <LinkButton
+                className={classNames("h-12 !w-28")}
+                onClick={() => {
+                  setNewShiftName(undefined);
+                  setEditingShiftName(false);
+                }}
+              >
+                Cancel
+              </LinkButton>
+              <ThickButton
+                className={classNames(
+                  "h-12 !w-28",
+                  "transition-opacity duration-100 ease-in",
+                  newShiftName !== shiftName ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+                onClick={() => {
+                  setNewShiftName(shiftName);
+                  setEditingShiftName(false);
+                }}
+              >
+                Save
+              </ThickButton>
+            </div>
+          ) : (
+            <div className="flex text-2xl font-prompt gap-2 items-center">
+              <span>{shiftName}</span>
+              <span
+                onClick={() => {
+                  setNewShiftName(shiftName);
+                  setEditingShiftName(true);
+                }}
+                className="cursor-pointer text-gray-500 hover:text-brand-red-500"
+              >
+                <Icons.Pencil className="w-5" />
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-8">
+            <TimezoneSelector selectedTimezone={selectedTimezone} />
+            {shiftMode === "edit" && (
+              <div
+                onClick={deleteSchedule}
+                className="cursor-pointer text-gray-500 hover:text-brand-red-500"
+              >
+                <Icons.Trash className="w-6" />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 md:justify-between justify-center">
+          {laneAssignments.map(({ agent, num }) => (
+            <LaneAssignment
+              key={`lane-${num}`}
+              agent={agent}
+              agents={agents}
+              assignAgent={agent => {
+                setLaneAssignments(x => x.map(y => (y.num === num ? { ...y, agent } : y)));
+              }}
+            />
+          ))}
+        </div>
+        <div className="relative h-[738px]" />
+        <div className="flex items-center justify-end gap-2">
+          <LinkButton onClick={() => setShiftMode(undefined)}>Cancel Changes</LinkButton>
+          <ThickButton className="!px-4 !py-3">Save Schedule</ThickButton>
+        </div>
+      </div>
+      {!!assignedAgents.length && <div className="absolute left-0 -translate-x-1/2 bottom-16" />}
+    </HiddenOnSmallScreen>
+  );
+};
+
+const LaneAssignment = ({
+  agent,
+  agents,
+  assignAgent,
+}: {
+  agent?: Agent;
+  agents: Agent[];
+  assignAgent: (x: Agent | undefined) => void;
+}) => {
+  const [showOptions, setShowOptions] = React.useState(false);
+  const [inputSearchValue, setInputSearchValue] = React.useState<string>();
+
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  useClickOutside(menuRef, () => setShowOptions(false), !showOptions);
+
+  React.useEffect(() => {
+    if (showOptions) {
+      inputRef.current?.focus();
+    }
+  }, [showOptions]);
+
+  const agentsToShow = React.useMemo(() => {
+    const eligible = agents.filter(a => ["owner", "admin", "agent"].includes(a.role));
+    const filtered = eligible.filter(
+      a => !inputSearchValue || a.name.toLowerCase().includes(inputSearchValue.toLowerCase())
+    );
+
+    const filteredAgents = agent ? filtered.filter(a => a.id !== agent.id) : filtered;
+
+    return filteredAgents.map((x, i) => {
+      const { name, image_url } = x;
+      return {
+        id: i,
+        displayLabel: name,
+        value: x,
+        option: <AgentView name={name} size={25} image_url={image_url} />,
+      };
+    });
+  }, [agent, agents, inputSearchValue]);
+
+  return (
+    <div ref={menuRef} className="relative">
+      <AgentSelector agent={agent} assignAgent={assignAgent} setShowOptions={setShowOptions} />
+      {showOptions && (
+        <div
+          className={classNames(
+            "z-20 absolute top-12 rounded-md right-0 max-w-80 py-2 bg-white fog:box-shadow-m"
+          )}
+        >
+          <SelectSearch
+            onChange={o => {
+              setShowOptions(false);
+              assignAgent(o.value);
+            }}
+            inputSearchValue={inputSearchValue}
+            setInputSearchValue={setInputSearchValue}
+            options={agentsToShow}
+            showOptions={!!agentsToShow.length}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AgentSelector = ({
+  agent,
+  setShowOptions,
+  assignAgent,
+}: {
+  agent: Agent | undefined;
+  setShowOptions: SetStateAction<boolean>;
+  assignAgent: (agent: Agent | undefined) => void;
+}) => {
+  return (
+    <div
+      className="cursor-pointer"
+      onClick={() =>
+        setShowOptions(x => {
+          return !x;
+        })
+      }
+    >
+      <div className="w-52 rounded-xl bg-gray-100 h-10 flex items-center px-3">
+        {agent ? (
+          <div className="w-full flex items-center justify-between gap-1">
+            <div className="flex gap-1 fog:text-caption-m items-center truncate">
+              <Avatar url={agent.image_url} name={agent.name} size={24} />
+              <span>{agent.name}</span>
+            </div>
+            <button
+              onClick={e => {
+                assignAgent(undefined);
+                e.stopPropagation();
+              }}
+              className="cursor-pointer text-gray-500 hover:text-brand-red-500"
+            >
+              <Icons.Trash className="w-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-1 items-center">
+            <Icons.InvitedUserIcon className="w-6 h-6" />
+            <span className="text-xs">Add agent</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -145,6 +460,19 @@ const AgentScheduleCard = () => {
             })}
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const AgentView = (props: AgentViewProps) => {
+  const { image_url, name, size } = props;
+  return (
+    <div className="flex items-center gap-x-2 p-2 hover:bg-gray-200 cursor-pointer">
+      <Avatar url={image_url} name={name} size={size} />
+      <div className="flex items-center truncate gap-x-1">
+        <span className="flex-1 truncate">{name}</span>
+        <Icons.AgentMark />
       </div>
     </div>
   );
