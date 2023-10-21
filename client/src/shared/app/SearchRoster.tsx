@@ -143,8 +143,8 @@ export const RoomItem: React.FC<{
   badge?: EventBadge;
   isAgent: boolean | undefined;
   ourId?: string;
-}> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent }) => {
-  const counterpart = calculateCounterpart(room);
+}> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent, ourId }) => {
+  const counterpart = calculateCounterpart(room, ourId);
   const name = counterpart?.name || room.name;
 
   const unreadCount = badge?.count;
