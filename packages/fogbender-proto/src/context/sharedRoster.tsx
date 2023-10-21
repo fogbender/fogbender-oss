@@ -43,6 +43,7 @@ export const useSharedRosterInternal = ({
   helpdeskId?: string;
   userId?: string;
 }) => {
+  const ourId = userId;
   const { serverCall, lastIncomingMessageAtom } = ws;
   const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
   const { isRosterReadyAtom, rosterViewSectionsAtom, rosterSectionsActionsAtom, rosterRoomFamily } =
@@ -120,8 +121,8 @@ export const useSharedRosterInternal = ({
       return;
     }
     // TODO maybe there's a better way to tell users and agents apart?
-    if (userId) {
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
+    if (ourId) {
+      const topic = ourId.startsWith("a") ? `agent/${ourId}/badges` : `user/${ourId}/badges`;
       serverCall({
         msgType: "Stream.Sub",
         topic,
@@ -129,15 +130,15 @@ export const useSharedRosterInternal = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, userId, serverCall]);
+  }, [fogSessionId, ourId, serverCall]);
 
   React.useEffect(() => {
     if (!fogSessionId) {
       return;
     }
-    if (userId && !badgesLoaded) {
+    if (ourId && !badgesLoaded) {
       // TODO maybe there's a better way to tell users and agents apart?
-      const topic = userId.startsWith("a") ? `agent/${userId}/badges` : `user/${userId}/badges`;
+      const topic = ourId.startsWith("a") ? `agent/${ourId}/badges` : `user/${ourId}/badges`;
       serverCall<StreamGet>({
         msgType: "Stream.Get",
         topic,
@@ -158,27 +159,27 @@ export const useSharedRosterInternal = ({
         })
         .catch(() => {});
     }
-  }, [fogSessionId, userId, badgesPrevCursor, badgesLoaded, updateBadges, serverCall]);
+  }, [fogSessionId, ourId, badgesPrevCursor, badgesLoaded, updateBadges, serverCall]);
 
   const updateRoster = React.useCallback(
     (roomsIn: EventRoom[], rosterRooms: EventRosterRoom[]) => {
       if (rosterRooms.length > 0) {
         dispatchRosterSections({ action: "update_roster", rosterRooms });
       }
-      if (userId && roomsIn.length > 0) {
+      if (ourId && roomsIn.length > 0) {
         setRawRoster(roster => {
           let newRoster = roster;
           roomsIn.forEach(room => {
             newRoster = newRoster.filter(x => room.id !== x.id);
             if (!room.remove) {
-              newRoster.push(eventRoomToRoom(room, userId));
+              newRoster.push(eventRoomToRoom(room, ourId));
             }
           });
           return newRoster;
         });
       }
     },
-    [userId]
+    [ourId]
   );
 
   onRoomRef.current = updateRoster;
@@ -276,9 +277,9 @@ export const useSharedRosterInternal = ({
     if (!fogSessionId) {
       return;
     }
-    if (userId) {
+    if (ourId) {
       // TODO maybe there's a better way to tell users and agents apart?
-      const topic = userId.startsWith("a") ? `agent/${userId}/seen` : `user/${userId}/seen`;
+      const topic = ourId.startsWith("a") ? `agent/${ourId}/seen` : `user/${ourId}/seen`;
       serverCall({
         msgType: "Stream.Sub",
         topic,
@@ -286,7 +287,7 @@ export const useSharedRosterInternal = ({
         console.assert(x.msgType === "Stream.SubOk");
       });
     }
-  }, [fogSessionId, userId, serverCall]);
+  }, [fogSessionId, ourId, serverCall]);
 
   const updateCustomers = React.useCallback((customersIn: EventCustomer[]) => {
     setCustomers(customers => {
@@ -387,6 +388,7 @@ export const useSharedRosterInternal = ({
       rosterViewSectionsAtom,
       rosterSectionsActionsAtom,
       rosterRoomFamily,
+      ourId,
     };
   }, [roster, roomById, badges, customers]);
 };

@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
 import { Badge, Env, Token } from ".";
+import { type VisitorInfo } from "./types";
 
 type FogbenderEventMap = {
   "configured": boolean;
@@ -48,11 +49,13 @@ export function renderIframe(
     token,
     headless,
     disableFit,
+    onVisitorInfo,
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
     url: string;
     token: Token;
+    onVisitorInfo: (info: VisitorInfo, reload: boolean) => void;
     headless?: boolean;
     disableFit?: boolean;
   },
@@ -88,6 +91,9 @@ export function renderIframe(
       window.Notification?.requestPermission().then(function (permission) {
         iFrame.contentWindow?.postMessage({ notificationsPermission: permission }, url);
       });
+    } else if (e.data?.type === "VISITOR_INFO") {
+      const visitorInfo: VisitorInfo = JSON.parse(e.data.visitorInfo);
+      onVisitorInfo?.(visitorInfo, e.data.reload);
     } else if (e.data?.type === "BADGES" && e.data?.badges !== undefined) {
       const badges: FogbenderEventMap["fogbender.badges"]["badges"] = JSON.parse(e.data.badges);
       events.badges = badges;

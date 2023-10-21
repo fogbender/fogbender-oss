@@ -1,19 +1,20 @@
-import { checkToken } from "./checkToken";
+import { checkToken, isVisitorToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
 import { createFloatingWidget } from "./floatingWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
-import type { Env, Fogbender, Token } from "./types";
+import type { Env, Fogbender, Token, VisitorInfo } from "./types";
 export type {
   Env,
   Token,
   FallbackToken,
+  VisitorToken,
   UserToken,
   Badge,
   Fogbender,
   FogbenderLoader,
   Snapshot,
 } from "./types";
-export { checkToken, isUserToken } from "./checkToken";
+export { checkToken, isUserToken, isVisitorToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";
@@ -34,6 +35,17 @@ export const createNewFogbender = (): Fogbender => {
       );
     }
     state.chatWindow?.focus();
+  };
+  const storeVisitorInfo = (info: VisitorInfo) => {
+    if (state.token) {
+      state.token.visitorToken = info.token;
+    }
+    const { widgetId } = info;
+    try {
+      localStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
+    } catch (e) {
+      console.error(e);
+    }
   };
   const updateConfigured = () => {
     const configured = !!state.url && !!state.token;
@@ -57,14 +69,31 @@ export const createNewFogbender = (): Fogbender => {
     },
     async setToken(token) {
       const tokenCheck = checkToken(token);
+      // true means bad
       if (tokenCheck) {
         throw new Error("Wrong token format:\n" + JSON.stringify(tokenCheck, null, 1));
       }
       state.token = token;
+      let visitorToken = undefined as undefined | string;
+      if (isVisitorToken(token)) {
+        const { widgetId } = token;
+        const key = `visitor-${widgetId}`;
+        try {
+          const visitorInfo = localStorage.getItem(key);
+          if (visitorInfo) {
+            const info = JSON.parse(visitorInfo);
+            visitorToken = info.token;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
       if (state.token) {
         state.token = {
           ...state.token,
           versions: { ...state.token.versions, ...state.versions, fogbender: "0.2.3" },
+          visitorToken,
+          visitUrl: window?.parent?.location?.toString(),
         };
       }
       updateConfigured();
@@ -88,27 +117,68 @@ export const createNewFogbender = (): Fogbender => {
         throw new Error("Fogbender: no token given");
       }
       const { token, url, env } = state;
-      const cleanup = createFloatingWidget(
+      return createFloatingWidget(
         state,
         openWindow,
-        el => renderIframe(state, { rootEl: el, env, token, url, disableFit: true }, openWindow),
+        el => {
+          const rerender = () => {
+            return renderIframe(
+              state,
+              {
+                rootEl: el,
+                env,
+                token,
+                url,
+                disableFit: true,
+                onVisitorInfo: (info, reload) => {
+                  storeVisitorInfo(info);
+                  if (reload) {
+                    cleanup();
+                    cleanup = rerender();
+                  }
+                },
+              },
+              openWindow
+            );
+          };
+          let cleanup = rerender();
+          return () => {
+            cleanup();
+          };
+        },
         opts
       );
-      return cleanup;
     },
     async renderIframe(opts) {
-      if (!state.url) {
-        throw new Error("Fogbender: no url given");
-      }
-      if (!state.token) {
-        throw new Error("Fogbender: no token given");
-      }
-      const cleanup = renderIframe(
-        state,
-        { ...opts, env: state.env, token: state.token, url: state.url },
-        openWindow
-      );
-      return cleanup;
+      const rerender = () => {
+        if (!state.url) {
+          throw new Error("Fogbender: no url given");
+        }
+        if (!state.token) {
+          throw new Error("Fogbender: no token given");
+        }
+        return renderIframe(
+          state,
+          {
+            ...opts,
+            env: state.env,
+            token: state.token,
+            url: state.url,
+            onVisitorInfo: (info, reload) => {
+              storeVisitorInfo(info);
+              if (reload) {
+                cleanup();
+                cleanup = rerender();
+              }
+            },
+          },
+          openWindow
+        );
+      };
+      let cleanup = rerender();
+      return () => {
+        cleanup();
+      };
     },
     async renderUnreadBadge(opts) {
       const cleanup = renderUnreadBadge(state, openWindow, opts);

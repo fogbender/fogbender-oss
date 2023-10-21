@@ -21,7 +21,17 @@ export type AgentToken = {
   versions?: { [key: string]: string };
 };
 
-export type AnyToken = UserToken | AgentToken;
+export type VisitorToken = {
+  widgetId: string;
+  visitor: true;
+  userId?: string;
+  visitorKey?: string;
+  visitorToken?: string;
+  visitUrl?: string;
+  versions?: { [key: string]: string };
+};
+
+export type AnyToken = UserToken | AgentToken | VisitorToken;
 
 // UTILITY TYPES
 
@@ -75,6 +85,10 @@ export type APISchema = {
   MessageRefreshFilesRPC: RPC<MessageRefreshFiles, MessageOk>;
   AuthUserRPC: RPC<AuthUser, AuthError | AuthOk>;
   AuthAgentRPC: RPC<AuthAgent, AuthError | AuthOk>;
+  AuthVisitorRPC: RPC<AuthVisitor, AuthError | AuthOk>;
+  VisitorNewRPC: RPC<VisitorNew, VisitorError | VisitorOk>;
+  VisitorVerifyEmailRPC: RPC<VisitorVerifyEmail, VisitorError | VisitorOk>;
+  VisitorVerifyCodeRPC: RPC<VisitorVerifyCode, VisitorError | VisitorOk>;
   EchoRPC: RPC<EchoGet, EchoOk>;
   PingRPC: RPC<PingPing, PingPong>;
   TypingRPC: RPC<TypingSet, undefined>;
@@ -707,6 +721,37 @@ export type AuthAgent = {
   token: string;
 } & AgentToken;
 
+export type AuthVisitor = {
+  msgId?: string;
+  msgType: "Auth.Visitor";
+  widgetId: string;
+  token?: string;
+  visitorKey?: string;
+  localTimestamp?: string;
+  visitUrl?: string;
+};
+
+export type VisitorNew = {
+  msgId?: string;
+  msgType: "Visitor.New";
+  widgetId: string;
+  localTimestamp: string;
+};
+
+export type VisitorVerifyEmail = {
+  msgId?: string;
+  msgType: "Visitor.VerifyEmail";
+  email: string;
+};
+
+export type VisitorVerifyCode = {
+  msgId?: string;
+  msgType: "Visitor.VerifyCode";
+  emailCode: string;
+};
+
+export type VisitorError = Error<"Visitor.Err">;
+
 export type AuthError = Error<"Auth.Err">;
 
 export type AuthOk = {
@@ -714,11 +759,26 @@ export type AuthOk = {
   msgType: "Auth.Ok";
   sessionId: string;
   userId: string;
+  userName: string;
+  userEmail: string;
   helpdeskId: string;
   helpdesk?: Helpdesk;
   userAvatarUrl?: string;
   avatarLibraryUrl?: string;
+  visitorAvatarLibraryUrl?: string;
   role?: string;
+  widgetId?: string;
+  customerName?: string;
+  isVisitor?: boolean;
+  emailVerified?: boolean;
+  visitorToken?: string;
+};
+
+export type VisitorOk = {
+  msgId: string;
+  msgType: "Visitor.Ok";
+  userId?: string;
+  token?: string;
 };
 
 export type EchoGet = {
@@ -898,6 +958,8 @@ export type EventRoom = {
   helpdeskId: string;
   id: string;
   name: string;
+  displayNameForUser: string | null;
+  displayNameForAgent: string | null;
   isTriage?: boolean;
   imageUrl: string; // search template
   email: string; // search template
