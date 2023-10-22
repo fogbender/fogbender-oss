@@ -11,6 +11,7 @@ export const createNewFogbender = (): Fogbender => {
     url: undefined as string | undefined,
     iframe: undefined as HTMLIFrameElement | undefined,
     chatWindow: null as null | Window,
+    mode: "light" as "light" | "dark",
   };
   const fogbender: Fogbender & { _privateData: any } = {
     _privateData: state,
@@ -59,6 +60,10 @@ export const createNewFogbender = (): Fogbender => {
     },
     async renderUnreadBadge() {
       return () => {};
+    },
+    async setMode(_mode: "light" | "dark") {
+      state.mode = _mode;
+      return fogbender;
     },
   };
   return fogbender;
