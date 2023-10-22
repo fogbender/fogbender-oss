@@ -93,6 +93,13 @@ const calculateDisplacement = (timezone: string, totalDistance: number, headerHe
     distanceCoveredInSec,
   };
 };
+
+export const msUntilEndOfDay = (tzDayjs: dayjs.Dayjs) => {
+  const endOfDay = tzDayjs.endOf("day");
+  const difference = endOfDay.diff(tzDayjs, "millisecond");
+  return difference;
+};
+
 export const getTotalDisplacement = (totalDistance: number, initialPosition: number = 0) => {
   return (timezone: string) => {
     return calculateDisplacement(timezone, totalDistance, initialPosition);
