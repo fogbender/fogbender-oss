@@ -1217,8 +1217,9 @@ export const App: React.FC<{
                 >
                   <div className="w-full shrink-0 snap-center flex">
                     <div
-                      className="flex items-center cursor-pointer"
-                      onClick={() => {
+                      className="flex items-center cursor-pointer z-20"
+                      onClick={e => {
+                        e.preventDefault();
                         setMode(m => (m === "light" ? "dark" : "light"));
                       }}
                     >
