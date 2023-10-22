@@ -11,7 +11,7 @@ import {
   useClickOutside,
   useInputWithError,
 } from "fogbender-client/src/shared";
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import { useQuery } from "react-query";
 
@@ -67,6 +67,14 @@ type LaneAssignmentState = {
   num: number;
 };
 
+type SelectionState = Record<
+  Agent["id"],
+  {
+    available: boolean;
+    startTime: { selectedDay: number; selectedHour: number };
+  }
+>;
+
 type SetStateAction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type ShiftModes = "add" | "edit" | undefined;
@@ -81,6 +89,7 @@ type WeekState = {
 };
 
 const selectedTimezone = atom<string>(dayjs.tz.guess());
+const selectionStateAtom = atom<SelectionState>({});
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
   const { children, className } = props;
@@ -304,22 +313,72 @@ const Week = React.memo(({ laneAssignments }: { laneAssignments: AgentLane[] }) 
   );
 });
 
-const Day = React.memo(({ currentDay, day, dayIndex }: DayProps) => {
-  const isWeekend = dayIndex === 5 || dayIndex === 6;
+const Day = React.memo(
+  ({ currentDay, day, dayIndex, laneAssignments, weekState, setWeekState }: DayProps) => {
+    const isWeekend = dayIndex === 5 || dayIndex === 6;
+
+    return (
+      <div className={classNames("flex flex-col flex-grow relative", dayIndex !== 0 && "border-l")}>
+        <span className="flex justify-center items-center border-b h-10 relative font-semibold capitalize text-xs">
+          <span className={classNames(isWeekend && "text-gray-400")}>{day}</span>
+          {dayIndex + 1 === currentDay && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+              <Pill text="Today" />
+            </span>
+          )}
+        </span>
+        {!!laneAssignments.length && (
+          <div className="flex justify-evenly mt-3">
+            {laneAssignments.map((la, i) => (
+              <Lane
+                key={`la-${i}`}
+                weekState={weekState}
+                setWeekState={setWeekState}
+                dayIndex={dayIndex}
+                laneAssignment={la}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+const Lane = ({
+  laneAssignment,
+}: {
+  weekState: WeekState;
+  setWeekState: SetStateAction<WeekState>;
+  laneAssignment: AgentLane;
+  dayIndex: number;
+}) => {
+  const { agent } = laneAssignment;
+  const title = `${agent.name} (${agent.email})`;
+
+  const laneRef = React.useRef<HTMLDivElement>(null);
+
+  const [selectionState, setSelectionState] = useAtom(selectionStateAtom);
+
+  const emptySelectionState = Object.keys(selectionState).length === 0;
+
+  useClickOutside(laneRef, () => setSelectionState({}), emptySelectionState);
 
   return (
-    <div className={classNames("flex flex-col flex-grow relative", dayIndex !== 0 && "border-l")}>
-      <span className="flex justify-center items-center border-b h-10 relative font-semibold capitalize text-xs">
-        <span className={classNames(isWeekend && "text-gray-400")}>{day}</span>
-        {dayIndex + 1 === currentDay && (
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-            <Pill text="Today" />
-          </span>
-        )}
-      </span>
+    <div ref={laneRef} className="flex flex-col justify-end items-center gap-1">
+      <div className="flex flex-col gap-1 items-center h-[100px] overflow-y-hidden" title={title}>
+        <span
+          className="text-xs h-[6rem] max-h-[6rem] truncate rotate-180 cursor-default"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          {agent.name}
+        </span>
+        <Avatar withTitle={false} url={agent.image_url} name={agent.name} size={24} />
+      </div>
+      <div className="mt-2" />
     </div>
   );
-});
+};
 
 const LaneAssignment = ({
   agent,
