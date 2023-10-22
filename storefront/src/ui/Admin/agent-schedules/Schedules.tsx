@@ -256,6 +256,13 @@ const Shift = ({
         </div>
         <div className="relative h-[738px]">
           <Week laneAssignments={assignedAgents} />
+          {!!assignedAgents.length ? (
+            <CurrentLinePosition />
+          ) : (
+            <div className="h-full flex items-center text-gray-500 justify-center text-xl">
+              Please select an agent
+            </div>
+          )}
         </div>
         <div className="flex items-center justify-end gap-2">
           <LinkButton onClick={() => setShiftMode(undefined)}>Cancel Changes</LinkButton>
