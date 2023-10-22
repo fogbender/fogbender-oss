@@ -10,17 +10,17 @@ import {
   useLoadAround,
   useSharedRoster,
 } from "fogbender-proto";
-import { useAtomValue, useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { v4 as uuidv4 } from "uuid";
 
 import { SourceMessages } from "../messages/MessageView";
+import { modeAtom } from "../store/config.store";
 import { formatCustomerName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 import { DeletedFileIdsAtom, FileIdsAtom } from "../utils/useFileUpload";
 import { usePrevious } from "../utils/usePrevious";
-import { modeAtom } from "../store/config.store";
 
 import {
   MentionsPopup,

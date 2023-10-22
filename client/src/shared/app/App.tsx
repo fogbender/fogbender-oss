@@ -36,9 +36,9 @@ import {
 import { Modal } from "../components/Modal";
 import {
   hideWelcomeAtom,
+  modeAtom,
   muteNotificationsAtom,
   showOutlookRosterAtom,
-  modeAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";

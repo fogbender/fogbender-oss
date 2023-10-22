@@ -1,7 +1,7 @@
 import { DialogContent, DialogOverlay } from "@reach/dialog";
 import classNames from "classnames";
-import React from "react";
 import { useAtomValue } from "jotai";
+import React from "react";
 
 import { modeAtom } from "../store/config.store";
 

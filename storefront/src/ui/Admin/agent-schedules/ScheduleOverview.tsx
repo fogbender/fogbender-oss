@@ -4,7 +4,9 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { Avatar, Icons, ThinButton } from "fogbender-client/src/shared";
 import { atom, useAtom } from "jotai";
 import React from "react";
+
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
+
 import { Layout } from "./Schedules";
 import {
   DaysOfWeek,
@@ -314,7 +316,7 @@ const getWeekDays = (tzDayjs: dayjs.Dayjs, today: dayjs.Dayjs) => {
     const day = DaysOfWeek[weekDay as DayKeys];
 
     week.push({
-      date: date,
+      date,
       day: day?.substring(0, 3).toUpperCase(),
       today: today.isSame(dateToCompare, "day"),
       dateObj: dateToCompare,

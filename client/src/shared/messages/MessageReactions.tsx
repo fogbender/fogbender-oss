@@ -1,14 +1,14 @@
 import classNames from "classnames";
 import Picker, { Theme } from "emoji-picker-react";
 import { Reaction } from "fogbender-proto";
-import React from "react";
 import { useAtomValue } from "jotai";
+import React from "react";
 
 import { Icons } from "../components/Icons";
+import { modeAtom } from "../store/config.store";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
-import { modeAtom } from "../store/config.store";
 
 const defaultEmojis = ["👍", "🔥", "❤️", "✅"];
 

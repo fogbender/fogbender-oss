@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+
 import { atomWithRealTimeLocalStorage } from "../utils/atomWithLocalStorage";
 
 export const modeAtom = atom("light" as "light" | "dark");

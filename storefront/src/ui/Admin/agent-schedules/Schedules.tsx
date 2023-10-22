@@ -22,11 +22,11 @@ import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 import SelectSearch from "./SelectSearch";
 import {
   DaysOfWeek,
+  getTotalDisplacement,
   HiddenOnSmallScreen,
+  msUntilEndOfDay,
   TimeLapse,
   TimezoneSelector,
-  getTotalDisplacement,
-  msUntilEndOfDay,
 } from "./Utils";
 
 dayjs.extend(timezone);
