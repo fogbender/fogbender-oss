@@ -48,7 +48,8 @@ export function useTxtArea(opts: UseTxtAreaOptions) {
         onChange={e => setValue(e.target.value)}
         maxRows={5}
         className={classNames(
-          "fbr-scrollbar fbr-placeholder-truncate w-full resize-none rounded bg-gray-100 py-1.5 px-2.5 text-base text-black placeholder:text-gray-500 focus:outline-none sm:text-sm"
+          "fbr-scrollbar fbr-placeholder-truncate w-full resize-none rounded bg-gray-100 py-1.5 px-2.5 text-base text-black placeholder:text-gray-500 focus:outline-none sm:text-sm",
+          "dark:bg-black dark:text-white"
         )}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}

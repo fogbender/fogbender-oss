@@ -57,8 +57,8 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
       className={classNames(
         "relative layout-nodrag sm:mr-2 cursor-pointer",
         !singleRoomMode && isActive
-          ? "text-white hover:text-white"
-          : "text-gray-500 hover:text-black"
+          ? "text-white hover:text-brand-red-500 dark:text-gray-400 dark:hover:text-brand-red-500"
+          : "text-gray-500 hover:text-brand-red-500"
       )}
       onClick={() => setExpanded(x => !x)}
     >
@@ -67,13 +67,17 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
         ref={menuRef}
         className={classNames(
           "absolute z-20 top-full right-0 py-2 rounded-md fog:box-shadow-m bg-white text-black fog:text-body-m",
+          "dark:bg-black dark:text-white",
           expanded ? "block" : "hidden"
         )}
       >
         {onGoFullScreen && (
           <div
             onClick={onGoFullScreen}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            className={classNames(
+              "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+              "dark:hover:bg-gray-600"
+            )}
           >
             <span>
               <Icons.FullScreen className="w-6 text-gray-500 group-hover:text-gray-800" />
@@ -84,7 +88,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
         {isAgent && (
           <div
             onClick={onRosterPinRoom}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            className={classNames(
+              "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+              "dark:hover:bg-gray-600"
+            )}
           >
             <span>
               <Icons.Pin
@@ -99,7 +106,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
 
         <div
           onClick={() => onSetRoomPin?.(paneId, !isLayoutPinned)}
-          className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+          className={classNames(
+            "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+            "dark:hover:bg-gray-600"
+          )}
         >
           <span>
             <Icons.Pin
@@ -113,7 +123,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
         {roomId && onOpenSearch && (
           <div
             onClick={() => onOpenSearch(roomId)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            className={classNames(
+              "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+              "dark:hover:bg-gray-600"
+            )}
           >
             <span>
               <Icons.Search
@@ -127,7 +140,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
         {room && room.type !== "dialog" && onSettings && (
           <div
             onClick={() => onSettings(room.id)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            className={classNames(
+              "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+              "dark:hover:bg-gray-600"
+            )}
           >
             <span>
               <Icons.GearNoFill className="w-6 text-gray-500 group-hover:text-gray-800" />
@@ -146,7 +162,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
                   onClose?.(paneId);
                 }
               }}
-              className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+              className={classNames(
+                "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+                "dark:hover:bg-gray-600"
+              )}
             >
               <span>
                 <Icons.Leave
@@ -160,7 +179,10 @@ export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
         {paneId && !singleRoomMode && !isExpanded && (
           <div
             onClick={() => onCloseOtherRooms?.(paneId)}
-            className="flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate"
+            className={classNames(
+              "flex group items-center gap-x-2 py-1.5 px-4 hover:bg-gray-100 cursor-pointer truncate",
+              "dark:hover:bg-gray-600"
+            )}
           >
             <span>
               <Icons.FullScreen
