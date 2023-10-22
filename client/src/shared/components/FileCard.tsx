@@ -16,6 +16,7 @@ export const FileCard: React.FC<{
     <div
       className={classNames(
         "fog:box-shadow-s fog:text-caption-m relative rounded border border-white bg-white",
+        "dark:border-gray-400 dark:bg-gray-900",
         className
       )}
       title={title}
