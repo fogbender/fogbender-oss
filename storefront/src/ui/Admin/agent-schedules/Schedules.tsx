@@ -14,6 +14,7 @@ import {
 import { atom, useAtom } from "jotai";
 import React from "react";
 import { useQuery } from "react-query";
+import { v4 as uuidv4 } from "uuid";
 
 import { Vendor } from "../../../redux/adminApi";
 import { apiServer, queryKeys } from "../../client";
@@ -38,12 +39,23 @@ const AgentLaneDefaultValue = [
   { num: 3, agent: undefined },
 ];
 
+const SAME_DAY = "SAME_DAY";
+const PREVIOUS_DAY = "PREVOIUS_DAY";
+const NEXT_DAY = "NEXT_DAY";
+const DIFFERENT_DAY = "DIFFERENT_DAY";
+const UNKNOWN_DAY = "UNKNOWN_DAY";
+
+const START_HOUR = 0;
+const FINISH_HOUR = 47;
+
 const HEADER_HEIGHT = 164; // all height or distance units are in pixels
 const HOURS_LANE_HEIGHT = 576;
 
 const totalDistance = HEADER_HEIGHT + HOURS_LANE_HEIGHT;
 
 const getDisplacement = getTotalDisplacement(HOURS_LANE_HEIGHT, HEADER_HEIGHT);
+
+type AgentInfo = Record<string, { hoveredStartTime: number; hoveredFinishTime: number }>;
 
 type AgentLane = {
   agent: Agent;
@@ -76,6 +88,26 @@ type DayProps = {
   weekState: WeekState;
 };
 
+type HalfHourArgument<T> = (h: number) => T;
+
+type HalfHourProps = SelectableHourProps & {
+  day: number;
+  currentHour: number;
+  currentDayIndex: number;
+  finishTime: number;
+  selectedHour: number;
+  startTime: number;
+  addHoveredRange: HalfHourArgument<void>;
+  checkIsHourOccupied: HalfHourArgument<AgentSchedule[]>;
+  onHourClick: HalfHourArgument<void>;
+  onRemoveSchedule: (scheduleId: string) => void;
+  setHintPosition: SetStateAction<number | undefined>;
+  setHoveredRange: (update: SetStateAction<{} | HoveredRange>) => void;
+  toggleAgentAvailability: (schedule: AgentSchedule) => void;
+};
+
+type HoveredRange = Record<string, AgentInfo>;
+
 type LaneAssignmentState = {
   agent: Agent | undefined;
   num: number;
@@ -93,6 +125,13 @@ type SetStateAction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type ShiftModes = "add" | "edit" | undefined;
 
+type SelectableHourProps = {
+  agent: Agent;
+  dayIndex: number;
+  weekState: WeekState;
+  setWeekState: SetStateAction<WeekState>;
+};
+
 type ShiftName = {
   name: string | undefined;
 };
@@ -104,6 +143,7 @@ type WeekState = {
 
 const selectedTimezone = atom<string>(dayjs.tz.guess());
 const selectionStateAtom = atom<SelectionState>({});
+const hoveredRangeAtom = atom<HoveredRange | {}>({});
 const hintPositionAtom = atom<number | undefined>(undefined);
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
@@ -315,6 +355,285 @@ const Hours = () => {
   );
 };
 
+const SelectableHours = (props: SelectableHourProps) => {
+  const halfHours = Array.from({ length: 48 }, (_, i) => i);
+  const { agent, dayIndex, weekState, setWeekState } = props;
+
+  const [hintPosition, setHintPosition] = useAtom(hintPositionAtom);
+  const [hoveredRange, setHoveredRange] = useAtom(hoveredRangeAtom);
+  const [selectionState, setSelectionState] = useAtom(selectionStateAtom);
+
+  const currentDayIndex = dayIndex + 1;
+
+  const agentData = selectionState[agent.id];
+
+  const { selectedDay, selectedHour } = agentData?.startTime || {};
+
+  const { available } = agentData || {};
+
+  const hoveredTimeRange = (
+    hoveredRange[currentDayIndex as keyof typeof hoveredRange] as AgentInfo
+  )?.[agent.id];
+
+  const hoveredStartTime = hoveredTimeRange?.hoveredStartTime;
+
+  const hoveredFinishTime = hoveredTimeRange?.hoveredFinishTime;
+
+  const checkIsHourOccupied = React.useCallback(
+    h => {
+      const agentSchedules = weekState.schedule.filter(schedule => schedule.agentId === agent.id);
+
+      const scheduleIds: string[] = [];
+
+      agentSchedules.forEach(aSchedules => {
+        const { startDate, finishDate, startTime, finishTime } = aSchedules;
+
+        const daySelection =
+          startDate === finishDate
+            ? SAME_DAY
+            : currentDayIndex >= startDate && currentDayIndex <= finishDate
+            ? DIFFERENT_DAY
+            : UNKNOWN_DAY;
+
+        const isSameDay = currentDayIndex === startDate && h >= startTime && h <= finishTime;
+
+        const isDifferentDay =
+          (currentDayIndex === startDate && h >= startTime) ||
+          (currentDayIndex === finishDate && h <= finishTime) ||
+          (currentDayIndex > startDate &&
+            currentDayIndex < finishDate &&
+            h >= START_HOUR &&
+            h <= FINISH_HOUR);
+
+        const missingScheduleId = !scheduleIds.includes(aSchedules.scheduleId);
+
+        if (daySelection === SAME_DAY && isSameDay && missingScheduleId) {
+          scheduleIds.push(aSchedules.scheduleId);
+        } else if (daySelection === DIFFERENT_DAY && isDifferentDay && missingScheduleId) {
+          scheduleIds.push(aSchedules.scheduleId);
+        }
+      });
+
+      return [
+        ...agentSchedules.filter(
+          schedule => scheduleIds.includes(schedule.scheduleId) && schedule.available
+        ),
+        ...agentSchedules.filter(
+          schedule => scheduleIds.includes(schedule.scheduleId) && !schedule.available
+        ),
+      ]; // Prioritize unavailable schedules by placing them last for higher priority when scheduling conflicts arise.
+    },
+    [agent.id, currentDayIndex, weekState]
+  );
+
+  const getSortedDayTime = (T1: number, T2: number) => {
+    const isStartDaySmaller = selectedDay > currentDayIndex;
+
+    /* To ensure that the selected dates are in the correct order, prioritize future dates as the end date.
+      If a future date is selected as the start date, swap its value to maintain the end date in the future.*/
+
+    const [startDate, finishDate] = isStartDaySmaller
+      ? [currentDayIndex, selectedDay]
+      : [selectedDay, currentDayIndex];
+
+    let [startTime, finishTime] = isStartDaySmaller ? [T2, T1] : [T1, T2];
+
+    if (selectedDay === currentDayIndex && startTime > finishTime) {
+      [startTime, finishTime] = [finishTime, startTime];
+    }
+    return { startTime, finishTime, startDate, finishDate };
+  };
+
+  const getNewSchedule = (h: number) => {
+    const { startDate, finishDate, startTime, finishTime } = getSortedDayTime(selectedHour, h);
+    return {
+      scheduleId: uuidv4(),
+      available: true,
+      startDate,
+      startTime,
+      finishDate,
+      finishTime,
+      agentId: agent.id,
+      week: 6,
+    };
+  };
+
+  const addAgentSchedule = (h: number) => {
+    const agentSelectionState = selectionState[agent.id];
+
+    if (agentSelectionState) {
+      const newSchedule = getNewSchedule(h);
+
+      setWeekState(prev => ({ ...prev, schedule: [...prev.schedule, newSchedule] }));
+
+      setSelectionState({});
+    } else {
+      const newSelectionState = {
+        [agent.id]: {
+          available,
+          startTime: { selectedDay: currentDayIndex, selectedHour: h },
+        },
+      };
+
+      setSelectionState(prev => ({ ...prev, ...newSelectionState }));
+    }
+  };
+
+  const onHourClick = (h: number) => {
+    addAgentSchedule(h);
+    setHoveredRange({});
+  };
+
+  const fillHoveredRange = (start: number, finish: number, previousCopy: HoveredRange) => {
+    for (let i = start; i < finish; i++) {
+      previousCopy = {
+        ...previousCopy,
+        [i]: { [agent.id]: { hoveredStartTime: START_HOUR, hoveredFinishTime: FINISH_HOUR } },
+      };
+    }
+    return previousCopy;
+  };
+
+  const addHoveredRange = (h: number) => {
+    if (!selectedDay) return;
+    const day =
+      selectedDay === currentDayIndex
+        ? SAME_DAY
+        : selectedDay > currentDayIndex
+        ? PREVIOUS_DAY
+        : NEXT_DAY;
+
+    setHoveredRange(prev => {
+      switch (day) {
+        case SAME_DAY: {
+          const [hoveredStartTime, hoveredFinishTime] =
+            h > selectedHour ? [selectedHour + 1, h] : [h, selectedHour - 1];
+          return {
+            ...prev,
+            [currentDayIndex]: { [agent.id]: { hoveredStartTime, hoveredFinishTime } },
+          };
+        }
+        case PREVIOUS_DAY: {
+          const newHoveredRange = {
+            ...prev,
+            [currentDayIndex]: {
+              [agent.id]: { hoveredStartTime: h, hoveredFinishTime: FINISH_HOUR },
+            },
+            [selectedDay]: {
+              [agent.id]: { hoveredStartTime: START_HOUR, hoveredFinishTime: selectedHour - 1 },
+            },
+          };
+
+          return fillHoveredRange(currentDayIndex + 1, selectedDay, newHoveredRange);
+        }
+        case NEXT_DAY: {
+          const newHoveredRange = {
+            ...prev,
+            [currentDayIndex]: {
+              [agent.id]: { hoveredStartTime: START_HOUR, hoveredFinishTime: h },
+            },
+            [selectedDay]: {
+              [agent.id]: { hoveredStartTime: selectedHour + 1, hoveredFinishTime: FINISH_HOUR },
+            },
+          };
+
+          return fillHoveredRange(selectedDay + 1, currentDayIndex, newHoveredRange);
+        }
+      }
+    });
+  };
+
+  const toggleAgentAvailability = (agentSchedule: AgentSchedule) => {
+    const { scheduleId, available } = agentSchedule;
+    setWeekState(prev => {
+      const previousCopy = { ...prev };
+
+      const existingSchedule = previousCopy.schedule.find(
+        schedule => schedule.scheduleId === scheduleId
+      );
+
+      if (existingSchedule) {
+        existingSchedule.available = !available;
+      }
+
+      return previousCopy;
+    });
+  };
+
+  const onRemoveSchedule = (scheduleId: string) => {
+    setWeekState(prev => {
+      const filteredSchedule = prev.schedule.filter(s => s.scheduleId !== scheduleId);
+      return { ...prev, schedule: filteredSchedule };
+    });
+    setSelectionState({});
+  };
+
+  const forwardProps = {
+    ...props,
+    currentDayIndex,
+    day: selectedDay,
+    hintPosition,
+    selectedHour,
+    startTime: hoveredStartTime,
+    finishTime: hoveredFinishTime,
+    addHoveredRange,
+    checkIsHourOccupied,
+    onHourClick,
+    setHintPosition,
+    setHoveredRange,
+    onRemoveSchedule,
+    toggleAgentAvailability,
+  };
+
+  return (
+    <div className={classNames("flex flex-col relative")}>
+      {halfHours.map(h => {
+        return <HalfHour key={h} currentHour={h} {...forwardProps} />;
+      })}
+    </div>
+  );
+};
+
+const HalfHour = (props: HalfHourProps) => {
+  const {
+    day,
+    currentDayIndex,
+    selectedHour,
+    startTime,
+    finishTime,
+    currentHour,
+    addHoveredRange,
+    onHourClick,
+    setHintPosition,
+    setHoveredRange,
+  } = props;
+
+  const isHourInSelection = day === currentDayIndex && selectedHour === currentHour;
+
+  const classes = {
+    "bg-blue-400": isHourInSelection,
+    "hover:bg-blue-100": !isHourInSelection,
+    "rounded-t": currentHour === START_HOUR,
+    "rounded-b": currentHour === FINISH_HOUR,
+    "bg-blue-100": currentHour >= startTime && currentHour <= finishTime,
+  };
+
+  return (
+    <div
+      onClick={() => onHourClick(currentHour)}
+      onMouseOver={() => {
+        addHoveredRange(currentHour);
+        setHintPosition(currentHour);
+      }}
+      onMouseOut={() => {
+        setHoveredRange(() => ({})); // TODO:Find issue
+        setHintPosition(undefined);
+      }}
+      className={classNames("py-1.5 bg-gray-100 relative h-2 w-4", classes)}
+    />
+  );
+};
+
 const Week = React.memo(({ laneAssignments }: { laneAssignments: AgentLane[] }) => {
   const days = Object.values(DaysOfWeek);
 
@@ -395,6 +714,9 @@ const Day = React.memo(
 );
 
 const Lane = ({
+  dayIndex,
+  weekState,
+  setWeekState,
   laneAssignment,
 }: {
   weekState: WeekState;
@@ -424,7 +746,14 @@ const Lane = ({
         </span>
         <Avatar withTitle={false} url={agent.image_url} name={agent.name} size={24} />
       </div>
-      <div className="mt-2" />
+      <div className="mt-2">
+        <SelectableHours
+          agent={agent}
+          dayIndex={dayIndex}
+          weekState={weekState}
+          setWeekState={setWeekState}
+        />
+      </div>
     </div>
   );
 };
