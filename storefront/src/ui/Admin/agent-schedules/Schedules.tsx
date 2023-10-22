@@ -90,6 +90,7 @@ type WeekState = {
 
 const selectedTimezone = atom<string>(dayjs.tz.guess());
 const selectionStateAtom = atom<SelectionState>({});
+const hintPositionAtom = atom<number | undefined>(undefined);
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
   const { children, className } = props;
@@ -261,8 +262,35 @@ const Shift = ({
           <ThickButton className="!px-4 !py-3">Save Schedule</ThickButton>
         </div>
       </div>
-      {!!assignedAgents.length && <div className="absolute left-0 -translate-x-1/2 bottom-16" />}
+      {!!assignedAgents.length && (
+        <div className="absolute left-0 -translate-x-1/2 bottom-16">
+          <Hours />
+        </div>
+      )}
     </HiddenOnSmallScreen>
+  );
+};
+
+const Hours = () => {
+  const hours = Array.from({ length: 49 }, (_, i) => i);
+
+  const [hintPosition] = useAtom(hintPositionAtom);
+
+  return (
+    <div className=" font-body rounded-xl fog:box-shadow bg-white px-2 pt-2 h-[608px]">
+      {hours.map(h => (
+        <div className="relative mb-2" key={h}>
+          {h % 2 === 0 && (
+            <span className={classNames("w-4 text-xs text-gray-400 block h-full")}>
+              <span>{((h / 2) % 24).toString().padStart(2, "0")}</span>
+            </span>
+          )}
+          {h === hintPosition && (
+            <div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-full h-4 font-bold border-l-4 border-brand-red-500" />
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 
