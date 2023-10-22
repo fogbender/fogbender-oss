@@ -92,7 +92,7 @@ export const RoomSettings: React.FC<{
     error: roomNameError,
     defaultValue: defaultTxtAreaValue,
     disabled: isReadOnly,
-    className: !isAgent ? "!bg-gray-100 border-gray-100" : "",
+    className: !isAgent ? "border-gray-100" : "",
   });
 
   const [membersToAdd, setMembersToAdd] = React.useState<string[]>([]);
@@ -400,7 +400,9 @@ export const RoomSettings: React.FC<{
       }}
     >
       <div className="flex items-center gap-x-4 mb-6">
-        <div className="flex-1 text-gray-700 leading-none text-right">Room settings</div>
+        <div className="flex-1 text-gray-700 dark:text-gray-300 leading-none text-right">
+          Room settings
+        </div>
       </div>
 
       <div className="my-4">{roomNameInput}</div>
@@ -900,7 +902,7 @@ export const RoomSettings: React.FC<{
           }}
           className={classNames("width-12 invisible pointer-cursor")}
         >
-          <ThickButton>Show tags</ThickButton>
+          <ThickButton className="dark:text-gray-800">Show tags</ThickButton>
         </div>
       </div>
     </form>

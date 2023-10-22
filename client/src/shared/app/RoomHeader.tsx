@@ -1034,8 +1034,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             className={classNames(
               "layout-nodrag hidden sm:block cursor-pointer",
               !singleRoomMode && isActive
-                ? "text-white hover:text-white"
-                : "text-gray-500 hover:text-black"
+                ? "text-white hover:text-brand-red-500 dark:text-gray-400 dark:hover:text-brand-red-500"
+                : "text-gray-500 hover:text-brand-red-500"
             )}
             onClick={e => {
               e.stopPropagation();

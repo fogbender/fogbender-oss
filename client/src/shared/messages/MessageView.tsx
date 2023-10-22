@@ -1197,15 +1197,15 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
         <div
           ref={menuRef}
           className={classNames(
-            "absolute z-10 bottom-8 right-0 flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m",
-            "dark:bg-gray-600 dark:text-white"
+            "absolute z-10 bottom-9 right-0 flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m",
+            "dark:bg-black dark:text-white"
           )}
         >
           {!isGroupPinned && !isPinned && (
             <button
               className={classNames(
                 "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-500"
+                "dark:hover:bg-gray-600"
               )}
               onClick={onGroupPinRoom}
             >
@@ -1224,7 +1224,7 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
             <button
               className={classNames(
                 "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-500"
+                "dark:hover:bg-gray-600"
               )}
               onClick={onPinRoom}
             >
@@ -1243,7 +1243,7 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
             <button
               className={classNames(
                 "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-500"
+                "dark:hover:bg-gray-600"
               )}
               onClick={isPinned ? onPinRoom : onGroupPinRoom}
             >
@@ -1256,14 +1256,14 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
           <button
             className={classNames(
               "hover:bg-gray-100 px-4 py-2 text-left whitespace-nowrap",
-              "dark:hover:bg-gray-500"
+              "dark:hover:bg-gray-600"
             )}
             onClick={() => onMarkMessageUnread?.(message)}
           >
             Mark as unread and close pane
           </button>
           <ClipboardCopy
-            className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-500")}
+            className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-600")}
             text={`${window.location.href}/${message.roomId}/${message.id}`}
             onCopy={() => setCopied(true)}
           >
