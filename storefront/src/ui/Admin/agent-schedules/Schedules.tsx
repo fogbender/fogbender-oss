@@ -17,9 +17,10 @@ import { useQuery } from "react-query";
 
 import { Vendor } from "../../../redux/adminApi";
 import { apiServer, queryKeys } from "../../client";
+import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 
 import SelectSearch from "./SelectSearch";
-import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector } from "./Utils";
+import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector, msUntilEndOfDay } from "./Utils";
 
 dayjs.extend(timezone);
 
@@ -35,10 +36,35 @@ type AgentLane = {
   num: number;
 };
 
+type AgentSchedule = {
+  agentId: string;
+  available: boolean;
+  finishDate: number;
+  finishTime: number;
+  scheduleId: string;
+  startDate: number;
+  startTime: number;
+  week: number | undefined;
+};
+
 type AgentViewProps = {
   name: string;
   image_url: string;
   size: number;
+};
+
+type DayProps = {
+  currentDay: number;
+  day: string;
+  dayIndex: number;
+  laneAssignments: AgentLane[];
+  setWeekState: SetStateAction<WeekState>;
+  weekState: WeekState;
+};
+
+type LaneAssignmentState = {
+  agent: Agent | undefined;
+  num: number;
 };
 
 type SetStateAction<T> = React.Dispatch<React.SetStateAction<T>>;
@@ -49,9 +75,9 @@ type ShiftName = {
   name: string | undefined;
 };
 
-type LaneAssignmentState = {
-  agent: Agent | undefined;
-  num: number;
+type WeekState = {
+  week: number | undefined;
+  schedule: AgentSchedule[];
 };
 
 const selectedTimezone = atom<string>(dayjs.tz.guess());
@@ -218,7 +244,9 @@ const Shift = ({
             />
           ))}
         </div>
-        <div className="relative h-[738px]" />
+        <div className="relative h-[738px]">
+          <Week laneAssignments={assignedAgents} />
+        </div>
         <div className="flex items-center justify-end gap-2">
           <LinkButton onClick={() => setShiftMode(undefined)}>Cancel Changes</LinkButton>
           <ThickButton className="!px-4 !py-3">Save Schedule</ThickButton>
@@ -228,6 +256,70 @@ const Shift = ({
     </HiddenOnSmallScreen>
   );
 };
+
+const Week = React.memo(({ laneAssignments }: { laneAssignments: AgentLane[] }) => {
+  const days = Object.values(DaysOfWeek);
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezone);
+
+  const timeRemaining = msUntilEndOfDay(tzDayjs);
+
+  const timeLeft = React.useRef(timeRemaining);
+
+  const [currentDay, setCurrentDay] = React.useState(tzDayjs.isoWeekday());
+
+  const [weekState, setWeekState] = React.useState<WeekState>({
+    week: undefined,
+    schedule: [],
+  });
+
+  React.useEffect(() => {
+    setCurrentDay(tzDayjs.isoWeekday());
+
+    const timer = setInterval(() => {
+      setCurrentDay(tzDayjs.isoWeekday());
+    }, timeLeft.current);
+
+    timeLeft.current = msUntilEndOfDay(tzDayjs);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [tzDayjs]);
+
+  return (
+    <div className="flex">
+      {days.map((d, i) => (
+        <Day
+          key={d}
+          currentDay={currentDay}
+          dayIndex={i}
+          day={d}
+          weekState={weekState}
+          setWeekState={setWeekState}
+          laneAssignments={laneAssignments}
+        />
+      ))}
+    </div>
+  );
+});
+
+const Day = React.memo(({ currentDay, day, dayIndex }: DayProps) => {
+  const isWeekend = dayIndex === 5 || dayIndex === 6;
+
+  return (
+    <div className={classNames("flex flex-col flex-grow relative", dayIndex !== 0 && "border-l")}>
+      <span className="flex justify-center items-center border-b h-10 relative font-semibold capitalize text-xs">
+        <span className={classNames(isWeekend && "text-gray-400")}>{day}</span>
+        {dayIndex + 1 === currentDay && (
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+            <Pill text="Today" />
+          </span>
+        )}
+      </span>
+    </div>
+  );
+});
 
 const LaneAssignment = ({
   agent,
@@ -293,6 +385,14 @@ const LaneAssignment = ({
         </div>
       )}
     </div>
+  );
+};
+
+const Pill = ({ text }: { text: string }) => {
+  return (
+    <span className="bg-brand-pink-500 font-body font-bold text-xs justify-center text-white inline-flex text-center px-1 py-0 rounded-md">
+      {text}
+    </span>
   );
 };
 
