@@ -11,15 +11,23 @@ import {
   useClickOutside,
   useInputWithError,
 } from "fogbender-client/src/shared";
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import { useQuery } from "react-query";
 
 import { Vendor } from "../../../redux/adminApi";
 import { apiServer, queryKeys } from "../../client";
+import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 
 import SelectSearch from "./SelectSearch";
-import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector } from "./Utils";
+import {
+  DaysOfWeek,
+  HiddenOnSmallScreen,
+  TimeLapse,
+  TimezoneSelector,
+  getTotalDisplacement,
+  msUntilEndOfDay,
+} from "./Utils";
 
 dayjs.extend(timezone);
 
@@ -30,9 +38,27 @@ const AgentLaneDefaultValue = [
   { num: 3, agent: undefined },
 ];
 
+const HEADER_HEIGHT = 164; // all height or distance units are in pixels
+const HOURS_LANE_HEIGHT = 576;
+
+const totalDistance = HEADER_HEIGHT + HOURS_LANE_HEIGHT;
+
+const getDisplacement = getTotalDisplacement(HOURS_LANE_HEIGHT, HEADER_HEIGHT);
+
 type AgentLane = {
   agent: Agent;
   num: number;
+};
+
+type AgentSchedule = {
+  agentId: string;
+  available: boolean;
+  finishDate: number;
+  finishTime: number;
+  scheduleId: string;
+  startDate: number;
+  startTime: number;
+  week: number | undefined;
 };
 
 type AgentViewProps = {
@@ -40,6 +66,28 @@ type AgentViewProps = {
   image_url: string;
   size: number;
 };
+
+type DayProps = {
+  currentDay: number;
+  day: string;
+  dayIndex: number;
+  laneAssignments: AgentLane[];
+  setWeekState: SetStateAction<WeekState>;
+  weekState: WeekState;
+};
+
+type LaneAssignmentState = {
+  agent: Agent | undefined;
+  num: number;
+};
+
+type SelectionState = Record<
+  Agent["id"],
+  {
+    available: boolean;
+    startTime: { selectedDay: number; selectedHour: number };
+  }
+>;
 
 type SetStateAction<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -49,12 +97,14 @@ type ShiftName = {
   name: string | undefined;
 };
 
-type LaneAssignmentState = {
-  agent: Agent | undefined;
-  num: number;
+type WeekState = {
+  week: number | undefined;
+  schedule: AgentSchedule[];
 };
 
 const selectedTimezone = atom<string>(dayjs.tz.guess());
+const selectionStateAtom = atom<SelectionState>({});
+const hintPositionAtom = atom<number | undefined>(undefined);
 
 export const Layout = (props: { children: React.ReactNode; className?: string }) => {
   const { children, className } = props;
@@ -218,14 +268,164 @@ const Shift = ({
             />
           ))}
         </div>
-        <div className="relative h-[738px]" />
+        <div className="relative h-[738px]">
+          <Week laneAssignments={assignedAgents} />
+          {!!assignedAgents.length ? (
+            <CurrentLinePosition />
+          ) : (
+            <div className="h-full flex items-center text-gray-500 justify-center text-xl">
+              Please select an agent
+            </div>
+          )}
+        </div>
         <div className="flex items-center justify-end gap-2">
           <LinkButton onClick={() => setShiftMode(undefined)}>Cancel Changes</LinkButton>
           <ThickButton className="!px-4 !py-3">Save Schedule</ThickButton>
         </div>
       </div>
-      {!!assignedAgents.length && <div className="absolute left-0 -translate-x-1/2 bottom-16" />}
+      {!!assignedAgents.length && (
+        <div className="absolute left-0 -translate-x-1/2 bottom-16">
+          <Hours />
+        </div>
+      )}
     </HiddenOnSmallScreen>
+  );
+};
+
+const Hours = () => {
+  const hours = Array.from({ length: 49 }, (_, i) => i);
+
+  const [hintPosition] = useAtom(hintPositionAtom);
+
+  return (
+    <div className=" font-body rounded-xl fog:box-shadow bg-white px-2 pt-2 h-[608px]">
+      {hours.map(h => (
+        <div className="relative mb-2" key={h}>
+          {h % 2 === 0 && (
+            <span className={classNames("w-4 text-xs text-gray-400 block h-full")}>
+              <span>{((h / 2) % 24).toString().padStart(2, "0")}</span>
+            </span>
+          )}
+          {h === hintPosition && (
+            <div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-full h-4 font-bold border-l-4 border-brand-red-500" />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Week = React.memo(({ laneAssignments }: { laneAssignments: AgentLane[] }) => {
+  const days = Object.values(DaysOfWeek);
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezone);
+
+  const timeRemaining = msUntilEndOfDay(tzDayjs);
+
+  const timeLeft = React.useRef(timeRemaining);
+
+  const [currentDay, setCurrentDay] = React.useState(tzDayjs.isoWeekday());
+
+  const [weekState, setWeekState] = React.useState<WeekState>({
+    week: undefined,
+    schedule: [],
+  });
+
+  React.useEffect(() => {
+    setCurrentDay(tzDayjs.isoWeekday());
+
+    const timer = setInterval(() => {
+      setCurrentDay(tzDayjs.isoWeekday());
+    }, timeLeft.current);
+
+    timeLeft.current = msUntilEndOfDay(tzDayjs);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [tzDayjs]);
+
+  return (
+    <div className="flex">
+      {days.map((d, i) => (
+        <Day
+          key={d}
+          currentDay={currentDay}
+          dayIndex={i}
+          day={d}
+          weekState={weekState}
+          setWeekState={setWeekState}
+          laneAssignments={laneAssignments}
+        />
+      ))}
+    </div>
+  );
+});
+
+const Day = React.memo(
+  ({ currentDay, day, dayIndex, laneAssignments, weekState, setWeekState }: DayProps) => {
+    const isWeekend = dayIndex === 5 || dayIndex === 6;
+
+    return (
+      <div className={classNames("flex flex-col flex-grow relative", dayIndex !== 0 && "border-l")}>
+        <span className="flex justify-center items-center border-b h-10 relative font-semibold capitalize text-xs">
+          <span className={classNames(isWeekend && "text-gray-400")}>{day}</span>
+          {dayIndex + 1 === currentDay && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+              <Pill text="Today" />
+            </span>
+          )}
+        </span>
+        {!!laneAssignments.length && (
+          <div className="flex justify-evenly mt-3">
+            {laneAssignments.map((la, i) => (
+              <Lane
+                key={`la-${i}`}
+                weekState={weekState}
+                setWeekState={setWeekState}
+                dayIndex={dayIndex}
+                laneAssignment={la}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+const Lane = ({
+  laneAssignment,
+}: {
+  weekState: WeekState;
+  setWeekState: SetStateAction<WeekState>;
+  laneAssignment: AgentLane;
+  dayIndex: number;
+}) => {
+  const { agent } = laneAssignment;
+  const title = `${agent.name} (${agent.email})`;
+
+  const laneRef = React.useRef<HTMLDivElement>(null);
+
+  const [selectionState, setSelectionState] = useAtom(selectionStateAtom);
+
+  const emptySelectionState = Object.keys(selectionState).length === 0;
+
+  useClickOutside(laneRef, () => setSelectionState({}), emptySelectionState);
+
+  return (
+    <div ref={laneRef} className="flex flex-col justify-end items-center gap-1">
+      <div className="flex flex-col gap-1 items-center h-[100px] overflow-y-hidden" title={title}>
+        <span
+          className="text-xs h-[6rem] max-h-[6rem] truncate rotate-180 cursor-default"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          {agent.name}
+        </span>
+        <Avatar withTitle={false} url={agent.image_url} name={agent.name} size={24} />
+      </div>
+      <div className="mt-2" />
+    </div>
   );
 };
 
@@ -296,6 +496,14 @@ const LaneAssignment = ({
   );
 };
 
+const Pill = ({ text }: { text: string }) => {
+  return (
+    <span className="bg-brand-pink-500 font-body font-bold text-xs justify-center text-white inline-flex text-center px-1 py-0 rounded-md">
+      {text}
+    </span>
+  );
+};
+
 const AgentSelector = ({
   agent,
   setShowOptions,
@@ -340,6 +548,31 @@ const AgentSelector = ({
       </div>
     </div>
   );
+};
+
+const CurrentLinePosition = () => {
+  const [timezone] = useAtom(selectedTimezone);
+
+  const { currentDisplacement, distanceCoveredInSec } = React.useMemo(
+    () => getDisplacement(timezone),
+    [timezone]
+  );
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezone);
+
+  const options = {
+    activeLinePosition: currentDisplacement,
+    className: "after:-translate-y-1/2 w-full h-[1px]",
+    currentTime: tzDayjs.format("hh:mm:ss"),
+    distanceCoveredInSec,
+    getDisplacement,
+    initialPosition: HEADER_HEIGHT,
+    position: "top",
+    timezone,
+    totalDistance,
+  };
+
+  return <TimeLapse options={options} />;
 };
 
 const ScheduleList = ({ onEditSchedule }: { onEditSchedule: () => void }) => {
