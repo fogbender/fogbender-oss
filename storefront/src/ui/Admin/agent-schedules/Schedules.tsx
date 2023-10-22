@@ -20,7 +20,14 @@ import { apiServer, queryKeys } from "../../client";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 
 import SelectSearch from "./SelectSearch";
-import { DaysOfWeek, HiddenOnSmallScreen, TimezoneSelector, msUntilEndOfDay } from "./Utils";
+import {
+  DaysOfWeek,
+  HiddenOnSmallScreen,
+  TimeLapse,
+  TimezoneSelector,
+  getTotalDisplacement,
+  msUntilEndOfDay,
+} from "./Utils";
 
 dayjs.extend(timezone);
 
@@ -30,6 +37,13 @@ const AgentLaneDefaultValue = [
   { num: 2, agent: undefined },
   { num: 3, agent: undefined },
 ];
+
+const HEADER_HEIGHT = 164; // all height or distance units are in pixels
+const HOURS_LANE_HEIGHT = 576;
+
+const totalDistance = HEADER_HEIGHT + HOURS_LANE_HEIGHT;
+
+const getDisplacement = getTotalDisplacement(HOURS_LANE_HEIGHT, HEADER_HEIGHT);
 
 type AgentLane = {
   agent: Agent;
@@ -534,6 +548,31 @@ const AgentSelector = ({
       </div>
     </div>
   );
+};
+
+const CurrentLinePosition = () => {
+  const [timezone] = useAtom(selectedTimezone);
+
+  const { currentDisplacement, distanceCoveredInSec } = React.useMemo(
+    () => getDisplacement(timezone),
+    [timezone]
+  );
+
+  const { tzDayjs } = useDayjsInTimezone(selectedTimezone);
+
+  const options = {
+    activeLinePosition: currentDisplacement,
+    className: "after:-translate-y-1/2 w-full h-[1px]",
+    currentTime: tzDayjs.format("hh:mm:ss"),
+    distanceCoveredInSec,
+    getDisplacement,
+    initialPosition: HEADER_HEIGHT,
+    position: "top",
+    timezone,
+    totalDistance,
+  };
+
+  return <TimeLapse options={options} />;
 };
 
 const ScheduleList = ({ onEditSchedule }: { onEditSchedule: () => void }) => {
