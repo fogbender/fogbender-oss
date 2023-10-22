@@ -103,7 +103,7 @@
 }
 
 .fog\:text-link {
-  @apply text-blue-700;
+  @apply text-blue-700 dark:text-blue-400;
   @apply cursor-pointer;
 }
 .fog\:text-link:hover {
@@ -178,7 +178,7 @@
 }
 
 .fog\:chat-message code.inline {
-  @apply bg-white;
+  @apply bg-white dark:bg-gray-900;
   @apply !text-brand-red-500;
 }
 
