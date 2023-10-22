@@ -50,7 +50,7 @@ export function renderIframe(
     headless,
     disableFit,
     onVisitorInfo,
-    initialMode = "light",
+    initialMode = () => "light",
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
