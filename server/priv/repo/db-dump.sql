@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.9
+-- Dumped from database version 14.8
 -- Dumped by pg_dump version 14.9
 
 SET statement_timeout = 0;
@@ -70,6 +70,29 @@ CREATE TABLE public.agent (
     updated_at timestamp without time zone NOT NULL,
     image_url text,
     is_bot boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: agent_schedule; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.agent_schedule (
+    id uuid NOT NULL,
+    vendor_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    start_date timestamp without time zone,
+    finish_date timestamp without time zone,
+    start_time time(0) without time zone NOT NULL,
+    finish_time time(0) without time zone NOT NULL,
+    day integer[] NOT NULL,
+    week integer[] NOT NULL,
+    grid text,
+    available boolean DEFAULT true,
+    deleted_at timestamp without time zone,
+    deleted_by_agent_id bigint,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -1494,6 +1517,14 @@ ALTER TABLE ONLY public.agent
 
 
 --
+-- Name: agent_schedule agent_schedule_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.agent_schedule
+    ADD CONSTRAINT agent_schedule_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: author_tag author_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1874,6 +1905,13 @@ ALTER TABLE ONLY public.workspace
 --
 
 CREATE UNIQUE INDEX agent_email_index ON public.agent USING btree (email);
+
+
+--
+-- Name: agent_schedule_ux; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX agent_schedule_ux ON public.agent_schedule USING btree (vendor_id, agent_id, start_date, finish_date, start_time, finish_time, day, week, grid, available);
 
 
 --
@@ -2531,6 +2569,7 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230317010546);
 INSERT INTO public."schema_migrations" (version) VALUES (20230413193646);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415133420);
 INSERT INTO public."schema_migrations" (version) VALUES (20230415134354);
+INSERT INTO public."schema_migrations" (version) VALUES (20230423152256);
 INSERT INTO public."schema_migrations" (version) VALUES (20230507192311);
 INSERT INTO public."schema_migrations" (version) VALUES (20230720040621);
 INSERT INTO public."schema_migrations" (version) VALUES (20230806172529);
