@@ -35,11 +35,11 @@ export const ClipboardCopy: React.FC<{
     <div
       onClick={onClick}
       className={classNames(
-        className,
         "cursor-pointer",
         textCopied
-          ? "text-green-500"
-          : "text-gray-500 transition duration-100 ease-linear hover:text-red-500"
+          ? "text-green-500 dark:text-green-500"
+          : "text-gray-500 dark:text-gray-300 transition duration-100 ease-linear hover:text-red-500 dark:hover:text-red-500",
+        className
       )}
     >
       {children}

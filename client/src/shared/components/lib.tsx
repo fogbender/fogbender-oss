@@ -312,7 +312,7 @@ export const ThickButton: React.FC<{
       className={classNames(
         "relative flex items-center justify-center rounded-lg text-white",
         disabled
-          ? "bg-gray-200 cursor-not-allowed"
+          ? "bg-gray-200 dark:bg-gray-600 cursor-not-allowed"
           : loading
           ? "bg-blue-500"
           : "bg-blue-500 hover:bg-blue-700",
@@ -457,7 +457,10 @@ export const FilterInput = React.forwardRef<HTMLInputElement, FilterInputProps>(
               ref.current = node;
             }
           }}
-          className="flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm w-[98%]"
+          className={classNames(
+            "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm w-[98%]",
+            "dark:text-white"
+          )}
           placeholder={placeholder || "Search"}
           onChange={e => setValue(e.target.value)}
           value={value || ""}
@@ -657,8 +660,18 @@ export const LoadingIndicator = ({ visible }: { visible: boolean }) => {
   );
 };
 
-export const MessageCheckbox = ({ checked }: { checked: boolean }) => {
-  return checked ? <Icons.MessageCheckboxOn /> : <Icons.MessageCheckboxOff />;
+export const MessageCheckbox = ({
+  checked,
+  solidColor = "white",
+}: {
+  checked: boolean;
+  solidColor?: string;
+}) => {
+  return checked ? (
+    <Icons.MessageCheckboxOn solidColor={solidColor} />
+  ) : (
+    <Icons.MessageCheckboxOff solidColor={solidColor} />
+  );
 };
 
 export const TabListWrapper = ({ children }: { children: React.ReactNode }) => {

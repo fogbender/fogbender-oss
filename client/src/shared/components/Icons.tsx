@@ -1,4 +1,6 @@
 import classNames from "classnames";
+import { useAtomValue } from "jotai";
+import { modeAtom } from "../store/config.store";
 
 export type Icon = React.FC<{
   className?: string;
@@ -229,7 +231,8 @@ const Check: Icon = ({ className = "w-4" }) => {
 };
 
 const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
-  const fg = disabled ? "#eee" : "#fff";
+  const themeMode = useAtomValue(modeAtom);
+  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#9CA3AF") : disabled ? "#eee" : "#fff";
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x=".5" y=".5" width="19" height="19" rx="4.5" fill={fg} stroke="currentColor" />
@@ -238,7 +241,8 @@ const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
 };
 
 const CheckboxOn: Icon = ({ className = "w-5", disabled = false }) => {
-  const fg = disabled ? "#eee" : "#fff";
+  const themeMode = useAtomValue(modeAtom);
+  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#9CA3AF") : disabled ? "#eee" : "#fff";
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="20" height="20" rx="5" fill="currentColor" />
@@ -568,7 +572,7 @@ const Menu: Icon = ({ className = "w-6" }) => {
   );
 };
 
-const MessageCheckboxOff: Icon = ({ className = "w-4" }) => {
+const MessageCheckboxOff: Icon = ({ className = "w-4", solidColor = "white" }) => {
   return (
     <svg className={className} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -577,7 +581,7 @@ const MessageCheckboxOff: Icon = ({ className = "w-4" }) => {
         width="13"
         height="13"
         rx="3"
-        fill="white"
+        fill={solidColor}
         stroke="currentColor"
         strokeWidth="2"
       />
@@ -585,7 +589,7 @@ const MessageCheckboxOff: Icon = ({ className = "w-4" }) => {
   );
 };
 
-const MessageCheckboxOn: Icon = ({ className = "w-4" }) => {
+const MessageCheckboxOn: Icon = ({ className = "w-4", solidColor = "white" }) => {
   return (
     <svg className={className} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -594,7 +598,7 @@ const MessageCheckboxOn: Icon = ({ className = "w-4" }) => {
         width="13"
         height="13"
         rx="3"
-        fill="white"
+        fill={solidColor}
         stroke="currentColor"
         strokeWidth="2"
       />
@@ -712,7 +716,7 @@ const PlayCircleFilled: Icon = ({ className = "w-8" }) => {
 const RadioEmpty: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="9.5" fill="#fff" stroke="currentColor" />
+      <circle cx="10" cy="10" r="9.5" fill="#ddd" stroke="currentColor" />
     </svg>
   );
 };
@@ -728,7 +732,7 @@ const RadioEmptyDisabled: Icon = ({ className = "w-5" }) => {
 const RadioFull: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="9.5" fill="#fff" stroke="currentColor" />
+      <circle cx="10" cy="10" r="9.5" fill="#ddd" stroke="currentColor" />
       <circle cx="10" cy="10" r="6" fill="currentColor" />
     </svg>
   );
@@ -1036,7 +1040,7 @@ const Triage: Icon = ({ className = "w-8 h-8" }) => {
   );
 };
 
-const Unpin: Icon = ({ className = "w-4 " }) => {
+const Unpin: Icon = ({ className = "w-4 h-4" }) => {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -1150,6 +1154,33 @@ export const SwitchOn: Icon = ({ className = "w-6" }) => {
   );
 };
 
+export const SwitchLightMode = ({ className = "w-6" }) => {
+  return (
+    <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="20" rx="10" fill="#BDBDBD" />
+      <circle cx="30" cy="10" r="8" fill="white" />
+      <line x1="11" y1="4" x2="11" y2="16" stroke="white" strokeWidth="2" />
+      <path d="M5 10.1758L16.9987 10.0009" stroke="white" strokeWidth="2" />
+      <path d="M6.85303 14.4258L15.1456 5.75208" stroke="white" strokeWidth="2" />
+      <path d="M6.65918 5.94531L15.3392 14.2313" stroke="white" strokeWidth="2" />
+    </svg>
+  );
+};
+
+export const SwitchDarkMode = ({ className = "w-6" }) => {
+  return (
+    <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="20" rx="10" fill="black" />
+      <circle cx="10" cy="10" r="8" fill="#C1C1C1" />
+      <circle cx="30" cy="10" r="7.5" fill="white" stroke="black" strokeMiterlimit="5.49776" />
+      <path
+        d="M33 8.07422C33 11.6641 30.0899 14.5742 26.5 14.5742C22.9101 14.5742 20 11.6641 20 8.07422C20 4.48437 22.9101 1.57422 26.5 1.57422C30.0899 1.57422 33 4.48437 33 8.07422Z"
+        fill="black"
+      />
+    </svg>
+  );
+};
+
 export const Logout: Icon = ({ className = "w-6" }) => {
   return (
     <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
@@ -1243,6 +1274,8 @@ export const Icons = {
   SnoozeTimer,
   Spinner,
   SpinnerSmall,
+  SwitchDarkMode,
+  SwitchLightMode,
   Tag,
   Trash,
   Triage,

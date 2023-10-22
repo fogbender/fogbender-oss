@@ -656,6 +656,7 @@ export const Room: React.FC<{
       {...getRootProps({
         className: classNames(
           "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white",
+          "dark:bg-gray-800",
           singleRoomMode
             ? "sm:px-2 sm:border-l"
             : [
@@ -733,7 +734,7 @@ export const Room: React.FC<{
           <LoadingIndicator visible={fetchingOlder} />
           <div
             className={classNames(
-              "mt-16 fog:text-body-s my-1 text-center text-gray-500",
+              "mt-16 fog:text-body-s my-1 text-center text-gray-500 dark:text-gray-400",
               !room && "invisible"
             )}
           >
@@ -866,6 +867,7 @@ export const Room: React.FC<{
           onClick={jumpToBottom}
           className={classNames(
             "absolute z-10 bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "dark:bg-gray-300",
             (keepScrollAtBottom || !room) && "invisible pointer-events-none",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
@@ -958,7 +960,7 @@ export const Room: React.FC<{
         <Modal onClose={() => setShowForward(false)}>
           <MessageForward
             fromRoomId={roomId}
-            userId={ourId}
+            isAgent={isAgent}
             helpdeskId={helpdeskId}
             workspaceId={workspaceId}
             vendorId={vendorId}
@@ -967,6 +969,7 @@ export const Room: React.FC<{
             messagesByTarget={messagesByTarget}
             messageCreateMany={messageCreateMany}
             onComplete={onForwardCompletion}
+            userId={ourId}
           />
         </Modal>
       )}
@@ -1094,13 +1097,20 @@ const Pin: React.FC<{
         "group",
         "bg-gray-200 text-sm",
         "flex gap-1 items-center",
-        !pinnedMessage && "text-gray-100"
+        !pinnedMessage && "text-gray-100",
+        "dark:bg-gray-600 dark:text-gray-100"
       )}
       onClick={onClick}
       title={title}
     >
       <div className="flex items-center">
-        <span className={pinnedMessage ? "pl-2 text-gray-500 group-hover:text-gray-800" : "hidden"}>
+        <span
+          className={
+            pinnedMessage
+              ? "pl-2 text-gray-500 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-gray-100"
+              : "hidden"
+          }
+        >
           {isPrivate ? <Icons.PinMe className="w-5" /> : <Icons.Pin className="w-5" />}
         </span>
         <span className="pl-1.5 flex-none fog:text-chat-username-s">

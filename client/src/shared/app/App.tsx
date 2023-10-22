@@ -38,6 +38,7 @@ import {
   hideWelcomeAtom,
   muteNotificationsAtom,
   showOutlookRosterAtom,
+  modeAtom,
 } from "../store/config.store";
 import { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
@@ -111,6 +112,7 @@ export const App: React.FC<{
   renderUsersInfoPane,
   isIdle,
 }) => {
+  const [mode, setMode] = useAtom(modeAtom);
   const {
     agentRole,
     avatarLibraryUrl,
@@ -877,11 +879,20 @@ export const App: React.FC<{
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
 
   return (
-    <div ref={appRef} className="relative h-full max-h-screen flex-1 flex flex-col z-10">
+    <div
+      ref={appRef}
+      className={classNames(
+        "relative h-full max-h-screen flex-1 flex flex-col z-10",
+        mode === "dark" && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
+      )}
+    >
       {isUser && userInfo && (
         <div
           ref={floatieHeaderRef}
-          className="sm:hidden relatve flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose"
+          className={classNames(
+            "sm:hidden relatve flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose",
+            "dark:bg-black"
+          )}
         >
           <div className="flex-1">
             {activeRoom && roomName && (
@@ -927,6 +938,7 @@ export const App: React.FC<{
         <div
           className={classNames(
             "absolute z-10 sm:static sm:z-0 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform",
+            "dark:bg-gray-800 dark:text-white",
             rosterVisible ? "translate-x-0" : "-translate-x-full sm:translate-x-0",
             isAgent && isOutlook ? "w-full sm:w-[32rem]" : "w-full sm:w-80"
           )}
@@ -996,10 +1008,15 @@ export const App: React.FC<{
                   )}
                 </div>
               )}
-              <div className="flex gap-2 border-b border-gray-200 w-full">
+              <div
+                className={classNames(
+                  "flex gap-2 border-b border-gray-200 w-full",
+                  "dark:border-gray-500"
+                )}
+              >
                 <form
                   onSubmit={rosterInputSubmit}
-                  className={classNames("flex gap-2 bg-white w-full")}
+                  className={classNames("flex gap-2 bg-white w-full", "dark:bg-gray-800")}
                 >
                   {isAgent && <RosterMenu />}
                   <FilterInput
@@ -1192,13 +1209,28 @@ export const App: React.FC<{
                 </div>
               )}
               {!isAgent && (
-                <div className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide border-t border-gray-200 mt-2">
-                  <div className="w-full shrink-0 snap-center">
+                <div
+                  className={classNames(
+                    "flex snap-x snap-mandatory overflow-x-auto scrollbar-hide border-t border-gray-200 mt-2",
+                    "dark:border-gray-500"
+                  )}
+                >
+                  <div className="w-full shrink-0 snap-center flex">
+                    <div
+                      className="flex items-center cursor-pointer z-20"
+                      onClick={e => {
+                        e.preventDefault();
+                        setMode(m => (m === "light" ? "dark" : "light"));
+                      }}
+                    >
+                      {mode === "light" && <Icons.SwitchLightMode className="w-9" />}
+                      {mode === "dark" && <Icons.SwitchDarkMode className="w-9" />}
+                    </div>
                     <a
                       href="https://fogbender.com"
                       target="_blank"
                       rel="noopener"
-                      className="flex items-center justify-center gap-x-1 py-2"
+                      className="-ml-9 flex-1 flex items-center justify-center gap-x-1 py-2"
                       onClick={e => {
                         if (e.ctrlKey || e.metaKey) {
                           e.preventDefault();
@@ -1215,7 +1247,16 @@ export const App: React.FC<{
                       <span className="fog:text-caption-l">Fogbender</span>
                     </a>
                   </div>
-                  <div className="w-full shrink-0 snap-center">
+                  <div
+                    className="w-full shrink-0 snap-center"
+                    onClick={e => {
+                      if (e.ctrlKey || e.metaKey) {
+                        e.currentTarget.previousElementSibling?.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                  >
                     <div
                       className="flex items-center justify-center gap-x-1 py-2"
                       title={version.debugVersion}

@@ -1,12 +1,14 @@
 import classNames from "classnames";
-import Picker from "emoji-picker-react";
+import Picker, { Theme } from "emoji-picker-react";
 import { Reaction } from "fogbender-proto";
 import React from "react";
+import { useAtomValue } from "jotai";
 
 import { Icons } from "../components/Icons";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
+import { modeAtom } from "../store/config.store";
 
 const defaultEmojis = ["👍", "🔥", "❤️", "✅"];
 
@@ -116,6 +118,7 @@ export const EmojiPicker: React.FC<{
   cancelSelection: () => void;
   setReaction: (reaction: string) => void;
 }> = ({ cancelSelection, setReaction }) => {
+  const themeMode = useAtomValue(modeAtom);
   const [showPicker, setShowPicker] = React.useState(false);
   const emojiPickerRef = React.useRef<HTMLDivElement>(null);
   useClickOutside(
@@ -128,7 +131,7 @@ export const EmojiPicker: React.FC<{
   return (
     <>
       <span
-        className="flex cursor-pointer px-1 text-gray-500 hover:text-gray-800"
+        className="flex cursor-pointer px-1 text-gray-500 hover:text-gray-800 dark:hover:text-brand-red-500"
         onClick={() => {
           setShowPicker(!showPicker);
         }}
@@ -138,7 +141,8 @@ export const EmojiPicker: React.FC<{
       {showPicker && (
         <div ref={emojiPickerRef} className="absolute bottom-7 right-0 z-10">
           <Picker
-            onEmojiClick={(_event, emojiObject) => {
+            theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
+            onEmojiClick={emojiObject => {
               cancelSelection();
               setReaction(emojiObject.emoji);
               updateRecentEmojis(emojiObject.emoji);

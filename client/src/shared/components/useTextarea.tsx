@@ -1,6 +1,6 @@
 import browserDetect from "browser-detect";
 import classNames from "classnames";
-import Picker from "emoji-picker-react";
+import Picker, { Theme } from "emoji-picker-react";
 import {
   Author,
   Mention,
@@ -10,7 +10,7 @@ import {
   useLoadAround,
   useSharedRoster,
 } from "fogbender-proto";
-import { useAtom } from "jotai";
+import { useAtomValue, useAtom } from "jotai";
 import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { v4 as uuidv4 } from "uuid";
@@ -20,6 +20,7 @@ import { formatCustomerName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 import { DeletedFileIdsAtom, FileIdsAtom } from "../utils/useFileUpload";
 import { usePrevious } from "../utils/usePrevious";
+import { modeAtom } from "../store/config.store";
 
 import {
   MentionsPopup,
@@ -79,6 +80,7 @@ export const useTextarea = ({
   workspaceId?: string | undefined;
   onLastMessageEdit: (cb: () => void) => void;
 }) => {
+  const themeMode = useAtomValue(modeAtom);
   const preservedText = React.useRef("");
   const updatePreservedText = React.useCallback((text: string) => {
     preservedText.current = text;
@@ -439,10 +441,10 @@ export const useTextarea = ({
 
     if (hasTextOrFile && isActiveRoom) {
       if (!sendIsDisabled) {
-        color = "text-blue-500";
+        color = "text-blue-500 dark:text-blue-700";
       }
     } else {
-      color = "text-gray-200";
+      color = "text-gray-200 dark:text-gray-500";
     }
 
     return color;
@@ -468,34 +470,40 @@ export const useTextarea = ({
       >
         {showListMenu && (
           <span ref={listMenuRef} className="absolute -left-8 bottom-12 z-10">
-            <div className="flex flex-col bg-white fog:box-shadow-m rounded-lg fog:text-body-m py-1.5">
+            <div
+              className={classNames(
+                "flex flex-col bg-white fog:box-shadow-m rounded-lg fog:text-body-m py-1.5",
+                "dark:bg-gray-700 dark:text-white"
+              )}
+            >
               {(mode === undefined || mode === "Reply" || mode === "Edit") && (
                 <div
                   className={classNames(
                     "group flex content-center gap-2 pl-4 pr-10 py-1.5",
                     sendIsDisabled
                       ? "text-gray-200 cursor-not-allowed"
-                      : "hover:bg-gray-100 cursor-pointer"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                   )}
                   onClick={sendIsDisabled ? undefined : handleUploadClick}
                 >
                   <Icons.Paperclip
                     className={classNames(
                       "w-6",
-                      !sendIsDisabled && "text-gray-500 group-hover:text-gray-800"
+                      !sendIsDisabled &&
+                        "text-gray-500 dark:text-gray-400 group-hover:text-gray-800"
                     )}
                   />
                   Upload a file...
                 </div>
               )}
               <div
-                className="group flex content-center gap-2 pl-4 pr-10 py-1.5 cursor-pointer hover:bg-gray-100"
+                className="group flex content-center gap-2 pl-4 pr-10 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                 onClick={() => {
                   setShowEmojiSelect(true);
                   setShowListMenu(false);
                 }}
               >
-                <Icons.EmojiSelect className="w-6 text-gray-500 group-hover:text-gray-800" />
+                <Icons.EmojiSelect className="w-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-800" />
                 Emoji selector
               </div>
             </div>
@@ -525,7 +533,8 @@ export const useTextarea = ({
         {showEmojiSelect && (
           <div ref={emojiPickerRef} className="absolute -left-8 bottom-12 z-10">
             <Picker
-              onEmojiClick={(_e, emoji) => {
+              theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
+              onEmojiClick={emoji => {
                 setEmoji(emoji.emoji);
               }}
             />
@@ -548,7 +557,7 @@ export const useTextarea = ({
         )}
         <div className="flex-1 truncate">
           {selection.length === 1 && mode === "Reply" && (
-            <div className="-ml-8 mb-1">
+            <div className="-ml-8 mb-1 dark:text-white">
               <SourceMessages
                 isAgent={selection[0].author.type === "agent"}
                 sourceMessages={[selection[0]]}
@@ -560,7 +569,10 @@ export const useTextarea = ({
           )}
           {selection.length > 0 && (
             <div
-              className={classNames("mb-1 rounded", isActiveRoom ? "bg-blue-50" : "bg-gray-100")}
+              className={classNames(
+                "mb-1 rounded",
+                isActiveRoom ? "bg-blue-50 dark:bg-indigo-950" : "bg-gray-100"
+              )}
             >
               <div className="flex relative items-center">
                 {textAreaModes.map((x, i) => (
@@ -569,7 +581,11 @@ export const useTextarea = ({
                     className={classNames(
                       "md:py-1 md:px-3 py-0.5 px-1 fog:text-caption-m",
                       i === 0 && "rounded-l",
-                      x === mode ? "text-white" : isActiveRoom ? "text-blue-500" : "text-gray-500",
+                      x === mode
+                        ? "text-white"
+                        : isActiveRoom
+                        ? "text-blue-500 dark:text-blue-300 hover:text-brand-red-500 dark:hover:text-brand-red-500"
+                        : "text-gray-500",
                       x === mode ? (isActiveRoom ? "bg-blue-500" : "bg-gray-300") : "cursor-pointer"
                     )}
                     onClick={() => {
@@ -582,7 +598,8 @@ export const useTextarea = ({
                 <span
                   className={classNames(
                     "flex-1 pl-1 pr-6 text-right fog:text-body-s truncate cursor-pointer",
-                    isActiveRoom ? "text-blue-500" : "text-gray-500"
+                    isActiveRoom ? "text-blue-500 dark:text-blue-300" : "text-gray-500",
+                    "hover:text-brand-red-500 dark:hover:text-brand-red-500"
                   )}
                   onClick={() => {
                     updateLoadAround(roomId, selection[0]?.id);
@@ -593,7 +610,9 @@ export const useTextarea = ({
                 <span
                   className={classNames(
                     "absolute right-0 px-1 text-gray-500 cursor-pointer",
-                    isActiveRoom ? "bg-blue-50" : "bg-gray-100"
+                    "dark:text-gray-400",
+                    isActiveRoom ? "bg-blue-50 dark:bg-indigo-950" : "bg-gray-100",
+                    "hover:text-brand-red-500 dark:hover:text-brand-red-500"
                   )}
                   onClick={() => cancelOperation(true)}
                 >
@@ -650,7 +669,8 @@ export const useTextarea = ({
               maxRows={!!textareaValue && (!mode || mode === "Reply" || mode === "Edit") ? 4 : 1}
               className={classNames(
                 "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none",
-                focused ? "bg-blue-50" : "bg-gray-100"
+                "dark:text-white",
+                focused ? "bg-blue-50 dark:bg-gray-700" : "bg-gray-100 dark:bg-gray-600"
               )}
               onFocus={() => {
                 setFocused(true);

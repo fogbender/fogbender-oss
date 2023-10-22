@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Helpdesk } from "fogbender-proto";
 import React from "react";
 
@@ -16,11 +17,21 @@ export const Welcome: React.FC<{
   disable: boolean;
 }> = ({ isProfile, helpdesk, userInfo, onAvatarClick, onClose, changeArrowOff, disable }) => {
   return (
-    <div className="fixed inset-0 p-4 z-10 sm:relative sm:p-0 flex flex-col justify-center bg-white">
-      <div className="absolute top-0 left-0 right-0 sm:relative sm:-mt-4 sm:-mx-8 sm:mb-4 sm:rounded-t-xl p-3 bg-blue-500 text-white fog:text-header3">
+    <div
+      className={classNames(
+        "fixed inset-0 p-4 z-10 sm:relative sm:p-0 flex flex-col justify-center bg-white",
+        "dark:bg-gray-800"
+      )}
+    >
+      <div
+        className={classNames(
+          "absolute top-0 left-0 right-0 sm:relative sm:-mt-4 sm:-mx-8 sm:mb-4 sm:rounded-t-xl p-3 bg-blue-500 text-white fog:text-header3",
+          "dark:bg-black"
+        )}
+      >
         {isProfile ? "Update profile" : "Welcome!"}
       </div>
-      <div className="flex-1 flex flex-col gap-y-4 mt-24 sm:mt-4">
+      <div className={classNames("flex-1 flex flex-col gap-y-4 mt-24 sm:mt-4", "dark:text-white")}>
         {userInfo && (
           <div className="flex flex-col items-center gap-x-2">
             {changeArrowOff === false && (
@@ -44,12 +55,19 @@ export const Welcome: React.FC<{
           </div>
         )}
         {helpdesk && (
-          <div className="flex-1 flex flex-col gap-y-2 p-4 bg-gray-100 fog:text-caption-xl">
+          <div
+            className={classNames(
+              "flex-1 flex flex-col gap-y-2 p-4 bg-gray-100 fog:text-caption-xl",
+              "dark:bg-gray-900",
+              "rounded-xl"
+            )}
+          >
             <p>
-              <span className="text-brand-purple-500">Our team</span> is here to help
+              <span className="text-brand-purple-500 dark:text-brand-purple-300">Our team</span> is
+              here to help
             </p>
             <p className="ml-10 flex items-end gap-x-2 fog:text-body-m">
-              <span className="relative bottom-1 text-brand-purple-500">
+              <span className="relative bottom-1 text-brand-purple-500 dark:text-brand-purple-300">
                 <Arrow />
               </span>
               {helpdesk.vendorName}

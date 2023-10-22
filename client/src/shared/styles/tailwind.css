@@ -103,7 +103,7 @@
 }
 
 .fog\:text-link {
-  @apply text-blue-700;
+  @apply text-blue-700 dark:text-blue-400;
   @apply cursor-pointer;
 }
 .fog\:text-link:hover {
@@ -174,12 +174,11 @@
 .fog\:chat-message code {
   @apply !py-0.5;
   @apply rounded;
-  @apply bg-gray-900;
   @apply !text-gray-100;
 }
 
 .fog\:chat-message code.inline {
-  @apply bg-white;
+  @apply bg-white dark:bg-gray-900;
   @apply !text-brand-red-500;
 }
 
@@ -193,7 +192,7 @@
 .fog\:chat-message pre {
   @apply overflow-x-auto;
   @apply rounded-md;
-  @apply bg-gray-800;
+  @apply bg-gray-800 dark:bg-gray-900;
   @apply text-gray-100;
   @apply pl-1.5;
 }
@@ -240,6 +239,7 @@
 
 .fbr-scrollbar::-webkit-scrollbar-track {
   @apply bg-white;
+  @apply dark:bg-gray-800;
   @apply bg-opacity-60;
   @apply rounded-full;
 }

@@ -237,7 +237,10 @@ const RoomSection = (props: RoomSectionProps) => {
   return (
     <React.Fragment>
       <div
-        className="flex items-center gap-x-2 mt-2 p-2 pr-4 rounded-lg bg-gray-100 fog:text-caption-l uppercase cursor-pointer"
+        className={classNames(
+          "flex items-center gap-x-2 mt-2 p-2 pr-4 rounded-lg bg-gray-100 fog:text-caption-l uppercase cursor-pointer",
+          "dark:bg-gray-900"
+        )}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
       >
@@ -373,7 +376,12 @@ export const RoomItem: React.FC<{
     if (t) {
       const [, , priorityType] = t.name.split(":");
       return (
-        <span className="bg-blue-50 text-gray-500 font-semibold px-1 rounded uppercase">
+        <span
+          className={classNames(
+            "bg-blue-50 text-gray-500 font-semibold px-1 rounded uppercase text-xs",
+            "dark:bg-gray-800 dark:text-gray-400"
+          )}
+        >
           {priorityType}
         </span>
       );
@@ -391,7 +399,7 @@ export const RoomItem: React.FC<{
         opened && showAsInternal && "bg-green-50",
         opened && showAsInternal && active && "border-green-500",
         opened && showAsInternal && !active && "border-green-100",
-        opened && !showAsInternal && "bg-blue-50",
+        opened && !showAsInternal && "bg-blue-50 dark:bg-gray-800",
         opened && !showAsInternal && active && "border-brand-orange-500",
         opened && !showAsInternal && !active && "border-blue-200"
       )}
@@ -463,17 +471,17 @@ export const RoomItem: React.FC<{
           )}
 
           {!latestMessageAuthor && (room.isTriage || isExternal) && (
-            <span className="text-gray-500">☝️ Start here</span>
+            <span className="text-gray-500 dark:text-gray-400">☝️ Start here</span>
           )}
 
           {latestMessageAuthor && !latestMessageText && (
             <>
               <b className="fog:text-chat-username-s">{latestMessageAuthor}</b>:{" "}
-              <span className="text-gray-500 italic">Uploaded a file</span>
+              <span className="text-gray-500 dark:text-gray-400 italic">Uploaded a file</span>
             </>
           )}
         </span>
-        <span className="text-gray-500 whitespace-no-wrap fog:text-body-s">
+        <span className="text-gray-500 dark:text-gray-400 whitespace-no-wrap fog:text-body-s">
           {formatRosterTs(badge?.lastRoomMessage?.createdTs || room.createdTs)}
         </span>
       </div>

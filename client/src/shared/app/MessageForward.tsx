@@ -42,6 +42,7 @@ export const MessageForward: React.FC<{
   messagesByTarget: { [targetId: string]: Message[] };
   messageCreateMany: (messages: MessageCreate[]) => void;
   onComplete: () => void;
+  isAgent: boolean | undefined;
 }> = ({
   fromRoomId,
   userId,
@@ -52,6 +53,7 @@ export const MessageForward: React.FC<{
   messagesByTarget,
   messageCreateMany,
   onComplete,
+  isAgent,
 }) => {
   const { roomById } = useSharedRoster();
   const { serverCall } = useWs();
@@ -102,10 +104,14 @@ export const MessageForward: React.FC<{
         type: "public",
         workspaceId,
       });
-      invariant(res.msgType === "Search.Ok", "Expected search to return Search.Ok", () => {
-        console.error("Customer search failed", workspaceId, rosterSearchValue, res);
-      });
-      return res.items.filter(c => c.isTriage);
+      if (isAgent) {
+        invariant(res.msgType === "Search.Ok", "Expected search to return Search.Ok", () => {
+          console.error("Customer search failed", workspaceId, rosterSearchValue, res);
+        });
+        return res.items.filter(c => c.isTriage);
+      } else {
+        return [];
+      }
     },
   });
 
@@ -260,7 +266,9 @@ export const MessageForward: React.FC<{
           />
         ))}
       </div>
-      <div className="pt-6 border-t border-gray-300 bg-white">
+      <div
+        className={classNames("-mb-4 pt-6 border-t border-gray-300 bg-white", "dark:bg-gray-800")}
+      >
         <div className="fog:text-header2">Forward to&hellip;</div>
         {forwardModes.length > 1 && (
           <div className="flex flex-wrap items-center -mx-8 px-8 mb-4 border-b border-gray-200">
@@ -295,7 +303,7 @@ export const MessageForward: React.FC<{
 
         <div className="overflow-y-auto fbr-scrollbar" style={{ height: "25vh" }}>
           <table className="relative w-full fog:text-body-m border-0">
-            <thead className="sticky top-0 bg-white">
+            <thead className={classNames("sticky top-0 bg-white", "dark:bg-gray-800")}>
               <tr>
                 <th
                   className="w-5 p-2 border-b border-gray-200 text-blue-700 align-middle text-center"
@@ -313,18 +321,22 @@ export const MessageForward: React.FC<{
                     {allRoomsSelected ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
                   </div>
                 </th>
-                <th
-                  className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
-                  style={{ width: "40%" }}
-                >
-                  Customer
-                </th>
-                <th
-                  className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
-                  style={{ width: "40%" }}
-                >
-                  Customer id
-                </th>
+                {isAgent && (
+                  <th
+                    className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
+                    style={{ width: "40%" }}
+                  >
+                    Customer
+                  </th>
+                )}
+                {isAgent && (
+                  <th
+                    className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
+                    style={{ width: "40%" }}
+                  >
+                    Customer id
+                  </th>
+                )}
                 <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">Room</th>
                 {isConnectedToIssue && forwardMode === "Related rooms" && (
                   <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">
@@ -339,7 +351,8 @@ export const MessageForward: React.FC<{
                   key={x.id}
                   className={classNames(
                     "w-5 p-2 hover:bg-gray-100 cursor-pointer",
-                    selectedRooms.has(x.id) && "bg-gray-100"
+                    "dark:hover:bg-gray-500",
+                    selectedRooms.has(x.id) && "bg-gray-100 dark:bg-gray-500"
                   )}
                   onClick={() =>
                     setSelectedRooms(rooms => {
@@ -351,12 +364,18 @@ export const MessageForward: React.FC<{
                   <td className="p-2 text-blue-700 align-middle text-center">
                     {selectedRooms.has(x.id) ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
                   </td>
-                  <td className="p-2">
-                    <span className="overflow-ellipsis">{formatCustomerName(x.customerName)}</span>
-                  </td>
-                  <td className="p-2">
-                    <span className="overflow-ellipsis">{x.customerId}</span>
-                  </td>
+                  {isAgent && (
+                    <td className="p-2">
+                      <span className="overflow-ellipsis">
+                        {formatCustomerName(x.customerName)}
+                      </span>
+                    </td>
+                  )}
+                  {isAgent && (
+                    <td className="p-2">
+                      <span className="overflow-ellipsis">{x.customerId}</span>
+                    </td>
+                  )}
                   <td className="p-2">
                     <span className="overflow-ellipsis">{x.name}</span>
                   </td>

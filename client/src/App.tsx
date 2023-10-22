@@ -6,6 +6,7 @@ import {
   VisitorInfo,
   VisitorToken,
 } from "fogbender-proto";
+import { useSetAtom } from "jotai";
 import { parse } from "query-string";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -30,9 +31,12 @@ import {
 import { handleGoFullScreen } from "./shared/components/GoFullScreen";
 import { queryClient } from "./shared/utils/client";
 import Headless from "./ui/Headless";
+import { modeAtom } from "./shared/store/config.store";
 
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
+  // const [mode, setMode] = React.useState<"light" | "dark">("light");
+  const setMode = useSetAtom(modeAtom);
   const [tokenWithoutVersion, setToken] = React.useState<Token>();
   const token = React.useMemo(() => {
     return addVersion(tokenWithoutVersion);
@@ -106,6 +110,10 @@ const App = () => {
     // we can't check origin because it's going to be different for each user
     // nosemgrep: javascript.browser.security.insufficient-postmessage-origin-validation.insufficient-postmessage-origin-validation
     window.addEventListener("message", e => {
+      if (["light", "dark"].includes(e.data.mode)) {
+        setMode(e.data.mode);
+      }
+
       if (e.data.initToken) {
         if (e.data.env) {
           setClientEnv(e.data.env);
@@ -311,7 +319,7 @@ const NoUserFallback: React.FC<{
   );
 
   return (
-    <div className="relative z-10 h-full max-h-screen flex-1 flex flex-col bg-white">
+    <div className="relative z-10 h-full max-h-screen flex-1 flex flex-col bg-white dark:bg-gray-800">
       <div className="relatve flex items-center gap-x-2 bg-blue-500 text-white py-2 px-4 fog:text-caption-xl leading-loose">
         <div className="flex-1 invisible">&nbsp;</div>
       </div>
