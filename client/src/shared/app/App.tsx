@@ -883,7 +883,7 @@ export const App: React.FC<{
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
-        mode === "dark" && "bg-gray-800 dark"
+        mode === "dark" && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
       )}
     >
       {isUser && userInfo && (
