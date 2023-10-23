@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.4.0
+
+### Minor Changes
+
+- 5e4f264: Dark/light mode switch
+
 ## 0.3.0
 
 ### Minor Changes

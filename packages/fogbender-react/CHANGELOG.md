@@ -1,5 +1,16 @@
 # fogbender-react
 
+## 0.4.0
+
+### Minor Changes
+
+- 5e4f264: Dark/light mode switch
+
+### Patch Changes
+
+- Updated dependencies [5e4f264]
+  - fogbender@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

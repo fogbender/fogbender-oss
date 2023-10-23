@@ -99,7 +99,7 @@ export const createNewFogbender = (): Fogbender => {
       if (state.token) {
         state.token = {
           ...state.token,
-          versions: { ...state.token.versions, ...state.versions, fogbender: "0.3.0" },
+          versions: { ...state.token.versions, ...state.versions, fogbender: "0.4.0" },
           visitorToken,
           visitUrl: window?.parent?.location?.toString(),
         };
