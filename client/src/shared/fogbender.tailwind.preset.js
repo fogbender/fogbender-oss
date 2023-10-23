@@ -1,4 +1,5 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
+const colors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -38,6 +39,7 @@ module.exports = {
         "brand-red-500": "#FA3541",
         "brand-red-300": "#FC727A",
         "brand-red-100": "#FEC7CA",
+        gray: colors.zinc,
       },
       flex: {
         "2": "2 2 0%",
