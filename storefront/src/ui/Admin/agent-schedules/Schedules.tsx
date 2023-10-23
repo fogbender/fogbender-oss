@@ -6,6 +6,7 @@ import {
   Avatar,
   Icons,
   LinkButton,
+  RadioIcon,
   ThickButton,
   ThinButton,
   useClickOutside,
@@ -79,6 +80,12 @@ type AgentViewProps = {
   size: number;
 };
 
+type AvailabilityButtonProps = {
+  buttonName: string;
+  radioOn: boolean;
+  onClickHandler: (e: MouseEvent) => void;
+};
+
 type DayProps = {
   currentDay: number;
   day: string;
@@ -87,6 +94,8 @@ type DayProps = {
   setWeekState: SetStateAction<WeekState>;
   weekState: WeekState;
 };
+
+type EmptyFunction = () => void;
 
 type HalfHourArgument<T> = (h: number) => T;
 
@@ -113,6 +122,8 @@ type LaneAssignmentState = {
   num: number;
 };
 
+type MouseEvent = React.MouseEvent;
+
 type SelectionState = Record<
   Agent["id"],
   {
@@ -136,11 +147,28 @@ type ShiftName = {
   name: string | undefined;
 };
 
+type ScheduledHourProps = HalfHourProps & {
+  isHourInSelection: boolean;
+  schedule: AgentSchedule;
+  changeAvailability: EmptyFunction;
+  removeSchedule: EmptyFunction;
+};
+
+type ScheduleManagerProps = {
+  scheduleId: string | undefined;
+  isAvailable: boolean;
+  schedule: AgentSchedule;
+  setActiveScheduleId: SetStateAction<ScheduleManagerProps["scheduleId"]>;
+  changeAvailability: () => void;
+  removeSchedule: () => void;
+};
+
 type WeekState = {
   week: number | undefined;
   schedule: AgentSchedule[];
 };
 
+const activeScheduleIdAtom = atom<string | undefined>(undefined);
 const selectedTimezone = atom<string>(dayjs.tz.guess());
 const selectionStateAtom = atom<SelectionState>({});
 const hoveredRangeAtom = atom<HoveredRange | {}>({});
@@ -603,12 +631,28 @@ const HalfHour = (props: HalfHourProps) => {
     finishTime,
     currentHour,
     addHoveredRange,
+    checkIsHourOccupied,
     onHourClick,
     setHintPosition,
     setHoveredRange,
+    onRemoveSchedule,
+    toggleAgentAvailability,
   } = props;
 
   const isHourInSelection = day === currentDayIndex && selectedHour === currentHour;
+
+  const schedules = React.useMemo(
+    () => checkIsHourOccupied(currentHour),
+    [currentHour, checkIsHourOccupied]
+  );
+
+  const changeAvailability = (schedule: AgentSchedule) => {
+    toggleAgentAvailability(schedule);
+  };
+
+  const removeSchedule = (schedule: AgentSchedule) => {
+    onRemoveSchedule(schedule.scheduleId);
+  };
 
   const classes = {
     "bg-blue-400": isHourInSelection,
@@ -630,7 +674,137 @@ const HalfHour = (props: HalfHourProps) => {
         setHintPosition(undefined);
       }}
       className={classNames("py-1.5 bg-gray-100 relative h-2 w-4", classes)}
-    />
+    >
+      {schedules.map((schedule, index) => (
+        <ScheduledHour
+          key={index}
+          {...props}
+          isHourInSelection={isHourInSelection}
+          removeSchedule={() => removeSchedule(schedule)}
+          changeAvailability={() => changeAvailability(schedule)}
+          schedule={schedule}
+        />
+      ))}
+    </div>
+  );
+};
+
+const ScheduledHour = (props: ScheduledHourProps) => {
+  const { schedule, currentDayIndex, currentHour, removeSchedule, changeAvailability } = props;
+
+  const [activeScheduleId, setActiveScheduleId] = useAtom(activeScheduleIdAtom);
+  const [selectionState] = useAtom(selectionStateAtom);
+
+  const isStartTime = schedule.startDate === currentDayIndex && schedule.startTime === currentHour;
+
+  const isPopupVisible = activeScheduleId === schedule.scheduleId && isStartTime;
+
+  const isAvailable = schedule.available;
+
+  const classes = classNames({
+    "rounded-t": !isStartTime && currentHour === START_HOUR,
+    "rounded-b": !isStartTime && currentHour === FINISH_HOUR,
+    "rounded-tl": isStartTime && currentHour === START_HOUR,
+    "rounded-bl": isStartTime && currentHour === FINISH_HOUR,
+    "bg-blue-400": isAvailable,
+    "!bg-brand-pink-500": !isAvailable,
+  });
+
+  const onMouseOver = () => {
+    if (isStartTime && !Object.keys(selectionState).length) {
+      // Do not show control popup when in selection state
+      setActiveScheduleId(schedule.scheduleId);
+    }
+  };
+
+  return (
+    <div className={classNames(classes, "absolute h-full w-full top-0")}>
+      {isStartTime && (
+        <div
+          onClick={e => e.stopPropagation()}
+          onMouseOver={onMouseOver}
+          className={classNames(
+            "h-3 w-4 absolute top-0 border-rounded-r-lg right-0 translate-x-full",
+            { "bg-blue-400": isAvailable, "bg-brand-pink-500": !isAvailable }
+          )}
+        />
+      )}
+      {isPopupVisible && (
+        <ScheduleManager
+          scheduleId={activeScheduleId}
+          setActiveScheduleId={setActiveScheduleId}
+          schedule={schedule}
+          changeAvailability={changeAvailability}
+          isAvailable={isAvailable}
+          removeSchedule={removeSchedule}
+        />
+      )}
+    </div>
+  );
+};
+
+const ScheduleManager = (props: ScheduleManagerProps) => {
+  const {
+    scheduleId,
+    isAvailable,
+    schedule,
+    setActiveScheduleId,
+    changeAvailability,
+    removeSchedule,
+  } = props;
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  useClickOutside(
+    menuRef,
+    () => setActiveScheduleId(undefined),
+    scheduleId !== schedule.scheduleId
+  );
+
+  const stopPropagation = (e: MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const onRadioButtonClick = (e: MouseEvent) => {
+    changeAvailability();
+    stopPropagation(e);
+  };
+
+  return (
+    <div
+      onClick={stopPropagation}
+      ref={menuRef}
+      className="absolute -right-4 top-0 translate-x-full max-w-min rounded-lg flex px-3 py-1 bg-white fog:box-shadow-s z-10"
+    >
+      <div className="flex flex-col gap-2 font-body">
+        <AvailabilityButton
+          onClickHandler={onRadioButtonClick}
+          buttonName="Available"
+          radioOn={isAvailable}
+        />
+        <AvailabilityButton
+          onClickHandler={onRadioButtonClick}
+          buttonName="Unavailable"
+          radioOn={!isAvailable}
+        />
+        <ThinButton
+          onClick={e => {
+            removeSchedule();
+            stopPropagation(e);
+          }}
+        >
+          Delete
+        </ThinButton>
+      </div>
+    </div>
+  );
+};
+
+const AvailabilityButton = (props: AvailabilityButtonProps) => {
+  const { onClickHandler, buttonName, radioOn } = props;
+  return (
+    <button className="flex items-center gap-1" onClick={onClickHandler}>
+      <RadioIcon on={radioOn} className="w-4" />
+      {buttonName}
+    </button>
   );
 };
 
