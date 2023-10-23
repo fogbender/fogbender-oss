@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import { useAtomValue } from "jotai";
 import DOMPurify from "dompurify";
 import {
   Attachment,
@@ -11,6 +10,7 @@ import {
 } from "fogbender-proto";
 import "highlight.js/lib/common";
 import "highlight.js/styles/base16/decaf.css";
+import { useAtomValue } from "jotai";
 import React from "react";
 import { rehype } from "rehype";
 import rehypeHighlight from "rehype-highlight";
@@ -20,6 +20,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { Icons } from "../components/Icons";
 import { Avatar, MessageCheckbox } from "../components/lib";
 import { UserInfoCard } from "../components/UserInfoCard";
+import { modeAtom } from "../store/config.store";
 import { formatCustomerName, formatRoomName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 
@@ -28,7 +29,6 @@ import { AddMessageReaction, EmojiPicker, MessageReactions } from "./MessageReac
 import { NewMessagesBelowIndicator } from "./NewMessagesBelowIndicator";
 import { NoActivityIndicator } from "./NoActivityIndicator";
 import { dayjs, formatTs, isTsCloseEnough } from "./times";
-import { modeAtom } from "../store/config.store";
 
 type MessageViewProps = {
   message: MessageT;

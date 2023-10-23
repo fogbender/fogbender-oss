@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useAtomValue } from "jotai";
+
 import { modeAtom } from "../store/config.store";
 
 export type Icon = React.FC<{
