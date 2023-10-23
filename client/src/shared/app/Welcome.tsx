@@ -26,7 +26,7 @@ export const Welcome: React.FC<{
     >
       <div
         className={classNames(
-          "absolute top-0 left-0 right-0 sm:relative sm:-mt-4 sm:-mx-8 sm:mb-4 sm:rounded-t-xl p-3 bg-blue-500 text-white fog:text-header3",
+          "sm:relative sm:mb-4 rounded-t-lg p-3 bg-blue-500 text-white fog:text-header3",
           "dark:bg-black"
         )}
       >
