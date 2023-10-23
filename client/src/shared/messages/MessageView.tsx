@@ -831,7 +831,7 @@ export const SourceMessages: React.FC<{
           "fog:chat-message fbr-link-preview ml-8 py-1 px-2 rounded-md cursor-pointer",
           linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
           linkType === "reply" && "bg-green-50 fog:text-body-s dark:bg-cyan-950",
-          linkType === "broadcast" && "bg-red-50"
+          linkType === "broadcast" && "bg-red-50 dark:bg-pink-900"
         )}
         onClick={!isSearchView ? onClick : undefined}
       >
