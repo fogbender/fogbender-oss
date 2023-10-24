@@ -42,7 +42,7 @@ defmodule Fog.Service.UserAuthTask do
       end)
 
     headers =
-      case Map.get(headers, "ip") do
+      case Map.get(headers, :ip) do
         nil ->
           # localhost
           Map.merge(headers, %{ip: "75.111.56.87"})
