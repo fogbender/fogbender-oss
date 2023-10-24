@@ -211,7 +211,7 @@ defmodule Fog.Repo.User do
           %Data.UserInfoCache{info: %{"ip" => ^ip} = info} ->
             info
 
-          nil ->
+          _ ->
             case Fog.Geoapify.Api.locate(ip) do
               {:ok, info} ->
                 :ok = Fog.Repo.UserInfoCache.add(user_id, "geoapify", info)
