@@ -853,6 +853,14 @@ export const App: React.FC<{
   const [selectedSectionId, setSelectedSectionId] = React.useState<string>();
   const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
 
+  React.useEffect(() => {
+    if (layout.length) {
+      dispatchEvent(new Event("resize")); // WidthProvider calculates width value only upon initialization or when a resize event is triggered.
+      // Reference: https://github.com/react-grid-layout/react-grid-layout
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOutlook]);
+
   const infoPane: "issue" | "customer" | "user" | undefined = React.useMemo(() => {
     if (vendorId) {
       if (
