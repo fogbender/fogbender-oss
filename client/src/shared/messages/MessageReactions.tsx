@@ -107,7 +107,8 @@ export const MessageReactions: React.FC<{
               : "hover:border-blue-200"
           )}
         >
-          <span className="pr-1">{reaction}</span> <span className="fog:text-body-s"> {count}</span>
+          <span className="pr-1">{reaction}</span>{" "}
+          <span className="fog:text-body-s dark:text-white"> {count}</span>
         </div>
       ))}
     </div>
