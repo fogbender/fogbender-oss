@@ -66,6 +66,7 @@ export function renderIframe(
   let _mode = initialMode();
   const iFrame = document.createElement("iframe");
 
+  rootEl.style.height = "100%";
   iFrame.src = url;
   iFrame.style.display = "block";
   iFrame.style.width = headless ? "0" : "100%";
@@ -162,18 +163,30 @@ export function renderIframe(
 
     let heightBelow = 0;
 
+    const tabletViewportBreakpoint = 640;
+
+    const isTablet = window.innerWidth < tabletViewportBreakpoint;
+
+    const getIframeHeight = () => {
+      const height = headless
+        ? "0"
+        : isTablet
+        ? "100%"
+        : `${Math.min(
+            window.innerHeight,
+            window.innerHeight - heightBelow - rootEl.getBoundingClientRect().top
+          )}px`;
+
+      return height;
+    };
+
     try {
       const iFrameTopBorderWidth = parseInt(getComputedStyle(iFrame).borderTopWidth);
       heightBelow = Math.max(totalFooterHeight(iFrame, 0) + iFrameTopBorderWidth, 0);
     } catch (e) {}
 
-    const height = headless
-      ? 0
-      : Math.min(
-          window.innerHeight,
-          window.innerHeight - heightBelow - rootEl.getBoundingClientRect().top
-        );
-    iFrame.style.height = height + "px";
+    const height = getIframeHeight();
+    iFrame.style.height = height;
   }
 
   function setMode(mode: "light" | "dark") {
