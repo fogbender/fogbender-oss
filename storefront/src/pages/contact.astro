@@ -1,18 +1,36 @@
 ---
 import Layout from "../layouts/main.astro";
 import Page from "../layouts/Page.astro";
-import Picture from "../ui/landing/Picture.astro";
 import localImage from "../assets/test-image.webp";
 import PageTitle from "../ui/landing/PageTitle.astro";
+import { Picture } from "@astrojs/image/components";
+import type { PictureComponentLocalImageProps } from "@astrojs/image/components";
 
 const title = "Contact";
+
+let {
+  src,
+  aspectRatio = "16:9",
+  sizes = "(max-width: 816px) 100vw, 816px",
+  formats = ["avif", "webp", "jpeg", "png"],
+  widths = [200, 400, 816],
+} = { src: localImage } as any as PictureComponentLocalImageProps;
 ---
 
 <Layout meta={{ title }}>
   <Page>
     <PageTitle title={title} />
     <div class="max-w-[51rem]">
-      <Picture src={localImage} loading="eager" alt="contact" />
+      <Picture
+        class="rounded-2xl"
+        src={src}
+        aspectRatio={aspectRatio}
+        widths={widths}
+        sizes={sizes}
+        formats={formats}
+        loading="eager"
+        alt="contact"
+      />
       <div>
         <p class="font-prompt text-lg font-light leading-9">
           Not all chatbots are created equal. There are many factors in which bots can vary, but one
