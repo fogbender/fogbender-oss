@@ -99,12 +99,7 @@ export const CustomerDetails: React.FC<{
       </div>
 
       {customerCrms?.crmData?.length && (
-        <div
-          className={classNames(
-            "h-8",
-            customerCrmStatus === "loading" || isRefetchingCustomer ? "visible" : "invisible"
-          )}
-        >
+        <div className={classNames("h-8", isRefetchingCustomer ? "visible" : "invisible")}>
           <div className="flex justify-center gap-2">
             <span className="text-green-600">Syncing CRM records...</span>
             <Icons.Spinner className="w-4 text-blue-500" />
