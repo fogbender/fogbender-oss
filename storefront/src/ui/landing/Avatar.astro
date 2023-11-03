@@ -1,20 +1,20 @@
 ---
 import { Picture } from "@astrojs/image/components";
 
-type Props = {
+export type Props = {
   src: ImageMetadata;
   name: string;
   size: number;
 };
 
-const { src, name, size } = Astro.props as Props;
+const { src, name, size } = Astro.props;
 ---
 
 <Picture
   class="avatar"
   style={`--size: ${size}px`}
   aria-hidden="true"
-  src={src}
+  src={src as any}
   alt={name}
   sizes={`${size}w`}
   widths={[2 * size]}
