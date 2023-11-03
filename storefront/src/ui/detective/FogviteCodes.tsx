@@ -1,4 +1,4 @@
-import { Fogvite } from "fogbender-client/src/shared";
+import { type Fogvite } from "fogbender-client/src/shared";
 import React from "react";
 import { useQuery } from "react-query";
 import { Link, useParams } from "react-router-dom";

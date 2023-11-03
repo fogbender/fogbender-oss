@@ -1,11 +1,11 @@
 import classNames from "classnames";
-import { Customer, Icons, Integration, ThinButton } from "fogbender-client/src/shared";
+import { type Customer, Icons, type Integration, ThinButton } from "fogbender-client/src/shared";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 
 import { getServerUrl } from "../../../config";
-import { Workspace } from "../../../redux/adminApi";
+import { type Workspace } from "../../../redux/adminApi";
 import { FontAwesomeHashtag } from "../../../shared/font-awesome/Hashtag";
 import { FontAwesomeLock } from "../../../shared/font-awesome/Lock";
 import { apiServer, queryClient, queryKeys } from "../../client";
@@ -71,6 +71,8 @@ export const AddSlackIntegration: React.FC<{
           .post({ ...newOauthConnection, channelId, userId })
           .json();
       }
+
+      return;
     },
     staleTime: 0,
     cacheTime: 0,
@@ -568,7 +570,7 @@ const SlackOauth: React.FC<{
 }> = props => {
   const { workspaceId, userInfo } = props;
   const oauthMutation = useMutation(
-    (code: string) => {
+    async (code: string) => {
       return fetchServerApiPost<OauthCodeExchange>(
         `/api/workspaces/${workspaceId}/integrations/slack/oauth-code`,
         {

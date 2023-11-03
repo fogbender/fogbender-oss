@@ -1,4 +1,4 @@
-import { Client } from "fogbender-client/src/shared";
+import { type Client } from "fogbender-client/src/shared";
 
 import { defaultEnv } from "../../config";
 

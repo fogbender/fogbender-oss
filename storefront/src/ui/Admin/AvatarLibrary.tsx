@@ -2,7 +2,7 @@ import { Avatar } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
 import { ExpandableSection } from "./ExpandableSection";

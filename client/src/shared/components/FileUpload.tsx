@@ -1,12 +1,12 @@
-import { FileUpload, Message, useWs } from "fogbender-proto";
-import { atom, PrimitiveAtom, useAtom } from "jotai";
+import { type FileUpload, type Message, useWs } from "fogbender-proto";
+import { atom, type PrimitiveAtom, useAtom } from "jotai";
 import { useImmerAtom } from "jotai/immer";
 import prettyBytes from "pretty-bytes";
 import React, { Suspense } from "react";
 
 import { MessageFileThumbnail } from "../messages/MessageFileThumbnail";
 import { fileToBuffer } from "../utils/readFile";
-import { FileUploads, Upload } from "../utils/useFileUpload";
+import { type FileUploads, type Upload } from "../utils/useFileUpload";
 
 export const fileToAtom = (file: File) => {
   const fileIdAtom = atom<string | undefined>(undefined);

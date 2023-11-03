@@ -1,6 +1,6 @@
-import { EventRoom, EventUser, Tag } from "fogbender-proto";
+import type { EventRoom, EventUser, Tag } from "fogbender-proto";
 
-import { Agent } from "../types";
+import type { Agent } from "../types";
 
 export type RenderCustomerInfoCb = (args: {
   ourId: string | undefined;

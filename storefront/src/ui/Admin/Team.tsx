@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import {
-  Agent,
-  AgentRole,
+  type Agent,
+  type AgentRole,
   Avatar,
   formatTs,
   Icons,
@@ -22,13 +22,13 @@ import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import UserPlus from "../../assets/userplus.svg";
 import { getServerUrl } from "../../config";
 import { getQueryParam } from "../../params";
-import { Invite, Vendor } from "../../redux/adminApi";
+import { type Invite, type Vendor } from "../../redux/adminApi";
 import { getAuthenticatedAgentId } from "../../redux/session";
 import { apiServer, queryClient, queryKeys } from "../client";
 import { DeleteInvitedModal } from "../components/modals/DeleteInvitedModal";
 import { DeleteMemberModal } from "../components/modals/DeleteMemberModal";
 import { fetchServerApiPost } from "../useServerApi";
-import { useVerifiedDomains, VerifiedDomain } from "../useVerifiedDomains";
+import { useVerifiedDomains, type VerifiedDomain } from "../useVerifiedDomains";
 
 import { ScheduleOverview } from "./agent-schedules/ScheduleOverview";
 import { Schedules } from "./agent-schedules/Schedules";

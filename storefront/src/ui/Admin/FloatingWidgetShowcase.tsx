@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FogbenderSimpleFloatie, Token } from "fogbender-react";
+import { FogbenderSimpleFloatie, type Token } from "fogbender-react";
 
 import { defaultEnv, getClientUrl } from "../../config";
 

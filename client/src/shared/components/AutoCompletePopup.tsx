@@ -1,11 +1,11 @@
-import { Author, Room, useRoomMembers, useRoster } from "fogbender-proto";
+import { type Author, type Room, useRoomMembers, useRoster } from "fogbender-proto";
 import { filter } from "fuzzy";
-import { atom, useAtom, WritableAtom } from "jotai";
+import { atom, useAtom, type WritableAtom } from "jotai";
 import { atomFamily, useAtomCallback, useAtomValue, useUpdateAtom } from "jotai/utils";
 import React from "react";
 import { throttle } from "throttle-debounce";
 
-import { AutocompleteItem, useRoomList } from "./useRoomList";
+import { type AutocompleteItem, useRoomList } from "./useRoomList";
 
 type State = string | undefined;
 

@@ -2,9 +2,9 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
-  CrmData,
-  Customer,
-  CustomerCrm,
+  type CrmData,
+  type Customer,
+  type CustomerCrm,
   Icons,
   isExternalHelpdesk,
   ThickButton,
@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
 
-import { MergeLink } from "./MergeLink";
+import { type MergeLink } from "./MergeLink";
 
 dayjs.extend(relativeTime);
 

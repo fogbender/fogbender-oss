@@ -1,6 +1,6 @@
 ---
 import * as Icon from "../landing/Icons";
-import { getMention, AuthorName } from "../../mentions";
+import { getMention, type AuthorName } from "../../mentions";
 import DateTime from "./Date.astro";
 import Avatar from "../landing/Avatar.astro";
 const { name, showTwitter, publishDate } = Astro.props as {
@@ -13,7 +13,7 @@ const author = getMention(name);
 ---
 
 <div class="author text-gray-500">
-  <Avatar src={author.avatar} name={author.name} size={25} />
+  <Avatar src={{src: author.avatar, height: 25, width: 25} name={author.name} size={25} />
   <div class="ml-2 flex flex-col">
     <div class="flex flex-wrap items-center space-x-1 text-sm">
       <span>Written by</span>

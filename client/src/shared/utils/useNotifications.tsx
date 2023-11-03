@@ -1,4 +1,4 @@
-import { EventNotificationMessage, Room as RoomT, useNotifications } from "fogbender-proto";
+import { type EventNotificationMessage, type Room as RoomT, useNotifications } from "fogbender-proto";
 import { useAtom } from "jotai";
 import React from "react";
 

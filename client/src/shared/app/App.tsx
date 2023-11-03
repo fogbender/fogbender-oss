@@ -1,13 +1,13 @@
 import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import {
-  Author,
-  EventRoom,
+  type Author,
+  type EventRoom,
   getVersion,
-  Integration as IntegrationT,
+  type Integration as IntegrationT,
   isEventUser,
-  Room as RoomT,
-  Tag as TagT,
+  type Room as RoomT,
+  type Tag as TagT,
   useLoadAround,
   useRoster,
   useRosterActions,
@@ -40,7 +40,7 @@ import {
   muteNotificationsAtom,
   showOutlookRosterAtom,
 } from "../store/config.store";
-import { Agent, AuthorMe, VendorBilling } from "../types";
+import type { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
@@ -56,13 +56,13 @@ import {
 import { usePrevious } from "../utils/usePrevious";
 
 import { CreateRoom } from "./CreateRoom";
-import { RenderCustomerInfoCb } from "./CustomerInfo";
+import { type RenderCustomerInfoCb } from "./CustomerInfo";
 import { CustomerInfoPane } from "./CustomerInfoPane";
 import { Customers } from "./Customers";
 import { EmailNotificationsSettings } from "./EmailNotificationsSettings";
 import { Folders } from "./Folders";
 import { IssueInfoPane } from "./IssueInfoPane";
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 import { Room } from "./Room";
 import { RoomNameLine } from "./RoomHeader";
 import { RoomSettings } from "./RoomSettings";
@@ -71,7 +71,7 @@ import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
 import { SectionRoster } from "./SectionRoster";
-import { RenderUsersInfoCb } from "./UsersInfo";
+import { type RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
 

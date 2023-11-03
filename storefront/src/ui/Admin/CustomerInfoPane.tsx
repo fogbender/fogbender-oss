@@ -5,9 +5,9 @@ import {
   formatCustomerName,
   Icons,
   isInternalHelpdesk,
-  Tag,
+  type Tag,
 } from "fogbender-client/src/shared";
-import { RenderCustomerInfoCb } from "fogbender-client/src/shared/app/CustomerInfo";
+import { type RenderCustomerInfoCb } from "fogbender-client/src/shared/app/CustomerInfo";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import { SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import React from "react";

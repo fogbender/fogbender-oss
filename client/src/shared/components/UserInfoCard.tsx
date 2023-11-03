@@ -1,4 +1,4 @@
-import { Author, useAuthorEmail } from "fogbender-proto";
+import { type Author, useAuthorEmail } from "fogbender-proto";
 import React from "react";
 
 import { ClipboardCopy } from "../components/ClipboardCopy";

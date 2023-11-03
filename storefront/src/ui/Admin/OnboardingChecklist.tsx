@@ -1,6 +1,6 @@
 import { Icons } from "fogbender-client/src/shared";
 import {
-  Integration,
+  type Integration,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
 } from "fogbender-proto";

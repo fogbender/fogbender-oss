@@ -1,4 +1,4 @@
-import { CreateTagForm, FilterInput, Modal, Tag } from "fogbender-client/src/shared";
+import { CreateTagForm, FilterInput, Modal, type Tag } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 

@@ -4,7 +4,7 @@ import React from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 
-import { VendorInvite } from "../../redux/adminApi";
+import { type VendorInvite } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
 import { useLogout } from "../useLogout";
 import { fetchServerApiPost } from "../useServerApi";

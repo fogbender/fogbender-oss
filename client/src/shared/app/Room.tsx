@@ -2,21 +2,21 @@ import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import dayjs from "dayjs";
 import {
-  AiSuggest,
-  Author,
+  type AiSuggest,
+  type Author,
   convertEventMessageToMessage,
-  EventRoom,
+  type EventRoom,
   extractEventMessage,
-  Helpdesk,
-  Integration as IntegrationT,
+  type Helpdesk,
+  type Integration as IntegrationT,
   KnownIssueTrackerIntegrations,
-  Message,
-  MessageCreate,
-  MessageUpdate,
-  Room as RoomT,
-  ServerCall,
-  StreamGet,
-  Tag as TagT,
+  type Message,
+  type MessageCreate,
+  type MessageUpdate,
+  type Room as RoomT,
+  type ServerCall,
+  type StreamGet,
+  type Tag as TagT,
   useLoadAround,
   useRoomHistory,
   useRoomTyping,
@@ -32,13 +32,13 @@ import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
 import { LoadingIndicator, UnreadCircle } from "../components/lib";
 import { Modal } from "../components/Modal";
-import { TextAreaMode, useTextarea } from "../components/useTextarea";
+import { type TextAreaMode, useTextarea } from "../components/useTextarea";
 import { MessageFileThumbnail } from "../messages/MessageFileThumbnail";
 import { MessageView } from "../messages/MessageView";
 import { useNewMessagesAt } from "../messages/useNewMessagesAt";
 import { useSelection } from "../messages/useSelection";
 import { showAiHelperAtom } from "../store/config.store";
-import { Agent, VendorBilling } from "../types";
+import type { Agent, VendorBilling } from "../types";
 import { atomWithLocalStorage } from "../utils/atomWithLocalStorage";
 import { formatRoomName, isInternalHelpdesk } from "../utils/format";
 import { formatRoomTs } from "../utils/formatTs";
@@ -49,7 +49,7 @@ import { useHeightWatcher } from "../utils/useHeightWatcher";
 import { useScrollTracker } from "../utils/useScrollTracker";
 
 import { FileIssue } from "./FileIssue";
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 import { MessageForward } from "./MessageForward";
 import { RoomHeader } from "./RoomHeader";
 import styles from "./styles/room.module.css";

@@ -1,4 +1,4 @@
-import { atom, PrimitiveAtom } from "jotai";
+import { atom, type PrimitiveAtom } from "jotai";
 
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 

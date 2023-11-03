@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { Icons, muteSoundAtom, ThickButton } from "fogbender-client/src/shared";
-import { GetSettings, useWs } from "fogbender-proto";
+import { type GetSettings, useWs } from "fogbender-proto";
 import { useAtom } from "jotai";
 import React from "react";
 import { useMutation, useQuery } from "react-query";

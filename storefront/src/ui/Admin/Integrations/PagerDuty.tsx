@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import {
-  AgentGroup,
-  Integration,
+  type AgentGroup,
+  type Integration,
   LocalStorageKeys,
   SafeLocalStorage,
   ThickButton,
@@ -18,7 +18,7 @@ import React from "react";
 import { useMutation, useQuery } from "react-query";
 
 import { getServerUrl } from "../../../config";
-import { Workspace } from "../../../redux/adminApi";
+import { type Workspace } from "../../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../../client";
 import { useWorkspaceIntegrationsQuery } from "../../useWorkspaceIntegrations";
 

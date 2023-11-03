@@ -1,7 +1,7 @@
 import {
   formatTs,
   IconPagerDuty,
-  Integration,
+  type Integration,
   KnownIncidentResponseIntegrations,
   Modal,
   ThinButton,
@@ -9,7 +9,7 @@ import {
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import React from "react";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
 import { useWorkspaceIntegrationsQuery } from "../useWorkspaceIntegrations";
 

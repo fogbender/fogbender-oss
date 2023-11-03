@@ -1,4 +1,4 @@
-import { LocalStorageKeys, SafeLocalStorage, UserMe } from "fogbender-client/src/shared";
+import { LocalStorageKeys, SafeLocalStorage, type UserMe } from "fogbender-client/src/shared";
 import React from "react";
 import { useSelector } from "react-redux";
 

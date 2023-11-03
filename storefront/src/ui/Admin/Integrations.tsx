@@ -1,6 +1,6 @@
 import {
   formatTs,
-  Integration,
+  type Integration,
   IntegrationDetails,
   KnownIssueTrackerIntegrations,
   Modal,
@@ -10,7 +10,7 @@ import { Select } from "fogbender-client/src/shared/ui/Select";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
 import { useWorkspaceIntegrationsQuery } from "../useWorkspaceIntegrations";
 

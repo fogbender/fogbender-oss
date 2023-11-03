@@ -1,9 +1,9 @@
 import classNames from "classnames";
-import { Icons, Integration, ThinButton, useInput } from "fogbender-client/src/shared";
+import { Icons, type Integration, ThinButton, useInput } from "fogbender-client/src/shared";
 import React from "react";
 
 import { getWebhookUrl } from "../../../config";
-import { Workspace } from "../../../redux/adminApi";
+import { type Workspace } from "../../../redux/adminApi";
 import { useServerApiPostWithPayload } from "../../useServerApi";
 
 import {

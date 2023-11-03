@@ -1,9 +1,9 @@
-import { Icons, Integration, ThinButton } from "fogbender-client/src/shared";
+import { Icons, type Integration, ThinButton } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "react-query";
 
 import { getServerUrl } from "../../../config";
-import { Workspace } from "../../../redux/adminApi";
+import { type Workspace } from "../../../redux/adminApi";
 import { queryClient, queryKeys } from "../../client";
 
 import { error, operationStatusMutation, useProgress } from "./Utils";

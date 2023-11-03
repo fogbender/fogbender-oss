@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { useMatch } from "react-router-dom";
 
-import { Vendor } from "../redux/adminApi";
+import { type Vendor } from "../redux/adminApi";
 
 import { fetchData, queryKeys } from "./client";
 

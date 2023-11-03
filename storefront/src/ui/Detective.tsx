@@ -3,7 +3,7 @@ import React from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 import { getServerUrl } from "../config";
-import { Agent } from "../redux/adminApi";
+import { type Agent } from "../redux/adminApi";
 
 import "./Detective.css";
 import { FogviteCodes } from "./detective/FogviteCodes";
@@ -639,7 +639,7 @@ export function useFetch<Data>(url: string) {
   return [loading, error, data] as const;
 }
 
-function searchAgents(email: string): Promise<Agent[]> {
+async function searchAgents(email: string): Promise<Agent[]> {
   const form = new FormData();
   form.append("email", email);
   return fetch(`${getServerUrl()}/detective_api/search`, {

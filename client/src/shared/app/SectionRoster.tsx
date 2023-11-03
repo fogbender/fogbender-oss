@@ -3,12 +3,12 @@ import classNames from "classnames";
 import {
   calculateCounterpart,
   calculateStartPosFast,
-  EventBadge,
-  EventRoom,
-  EventRosterRoom,
-  EventRosterSection,
-  RosterSectionActions,
-  RosterSectionId,
+  type EventBadge,
+  type EventRoom,
+  type EventRosterRoom,
+  type EventRosterSection,
+  type RosterSectionActions,
+  type RosterSectionId,
   useRosterSections,
 } from "fogbender-proto";
 import { useAtomValue } from "jotai";
@@ -25,7 +25,7 @@ import {
 import { formatRosterTs } from "../utils/formatTs";
 
 import { viewIdAtom } from "./Folders";
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 
 export const SectionRoster: React.FC<{
   selectedSectionId: string | undefined;

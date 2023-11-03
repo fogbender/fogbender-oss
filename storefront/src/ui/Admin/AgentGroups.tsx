@@ -1,8 +1,8 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
 import {
-  Agent,
-  AgentGroup,
+  type Agent,
+  type AgentGroup,
   Avatar,
   GroupDefaultIcon,
   Icons,
@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 
-import { Vendor } from "../../redux/adminApi";
+import { type Vendor } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
 export const AgentGroups: React.FC<{

@@ -12,7 +12,7 @@ import { store } from "../redux/store";
 
 import { Auth } from "./amazon";
 import {
-  AuthErrors,
+  type AuthErrors,
   ConfirmEmailForm,
   popupCenter,
   SpinnerSmall,

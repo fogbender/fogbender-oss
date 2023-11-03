@@ -6,7 +6,7 @@ import { Icons } from "../components/Icons";
 import { isInternalHelpdesk } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 
-import { RoomHeaderProps } from "./RoomHeader";
+import { type RoomHeaderProps } from "./RoomHeader";
 
 export const RoomMenu: React.FC<Partial<RoomHeaderProps>> = ({
   room,

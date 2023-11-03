@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from "@reduxjs/toolkit";
-import { Agent, maybeUndefined, WorkspaceTag as Tag } from "fogbender-client/src/shared";
+import { type Agent, maybeUndefined, type WorkspaceTag as Tag } from "fogbender-client/src/shared";
 
 import type { RootState } from ".";
 

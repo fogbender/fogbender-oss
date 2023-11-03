@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { lazily } from "react-lazily";
 import { useLocation } from "react-router-dom";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 
 import { ExpandableSection } from "./ExpandableSection";
 

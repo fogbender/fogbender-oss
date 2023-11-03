@@ -1,5 +1,5 @@
 import {
-  BooleanConfigAtom,
+  type BooleanConfigAtom,
   showAiHelperAtom,
   showFocusedRosterAtom,
   showOutlookRosterAtom,

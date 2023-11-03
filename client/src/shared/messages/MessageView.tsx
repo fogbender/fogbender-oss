@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import DOMPurify from "dompurify";
 import {
-  Attachment,
-  Author,
-  Message as MessageT,
-  MessageUpdate,
-  Room as RoomT,
+  type Attachment,
+  type Author,
+  type Message as MessageT,
+  type MessageUpdate,
+  type Room as RoomT,
   useLoadAround,
 } from "fogbender-proto";
 import "highlight.js/lib/common";

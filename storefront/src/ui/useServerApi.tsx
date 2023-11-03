@@ -84,7 +84,7 @@ export function useServerApiPost<DataIn, DataOut = object>(apiUrl?: string, payl
     loading: boolean;
   }>({ data: null, error: null, loading: false });
 
-  const call = React.useCallback(() => {
+  const call = React.useCallback(async () => {
     if (!url) {
       return Promise.resolve<void>(undefined);
     }

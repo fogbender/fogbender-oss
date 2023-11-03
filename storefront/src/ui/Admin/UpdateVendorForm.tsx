@@ -3,7 +3,7 @@ import React from "react";
 import { useMutation } from "react-query";
 
 import { getServerUrl } from "../../config";
-import { Vendor } from "../../redux/adminApi";
+import { type Vendor } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
 
 export const UpdateVendorForm: React.FC<{

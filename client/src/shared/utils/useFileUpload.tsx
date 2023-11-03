@@ -1,4 +1,4 @@
-import { atom, PrimitiveAtom, WritableAtom } from "jotai";
+import { atom, type PrimitiveAtom, type WritableAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 import { useDropzone } from "react-dropzone";

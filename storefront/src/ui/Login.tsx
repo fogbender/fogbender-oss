@@ -13,7 +13,7 @@ import { store } from "../redux/store";
 import { Auth } from "./amazon";
 import {
   addLocation,
-  AuthErrors,
+  type AuthErrors,
   ConfirmEmailForm,
   extractRelativeUrl,
   SpinnerSmall,

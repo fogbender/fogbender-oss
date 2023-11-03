@@ -2,7 +2,7 @@ import { Icons } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import React from "react";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { useServerApiGet } from "../useServerApi";
 
 import { ExpandableSection } from "./ExpandableSection";

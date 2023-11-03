@@ -7,7 +7,7 @@ import { useMutation } from "react-query";
 import { useSearchParams } from "react-router-dom";
 
 import { defaultEnv, getClientUrl, getDemoUrl, getServerUrl } from "../../config";
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { apiServer } from "../client";
 import { useServerApiGet, useServerApiPost } from "../useServerApi";
 import { useDedicatedVendorId, useVendorById } from "../useVendor";

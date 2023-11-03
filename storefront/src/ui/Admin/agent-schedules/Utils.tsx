@@ -2,7 +2,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import { useClickOutside } from "fogbender-client/src/shared";
 import { ChevronButton } from "fogbender-client/src/shared/ui/ChevronButton";
-import { PrimitiveAtom, useAtom } from "jotai";
+import { type PrimitiveAtom, useAtom } from "jotai";
 import React from "react";
 
 import TimeZones from "../../../data/timezones.json";

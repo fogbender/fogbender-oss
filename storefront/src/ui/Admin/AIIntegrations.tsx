@@ -1,4 +1,4 @@
-import { Integration } from "fogbender-client/src/shared";
+import { type Integration } from "fogbender-client/src/shared";
 
 const IntegrationDetails = {
   "ai": {

@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import {
-  EventIssue,
-  Integration as IntegrationT,
+  type EventIssue,
+  type Integration as IntegrationT,
   invariant,
-  Message,
-  MessageCreate,
-  Room,
-  RoomUpdate,
+  type Message,
+  type MessageCreate,
+  type Room,
+  type RoomUpdate,
   useIssues,
   useRosterActions,
   useSharedRoster,
