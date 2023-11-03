@@ -4,7 +4,6 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import { defineAstro } from "qgp";
 import { common } from "./qgp.config.mjs";
-import image from "@astrojs/image";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 
@@ -16,9 +15,6 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    image({
-      serviceEntryPoint: "@astrojs/image/sharp",
-    }),
     sitemap({
       customPages: [
         //
