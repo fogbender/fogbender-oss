@@ -1,3 +1,4 @@
+/// <reference types="astro/client" />
 /// <reference path="../.astro/types.d.ts" />
 declare module "smartypants" {
   export function smartypants(text: string, attr?: number): string;
