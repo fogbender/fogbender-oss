@@ -3,8 +3,8 @@ import Layout from "../layouts/main.astro";
 import Page from "../layouts/Page.astro";
 import localImage from "../assets/test-image.webp";
 import PageTitle from "../ui/landing/PageTitle.astro";
-import { Picture } from "@astrojs/image/components";
-import type { PictureComponentLocalImageProps } from "@astrojs/image/components";
+import { Picture } from "astro:assets";
+import type { LocalImageProps } from "astro/assets";
 
 const title = "Contact";
 
@@ -14,7 +14,7 @@ let {
   sizes = "(max-width: 816px) 100vw, 816px",
   formats = ["avif", "webp", "jpeg", "png"],
   widths = [200, 400, 816],
-} = { src: localImage } as any as PictureComponentLocalImageProps;
+} = { src: localImage } as any as LocalImageProps<{}>;
 ---
 
 <Layout meta={{ title }}>
