@@ -1,5 +1,6 @@
 ---
 import { smartypants } from "smartypants";
+import defaultImage from "../../content/blog/assets/default/social.jpg";
 
 export interface Props {
   title?: string;
@@ -9,8 +10,9 @@ export interface Props {
 }
 const defaultDescription = "Fogbender is a team-to-team customer support platform designed for B2B";
 const defaultTitle = "Fogbender | Team messaging widget for B2B support | B2B support platform";
-const { canonicalURL: canonicalURL0 = Astro.url, image = "/assets/blog/default/social.jpg" } =
-  Astro.props;
+
+const { canonicalURL: canonicalURL0 = Astro.url, image = defaultImage } = Astro.props;
+console.log("FIXME:", image);
 const canonicalURL = new URL(canonicalURL0, Astro.site).href.replace(/\.html$/, "");
 const imageUrl = new URL(image, Astro.site).href;
 const description = Astro.props.description || defaultDescription;
