@@ -216,14 +216,17 @@ export const Admin = () => {
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get("code");
 
-  const { data: vendorInvitesData } = useQuery<VendorInvite[]>(queryKeys.vendorInvites(), async () => {
-    const url = inviteCode
-      ? `${getServerUrl()}/api/vendor_invites/${inviteCode}`
-      : `${getServerUrl()}/api/vendor_invites`;
-    return fetch(url, {
-      credentials: "include",
-    }).then(res => res.json());
-  });
+  const { data: vendorInvitesData } = useQuery<VendorInvite[]>(
+    queryKeys.vendorInvites(),
+    async () => {
+      const url = inviteCode
+        ? `${getServerUrl()}/api/vendor_invites/${inviteCode}`
+        : `${getServerUrl()}/api/vendor_invites`;
+      return fetch(url, {
+        credentials: "include",
+      }).then(res => res.json());
+    }
+  );
 
   const [notificationsPermission, setNotificationsPermission] = React.useState<
     NotificationPermission | "hide"
