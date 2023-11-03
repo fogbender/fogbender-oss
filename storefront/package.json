@@ -5,7 +5,6 @@
   "private": true,
   "dependencies": {
     "@astrojs/check": "^0.3.1",
-    "@astrojs/image": "^0.14.1",
     "@astrojs/mdx": "^0.15.2",
     "@astrojs/partytown": "^1.2.0",
     "@astrojs/react": "3.0.4",
