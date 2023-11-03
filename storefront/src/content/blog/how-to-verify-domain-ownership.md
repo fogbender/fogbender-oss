@@ -4,9 +4,9 @@ description: "Verifying domain ownership by updating a DNS TXT record to enable 
 publishDate: "December 25, 2022"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/how-to-verify-domain-ownership/thumb.png"
-socialImage: "/assets/blog/how-to-verify-domain-ownership/social.png"
-coverImage: "/assets/blog/how-to-verify-domain-ownership/cover.png"
+thumbnailImage: "./assets/how-to-verify-domain-ownership/thumb.png"
+socialImage: "./assets/how-to-verify-domain-ownership/social.png"
+coverImage: "./assets/how-to-verify-domain-ownership/cover.png"
 coverImageAspectRatio: "20:2"
 lang: "en"
 ---

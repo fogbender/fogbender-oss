@@ -4,9 +4,9 @@ description: "Introducing agent groups, assigning groups to rooms, default group
 publishDate: "March 26, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/using-groups-to-configure-oncall-agents/thumb.png"
-socialImage: "/assets/blog/using-groups-to-configure-oncall-agents/social.png"
-coverImage: "/assets/blog/using-groups-to-configure-oncall-agents/cover.png"
+thumbnailImage: "./assets/using-groups-to-configure-oncall-agents/thumb.png"
+socialImage: "./assets/using-groups-to-configure-oncall-agents/social.png"
+coverImage: "./assets/using-groups-to-configure-oncall-agents/cover.png"
 coverImageAspectRatio: "12:2"
 lang: "en"
 ---

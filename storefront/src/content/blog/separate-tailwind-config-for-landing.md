@@ -4,9 +4,9 @@ description: Advanced configuration example by using multiple Tailwind configura
 publishDate: 'Jun 11, 2023'
 authors:
   - jlarky
-socialImage: '/assets/blog/separate-tailwind-config-for-landing/social.png'
-coverImage: '/assets/blog/separate-tailwind-config-for-landing/cover.png'
-thumbnailImage: '/assets/blog/separate-tailwind-config-for-landing/thumb.png'
+socialImage: './assets/separate-tailwind-config-for-landing/social.png'
+coverImage: './assets/separate-tailwind-config-for-landing/cover.png'
+thumbnailImage: './assets/separate-tailwind-config-for-landing/thumb.png'
 coverImageAspectRatio: '14:3'
 lang: 'en'
 ---

@@ -4,10 +4,10 @@ description: "Generating Fogbender chatbot prompt instructions with ChatGPT"
 publishDate: "January 23, 2023"
 authors:
   - andrei
-socialImage: "/assets/blog/generating-bot-prompt-instructions-with-chatgpt/social.png"
+socialImage: "./assets/generating-bot-prompt-instructions-with-chatgpt/social.png"
 coverImageAspectRatio: "240:53"
-thumbnailImage: "/assets/blog/generating-bot-prompt-instructions-with-chatgpt/thumb.png"
-coverImage: "/assets/blog/generating-bot-prompt-instructions-with-chatgpt/cover.png"
+thumbnailImage: "./assets/generating-bot-prompt-instructions-with-chatgpt/thumb.png"
+coverImage: "./assets/generating-bot-prompt-instructions-with-chatgpt/cover.png"
 hidden: false
 lang: "en"
 ---

@@ -4,9 +4,9 @@ description: The Fogbender (Customer) integration is a way to establish two-dire
 publishDate: "July 4, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/fogbender-slack-customer-integration/thumb.png"
-coverImage: "/assets/blog/fogbender-slack-customer-integration/cover.png"
-socialImage: "/assets/blog/fogbender-slack-customer-integration/social.png"
+thumbnailImage: "./assets/fogbender-slack-customer-integration/thumb.png"
+coverImage: "./assets/fogbender-slack-customer-integration/cover.png"
+socialImage: "./assets/fogbender-slack-customer-integration/social.png"
 coverImageAspectRatio: "14:3"
 lang: "en"
 ---

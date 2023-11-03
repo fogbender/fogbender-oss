@@ -4,9 +4,9 @@ description: "How to use Fogbender to support customers who prefer Microsoft Tea
 publishDate: "September 5, 2022"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/fogbender-msteams-integration/thumb.png"
-socialImage: "/assets/blog/fogbender-msteams-integration/social.png"
-coverImage: "/assets/blog/fogbender-msteams-integration/cover.png"
+thumbnailImage: "./assets/fogbender-msteams-integration/thumb.png"
+socialImage: "./assets/fogbender-msteams-integration/social.png"
+coverImage: "./assets/fogbender-msteams-integration/cover.png"
 coverImageAspectRatio: "20:2"
 lang: "en"
 ---

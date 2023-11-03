@@ -4,9 +4,9 @@ description: The Fogbender (Agent) integration is a way to monitor and respond t
 publishDate: "July 10, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/thumb.png"
-coverImage: "/assets/blog/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/cover.png"
-socialImage: "/assets/blog/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/social.png"
+thumbnailImage: "./assets/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/thumb.png"
+coverImage: "./assets/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/cover.png"
+socialImage: "./assets/using-a-single-slack-channel-to-safely-monitor-b2b-support-traffic/social.png"
 coverImageAspectRatio: "29:8"
 lang: "en"
 ---
