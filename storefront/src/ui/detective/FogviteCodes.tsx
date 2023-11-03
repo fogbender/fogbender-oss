@@ -184,7 +184,7 @@ const Fogvites: React.FC<{}> = () => {
   );
 };
 
-function postForviteCode(code: FogviteCode) {
+async function postForviteCode(code: FogviteCode) {
   return fetch(`${getServerUrl()}/detective_api/fogvite_codes`, {
     method: "POST",
     credentials: "include",

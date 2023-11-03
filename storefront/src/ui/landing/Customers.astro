@@ -4,7 +4,7 @@ import William from "./assets/william.png";
 import Madhu from "./assets/madhu.png";
 import Javier from "./assets/javier.png";
 
-import Testimonial, { TestimonialProps } from "./Testimonial.astro";
+import Testimonial, { type TestimonialProps } from "./Testimonial.astro";
 
 interface Testimonial {
   icon: string;
@@ -21,7 +21,7 @@ const testimonials: TestimonialProps[] = [
   {
     icon: "Hydra",
     authorName: "Joe Sciarrino",
-    authorImage: Joe,
+    authorImage: Joe as any,
     authorTitle: "CEO",
     companyName: "Hydra",
     companyUrl: "https://hydra.so",
@@ -31,7 +31,7 @@ const testimonials: TestimonialProps[] = [
   {
     icon: "JumpWire",
     authorName: "William Huba",
-    authorImage: William,
+    authorImage: William as any,
     authorTitle: "CTO",
     companyName: "JumpWire",
     companyUrl: "https://jumpwire.ai",
@@ -41,7 +41,7 @@ const testimonials: TestimonialProps[] = [
   {
     icon: "Data Pipes",
     authorName: "Madhusoodhanan KM",
-    authorImage: Madhu,
+    authorImage: Madhu as any,
     authorTitle: "Senior Engineer",
     companyName: "Data Pipes",
     companyUrl: "https://datapipes.io",
@@ -51,7 +51,7 @@ const testimonials: TestimonialProps[] = [
   {
     icon: "Mayan",
     authorName: "Javier Garcia",
-    authorImage: Javier,
+    authorImage: Javier as any,
     authorTitle: "CTO",
     companyName: "Mayan",
     companyUrl: "https://www.mayan.co",
