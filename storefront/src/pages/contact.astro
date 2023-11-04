@@ -4,17 +4,15 @@ import Page from "../layouts/Page.astro";
 import localImage from "../assets/test-image.webp";
 import PageTitle from "../ui/landing/PageTitle.astro";
 import { Picture } from "astro:assets";
-import type { LocalImageProps } from "astro/assets";
 
 const title = "Contact";
 
 let {
-  src,
-  aspectRatio = "16:9",
+  src = localImage,
   sizes = "(max-width: 816px) 100vw, 816px",
   formats = ["avif", "webp", "jpeg", "png"],
   widths = [200, 400, 816],
-} = { src: localImage } as any as LocalImageProps<{}>;
+} = {} as any;
 ---
 
 <Layout meta={{ title }}>
@@ -24,7 +22,6 @@ let {
       <Picture
         class="rounded-2xl"
         src={src}
-        aspectRatio={aspectRatio}
         widths={widths}
         sizes={sizes}
         formats={formats}

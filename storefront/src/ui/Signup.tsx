@@ -83,8 +83,8 @@ export const SignupForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogi
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md py-12 px-6">
         <div className="mx-auto flex items-end justify-center">
-          <img className="h-12" src={logo} alt="" />
-          <img className="ml-2 h-8" src={fogbender} alt="" />
+          <img className="h-12" src={logo.src} alt="" />
+          <img className="ml-2 h-8" src={fogbender.src} alt="" />
         </div>
         <h1 className="mt-6 text-center text-sm leading-5 text-gray-900">
           {confirmEmail ? (

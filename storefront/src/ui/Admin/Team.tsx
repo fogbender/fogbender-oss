@@ -244,7 +244,7 @@ const TeamMembers: React.FC<{
                       <div className="flex justify-center mt-4">
                         {isInvite(member) ? (
                           <Avatar
-                            url={UserPlus}
+                            url={UserPlus.src}
                             imageSize={14}
                             className="w-4"
                             bgClassName="bg-gray-200"
