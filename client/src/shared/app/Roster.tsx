@@ -393,13 +393,13 @@ export const RoomItem: React.FC<{
   return (
     <div
       className={classNames(
-        "group w-full relative mb-1 pt-1 pb-3 pl-1 pr-2 border-l-5 rounded-r-md cursor-pointer hover:z-10",
+        "group w-full relative mb-1 pt-1 pb-3 pl-1 pr-2 border-l-5 rounded-r-md cursor-pointer hover:z-10 dark:bg-gray-800",
         !opened && "border-transparent hover:border-gray-300",
         showAsInternal ? "hover:border-green-500" : "hover:border-brand-orange-500",
         opened && showAsInternal && "bg-green-50",
         opened && showAsInternal && active && "border-green-500",
         opened && showAsInternal && !active && "border-green-100",
-        opened && !showAsInternal && "bg-blue-50 dark:bg-gray-800",
+        opened && !showAsInternal && "bg-blue-50",
         opened && !showAsInternal && active && "border-brand-orange-500",
         opened && !showAsInternal && !active && "border-blue-200"
       )}
