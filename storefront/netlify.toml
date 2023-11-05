@@ -8,7 +8,7 @@
   PUBLIC_GTM_ID="GTM-W68WZ7X"
   PUBLIC_SEGMENT_SOURCE_ID="a6B6PkdZlNFgMTIzMC0ruJiStExzd9BE"
   PUBLIC_DEFAULT_ENV="staging"
-  NODE_VERSION="v18.12.1"
+  NODE_VERSION="v18.14.1"
   NODE_OPTIONS = "--max_old_space_size=8192"
 
 # production-storefront for fb-storefront-prod and staging-storefront for fb-storefront
