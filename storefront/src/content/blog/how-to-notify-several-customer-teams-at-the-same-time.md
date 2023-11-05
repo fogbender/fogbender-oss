@@ -4,9 +4,9 @@ description: "How to use Fogbender to support customers who prefer Microsoft Tea
 publishDate: "February 28, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/how-to-notify-several-customer-teams-at-the-same-time/thumb.png"
-socialImage: "/assets/blog/how-to-notify-several-customer-teams-at-the-same-time/social.png"
-coverImage: "/assets/blog/how-to-notify-several-customer-teams-at-the-same-time/cover.png"
+thumbnailImage: "./assets/how-to-notify-several-customer-teams-at-the-same-time/thumb.png"
+socialImage: "./assets/how-to-notify-several-customer-teams-at-the-same-time/social.png"
+coverImage: "./assets/how-to-notify-several-customer-teams-at-the-same-time/cover.png"
 coverImageAspectRatio: "12:2"
 lang: "en"
 ---

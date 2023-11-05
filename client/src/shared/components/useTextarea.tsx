@@ -2,11 +2,11 @@ import browserDetect from "browser-detect";
 import classNames from "classnames";
 import Picker, { Theme } from "emoji-picker-react";
 import {
-  Author,
-  Mention,
-  Message as MessageT,
-  MessageCreate,
-  MessageUpdate,
+  type Author,
+  type Mention,
+  type Message as MessageT,
+  type MessageCreate,
+  type MessageUpdate,
   useLoadAround,
   useSharedRoster,
 } from "fogbender-proto";
@@ -19,7 +19,7 @@ import { SourceMessages } from "../messages/MessageView";
 import { modeAtom } from "../store/config.store";
 import { formatCustomerName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
-import { DeletedFileIdsAtom, FileIdsAtom } from "../utils/useFileUpload";
+import { type DeletedFileIdsAtom, type FileIdsAtom } from "../utils/useFileUpload";
 import { usePrevious } from "../utils/usePrevious";
 
 import {

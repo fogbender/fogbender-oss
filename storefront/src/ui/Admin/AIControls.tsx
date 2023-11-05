@@ -2,7 +2,7 @@ import classNames from "classnames";
 import {
   Icons,
   LinkButton,
-  Prompt as PromptT,
+  type Prompt as PromptT,
   ThickButton,
   ThinButton,
   useInput,
@@ -17,7 +17,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { throttle } from "throttle-debounce";
 
 import { getServerUrl } from "../../config";
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 import { useDedicatedVendorId, useVendorById } from "../useVendor";
 import { useVerifiedDomains } from "../useVerifiedDomains";

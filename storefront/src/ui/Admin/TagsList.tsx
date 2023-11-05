@@ -1,4 +1,4 @@
-import { CreateTagForm, FilterInput, Modal, Tag } from "fogbender-client/src/shared";
+import { CreateTagForm, FilterInput, Modal, type Tag } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 
@@ -71,7 +71,7 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
             {filteredTags.map(t => (
               <div key={t.id} className="flex items-center py-2 px-1 hover:bg-gray-100">
                 <span className="relative flex flex-1 w-full">
-                  <img src={IconTag} alt="Tag" className="absolute left-0 top-0" />
+                  <img src={IconTag.src} alt="Tag" className="absolute left-0 top-0" />
                   <span className="flex-1 pl-8 truncate w-2/3 fog:text-caption-l">{t.name}</span>
                   <span className="fog:text-body-m">{t.id}</span>
                 </span>

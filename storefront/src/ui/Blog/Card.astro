@@ -1,6 +1,6 @@
 ---
-import { CollectionEntry } from "astro:content";
-import { Picture } from "@astrojs/image/components";
+import { type CollectionEntry } from "astro:content";
+import { Picture } from "astro:assets";
 import Author from "./Author.astro";
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -28,7 +28,6 @@ const cover = (thumbnailImage || coverImage || heroImage) && {
             src={cover.src!}
             sizes="(max-width: 600px) 80w, 160w"
             widths={[80, 160]}
-            aspectRatio="1:1"
             alt={cover.alt}
           />
         </div>

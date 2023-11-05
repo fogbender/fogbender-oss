@@ -1,7 +1,7 @@
-import { Avatar, Icons, Integration } from "fogbender-client/src/shared";
+import { Avatar, Icons, type Integration } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import React from "react";
-import { UseMutationResult, UseQueryResult } from "react-query";
+import { type UseMutationResult, type UseQueryResult } from "react-query";
 
 import { FontAwesomeCheck } from "../../../shared/font-awesome/Check";
 

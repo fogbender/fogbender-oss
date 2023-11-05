@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import {
-  EventIssue,
-  EventRoom,
-  Integration as IntegrationT,
+  type EventIssue,
+  type EventRoom,
+  type Integration as IntegrationT,
   KnownIssueTrackerIntegrations,
-  Room as RoomT,
-  Tag as TagT,
+  type Room as RoomT,
+  type Tag as TagT,
   useIssues,
   useRoomMembers,
   useRoster,

@@ -1,15 +1,15 @@
 ---
-import { Hamburger } from "./Icons";
+import { Hamburger as HamburgerIcon } from "./Icons";
 
-export type HamburgerProps = {
+export type Props = {
   className: string;
 };
-const props = Astro.props as HamburgerProps;
+const props = Astro.props;
 ---
 
 <div class={`block ${props.className}`}>
   <button class="sidebar-menu-button">
-    <Hamburger className="h-6 w-8" ariaLabel="Menu" />
+    <HamburgerIcon className="h-6 w-8" ariaLabel="Menu" />
   </button>
 </div>
 

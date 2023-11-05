@@ -1,19 +1,19 @@
 import classNames from "classnames";
 import {
-  Author,
+  type Author,
   calculateCounterpart,
-  EventRoom,
-  Helpdesk,
-  IntegrationCloseIssue,
-  IntegrationReopenIssue,
+  type EventRoom,
+  type Helpdesk,
+  type IntegrationCloseIssue,
+  type IntegrationReopenIssue,
   MetaTypes,
-  RoomUpdate,
-  SearchRoster,
-  ServerCall,
-  Tag,
+  type RoomUpdate,
+  type SearchRoster,
+  type ServerCall,
+  type Tag,
   useWs,
-  VisitorVerifyCode,
-  VisitorVerifyEmail,
+  type VisitorVerifyCode,
+  type VisitorVerifyEmail,
 } from "fogbender-proto";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
@@ -23,7 +23,7 @@ import { Icons } from "../components/Icons";
 import { IntegrationDetails } from "../components/IntegrationDetails";
 import { Avatar, ThinButton } from "../components/lib";
 import { Modal } from "../components/Modal";
-import { Agent } from "../types";
+import type { Agent } from "../types";
 import { queryKeys } from "../utils/client";
 import {
   formatCustomerName,
@@ -35,7 +35,7 @@ import {
 
 import { RoomAssignees } from "./RoomAssignees";
 import { RoomMenu } from "./RoomMenu";
-import { RoomMode } from "./RoomMode";
+import { type RoomMode } from "./RoomMode";
 
 export const FontAwesomeCrown = ({ className = "" }: { className?: string }) => (
   <svg className={"h-6 " + className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
@@ -134,6 +134,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
   const issueTags = React.useMemo(() => tags.filter(t => t.meta_type === "issue"), [tags]);
 
   const isInternal = isInternalHelpdesk(room?.customerName);
+  const isExternal = isExternalHelpdesk(room?.customerName);
 
   const publicRoomSubtitle =
     room && helpdesk
@@ -253,7 +254,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
     if (isIssueClosed) {
       return reopenIssueButton();
-    } else if (isAgent && (isIssueOpen || !room.isTriage || showIfInternal || isExternalHelpdesk)) {
+    } else if (isAgent && (isIssueOpen || !room.isTriage || showIfInternal || isExternal)) {
       return closeIssueButton();
     } else {
       return null;

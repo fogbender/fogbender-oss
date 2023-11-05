@@ -4,9 +4,9 @@ description: How to set up the Astro Assets integration and use optimized images
 publishDate: 'June 8, 2023'
 authors:
   - jlarky
-thumbnailImage: '/assets/blog/optimize-images-in-astro-with-assets-integration/thumb.png'
-coverImage: '/assets/blog/optimize-images-in-astro-with-assets-integration/cover.png'
-socialImage: '/assets/blog/optimize-images-in-astro-with-assets-integration/social.png'
+thumbnailImage: './assets/optimize-images-in-astro-with-assets-integration/thumb.png'
+coverImage: './assets/optimize-images-in-astro-with-assets-integration/cover.png'
+socialImage: './assets/optimize-images-in-astro-with-assets-integration/social.png'
 coverImageAspectRatio: '14:4'
 ---
 

@@ -4,11 +4,10 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import { defineAstro } from "qgp";
 import { common } from "./qgp.config.mjs";
-import image from "@astrojs/image";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 
-const assetsDir = "storefront";
+// const assetsDir = "storefront";
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,9 +15,6 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    image({
-      serviceEntryPoint: "@astrojs/image/sharp",
-    }),
     sitemap({
       customPages: [
         //
@@ -39,8 +35,9 @@ export default defineConfig({
   },
   vite: defineAstro(common, {
     build: {
-      assetsDir,
+      // assetsDir,
       sourcemap: true,
+      /*
       rollupOptions: {
         output: {
           entryFileNames: assetsDir + "/[name].[hash].js",
@@ -48,6 +45,7 @@ export default defineConfig({
           assetFileNames: assetsDir + "/assets/[name].[hash][extname]",
         },
       },
+      */
     },
     ssr: {
       noExternal: ["smartypants"],

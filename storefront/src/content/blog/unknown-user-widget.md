@@ -4,9 +4,9 @@ description: "How to use the Unknown User Widget in Fogbender to guide those wit
 publishDate: "March 30, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/unknown-user-widget/thumb.png"
-socialImage: "/assets/blog/unknown-user-widget/social.png"
-coverImage: "/assets/blog/unknown-user-widget/cover.png"
+thumbnailImage: "./assets/unknown-user-widget/thumb.png"
+socialImage: "./assets/unknown-user-widget/social.png"
+coverImage: "./assets/unknown-user-widget/cover.png"
 coverImageAspectRatio: "14:2"
 lang: "en"
 ---

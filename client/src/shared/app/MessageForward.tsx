@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import {
-  EventRoom,
+  type EventRoom,
   invariant,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
-  Message,
-  MessageCreate,
-  SearchRoster,
+  type Message,
+  type MessageCreate,
+  type SearchRoster,
   useRoster,
   useRosterActions,
   useSharedRoster,

@@ -1,9 +1,9 @@
 import browser from "browser-detect";
 import classNames from "classnames";
 import {
-  Agent,
-  AgentRole,
-  AnyToken,
+  type Agent,
+  type AgentRole,
+  type AnyToken,
   App as AgentApp,
   atomWithRealTimeLocalStorage,
   Avatar,
@@ -12,7 +12,7 @@ import {
   GalleryModal,
   // IconGithub,
   Icons,
-  Integration,
+  type Integration,
   IsIdleProvider,
   LocalStorageKeys,
   Modal,
@@ -21,10 +21,10 @@ import {
   SafeLocalStorage,
   showFocusedRosterAtom,
   showOutlookRosterAtom,
-  Tag,
+  type Tag,
   ThinButton,
   useIsIdle,
-  VendorBilling,
+  type VendorBilling,
   WsProvider,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
@@ -51,7 +51,7 @@ import AdminBackgroundImage from "../assets/codioful-formerly-gradienta-J6LMHbdW
 import logo from "../assets/logo.svg?url";
 import { defaultEnv, getServerUrl } from "../config";
 import { Config } from "../features/config/Config";
-import { Vendor, VendorInvite, Workspace } from "../redux/adminApi";
+import { type Vendor, type VendorInvite, type Workspace } from "../redux/adminApi";
 import {
   getAuthenticatedAgentId,
   selectAuthorMe,
@@ -216,14 +216,17 @@ export const Admin = () => {
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get("code");
 
-  const { data: vendorInvitesData } = useQuery<VendorInvite[]>(queryKeys.vendorInvites(), () => {
-    const url = inviteCode
-      ? `${getServerUrl()}/api/vendor_invites/${inviteCode}`
-      : `${getServerUrl()}/api/vendor_invites`;
-    return fetch(url, {
-      credentials: "include",
-    }).then(res => res.json());
-  });
+  const { data: vendorInvitesData } = useQuery<VendorInvite[]>(
+    queryKeys.vendorInvites(),
+    async () => {
+      const url = inviteCode
+        ? `${getServerUrl()}/api/vendor_invites/${inviteCode}`
+        : `${getServerUrl()}/api/vendor_invites`;
+      return fetch(url, {
+        credentials: "include",
+      }).then(res => res.json());
+    }
+  );
 
   const [notificationsPermission, setNotificationsPermission] = React.useState<
     NotificationPermission | "hide"

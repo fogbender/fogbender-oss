@@ -1,8 +1,8 @@
 ---
 import Author from "./Author.astro";
 import { smartypants } from "smartypants";
-import { CollectionEntry } from "astro:content";
-import { Picture } from "@astrojs/image/components";
+import { type CollectionEntry } from "astro:content";
+import { Picture } from "astro:assets";
 
 interface Props {
   content: CollectionEntry<"blog">["data"];
@@ -27,9 +27,7 @@ const { coverImageAspectRatio = 75 / 29 } = content;
           src={cover.src!}
           sizes="(max-width: 600px) 1200w, 2400w"
           widths={[1200, 2400]}
-          aspectRatio={coverImageAspectRatio}
           alt={cover.alt}
-          background={"#ffffff"}
         />
       </div>
     )

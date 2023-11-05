@@ -1,4 +1,4 @@
-import { Room as RoomT, useLoadAround } from "fogbender-client/src/shared";
+import { type Room as RoomT, useLoadAround } from "fogbender-client/src/shared";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 

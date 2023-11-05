@@ -4,7 +4,7 @@ import React from "react";
 import { useMutation } from "react-query";
 
 import { getServerUrl } from "../../../config";
-import { Agent, Vendor } from "../../../redux/adminApi";
+import { type Agent, type Vendor } from "../../../redux/adminApi";
 import { queryClient, queryKeys } from "../../client";
 
 type DeleteMemberModalProps = {

@@ -1,6 +1,6 @@
 import {
   atomWithKey,
-  EventBadge,
+  type EventBadge,
   UnreadCircle,
   UnreadCircleExpanded,
   useFavicon,

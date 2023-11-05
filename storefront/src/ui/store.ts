@@ -1,5 +1,5 @@
 import { atomWithLocalStorage, LocalStorageKeys } from "fogbender-client/src/shared";
-import { PrimitiveAtom, useAtom } from "jotai";
+import { type PrimitiveAtom, useAtom } from "jotai";
 import React from "react";
 
 const vendorNameCache: Record<string, string> = {};

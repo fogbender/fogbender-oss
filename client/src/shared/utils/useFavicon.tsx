@@ -1,4 +1,4 @@
-import { EventBadge, Room as RoomT, ServerEvents } from "fogbender-proto";
+import { type EventBadge, type Room as RoomT, type ServerEvents } from "fogbender-proto";
 import React from "react";
 
 const setFavicon = (icon: string) => {

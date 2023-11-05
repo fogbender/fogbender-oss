@@ -4,7 +4,7 @@ import React from "react";
 import { lazily } from "react-lazily";
 import { Link, Route, Routes } from "react-router-dom";
 
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 
 import { AIControls } from "./AIControls";
 import { AvatarLibrary } from "./AvatarLibrary";

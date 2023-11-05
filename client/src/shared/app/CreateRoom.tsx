@@ -1,7 +1,7 @@
 import { Listbox } from "@headlessui/react";
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { SearchCustomers, useRosterActions, useWs } from "fogbender-proto";
+import { type SearchCustomers, useRosterActions, useWs } from "fogbender-proto";
 import React from "react";
 import { useQuery } from "react-query";
 

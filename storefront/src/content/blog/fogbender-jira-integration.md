@@ -4,8 +4,8 @@ description: "How to configure the Fogbender Jira integration"
 publishDate: "May 2, 2022"
 authors:
   - andrei
-socialImage: "/assets/blog/default/social.jpg"
-coverImage: "/assets/blog/default/cover.jpg"
+socialImage: "./assets/default/social.jpg"
+coverImage: "./assets/default/cover.jpg"
 lang: "en"
 ---
 

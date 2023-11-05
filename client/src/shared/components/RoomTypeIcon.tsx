@@ -1,4 +1,4 @@
-import { EventRoom } from "fogbender-proto";
+import { type EventRoom } from "fogbender-proto";
 
 import { isInternalHelpdesk } from "../utils/format";
 

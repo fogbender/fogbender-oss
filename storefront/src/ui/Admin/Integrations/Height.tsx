@@ -1,10 +1,10 @@
 import classNames from "classnames";
-import { Integration, ThinButton } from "fogbender-client/src/shared";
+import { type Integration, ThinButton } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "react-query";
 
 import { getServerUrl, getWebhookUrl } from "../../../config";
-import { Workspace } from "../../../redux/adminApi";
+import { type Workspace } from "../../../redux/adminApi";
 import {
   fetchServerApiPost,
   filterOutResponse,
@@ -859,7 +859,7 @@ const HeightOAuth: React.FC<{
 }> = props => {
   const { workspaceId, userInfo } = props;
   const oauthMutation = useMutation(
-    (code: string) => {
+    async (code: string) => {
       return fetchServerApiPost<OauthCodeExchange>(
         `/api/workspaces/${workspaceId}/integrations/height/oauth-code`,
         {

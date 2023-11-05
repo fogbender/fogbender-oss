@@ -4,9 +4,9 @@ description: Learn how to set up a custom Tailwind CSS configuration in Astro th
 publishDate: 'Jun 10, 2023'
 authors:
   - jlarky
-socialImage: '/assets/blog/customizing-tailwind-css-in-astro/social.png'
-coverImage: '/assets/blog/customizing-tailwind-css-in-astro/cover.png'
-thumbnailImage: '/assets/blog/customizing-tailwind-css-in-astro/thumb.png'
+socialImage: './assets/customizing-tailwind-css-in-astro/social.png'
+coverImage: './assets/customizing-tailwind-css-in-astro/cover.png'
+thumbnailImage: './assets/customizing-tailwind-css-in-astro/thumb.png'
 coverImageAspectRatio: '14:3'
 lang: 'en'
 ---

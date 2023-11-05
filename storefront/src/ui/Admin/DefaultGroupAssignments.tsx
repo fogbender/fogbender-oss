@@ -1,6 +1,6 @@
 import {
-  AgentGroup,
-  FeatureOptions,
+  type AgentGroup,
+  type FeatureOptions,
   GroupDefaultIcon,
   ThickButton,
   ThinButton,

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { calculateCounterpart, EventRoom, Tag } from "fogbender-proto";
+import { calculateCounterpart, type EventRoom, type Tag } from "fogbender-proto";
 import React from "react";
 
 import { RoomAssignees } from "../app/RoomAssignees";
@@ -9,7 +9,7 @@ import { Icons } from "../components/Icons";
 import { Avatar } from "../components/lib";
 import { renderRoomTypeIcon } from "../components/RoomTypeIcon";
 import { FontAwesomeLock } from "../font-awesome/Lock";
-import { Agent } from "../types";
+import { type Agent } from "../types";
 import { formatCustomerName, isInternalHelpdesk, renderTag } from "../utils/format";
 
 dayjs.extend(relativeTime);

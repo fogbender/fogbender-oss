@@ -1,7 +1,7 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
 import { Icons, XCircleFilled } from "fogbender-client/src/shared";
-import { SelectSearchOption } from "fogbender-client/src/shared/ui/SelectSearch";
+import { type SelectSearchOption } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
 
 type Select<o> = {

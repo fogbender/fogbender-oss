@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import {
   calculateCounterpart,
-  EventBadge,
-  EventRoom,
+  type EventBadge,
+  type EventRoom,
   invariant,
-  SearchRoster,
+  type SearchRoster,
   useWs,
 } from "fogbender-proto";
 import React from "react";
@@ -16,7 +16,7 @@ import { queryKeys } from "../utils/client";
 import { formatCustomerName, isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 
 export const Roster: React.FC<{
   rooms: EventRoom[];

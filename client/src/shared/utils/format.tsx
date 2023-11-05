@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import {
   calculateCounterpart,
-  EventIssue,
-  EventRoom as Room,
+  type EventIssue,
+  type EventRoom as Room,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
-  Tag,
+  type Tag,
 } from "fogbender-proto";
 
 import {

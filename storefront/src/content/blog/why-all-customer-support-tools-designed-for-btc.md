@@ -4,9 +4,9 @@ description: "Why are all customer support tools designed for B2C companies?"
 publishDate: "May 6, 2022"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/why-all-customer-support-tools-designed-for-btc/thumb.jpg"
-socialImage: "/assets/blog/why-all-customer-support-tools-designed-for-btc/social.png"
-coverImage: "/assets/blog/why-all-customer-support-tools-designed-for-btc/cover.png"
+thumbnailImage: "./assets/why-all-customer-support-tools-designed-for-btc/thumb.jpg"
+socialImage: "./assets/why-all-customer-support-tools-designed-for-btc/social.png"
+coverImage: "./assets/why-all-customer-support-tools-designed-for-btc/cover.png"
 coverImageAspectRatio: "75:29"
 lang: "en"
 ---

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Helpdesk } from "fogbender-proto";
+import { type Helpdesk } from "fogbender-proto";
 import React from "react";
 
 import { Avatar, ThickButton } from "../components/lib";

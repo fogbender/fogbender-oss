@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import {
-  EventRosterRoom,
-  EventRosterSection,
-  RosterSectionActions,
+  type EventRosterRoom,
+  type EventRosterSection,
+  type RosterSectionActions,
   useRosterSections,
 } from "fogbender-proto";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -12,7 +12,7 @@ import { Icons } from "../components/Icons";
 import { UnreadCircle } from "../components/lib";
 import { showFocusedRosterAtom } from "../store/config.store";
 
-import { RosterViewOptions, RosterViewSubscription } from "./Roster";
+import { type RosterViewOptions, RosterViewSubscription } from "./Roster";
 
 export const viewIdAtom = atom(undefined as string | undefined);
 

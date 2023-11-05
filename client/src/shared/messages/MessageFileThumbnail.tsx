@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import { Attachment, Message as MessageT, useWs } from "fogbender-proto";
-import { atom, PrimitiveAtom } from "jotai";
+import { type Attachment, type Message as MessageT, useWs } from "fogbender-proto";
+import { atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import prettyBytes from "pretty-bytes";
 import React from "react";

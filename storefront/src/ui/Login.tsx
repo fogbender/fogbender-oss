@@ -13,7 +13,7 @@ import { store } from "../redux/store";
 import { Auth } from "./amazon";
 import {
   addLocation,
-  AuthErrors,
+  type AuthErrors,
   ConfirmEmailForm,
   extractRelativeUrl,
   SpinnerSmall,
@@ -147,8 +147,8 @@ export const LoginForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogin
       <div className="w-full max-w-md py-12 px-6">
         <a href="/">
           <div className="mx-auto flex items-end justify-center">
-            <img className="h-12" src={logo} alt="" />
-            <img className="ml-2 h-8" src={fogbender} alt="" />
+            <img className="h-12" src={logo.src} alt="" />
+            <img className="ml-2 h-8" src={fogbender.src} alt="" />
           </div>
         </a>
         {confirmEmail === undefined && recoveringPassword !== true && (

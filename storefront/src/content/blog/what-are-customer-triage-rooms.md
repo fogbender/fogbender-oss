@@ -4,9 +4,9 @@ description: "Using Triage rooms in Fogbender to as first line of defense for cu
 publishDate: "March 5, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/what-are-customer-triage-rooms/thumb.png"
-socialImage: "/assets/blog/what-are-customer-triage-rooms/social.png"
-coverImage: "/assets/blog/what-are-customer-triage-rooms/cover.png"
+thumbnailImage: "./assets/what-are-customer-triage-rooms/thumb.png"
+socialImage: "./assets/what-are-customer-triage-rooms/social.png"
+coverImage: "./assets/what-are-customer-triage-rooms/cover.png"
 coverImageAspectRatio: "12:2"
 lang: "en"
 ---

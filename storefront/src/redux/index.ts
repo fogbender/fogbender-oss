@@ -1,6 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { useDispatch as useReduxDispatch } from "react-redux";
-import { Dispatch } from "redux";
+import { type Dispatch } from "redux";
 
 import { actionCreators as adminApiActionCreators, reducer as adminApi } from "./adminApi";
 import { actionCreators as sessionActionsCreators, reducer as session } from "./session";

@@ -3,14 +3,14 @@ import classNames from "classnames";
 import {
   calculateCounterpart,
   calculateStartPosFast,
-  EventBadge,
-  EventRoom,
-  EventRosterRoom,
-  EventRosterSection,
+  type EventBadge,
+  type EventRoom,
+  type EventRosterRoom,
+  type EventRosterSection,
   invariant,
-  RosterOpenView,
-  RosterSectionActions,
-  RosterSectionId,
+  type RosterOpenView,
+  type RosterSectionActions,
+  type RosterSectionId,
   useRosterSections,
   useSharedRoster,
   useWs,
@@ -32,7 +32,7 @@ import {
 } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 
 export const Roster: React.FC<{
   openRoomIds: string[];

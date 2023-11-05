@@ -4,9 +4,9 @@ description: User management in Fogbender
 publishDate: "July 23, 2023"
 authors:
   - andrei
-thumbnailImage: "/assets/blog/fogbender-user-management/thumb.png"
-coverImage: "/assets/blog/fogbender-user-management/cover.png"
-socialImage: "/assets/blog/fogbender-user-management/social.png"
+thumbnailImage: "./assets/fogbender-user-management/thumb.png"
+coverImage: "./assets/fogbender-user-management/cover.png"
+socialImage: "./assets/fogbender-user-management/social.png"
 coverImageAspectRatio: "12:3"
 lang: "en"
 ---

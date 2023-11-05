@@ -4,11 +4,11 @@ import dayjs from "dayjs";
 import {
   Avatar,
   ConfirmDialog,
-  Customer,
+  type Customer,
   FilterInput,
   Icons,
   Modal,
-  Tag,
+  type Tag,
   ThickButton,
   ThinButton,
   XCircleFilled,
@@ -17,7 +17,7 @@ import React from "react";
 import { useMutation, useQuery } from "react-query";
 
 import { getServerUrl } from "../../config";
-import { User } from "../../redux/adminApi";
+import { type User } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
 import { Tags } from "./CustomerDetails";

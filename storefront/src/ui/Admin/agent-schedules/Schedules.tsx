@@ -2,7 +2,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import {
-  Agent,
+  type Agent,
   Avatar,
   Icons,
   LinkButton,
@@ -17,7 +17,7 @@ import React from "react";
 import { useQuery } from "react-query";
 import { v4 as uuidv4 } from "uuid";
 
-import { Vendor } from "../../../redux/adminApi";
+import { type Vendor } from "../../../redux/adminApi";
 import { apiServer, queryKeys } from "../../client";
 import { useDayjsInTimezone } from "../../useDayjsInTimezone";
 

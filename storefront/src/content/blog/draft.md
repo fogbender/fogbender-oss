@@ -4,8 +4,8 @@ description: "This is draft just to test the blog"
 publishDate: "May 10, 2022"
 authors:
   - jlarky
-socialImage: "/assets/blog/default/social.jpg"
-coverImage: "/assets/blog/default/cover.jpg"
+socialImage: "./assets/default/social.jpg"
+coverImage: "./assets/default/cover.jpg"
 hidden: true
 lang: "en"
 ---

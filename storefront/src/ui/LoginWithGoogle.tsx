@@ -2,7 +2,7 @@ import qs from "query-string";
 import React from "react";
 import { Link } from "react-router-dom";
 
-import googleIcon from "../assets/icon-google.svg";
+import googleIcon from "../assets/icon-google.svg?url";
 import { googleLoginUrl } from "../config";
 
 import { popupCenter } from "./authUtils";

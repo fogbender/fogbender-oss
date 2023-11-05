@@ -1,4 +1,4 @@
-import { Customer } from "fogbender-proto";
+import { type Customer } from "fogbender-proto";
 import { useQuery } from "react-query";
 
 import { apiServer, queryKeys } from "./client";

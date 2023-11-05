@@ -266,7 +266,7 @@ export const ComponentsShowcase = () => {
           <div className="flex flex-row flex-wrap gap-x-4">
             {chips[0] && (
               <FileCard className="px-2 py-3">
-                <img className="h-12" src={logo} alt="" />
+                <img className="h-12" src={logo.src} alt="" />
               </FileCard>
             )}
             {chips[1] && (
@@ -275,12 +275,12 @@ export const ComponentsShowcase = () => {
                 loading={true}
                 onTrash={() => setChips({ ...chips, 1: false })}
               >
-                <img className="h-12" src={logo} alt="" />
+                <img className="h-12" src={logo.src} alt="" />
               </FileCard>
             )}
             {chips[2] && (
               <FileCard className="px-2 py-3" onTrash={() => setChips({ ...chips, 2: false })}>
-                <img className="h-12" src={logo} alt="" />
+                <img className="h-12" src={logo.src} alt="" />
               </FileCard>
             )}
             {chips[3] && (
@@ -295,7 +295,7 @@ export const ComponentsShowcase = () => {
                   </div>
                 }
               >
-                <img className="h-12" src={logo} alt="" />
+                <img className="h-12" src={logo.src} alt="" />
               </FileCard>
             )}
           </div>

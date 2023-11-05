@@ -1,12 +1,17 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { Icons, StripeCustomer, ThinButton, VendorBilling } from "fogbender-client/src/shared";
+import {
+  Icons,
+  type StripeCustomer,
+  ThinButton,
+  type VendorBilling,
+} from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 
 import { getQueryParam } from "../../params";
-import { Vendor } from "../../redux/adminApi";
+import { type Vendor } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
 export const Billing = ({

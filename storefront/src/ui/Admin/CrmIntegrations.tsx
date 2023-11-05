@@ -5,10 +5,10 @@ import React from "react";
 import { useMutation, useQuery } from "react-query";
 
 import { getServerUrl } from "../../config";
-import { Workspace } from "../../redux/adminApi";
+import { type Workspace } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
-import { MergeLink as MergeLinkT } from "./MergeLink";
+import { type MergeLink as MergeLinkT } from "./MergeLink";
 
 export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace }) => {
   const endUserOriginId = React.useRef<string>();

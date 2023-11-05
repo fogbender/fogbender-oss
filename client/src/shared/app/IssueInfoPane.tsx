@@ -2,10 +2,10 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
-  EventRoom,
-  IntegrationIssueInfo,
-  SearchRoster,
-  Tag,
+  type EventRoom,
+  type IntegrationIssueInfo,
+  type SearchRoster,
+  type Tag,
   useLastIncomingMessage,
   useWs,
 } from "fogbender-proto";
@@ -15,11 +15,11 @@ import { useQuery } from "react-query";
 import { DetailedRoomsTable } from "../components/DetailedRoomsTable";
 import { Icons, SwitchOff, SwitchOn } from "../components/Icons";
 import { LinkButton } from "../components/lib";
-import { Agent } from "../types";
+import { type Agent } from "../types";
 import { queryKeys } from "../utils/client";
 import { renderTag } from "../utils/format";
 
-import { LayoutOptions } from "./LayoutOptions";
+import { type LayoutOptions } from "./LayoutOptions";
 
 dayjs.extend(relativeTime);
 

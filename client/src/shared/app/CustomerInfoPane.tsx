@@ -1,13 +1,13 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { EventRoom, Tag, useHelpdeskRooms, useHelpdeskUsers } from "fogbender-proto";
+import { type EventRoom, type Tag, useHelpdeskRooms, useHelpdeskUsers } from "fogbender-proto";
 import React from "react";
 
-import { Agent } from "../types";
+import type { Agent } from "../types";
 
-import { RenderCustomerInfoCb } from "./CustomerInfo";
-import { LayoutOptions } from "./LayoutOptions";
+import { type RenderCustomerInfoCb } from "./CustomerInfo";
+import { type LayoutOptions } from "./LayoutOptions";
 
 dayjs.extend(relativeTime);
 

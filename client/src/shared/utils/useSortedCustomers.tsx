@@ -1,4 +1,4 @@
-import { Customer, EventBadge, Room } from "fogbender-proto";
+import { type Customer, type EventBadge, type Room } from "fogbender-proto";
 import React from "react";
 
 import { isExternalHelpdesk, isInternalHelpdesk } from "./format";

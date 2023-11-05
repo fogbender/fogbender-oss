@@ -1,10 +1,11 @@
 ---
 import wretch from "wretch";
 import "lazyframe/dist/lazyframe.css";
-export interface Props extends astroHTML.JSX.IframeHTMLAttributes {
+
+export type Props = astroHTML.JSX.IframeHTMLAttributes & {
   src: string;
   style?: Partial<CSSStyleDeclaration>;
-}
+};
 const { style, ...props } = Astro.props;
 
 const url = new URL("https://noembed.com/embed");
@@ -39,7 +40,7 @@ const { thumbnail_url, title } = await wretch(url.toString())
 <lazy-frame
   class="lazyframe"
   data-vendor="youtube"
-  style={{ backgroundImage: `url(${thumbnail_url})`, ...style }}
+  style={{ backgroundImage: `url(${thumbnail_url})`, ...(style as any) }}
   {...props}
 >
   <span class="lazyframe__title">{title}</span>

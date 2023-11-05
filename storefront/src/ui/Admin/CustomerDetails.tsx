@@ -2,9 +2,9 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
-  CrmData,
-  Customer,
-  CustomerCrm,
+  type CrmData,
+  type Customer,
+  type CustomerCrm,
   Icons,
   isExternalHelpdesk,
   ThickButton,
@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
 
-import { MergeLink } from "./MergeLink";
+import { type MergeLink } from "./MergeLink";
 
 dayjs.extend(relativeTime);
 
@@ -99,12 +99,7 @@ export const CustomerDetails: React.FC<{
       </div>
 
       {customerCrms?.crmData?.length && (
-        <div
-          className={classNames(
-            "h-8",
-            customerCrmStatus === "loading" || isRefetchingCustomer ? "visible" : "invisible"
-          )}
-        >
+        <div className={classNames("h-8", isRefetchingCustomer ? "visible" : "invisible")}>
           <div className="flex justify-center gap-2">
             <span className="text-green-600">Syncing CRM records...</span>
             <Icons.Spinner className="w-4 text-blue-500" />

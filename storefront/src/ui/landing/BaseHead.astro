@@ -1,18 +1,20 @@
 ---
 import { smartypants } from "smartypants";
+import defaultImage from "../../content/blog/assets/default/social.jpg";
 
 export interface Props {
   title?: string;
   description?: string;
   canonicalURL?: URL | string;
-  image?: string;
+  image?: ImageMetadata;
 }
 const defaultDescription = "Fogbender is a team-to-team customer support platform designed for B2B";
 const defaultTitle = "Fogbender | Team messaging widget for B2B support | B2B support platform";
-const { canonicalURL: canonicalURL0 = Astro.url, image = "/assets/blog/default/social.jpg" } =
+
+const { canonicalURL: canonicalURL0 = Astro.url, image = defaultImage as any as ImageMetadata } =
   Astro.props;
 const canonicalURL = new URL(canonicalURL0, Astro.site).href.replace(/\.html$/, "");
-const imageUrl = new URL(image, Astro.site).href;
+const imageUrl = new URL(image.src, Astro.site).href;
 const description = Astro.props.description || defaultDescription;
 const title = Astro.props.title ? `Fogbender | ${Astro.props.title}` : defaultTitle;
 ---

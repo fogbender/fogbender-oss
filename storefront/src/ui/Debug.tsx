@@ -60,7 +60,8 @@ const ClientSnippet = () => {
             const el = e.target as HTMLTextAreaElement;
             el.select();
             el.setSelectionRange(0, 99999);
-            document.execCommand("copy");
+            console.error('Uncomment - document.execCommand("copy");');
+            // document.execCommand("copy");
           }}
           value={snippet()}
         />

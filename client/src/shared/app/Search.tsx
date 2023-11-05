@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import {
-  Author,
-  Room as RoomT,
+  type Author,
+  type Room as RoomT,
   useLoadAround,
   useRoomHistory,
   useSearchHistory,
