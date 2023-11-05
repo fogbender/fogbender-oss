@@ -7,7 +7,7 @@ import { common } from "./qgp.config.mjs";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 
-const assetsDir = "storefront";
+// const assetsDir = "storefront";
 
 // https://astro.build/config
 export default defineConfig({
@@ -35,8 +35,9 @@ export default defineConfig({
   },
   vite: defineAstro(common, {
     build: {
-      assetsDir,
+      // assetsDir,
       sourcemap: true,
+      /*
       rollupOptions: {
         output: {
           entryFileNames: assetsDir + "/[name].[hash].js",
@@ -44,6 +45,7 @@ export default defineConfig({
           assetFileNames: assetsDir + "/assets/[name].[hash][extname]",
         },
       },
+      */
     },
     ssr: {
       noExternal: ["smartypants"],
