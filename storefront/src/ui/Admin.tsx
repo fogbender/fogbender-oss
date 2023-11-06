@@ -29,7 +29,7 @@ import {
   modeAtom,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
-import { Provider as JotaiProvider, useAtom } from "jotai";
+import { Provider as JotaiProvider, useAtom, type SetStateAction } from "jotai";
 import React from "react";
 import { lazily } from "react-lazily";
 import { QueryClientProvider, useMutation, useQuery } from "react-query";
@@ -306,6 +306,8 @@ export const Admin = () => {
   const countInViolation =
     (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
 
+  const ThemeIcon = themeMode === "light" ? Icons.Sun : Icons.Moon;
+
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
@@ -352,13 +354,23 @@ export const Admin = () => {
               isAgentApp={isAgentApp}
             />
 
-            <UserMenu
-              isIdle={isIdle}
-              themeMode={themeMode}
-              suspendConnection={suspendConnection}
-              setSuspendConnection={setSuspendConnection}
-              setThemeMode={setThemeMode}
-            />
+            <div className="flex items-center gap-x-2">
+              <UserMenu
+                isIdle={isIdle}
+                themeMode={themeMode}
+                suspendConnection={suspendConnection}
+                setSuspendConnection={setSuspendConnection}
+                setThemeMode={setThemeMode}
+              />
+              <button
+                className="rounded-full bg-blue-100 p-2"
+                onClick={() => {
+                  setThemeMode(x => (x === "light" ? "dark" : "light"));
+                }}
+              >
+                <ThemeIcon className="w-6" />
+              </button>
+            </div>
           </div>
         </div>
         <div
