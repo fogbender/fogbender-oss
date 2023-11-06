@@ -80,7 +80,7 @@ export const DetailedRoomsTable: React.FC<{
 
             return (
               <tr
-                className="cursor-pointer hover:bg-gray-100"
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
                 key={r.id}
                 onClick={e => {
                   if (r.id !== activeRoomId) {

@@ -408,7 +408,7 @@ export const RoomItem: React.FC<{
     >
       {isAgent && (
         <div className="flex items-center space-x-1 fog:text-caption-xl truncate">
-          <div className="flex-1 flex flex-col truncate text-gray-600">
+          <div className="flex-1 flex flex-col truncate text-gray-600 dark:text-white">
             {formatCustomerName(room.customerName)}
           </div>
           {isAgent && !resolved && (
@@ -431,7 +431,7 @@ export const RoomItem: React.FC<{
           <Avatar url={counterpart?.imageUrl} name={counterpart?.name} size={20} />
         )}
         {room.type === "private" && isExternal === false && (
-          <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 text-white fog:text-caption-xs">
+          <span className="py-0.5 px-1.5 rounded-xl bg-gray-800 dark:bg-gray-500 text-white fog:text-caption-xs">
             Private
           </span>
         )}

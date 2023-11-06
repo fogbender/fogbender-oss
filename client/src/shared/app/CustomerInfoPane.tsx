@@ -37,13 +37,13 @@ export const CustomerInfoPane: React.FC<{
   return (
     <div
       className={classNames(
-        "relative flex h-full flex-col justify-end overflow-hidden bg-white focus:outline-none",
+        "relative flex h-full flex-col justify-end overflow-hidden focus:outline-none bg-white dark:bg-gray-800",
         "sm:border-l sm:px-2"
       )}
     >
       <div
         className={classNames(
-          "fbr-scrollbar flex flex-1 flex-col justify-start gap-2 overflow-auto overflow-x-hidden text-black"
+          "fbr-scrollbar flex flex-1 flex-col justify-start gap-2 overflow-auto overflow-x-hidden"
         )}
       >
         {helpdeskId &&

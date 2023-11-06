@@ -886,12 +886,16 @@ export const App: React.FC<{
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
 
+  const darkMode = mode === "dark";
+
+  const ThemeIcon = darkMode ? Icons.SwitchDarkMode : Icons.SwitchLightMode;
+
   return (
     <div
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
-        mode === "dark" && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
+        darkMode && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
       )}
     >
       {isUser && userInfo && (
@@ -1231,8 +1235,7 @@ export const App: React.FC<{
                         setMode(m => (m === "light" ? "dark" : "light"));
                       }}
                     >
-                      {mode === "light" && <Icons.SwitchLightMode className="w-9" />}
-                      {mode === "dark" && <Icons.SwitchDarkMode className="w-9" />}
+                      <ThemeIcon className="w-9" />
                     </div>
                     <a
                       href="https://fogbender.com"
@@ -1368,7 +1371,11 @@ export const App: React.FC<{
           </ResponsiveReactGridLayout>
         </div>
         {isAgent && vendorId && (
-          <div className="resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2">
+          <div
+            className={
+              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2 dark:bg-gray-800 dark:text-white"
+            }
+          >
             {activeRoomId && infoPane === "customer" && (
               // TODO: without key=, useHelpdeskUsers and useHelpdeskRooms hooks accumulate rooms/users across helpdesks
               <CustomerInfoPane

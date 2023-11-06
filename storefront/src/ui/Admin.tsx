@@ -26,9 +26,10 @@ import {
   useIsIdle,
   type VendorBilling,
   WsProvider,
+  modeAtom,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
-import { Provider as JotaiProvider, useAtom } from "jotai";
+import { Provider as JotaiProvider, useAtom, type SetStateAction } from "jotai";
 import React from "react";
 import { lazily } from "react-lazily";
 import { QueryClientProvider, useMutation, useQuery } from "react-query";
@@ -108,6 +109,8 @@ export const Admin = () => {
 
   const designatedVendorId = vendorMatch?.params?.vid || undefined;
   const designatedVendor = vendors?.find(x => x.id === designatedVendorId && !x.deleted_at);
+
+  const [themeMode, setThemeMode] = useAtom(modeAtom);
 
   React.useEffect(() => {
     if (designatedVendor?.deleted_at) {
@@ -303,6 +306,8 @@ export const Admin = () => {
   const countInViolation =
     (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
 
+  const ThemeIcon = themeMode === "light" ? Icons.Sun : Icons.Moon;
+
   return (
     <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
       <HeadlessIntegration />
@@ -349,11 +354,23 @@ export const Admin = () => {
               isAgentApp={isAgentApp}
             />
 
-            <UserMenu
-              isIdle={isIdle}
-              suspendConnection={suspendConnection}
-              setSuspendConnection={setSuspendConnection}
-            />
+            <div className="flex items-center gap-x-2">
+              <UserMenu
+                isIdle={isIdle}
+                themeMode={themeMode}
+                suspendConnection={suspendConnection}
+                setSuspendConnection={setSuspendConnection}
+                setThemeMode={setThemeMode}
+              />
+              <button
+                className="rounded-full bg-blue-100 p-2"
+                onClick={() => {
+                  setThemeMode(x => (x === "light" ? "dark" : "light"));
+                }}
+              >
+                <ThemeIcon className="w-6" />
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -1582,8 +1599,10 @@ const Breadcrumbs: React.FC<{
 const UserMenu: React.FC<{
   isIdle: boolean;
   suspendConnection: boolean;
+  themeMode: "light" | "dark";
+  setThemeMode: (x: SetStateAction<"light" | "dark">) => void;
   setSuspendConnection: (suspend: boolean) => void;
-}> = ({ isIdle, suspendConnection, setSuspendConnection }) => {
+}> = ({ isIdle, suspendConnection, themeMode, setSuspendConnection, setThemeMode }) => {
   const userName = useSelector(selectUserName);
   const userImageUrl = useSelector(selectUserImageUrl);
   const [logout] = useLogout();
@@ -1603,6 +1622,8 @@ const UserMenu: React.FC<{
   const [muteNotifications, setMuteNotifications] = useAtom(muteNotificationsAtom);
   const [showFocusedRoster, setShowFocusedRoster] = useAtom(showFocusedRosterAtom);
   const [showOutlookRoster, setShowOutlookRoster] = useAtom(showOutlookRosterAtom);
+
+  const ThemeIcon = themeMode === "light" ? Icons.SwitchLightMode : Icons.SwitchDarkMode;
 
   return (
     <div className="flex justify-end relative ml-5 cursor-pointer gap-2">
@@ -1657,6 +1678,11 @@ const UserMenu: React.FC<{
               />
             </>
           )}
+          <FancyMenuItem
+            onClick={() => setThemeMode(x => (x === "light" ? "dark" : "light"))}
+            text={themeMode === "light" ? "Light mode" : "Dark mode"}
+            icon={<ThemeIcon className="w-10" />}
+          />
           <FancyMenuItem
             onClick={() => setShowFocusedRoster(x => !x)}
             text="Focused roster"
