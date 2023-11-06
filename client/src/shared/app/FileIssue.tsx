@@ -597,7 +597,7 @@ export const FileIssue: React.FC<{
           />
         ))}
       </div>
-      <div className="pt-6 border-t border-gray-300 bg-white">
+      <div className="pt-6 border-t border-gray-300">
         <div className="fog:text-header3 self-start pb-6">File conversation in...</div>
         {fileIssueModes.length > 1 && (
           <div className="flex flex-wrap justify-center sm:justify-start items-center border-b -mx-8 px-6 mb-6">
@@ -607,7 +607,7 @@ export const FileIssue: React.FC<{
                 className={classNames(
                   "py-3 px-6 border-b-5 whitespace-nowrap fog:text-body-m rounded-t",
                   mode === fileIssueMode
-                    ? "border-brand-orange-500 bg-blue-50"
+                    ? "border-brand-orange-500 bg-blue-50 dark:bg-black"
                     : "border-transparent text-blue-700 hover:text-brand-red-500 cursor-pointer"
                 )}
                 onClick={() => {
@@ -775,7 +775,7 @@ export const FileIssue: React.FC<{
                   </span>
                 </span>
                 {!hasIssueTrackerIntegrations && (
-                  <div className="text-black flex w-[556px] py-3 px-4 bg-gray-100 rounded-lg flex-col gap-4">
+                  <div className="text-black flex w-[556px] py-3 px-4 bg-gray-100 dark:bg-black dark:text-gray-500 rounded-lg flex-col gap-4">
                     <div>You don’t have any integrations configured</div>
                     <div className="text-gray-500">
                       <span className="flex flex-row pb-2 gap-2">

@@ -612,7 +612,7 @@ export const RoomSettings: React.FC<{
               {!hasIssueTrackerIntegrations && (
                 <div className="grid grid-cols-4">
                   <div className="text-gray-500">Issue trackers</div>
-                  <div className="bg-gray-100 px-4 py-3 rounded-lg col-span-3 text-black flex flex-col gap-6">
+                  <div className="bg-gray-100 dark:bg-black px-4 py-3 rounded-lg col-span-3 text-black dark:text-gray-500 flex flex-col gap-6">
                     <div>You don’t have any integrations configured.</div>
                     <div className="flex space-x-3">
                       {integrations.map(i => {
@@ -922,15 +922,15 @@ const Member: React.FC<{
   return (
     <div
       className={classNames(
-        "flex items-center gap-x-2 px-1 py-0.5 rounded-md border fog:text-chat-username-m",
-        (!variant || variant === "blue") && "border-blue-200 bg-blue-50",
+        "flex items-center gap-x-2 px-1 py-0.5 rounded-md border fog:text-chat-username-m ",
+        (!variant || variant === "blue") && "border-blue-200 bg-blue-50 dark:bg-gray-600",
         variant === "red" && "border-red-200 bg-red-50",
         variant === "green" && "border-green-200 bg-green-50"
       )}
     >
       <Avatar url={imageUrl} name={name} size={25} />
       {name}
-      {type === "agent" && <Icons.AgentMark />}
+      {type === "agent" && <Icons.AgentMark className="dark:text-black w-3.5" />}
       {isAgent && onCloseClick && (
         <span className="ml-1 cursor-pointer hover:text-brand-red-500" onClick={onCloseClick}>
           <Icons.XClose className="w-4" />
@@ -1052,7 +1052,7 @@ const MembersList: React.FC<{
       </div>
       {searchIsVisible && (
         <div className="relative z-10">
-          <div className="relative z-10 px-2 bg-white">
+          <div className="relative z-10 px-2 bg-white dark:bg-black">
             <FilterInput
               ref={filterInputRef}
               noBorder={true}
@@ -1061,18 +1061,20 @@ const MembersList: React.FC<{
               focusOnMount={true}
             />
           </div>
-          <div className="absolute top-0 pt-11 left-0 right-0 max-h-40 rounded-lg fog:box-shadow-m bg-white overflow-y-auto fbr-scrollbar">
+          <div className="absolute top-0 pt-11 left-0 right-0 max-h-40 rounded-lg fog:box-shadow-m bg-white dark:bg-black overflow-y-auto fbr-scrollbar">
             {dialogs.map(dialog => (
               <div
                 key={dialog.id}
-                className="flex items-center gap-x-2 py-2 px-4 hover:bg-gray-100 cursor-pointer"
+                className="flex items-center gap-x-2 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
                 onClick={() => {
                   toggleMember(dialog);
                 }}
               >
                 <Avatar url={dialog.counterpart?.imageUrl} name={dialog.name} size={25} />
                 <span>{dialog.counterpart?.name || dialog.name}</span>
-                {dialog.counterpart?.type === "agent" && <Icons.AgentMark />}
+                {dialog.counterpart?.type === "agent" && (
+                  <Icons.AgentMark className="dark:text-black w-3.5" />
+                )}
               </div>
             ))}
           </div>

@@ -202,7 +202,7 @@ export const RoomAssignees: React.FC<{
       {showOptions && (
         <div
           className={classNames(
-            "z-20 absolute top-6 rounded-md right-0 max-w-80 py-2 bg-white fog:box-shadow-m",
+            "z-20 absolute top-6 rounded-md right-0 max-w-80 py-2 bg-white dark:bg-black fog:box-shadow-m",
             ((agentsToShow.length && !assignees.length) ||
               (groupsToShow.length && !assignedGroups.length)) &&
               "mt-1"
@@ -222,7 +222,7 @@ export const RoomAssignees: React.FC<{
                 <Combobox.Input
                   ref={inputRef}
                   className={
-                    "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm"
+                    "flex-1 px-2 py-3 bg-transparent outline-none placeholder-gray-500 text-base sm:text-sm"
                   }
                   placeholder="Search agents / groups"
                   onChange={evt => {
@@ -239,7 +239,7 @@ export const RoomAssignees: React.FC<{
               onFocus={() => {
                 inputRef.current?.focus();
               }}
-              className="bg-white focus:outline-none"
+              className="bg-white dark:bg-black focus:outline-none"
             >
               {(!!agentsToShow.length || !!groupsToShow.length) && (
                 <div className="max-h-32 my-2 overflow-y-auto fbr-scrollbar">
@@ -296,10 +296,10 @@ const AgentOption = ({
   return (
     <Combobox.Option
       value={x}
-      className='data-[headlessui-state~="active"]:bg-gray-200 data-[headlessui-state~="selected"]:bg-gray-200'
+      className='data-[headlessui-state~="active"]:bg-gray-200 dark:data-[headlessui-state~="active"]:bg-gray-800 data-[headlessui-state~="selected"]:bg-gray-200 dark:data-[headlessui-state~="selected"]:bg-gray-800'
     >
       <div
-        className="flex items-center gap-x-2 p-2 hover:bg-gray-200 cursor-pointer"
+        className="flex items-center gap-x-2 p-2 hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer"
         onClick={() => toggleAgent(x)}
       >
         <span className="text-blue-700">
@@ -313,7 +313,7 @@ const AgentOption = ({
         <Avatar url={x.image_url} name={x.name} size={25} />
         <div className="flex items-center truncate gap-x-1">
           <span className="flex-1 truncate">{x.name}</span>
-          <Icons.AgentMark />
+          <Icons.AgentMark className="w-3.5 dark:text-gray-800" />
         </div>
       </div>
     </Combobox.Option>
@@ -336,10 +336,10 @@ const GroupOption = ({
   return (
     <Combobox.Option
       value={x}
-      className='data-[headlessui-state~="active"]:bg-gray-200 data-[headlessui-state~="selected"]:bg-gray-200'
+      className='data-[headlessui-state~="active"]:bg-gray-200 dark:data-[headlessui-state~="active"]:bg-gray-800 data-[headlessui-state~="selected"]:bg-gray-200 dark:data-[headlessui-state~="selected"]:bg-gray-800'
     >
       <div
-        className="flex items-center gap-x-2 p-2 hover:bg-gray-200 cursor-pointer"
+        className="flex items-center gap-x-2 p-2 hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer"
         onClick={() => toggleGroup(x)}
       >
         <span className="text-blue-700">
