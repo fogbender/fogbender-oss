@@ -885,7 +885,7 @@ export const App: React.FC<{
       : undefined;
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
-  
+
   const darkMode = mode === "dark";
 
   const ThemeIcon = darkMode ? Icons.SwitchDarkMode : Icons.SwitchLightMode;
@@ -1371,7 +1371,11 @@ export const App: React.FC<{
           </ResponsiveReactGridLayout>
         </div>
         {isAgent && vendorId && (
-          <div className="resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2">
+          <div
+            className={
+              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2 dark:bg-gray-800 dark:text-white"
+            }
+          >
             {activeRoomId && infoPane === "customer" && (
               // TODO: without key=, useHelpdeskUsers and useHelpdeskRooms hooks accumulate rooms/users across helpdesks
               <CustomerInfoPane
