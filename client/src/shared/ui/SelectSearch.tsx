@@ -108,11 +108,9 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
                 <Combobox.Option
                   key={ind}
                   value={v}
-                  className='data-[headlessui-state~="active"]:bg-gray-100 data-[headlessui-state~="selected"]:bg-gray-100'
+                  className='data-[headlessui-state~="active"]:bg-gray-100 dark:data-[headlessui-state~="active"]:bg-gray-600 dark:data-[headlessui-state~="selected"]:bg-gray-600 data-[headlessui-state~="selected"]:bg-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600'
                 >
-                  <div className={classNames("cursor-pointer px-4 py-3 hover:bg-gray-100")}>
-                    {v.option}
-                  </div>
+                  <div className={classNames("cursor-pointer px-4 py-3")}>{v.option}</div>
                 </Combobox.Option>
               );
             })}
