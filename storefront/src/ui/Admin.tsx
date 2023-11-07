@@ -27,9 +27,10 @@ import {
   type VendorBilling,
   WsProvider,
   modeAtom,
+  type ThemeModeSetStateAction,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
-import { Provider as JotaiProvider, useAtom, type SetStateAction } from "jotai";
+import { Provider as JotaiProvider, useAtom } from "jotai";
 import React from "react";
 import { lazily } from "react-lazily";
 import { QueryClientProvider, useMutation, useQuery } from "react-query";
@@ -1600,7 +1601,7 @@ const UserMenu: React.FC<{
   isIdle: boolean;
   suspendConnection: boolean;
   themeMode: "light" | "dark";
-  setThemeMode: (x: SetStateAction<"light" | "dark">) => void;
+  setThemeMode: (x: ThemeModeSetStateAction) => void;
   setSuspendConnection: (suspend: boolean) => void;
 }> = ({ isIdle, suspendConnection, themeMode, setSuspendConnection, setThemeMode }) => {
   const userName = useSelector(selectUserName);
