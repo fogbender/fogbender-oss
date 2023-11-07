@@ -486,7 +486,7 @@ export const RoomItem: React.FC<{
         </span>
       </div>
       {isAgent && room.type !== "dialog" && (
-        <div className="absolute right-0 bottom-0 -mb-1 mr-1 opacity-100 sm:opacity-0 group-hover:opacity-100">
+        <div className="absolute right-0 bottom-1 -mb-1 mr-1 opacity-100 sm:opacity-0 group-hover:opacity-100">
           <span
             className="flex py-1 px-2 items-center bg-white rounded-full text-gray-500 hover:text-gray-800 fog:box-shadow-s fog:text-body-s leading-none"
             onClick={e => {
