@@ -69,8 +69,8 @@ export const useRoomList = ({
             className={classNames(
               "grid grid-cols-3 items-center p-2 cursor-pointer",
               (selectedItems && selectedItems[item.id] && selectedStyle === undefined
-                ? "bg-blue-100"
-                : selectedStyle) || "hover:bg-gray-100"
+                ? "bg-blue-100 dark:text-black"
+                : selectedStyle) || "hover:bg-gray-100 dark:hover:bg-gray-600"
             )}
             onClick={() => onItemClick(item)}
           >
