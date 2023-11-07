@@ -1,8 +1,8 @@
-import { atom } from "jotai";
 
 import { atomWithRealTimeLocalStorage } from "../utils/atomWithLocalStorage";
 
-export const modeAtom = atom("light" as "light" | "dark");
+
+export const modeAtom = atomWithRealTimeLocalStorage<"light" | "dark">("config.theme_mode","light");
 
 export const showAiHelperAtom = atomWithRealTimeLocalStorage("config.show_ai_helper", false);
 export const muteNotificationsAtom = atomWithRealTimeLocalStorage(
