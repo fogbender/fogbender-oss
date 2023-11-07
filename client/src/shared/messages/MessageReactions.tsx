@@ -108,7 +108,7 @@ export const MessageReactions: React.FC<{
           )}
         >
           <span className="pr-1">{reaction}</span>{" "}
-          <span className="fog:text-body-s dark:text-white"> {count}</span>
+          <span className="fog:text-body-s dark:text-black"> {count}</span>
         </div>
       ))}
     </div>
