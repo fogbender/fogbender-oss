@@ -1061,7 +1061,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                 <div
                   className={classNames(
                     "group flex items-center gap-x-0.5 my-1 p-1 rounded fog:text-body-s truncate cursor-pointer",
-                    isInternal ? "bg-green-50 text-green-500" : "bg-blue-50 text-blue-500"
+                    isInternal ? "bg-green-50 text-green-500" : "bg-blue-50 text-blue-500",
+                    "dark:bg-black"
                   )}
                   onClick={() => setShowDetails(x => !x)}
                 >
