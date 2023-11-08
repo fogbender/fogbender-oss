@@ -39,7 +39,7 @@ import {
   modeAtom,
   muteNotificationsAtom,
   showOutlookRosterAtom,
-  ThemeModeSetStateAction,
+  type ThemeModeSetStateAction,
 } from "../store/config.store";
 import type { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
