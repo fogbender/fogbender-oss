@@ -39,6 +39,7 @@ import {
   modeAtom,
   muteNotificationsAtom,
   showOutlookRosterAtom,
+  ThemeModeSetStateAction,
 } from "../store/config.store";
 import type { Agent, AuthorMe, VendorBilling } from "../types";
 import { isExternalHelpdesk, isInternalHelpdesk, roomToName } from "../utils/format";
@@ -886,16 +887,12 @@ export const App: React.FC<{
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
 
-  const darkMode = mode === "dark";
-
-  const ThemeIcon = darkMode ? Icons.SwitchDarkMode : Icons.SwitchLightMode;
-
   return (
     <div
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
-        darkMode && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
+        mode === "dark" && (isIframe ? "bg-gray-800 dark" : "bg-black dark")
       )}
     >
       {isUser && userInfo && (
@@ -1228,14 +1225,8 @@ export const App: React.FC<{
                   )}
                 >
                   <div className="w-full shrink-0 snap-center flex">
-                    <div
-                      className="flex items-center cursor-pointer z-20"
-                      onClick={e => {
-                        e.preventDefault();
-                        setMode(m => (m === "light" ? "dark" : "light"));
-                      }}
-                    >
-                      <ThemeIcon className="w-9" />
+                    <div className="flex items-center cursor-pointer z-20 gap-2">
+                      <ThemeModeController mode={mode} setMode={setMode} />
                     </div>
                     <a
                       href="https://fogbender.com"
@@ -1487,6 +1478,40 @@ export const App: React.FC<{
         )}
       </div>
     </div>
+  );
+};
+
+const ThemeModeController = ({
+  mode,
+  setMode,
+}: {
+  mode: "light" | "dark";
+  setMode: (x: ThemeModeSetStateAction) => void;
+}) => {
+  const lightMode = mode === "light";
+  const darkMode = mode === "dark";
+
+  const commonClassNames = "p-1 rounded-full";
+
+  return (
+    <>
+      <button
+        className={classNames(commonClassNames, darkMode && "bg-blue-100")}
+        onClick={() => {
+          !darkMode && setMode("dark");
+        }}
+      >
+        <Icons.Moon className="w-4 text-black" />
+      </button>
+      <button
+        className={classNames(commonClassNames, lightMode && "bg-blue-100")}
+        onClick={() => {
+          !lightMode && setMode("light");
+        }}
+      >
+        <Icons.Sun className="w-4 text-black dark:text-white" />
+      </button>
+    </>
   );
 };
 

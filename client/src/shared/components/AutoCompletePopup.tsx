@@ -116,7 +116,7 @@ export const MentionsPopup: React.FC<{
 
   return (
     <div
-      className="fbr-scrollbar absolute bottom-12 left-0 right-12 z-10 mb-3.5 mr-0.5 max-h-40 overflow-y-auto rounded-t-md border border-blue-50 bg-white"
+      className="fbr-scrollbar absolute bottom-12 left-0 right-12 z-10 mb-3.5 mr-0.5 max-h-40 overflow-y-auto rounded-t-md border border-blue-50 bg-white dark:bg-black dark:text-white"
       style={bottomOffset ? { bottom: bottomOffset } : {}}
       onPointerDown={e => {
         e.preventDefault();
