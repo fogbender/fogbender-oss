@@ -145,6 +145,12 @@
 .fog\:box-shadow {
   box-shadow: 0px 6px 20px rgba(19, 29, 118, 0.07);
 }
+/* Apply box-shadow only after the medium breakpoint (640px) */
+@media (min-width: 640px) {
+  .sm\:fog\:box-shadow {
+    box-shadow: 0px 6px 20px rgba(19, 29, 118, 0.07);
+  }
+}
 .fog\:box-shadow-s {
   box-shadow: 0px 3px 10px 0px rgba(19, 29, 118, 0.1);
 }
