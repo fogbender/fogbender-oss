@@ -33,7 +33,7 @@ export const Modal: React.FC<{
           <div className="flex min-h-full h-full sm:h-auto w-full items-start justify-center">
             <div
               className={classNames(
-                "fog:box-shadow-m relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
+                "sm:fog:box-shadow relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
                 "dark:bg-gray-800 dark:text-white",
                 restricted
                   ? "min-w-full sm:min-w-0"
