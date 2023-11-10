@@ -1,6 +1,14 @@
 defmodule Fog.Data.Agent do
   use Fog.Data
-  alias Fog.Data.{AuthorTag, Fogvite, VendorAgentGroup, VendorAgentRole, WorkspaceAgentRole}
+
+  alias Fog.Data.{
+    AgentSchedule,
+    AuthorTag,
+    Fogvite,
+    VendorAgentGroup,
+    VendorAgentRole,
+    WorkspaceAgentRole
+  }
 
   defimpl Jason.Encoder, for: Fog.Data.Agent do
     def encode(value, opts) do
@@ -26,6 +34,8 @@ defmodule Fog.Data.Agent do
 
     has_many(:my_fogvites, Fogvite, on_replace: :delete, foreign_key: :sender_agent_id)
     has_many(:fogvited, Fogvite, on_replace: :delete, foreign_key: :accepted_by_agent_id)
+
+    has_many(:schedules, AgentSchedule)
 
     field(:from_name_override, :string, virtual: true)
     field(:from_image_url_override, :string, virtual: true)
