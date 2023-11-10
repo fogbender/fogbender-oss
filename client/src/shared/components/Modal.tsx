@@ -20,20 +20,20 @@ export const Modal: React.FC<{
       isOpen={true}
       onDismiss={skipOverlayClick ? undefined : onClose}
       dangerouslyBypassFocusLock={inUserWidget ? true : false}
+      className={classNames(mode === "dark" && "dark")}
     >
       {/* FIXME add ariaLabel prop to Modal component and use it here */}
       <DialogContent aria-label="Modal window content">
         <div
           className={classNames(
-            "fbr-scrollbar fixed -inset-y-1 -inset-x-3 sm:inset-0 z-10 overflow-auto bg-black bg-opacity-20 p-1 sm:p-4",
-            mode === "dark" && "dark"
+            "fbr-scrollbar fixed -inset-y-1 -inset-x-3 sm:inset-0 z-10 overflow-auto sm:bg-black bg-white max-sm:dark:bg-gray-800 sm:bg-opacity-20 p-1 sm:p-4"
           )}
           onClick={skipOverlayClick ? undefined : onClose}
         >
           <div className="flex min-h-full h-full sm:h-auto w-full items-start justify-center">
             <div
               className={classNames(
-                "fog:box-shadow-m relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
+                "sm:fog:box-shadow relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
                 "dark:bg-gray-800 dark:text-white",
                 restricted
                   ? "min-w-full sm:min-w-0"

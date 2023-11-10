@@ -400,7 +400,7 @@ export const RoomSettings: React.FC<{
       }}
     >
       <div className="flex items-center gap-x-4 mb-6">
-        <div className="flex-1 text-gray-700 dark:text-gray-300 leading-none text-right">
+        <div className="flex-1 text-gray-700 dark:text-gray-300 leading-none text-right mr-8 sm:mr-0">
           Room settings
         </div>
       </div>
