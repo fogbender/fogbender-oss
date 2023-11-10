@@ -340,6 +340,29 @@ defmodule Fog.RepoCaseUtils do
     |> Repo.update!()
   end
 
+  def agent_schedule(
+        vendor: v,
+        agent: a,
+        start_time: start_time,
+        finish_time: finish_time,
+        day: day,
+        week: week,
+        month: month,
+        available: available
+      ) do
+    Data.AgentSchedule.new(
+      vendor_id: v.id,
+      agent_id: a.id,
+      start_time: start_time,
+      finish_time: finish_time,
+      day: day,
+      week: week,
+      month: month,
+      available: available
+    )
+    |> Repo.insert!()
+  end
+
   defp from_author(%Data.User{id: id}), do: [from_user_id: id]
   defp from_author(%Data.Agent{id: id}), do: [from_agent_id: id]
   defp from_author(_), do: nil
