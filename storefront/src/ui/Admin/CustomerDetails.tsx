@@ -462,7 +462,8 @@ export const Tags: React.FC<{
       className={classNames(
         "flex items-center gap-x-1 pl-2 pr-1 py-0.5 rounded-md border fog:text-chat-username-m",
         "border-blue-200 bg-blue-50",
-        "max-w-min"
+        "max-w-min",
+        "dark:bg-black"
       )}
     >
       <span className="whitespace-nowrap flex gap-1 items-center">

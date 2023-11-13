@@ -99,12 +99,13 @@ export const CustomersHome: React.FC<{ vendorId: string; workspaceId: string }> 
             "absolute sm:static sm:z-0 z-10 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform",
             isUsersDetailsVisible ? "-translate-x-full" : "translate-x-0",
             "w-full sm:w-64",
-            customersStatus === "loading" && "opacity-10"
+            customersStatus === "loading" && "opacity-10",
+            "dark:text-white dark:bg-gray-800"
           )}
         >
           <div className="flex overflow-hidden h-full">
             <div className={classNames("flex flex-col pl-3 pr-2 pt-2 w-full overflow-hidden")}>
-              <form onSubmit={rosterInputSubmit} className="bg-white">
+              <form onSubmit={rosterInputSubmit} className="bg-white dark:bg-gray-800">
                 <FilterInput
                   placeholder="Search customers"
                   value={customersSearch}
@@ -124,7 +125,7 @@ export const CustomersHome: React.FC<{ vendorId: string; workspaceId: string }> 
                       className={classNames(
                         "flex items-center gap-x-2 py-2.5 px-2 border-l-5 rounded-r fog:text-body-m truncate",
                         customer.id === selectedCustomerId
-                          ? "border-brand-orange-500 bg-blue-50 text-black"
+                          ? "border-brand-orange-500 bg-blue-50 text-black dark:bg-black dark:text-white"
                           : "border-transparent fog:text-link"
                       )}
                     >
@@ -228,7 +229,7 @@ const CustomerContainer: React.FC<{
   );
 
   return (
-    <div className="bg-white h-full pt-6 sm:pl-4">
+    <div className="bg-white dark:text-white dark:bg-gray-800 h-full pt-6 sm:pl-4">
       {customer && workspaceId && (
         <>
           <div className="h-full pl-4 pr-2 sm:pl-6 xl:pr-24 border border-b-0 border-l-200 border-r-0 border-t-0 fbr-scrollbar overflow-y-scroll space-y-6">
