@@ -729,7 +729,7 @@ export const RoomSettings: React.FC<{
               </div>
               <div
                 className={classNames(
-                  "px-1 bg-slate-100 mt-2 overflow-y-auto fbr-scrollbar",
+                  "px-1 bg-slate-100 dark:bg-black mt-2 overflow-y-auto fbr-scrollbar",
                   issuesFilter ? "block" : "hidden"
                 )}
                 style={{ height: "12vh" }}

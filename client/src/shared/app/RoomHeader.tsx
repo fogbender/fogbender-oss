@@ -1094,7 +1094,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                       <span
                         key={tag.id}
                         className={classNames(
-                          "h-6 inline-flex items-center mr-2 px-2.5 rounded border border-blue-200 bg-blue-50 fog:text-body-s whitespace-nowrap"
+                          "h-6 inline-flex items-center mr-2 px-2.5 rounded border border-blue-200 bg-blue-50 dark:border-black dark:bg-black dark:text-gray-600 fog:text-body-s whitespace-nowrap"
                         )}
                         onClick={e => {
                           if (onShowIssueInfo) {

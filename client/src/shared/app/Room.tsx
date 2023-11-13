@@ -86,7 +86,7 @@ const ResolvedControls = (props: {
     <div
       className={classNames(
         styles["z-1"],
-        "absolute bg-gray-200 items-center flex p-1 right-0 rounded-bl-lg text-xs top-0 whitespace-nowrap gap-2"
+        "absolute bg-gray-200 dark:bg-black dark:text-white items-center flex p-1 right-0 rounded-bl-lg text-xs top-0 whitespace-nowrap gap-2"
       )}
     >
       {showSnoozeTimer && (
@@ -94,7 +94,10 @@ const ResolvedControls = (props: {
           Unresolves in {dayjs(showSnoozeTimer / 1000).fromNow(true)}
         </span>
       )}
-      <button className={classNames(commonBtnStyles, resolved && "bg-white")} onClick={onResolve}>
+      <button
+        className={classNames(commonBtnStyles, resolved && "bg-white dark:bg-gray-800")}
+        onClick={onResolve}
+      >
         {resolved ? (resolvedTil ? "Cancel timer" : "Resolved") : "Resolve"}
       </button>
       {!showSnoozeTimer && (

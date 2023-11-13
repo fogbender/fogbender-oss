@@ -194,7 +194,7 @@ export const RoomAssignees: React.FC<{
           ))}
           {!assigneesAndGroupsLength && canAssign && !readOnly && (
             <span>
-              <Icons.InvitedUserIcon className="w-6 h-6" />
+              <Icons.InvitedUserIcon className="w-6 h-6 text-black" />
             </span>
           )}
         </div>

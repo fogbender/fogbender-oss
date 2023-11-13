@@ -177,8 +177,8 @@ export const CreateRoom: React.FC<{
               inputRef.current?.focus();
             }}
           >
-            <div className="p-4">
-              <div className="bg-gray-100 px-4 rounded-lg r">
+            <div className="p-4 dark:bg-black">
+              <div className="bg-gray-100 dark:bg-gray-800 px-4 rounded-lg r">
                 <FilterInput
                   noBorder={true}
                   ref={inputRef}
@@ -189,7 +189,7 @@ export const CreateRoom: React.FC<{
                 />
               </div>
             </div>
-            <table className="border-collapse table-auto w-full">
+            <table className="border-collapse table-auto w-full dark:bg-black">
               <thead>
                 <tr
                   style={{ borderBottomWidth: "8px" }}
@@ -220,7 +220,8 @@ export const CreateRoom: React.FC<{
                         borderWidth: "8px 16px",
                       }}
                       className={classNames(
-                        'border-transparent cursor-pointer focus:bg-gray-100 data-[headlessui-state~="active"]:bg-gray-100 data-[headlessui-state~="selected"]:bg-gray-100 font-normal hover:bg-gray-100 text-left'
+                        'border-transparent cursor-pointer focus:bg-gray-100 data-[headlessui-state~="active"]:bg-gray-100 data-[headlessui-state~="selected"]:bg-gray-100 hover:bg-gray-100 font-normal text-left',
+                        'dark:focus:bg-gray-600 dark:data-[headlessui-state~="active"]:bg-gray-600 dark:data-[headlessui-state~="selected"]:bg-gray-600 dark:hover:bg-gray-600'
                       )}
                       as="tr"
                       value={v}
