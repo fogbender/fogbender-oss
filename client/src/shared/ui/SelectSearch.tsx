@@ -55,13 +55,21 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
     autoFocus && inputRef.current?.focus();
   }, []);
 
+  const darkModeClassNames = "dark:bg-black dark:text-white";
   return (
-    <div className={classNames("fog:text-body-m relative w-full", wrapperClassName)}>
+    <div
+      className={classNames(
+        "fog:text-body-m relative w-full",
+        wrapperClassName,
+        darkModeClassNames
+      )}
+    >
       <Combobox value={value} disabled={disabled} onChange={onChange}>
         <div
           className={classNames(
-            "flex items-center justify-between bg-white pr-2",
-            props.comboboxButtonClassName
+            "flex items-center justify-between bg-white dark:bg-black pr-2",
+            props.comboboxButtonClassName,
+            darkModeClassNames
           )}
         >
           <Combobox.Button as="div" className="w-full">
@@ -70,7 +78,8 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
               ref={inputRef}
               className={classNames(
                 "h-[36px] w-full rounded-md px-2 outline-none",
-                props.comboboxInputClassName
+                props.comboboxInputClassName,
+                darkModeClassNames
               )}
               placeholder={placeholder}
               displayValue={props.displayValue as (option: O) => string}
@@ -97,9 +106,10 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
           static={isStatic}
           ref={optionsRef}
           className={classNames(
-            `fog:box-shadow-m fbr-scrollbar fbr-scrollbar-no-gutter absolute left-0 top-full z-30 mt-1 max-h-96 w-full
+            `fog:box-shadow-m fbr-scrollbar fbr-scrollbar-no-gutter absolute left-0 top-full z-30 mt-1 max-h-96
                overflow-y-auto rounded-b-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none`,
-            optionsClassName
+            optionsClassName,
+            darkModeClassNames
           )}
         >
           {children ??

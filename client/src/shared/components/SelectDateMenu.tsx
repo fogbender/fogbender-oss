@@ -38,14 +38,11 @@ export default (props: SelectDateMenuProps) => {
     return result;
   }, [searchInput]);
 
-  const darkModeClassNames = "dark:bg-black dark:text-white";
-
   return (
     <div
       ref={menuRef}
       className={classNames(
-        "absolute z-10 h-[201px] top-0 right-[5px] pt-2 fog:box-shadow-m bg-white text-black w-[310px]",
-        darkModeClassNames
+        "absolute z-10 h-[201px] top-0 right-[5px] pt-2 fog:box-shadow-m bg-white dark:bg-black dark:text-white text-black w-[310px]"
       )}
     >
       <div className="flex items-center justify-between pr-2 pl-4">
@@ -67,9 +64,6 @@ export default (props: SelectDateMenuProps) => {
           isStatic={true}
           autoFocus={true}
           searchInputValue={searchInput}
-          comboboxButtonClassName={darkModeClassNames} // All three classes are required; else, unexpected results will occur.
-          wrapperClassName={darkModeClassNames}
-          comboboxInputClassName={darkModeClassNames}
           onChange={option => {
             // server expects the date in micro seconds;
             const dateTs = new Date(chronoNode.parseDate(option.value)).getTime() * 1000;
@@ -85,7 +79,7 @@ export default (props: SelectDateMenuProps) => {
           setSearchInputValue={input => {
             setSearchInput(input);
           }}
-          optionsClassName={classNames("left-[-30px] h-[136px] w-[310px]", darkModeClassNames)}
+          optionsClassName={classNames("left-[-30px] h-[136px] w-[310px]")}
           searchInputPlaceholder={placeholder}
           options={options}
           displayValue={x => x?.displayLabel}
