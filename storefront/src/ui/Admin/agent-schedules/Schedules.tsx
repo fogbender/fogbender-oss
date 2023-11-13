@@ -178,7 +178,11 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
   const { children, className } = props;
   return (
     <div
-      className={classNames("w-full bg-white p-6 rounded-xl fog:box-shadow-s relative", className)}
+      className={classNames(
+        "w-full bg-white p-6 rounded-xl fog:box-shadow-s relative",
+        className,
+        "dark:bg-gray-800 dark:text-white"
+      )}
     >
       {children}
     </div>
@@ -1097,7 +1101,7 @@ const ScheduleList = ({ onEditSchedule }: { onEditSchedule: () => void }) => {
 const AgentScheduleCard = () => {
   return (
     <div className="flex md:flex-row gap-3 flex-col items-center justify-center flex-wrap">
-      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 rounded-lg">
+      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 dark:bg-black rounded-lg">
         <div className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
             <div>
@@ -1122,7 +1126,7 @@ const AgentScheduleCard = () => {
           </div>
         </div>
       </div>
-      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 rounded-lg">
+      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 dark:bg-black rounded-lg">
         <div className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
             <div>
@@ -1147,7 +1151,7 @@ const AgentScheduleCard = () => {
           </div>
         </div>
       </div>
-      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 rounded-lg">
+      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 dark:bg-black rounded-lg">
         <div className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
             <div>
@@ -1172,7 +1176,7 @@ const AgentScheduleCard = () => {
           </div>
         </div>
       </div>
-      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 rounded-lg">
+      <div className="px-3 flex-shrink-0 w-52 py-2 bg-gray-100 dark:bg-black rounded-lg">
         <div className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
             <div>

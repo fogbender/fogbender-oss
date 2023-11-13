@@ -161,7 +161,7 @@ const Main = (props: HeaderProps) => {
 
   return (
     <div className="h-[500px] overflow-auto fbr-scrollbar mt-6 relative w-[874px]">
-      <div className="flex sticky top-0 bg-white mb-4 z-10 pb-2">
+      <div className="flex sticky top-0 bg-white dark:bg-gray-800 mb-4 z-10 pb-2">
         <div className="w-28 flex flex-col gap-2">
           <div className="whitespace-nowrap">{formattedWeekString}</div>
           <div className="flex gap-2 items-center">
@@ -209,7 +209,7 @@ const WeekView = (props: WeekViewProps) => {
               title={w.dateObj.format("DD MMMM")}
               key={i}
               className={clsx(
-                "w-10 gap-2 flex flex-col text-center text-black flex-shrink-0",
+                "w-10 gap-2 flex flex-col text-center text-black dark:text-white flex-shrink-0",
                 w.today && "text-brand-pink-500"
               )}
             >
@@ -217,7 +217,7 @@ const WeekView = (props: WeekViewProps) => {
               <span
                 className={clsx("rounded-full", {
                   "bg-brand-pink-500 text-white": w.today,
-                  "hover:bg-gray-100 cursor-pointer": !w.today,
+                  "hover:bg-gray-100 dark:hover:bg-black cursor-pointer": !w.today,
                 })}
               >
                 {w.date}
@@ -259,7 +259,7 @@ const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
         <ul>
           {Array.from({ length: 15 }, (_, i) => i).map(i => (
             <li
-              className="text-center odd:bg-gray-100 leading-6 py-2 flex items-center rounded-l-xl px-1 gap-2"
+              className="text-center odd:bg-gray-100 dark:odd:bg-black leading-6 py-2 flex items-center rounded-l-xl px-1 gap-2"
               key={i}
             >
               <Avatar withTitle={false} name={"Soroker"} size={24} />
@@ -276,7 +276,7 @@ const AgentsView = (props: Pick<WeekViewProps, "weekDays">) => {
                 {Array.from({ length: 15 }, (_, j) => j).map(j => (
                   <span
                     className={clsx(
-                      "leading-6 py-2 px-8 odd:bg-gray-100",
+                      "leading-6 py-2 px-8 odd:bg-gray-100 dark:odd:bg-black",
                       weekDay.dateObj.isoWeekday() === SUNDAY_KEY && "odd:rounded-r-xl"
                     )}
                     key={j}
