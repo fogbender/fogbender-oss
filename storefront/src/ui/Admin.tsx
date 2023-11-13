@@ -27,7 +27,6 @@ import {
   type VendorBilling,
   WsProvider,
   modeAtom,
-  type ThemeModeSetStateAction,
 } from "fogbender-client/src/shared";
 import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import { Provider as JotaiProvider, useAtom } from "jotai";
