@@ -186,6 +186,7 @@
 .fog\:chat-message code.inline {
   @apply bg-white dark:bg-gray-900;
   @apply !text-brand-red-500;
+  @apply px-1;
 }
 
 .fog\:chat-message blockquote {
