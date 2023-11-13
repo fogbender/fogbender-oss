@@ -13,7 +13,12 @@ export const FancyMenuItem = ({
   className?: string;
 }) => {
   return (
-    <li className={classNames("p-2 block text-gray-900 hover:text-brand-red-500", className)}>
+    <li
+      className={classNames(
+        "p-2 block text-gray-900 dark:text-white hover:text-brand-red-500 dark:hover:text-brand-red-500",
+        className
+      )}
+    >
       <button className="flex w-full text-left gap-4 px-2 items-center" onClick={onClick}>
         <span className="whitespace-nowrap grow">{text}</span>
         {icon}

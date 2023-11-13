@@ -323,7 +323,7 @@ const ApplyTagsModal = ({
             <Combobox.Input
               ref={inputRef}
               className={
-                "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm"
+                "flex-1 px-2 py-3 bg-transparent outline-none text-black dark:text-white placeholder-gray-500 text-base sm:text-sm"
               }
               placeholder="Search tags"
               onChange={evt => {
@@ -337,7 +337,7 @@ const ApplyTagsModal = ({
           onFocus={() => {
             inputRef.current?.focus();
           }}
-          className="bg-white focus:outline-none"
+          className="bg-white dark:bg-black focus:outline-none"
         >
           {filteredTags?.map((tag, idx) => {
             return (

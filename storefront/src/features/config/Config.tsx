@@ -14,7 +14,7 @@ import { hideHeadlessClientsAtom } from "./config.store";
 export const Config = function Config() {
   return (
     <div>
-      <div className="flex flex-col gap-y-4 p-2">
+      <div className="flex flex-col gap-y-4 p-2 dark:text-white">
         Debugger:
         <Checkbox atom={showAiHelperAtom}>Show AI helper</Checkbox>
         <Checkbox atom={showOutlookRosterAtom}>use Outlook roster</Checkbox>
