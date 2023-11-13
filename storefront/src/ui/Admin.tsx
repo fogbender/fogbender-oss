@@ -310,7 +310,13 @@ export const Admin = () => {
   const ThemeIcon = themeMode === "light" ? Icons.Sun : Icons.Moon;
 
   return (
-    <div className={classNames("flex flex-col h-full", isAgentApp && "overflow-hidden")}>
+    <div
+      className={classNames(
+        "flex flex-col h-full",
+        isAgentApp && "overflow-hidden",
+        themeMode === "dark" && "dark"
+      )}
+    >
       <HeadlessIntegration />
       {designatedVendorId &&
         !billingIsLoading &&
@@ -340,7 +346,7 @@ export const Admin = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="relative bg-blue-50">
+        <div className="relative bg-blue-50 dark:bg-black">
           <div className="absolute bottom-0 w-full h-0 border-b border-blue-200" />
           <div className="relative flex items-center justify-between px-4 w-full max-w-screen-xl mx-auto">
             <Breadcrumbs
@@ -358,10 +364,8 @@ export const Admin = () => {
             <div className="flex items-center gap-x-2">
               <UserMenu
                 isIdle={isIdle}
-                themeMode={themeMode}
                 suspendConnection={suspendConnection}
                 setSuspendConnection={setSuspendConnection}
-                setThemeMode={setThemeMode}
               />
               <button
                 className="rounded-full bg-blue-100 p-2"
@@ -379,7 +383,8 @@ export const Admin = () => {
             !isAgentApp ? "overflow-auto" : "mt-2",
             "w-full h-full",
             supportMode && "pt-2",
-            (homeMode || settingsMode) && "fbr-scrollbar"
+            (homeMode || settingsMode) && "fbr-scrollbar",
+            "dark:bg-black"
           )}
         >
           <div
@@ -486,7 +491,7 @@ export const Admin = () => {
                           />
                         )}
 
-                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white">
+                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-gray-800">
                           <ThinButton onClick={() => setIsCreateWorkspaceModalOpen(true)}>
                             {workspaces?.length === 1 ? "Add another workspace" : "Add workspace"}
                           </ThinButton>
@@ -494,7 +499,7 @@ export const Admin = () => {
                         {sortedWorkspaces.map(w => (
                           <div
                             key={w.id}
-                            className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white"
+                            className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-gray-800"
                           >
                             <div className="flex">
                               <Link
@@ -523,7 +528,9 @@ export const Admin = () => {
                               </button>
                             </div>
                             {w.description !== null && (
-                              <div className="fog:text-body-m text-black">{w.description}</div>
+                              <div className="fog:text-body-m text-black dark:text-white">
+                                {w.description}
+                              </div>
                             )}
                             <div className="flex flex-col gap-4 sm:flex-row sm:gap-8 mt-4">
                               <Link
@@ -582,7 +589,7 @@ export const Admin = () => {
                         ))}
                       </div>
                       {designatedVendorId && (
-                        <div className="mt-8 flex gap-x-4 items-center fog:text-body-l">
+                        <div className="mt-8 flex gap-x-4 items-center fog:text-body-l dark:text-white">
                           <div>
                             <p>
                               Questions or comments? Ping us in{" "}
@@ -1076,7 +1083,7 @@ const Sidebar: React.FC<{
       )}
     >
       {hasVendorInvites && (
-        <div className="w-full bg-white p-4 rounded-xl flex flex-col">
+        <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 rounded-xl flex flex-col">
           {hasVendorInvites && (
             <div className="text-gray-500 fog:text-caption-m uppercase">Pending invitations</div>
           )}
@@ -1100,7 +1107,7 @@ const Sidebar: React.FC<{
           {vendorInvites?.length === 0 && vendorInviteCode && <BadInviteModal />}
         </div>
       )}
-      <div className="w-full bg-white px-6 rounded-xl">
+      <div className="w-full bg-white px-6 rounded-xl dark:bg-gray-800 dark:text-white">
         {hasVendors && (
           <div className="text-gray-500 fog:text-caption-m py-4 gap-4 uppercase border-b">
             Organizations
@@ -1116,7 +1123,7 @@ const Sidebar: React.FC<{
                   <div className="flex items-center justify-between mb-2.5">
                     <div className="fog:text-caption-xl">{v.name}</div>
                     <div
-                      className="text-gray-500 hover:text-gray-800 cursor-pointer"
+                      className="text-gray-500 hover:text-black cursor-pointer"
                       onClick={() => setEditVendor(v)}
                     >
                       <Icons.Gear />
@@ -1317,7 +1324,7 @@ const AdminRedirect: React.FC<{
               .map(v => (
                 <Link
                   key={v.id}
-                  className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white rounded-xl fog:box-shadow"
+                  className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-gray-800 dark:text-white rounded-xl fog:box-shadow"
                   to={`/admin/vendor/${v.id}/${rest}${search}${hash}`}
                 >
                   <div className="flex-1 truncate">{v.name}</div>
@@ -1351,7 +1358,7 @@ const AdminVendorRedirect: React.FC<{
 
   if (workspaces !== undefined) {
     return (
-      <div className="relative sm:ml-8 pt-10">
+      <div className="relative sm:ml-8 pt-10 dark:text-white">
         <div className="mb-8 place-content-center flex fog:text-caption-xl">
           To continue, please select a workspace:
         </div>
@@ -1377,7 +1384,7 @@ const AdminVendorRedirect: React.FC<{
             workspaces.map(w => (
               <Link
                 key={w.id}
-                className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white rounded-xl fog:box-shadow"
+                className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-gray-800 dark:text-white rounded-xl fog:box-shadow"
                 to={{
                   pathname: `/admin/vendor/${vendorId}/workspace/${w.id}/${rest}`,
                   search,
@@ -1435,7 +1442,7 @@ const Breadcrumbs: React.FC<{
   );
 
   return (
-    <div className="flex items-center gap-5 h-full truncate">
+    <div className="flex items-center gap-5 h-full truncate dark:text-white">
       <Routes>
         <Route
           path="vendor/:vid/team/*"
@@ -1600,10 +1607,8 @@ const Breadcrumbs: React.FC<{
 const UserMenu: React.FC<{
   isIdle: boolean;
   suspendConnection: boolean;
-  themeMode: "light" | "dark";
-  setThemeMode: (x: ThemeModeSetStateAction) => void;
   setSuspendConnection: (suspend: boolean) => void;
-}> = ({ isIdle, suspendConnection, themeMode, setSuspendConnection, setThemeMode }) => {
+}> = ({ isIdle, suspendConnection, setSuspendConnection }) => {
   const userName = useSelector(selectUserName);
   const userImageUrl = useSelector(selectUserImageUrl);
   const [logout] = useLogout();
@@ -1624,8 +1629,6 @@ const UserMenu: React.FC<{
   const [showFocusedRoster, setShowFocusedRoster] = useAtom(showFocusedRosterAtom);
   const [showOutlookRoster, setShowOutlookRoster] = useAtom(showOutlookRosterAtom);
 
-  const ThemeIcon = themeMode === "light" ? Icons.SwitchLightMode : Icons.SwitchDarkMode;
-
   return (
     <div className="flex justify-end relative ml-5 cursor-pointer gap-2">
       {!!import.meta.env.SITE && (
@@ -1641,7 +1644,7 @@ const UserMenu: React.FC<{
         <span
           className={classNames(
             "hidden md:inline-block text-sm truncate",
-            isIdle && "text-gray-700"
+            isIdle && "text-gray-700 dark:text-white"
           )}
         >
           {userName}
@@ -1658,7 +1661,7 @@ const UserMenu: React.FC<{
         )}
       >
         <div className="fixed inset-0" onClick={() => setIsMenuOpen(false)} />
-        <ul className="relative z-10">
+        <ul className="relative z-10 dark:bg-black">
           {devMode && (
             <>
               <AgentMenuLink
@@ -1679,11 +1682,6 @@ const UserMenu: React.FC<{
               />
             </>
           )}
-          <FancyMenuItem
-            onClick={() => setThemeMode(x => (x === "light" ? "dark" : "light"))}
-            text={themeMode === "light" ? "Light mode" : "Dark mode"}
-            icon={<ThemeIcon className="w-10" />}
-          />
           <FancyMenuItem
             onClick={() => setShowFocusedRoster(x => !x)}
             text="Focused roster"
@@ -1730,7 +1728,7 @@ const UserMenu: React.FC<{
 const AgentMenuLink = (props: { onClick: () => void; to: string; children: React.ReactNode }) => {
   const { onClick, to, children } = props;
   return (
-    <li className="p-2 block text-gray-900 hover:text-brand-red-500 no-underline">
+    <li className="p-2 block text-gray-900 dark:text-white hover:text-brand-red-500 no-underline">
       <Link
         to={to}
         className="no-underline hover:no-underline flex w-full text-left gap-4 px-2 items-center"
