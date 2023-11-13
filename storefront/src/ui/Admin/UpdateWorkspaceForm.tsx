@@ -6,9 +6,10 @@ import { useMutation } from "react-query";
 import { getServerUrl } from "../../config";
 import { type Vendor, type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
+import { WorkspaceInput } from "./CreateWorkspaceForm";
 
 const InputClassName =
-  "w-full bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose";
+  "w-full bg-gray-100 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose";
 
 export const UpdateWorkspaceForm: React.FC<{
   workspace: Workspace;
@@ -101,72 +102,42 @@ export const UpdateWorkspaceForm: React.FC<{
     >
       <div className="font-bold font-admin text-4xl mb-2">Update workspace</div>
 
-      <div
+      <WorkspaceInput
+        inputElement={workspaceNameInput}
+        error={!workspaceNameOk || !!updateWorkspaceError}
+        errorMessage="This name is already taken"
+        label={workspaceName.trim().length > 0 ? "Name" : ""}
         className={classNames(
-          "w-full flex bg-gray-100 rounded-lg h-14",
-          workspaceName.trim().length > 0 || workspaceNameOk === false
+          workspaceName.trim().length > 0 || !workspaceNameOk
             ? "flex-col items-start"
-            : "flex-row items-center",
-          "border",
-          workspaceNameOk === false || updateWorkspaceError
-            ? "border-brand-red-100"
-            : "border-opacity-0"
+            : "flex-row items-center"
         )}
-      >
-        {workspaceNameOk === false ? (
-          <div className="text-xs text-brand-red-500 px-3">This name is already taken</div>
-        ) : (
-          workspaceName.trim().length > 0 && <div className="text-xs text-gray-500 px-3">Name</div>
-        )}
-        <div className="w-full flex content-between">{workspaceNameInput}</div>
-      </div>
+      />
 
-      <div
+      <WorkspaceInput
+        inputElement={workspaceTriageNameInput}
+        error={!workspaceTriageNameOk || !!updateWorkspaceError}
+        errorMessage="Can't be blank"
+        label={workspaceTriageName.trim().length > 0 ? "Default room name for new customers" : ""}
         className={classNames(
-          "w-full flex bg-gray-100 rounded-lg h-14",
           workspaceTriageName.trim().length > 0 || workspaceTriageNameOk === false
             ? "flex-col items-start"
-            : "flex-row items-center",
-          "border",
-          workspaceTriageNameOk === false || updateWorkspaceError
-            ? "border-brand-red-100"
-            : "border-opacity-0"
+            : "flex-row items-center"
         )}
-      >
-        <div className="text-xs px-3">
-          {workspaceTriageNameOk === false ? (
-            <span className="text-brand-red-500">Can't be blank</span>
-          ) : (
-            workspaceTriageName.trim().length > 0 && (
-              <span className="text-gray-500">Default room name for new customers</span>
-            )
-          )}
-        </div>
+      />
 
-        <div className="w-full flex content-between">{workspaceTriageNameInput}</div>
-      </div>
-
-      <div
+      <WorkspaceInput
+        inputElement={workspaceDescriptionInput}
+        errorMessage={updateWorkspaceError}
+        error={!!updateWorkspaceError && !updateWorkspaceMutation.isLoading}
         className={classNames(
-          "w-full flex bg-gray-100 rounded-lg h-14",
           workspaceDescription.trim().length === 0
             ? "flex-row items-center"
             : "flex-col items-start",
-          "border",
-          updateWorkspaceError ? "border-brand-red-100" : "border-opacity-0"
+          "border border-opacity-0"
         )}
-      >
-        {workspaceDescription.trim().length > 0 && (
-          <div className="text-xs text-gray-500 px-3">Description</div>
-        )}
-
-        <div className="w-full flex content-between">{workspaceDescriptionInput}</div>
-      </div>
-      <div className="flex-1 flex self-center items-center">
-        {updateWorkspaceError && !updateWorkspaceMutation.isLoading && (
-          <span className="flex text-red-500 fog:text-caption-xl">{updateWorkspaceError}</span>
-        )}
-      </div>
+        label={workspaceDescription.trim().length > 0 ? "Description" : ""}
+      />
 
       <div className="flex flex-wrap flex-col justify-between gap-y-4 md:flex-row md:gap-x-4">
         <ThickButton disabled={!formOk} loading={updateWorkspaceMutation.isLoading}>
