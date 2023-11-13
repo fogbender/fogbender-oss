@@ -149,20 +149,22 @@ export const SnippetControlsNew: React.FC<{
   const queryParams = new URLSearchParams(window.location.search);
   return (
     <>
-      <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+      <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
         {title}
 
         <p className="mt-2">
           Workspace configuration for{" "}
-          <span className="py-0.5 px-1 bg-green-100 rounded">{workspace.name}</span>
+          <span className="py-0.5 px-1 bg-green-100 dark:text-black rounded">{workspace.name}</span>
         </p>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-6">
-        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
           <p className="mb-4 fog:text-header3">widgetId</p>
           <div className="flex">
-            <code className="font-bold py-0.5 px-1 bg-green-100 rounded">{widgetId}</code>
+            <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
+              {widgetId}
+            </code>
             <div className="py-0.5 px-1">
               <ClipboardCopy text={widgetId}>
                 <Icons.Clipboard />
@@ -180,7 +182,7 @@ export const SnippetControlsNew: React.FC<{
         {(serverSignature === "hmac" ||
           serverSignature === "paseto" ||
           queryParams.has("hmac")) && (
-          <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+          <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
             <p className="mb-4 fog:text-header3">Server signature type</p>
             <div className="sm:flex gap-4 mb-2">
               <div className="flex-1">
@@ -211,10 +213,10 @@ export const SnippetControlsNew: React.FC<{
           </div>
         )}
 
-        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
           <p className="mb-4 fog:text-header3">Secret</p>
           <div className="flex">
-            <code className="font-bold py-0.5 px-1 bg-green-100 rounded">
+            <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
               ••••••••••••••••••••••••••••••••
             </code>
             <div className="py-0.5 px-1">
@@ -249,10 +251,10 @@ export const SnippetControlsNew: React.FC<{
         </div>
       </div>
 
-      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
         <p className="mb-4 fog:text-header3">Visitor key</p>
         <div className="flex">
-          <code className="font-bold py-0.5 px-1 bg-green-100 rounded">
+          <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
             ••••••••••••••••••••••••••••••••
           </code>
           <div className="py-0.5 px-1">
@@ -267,7 +269,11 @@ export const SnippetControlsNew: React.FC<{
         </p>
 
         <span className="mt-4 fog:text-header3">Status: </span>
-        <span className={`py-0.5 px-1 ${visitorsEnabled ? "bg-green-100" : "bg-red-100"} rounded`}>
+        <span
+          className={`py-0.5 px-1 ${
+            visitorsEnabled ? "bg-green-100" : "bg-red-100"
+          } rounded dark:text-black`}
+        >
           {" "}
           {visitorsEnabled ? "Enabled" : "Disabled"}{" "}
         </span>
@@ -328,7 +334,7 @@ export const SnippetControlsNew: React.FC<{
         )}
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
         <h3 className="pb-2 fog:text-header3">Step 1: Install the JavaScript widget (Client)</h3>
         <>
           <div className="pb-2">
@@ -358,11 +364,13 @@ export const SnippetControlsNew: React.FC<{
             <>
               <div className="pb-2">
                 1️⃣ Install the Fogbender React library, with{" "}
-                <code className="py-0.5 px-1 rounded bg-yellow-200">
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
                   npm install fogbender-react
                 </code>{" "}
                 or{" "}
-                <code className="py-0.5 px-1 rounded bg-yellow-200">yarn add fogbender-react</code>
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
+                  yarn add fogbender-react
+                </code>
               </div>
               <div className="pb-2">
                 2️⃣ Create a user token, then render the FogbenderSimpleWidget with the token (see
@@ -382,7 +390,7 @@ export const SnippetControlsNew: React.FC<{
                 }
               </div>
               <HighlightCode
-                className="rounded language-js"
+                className="rounded language-js "
                 blurAreas={[
                   { line: 4, column: 14, length: 28 },
                   { line: 5, column: 15, length: 19 },
@@ -401,10 +409,14 @@ ${constTokenWithKey}
             <>
               <div className="pb-2">
                 1️⃣ Install the Fogbender JavaScript library, with{" "}
-                <code className="py-0.5 px-1 rounded bg-yellow-200">
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
                   npm install --save fogbender
                 </code>{" "}
-                or <code className="py-0.5 px-1 rounded bg-yellow-200">yarn add fogbender</code>.
+                or{" "}
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
+                  yarn add fogbender
+                </code>
+                .
               </div>
               <div className="pb-2">
                 2️⃣ Call the Fogbender widget with your user token (see example for Jim Lee at
@@ -435,9 +447,11 @@ fogbender.renderIframe({ rootEl });`}
             <>
               <div className="mt-2 mb-4">
                 1️⃣ Paste the following snippet into the{" "}
-                <code className="py-0.5 px-1 rounded bg-yellow-200">{"<head>"}</code> tag of your
-                website (300 bytes gzipped), but make sure it’s placed before any scripts that
-                utilize the Fogbender widget
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
+                  {"<head>"}
+                </code>{" "}
+                tag of your website (300 bytes gzipped), but make sure it’s placed before any
+                scripts that utilize the Fogbender widget
               </div>
               <HighlightCode className="rounded language-html">
                 {`<script async src="${clientUrl}/loader.js"></script>
@@ -469,11 +483,11 @@ fogbender.renderIframe({ rootEl });`}
               <div className="w-full">
                 <div className="pb-2">
                   1️⃣ Install the Fogbender React library, with{" "}
-                  <code className="py-0.5 px-1 rounded bg-yellow-200">
+                  <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
                     npm install fogbender-react
                   </code>{" "}
                   or{" "}
-                  <code className="py-0.5 px-1 rounded bg-yellow-200">
+                  <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
                     yarn add fogbender-react
                   </code>
                 </div>
@@ -536,7 +550,7 @@ fogbender.setToken(token);
         </div>
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
         <h3 className="pb-2 fog:text-header3">
           Step 2: Secure the widget with user signature (Server)
         </h3>
@@ -574,8 +588,13 @@ fogbender.setToken(token);
             <>
               <div className="pb-2">
                 ​1️⃣ Sign your user’s data with your secret (you may need to run{" "}
-                <code className="py-0.5 px-1 rounded bg-yellow-200">npm install jsonwebtoken</code>{" "}
-                or <code className="py-0.5 px-1 rounded bg-yellow-200">yarn add jsonwebtoken</code>{" "}
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
+                  npm install jsonwebtoken
+                </code>{" "}
+                or{" "}
+                <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">
+                  yarn add jsonwebtoken
+                </code>{" "}
                 first)
               </div>
               <div className="pb-2">2️⃣ Pass the signature to the client</div>

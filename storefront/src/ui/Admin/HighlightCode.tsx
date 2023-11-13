@@ -29,7 +29,7 @@ export const HighlightCode: React.FC<{
 
     code.textContent = text;
     if (className) {
-      code.className = className;
+      code.className = `${className} dark:text-white`;
     }
     pre.appendChild(code);
     return String(
@@ -38,7 +38,7 @@ export const HighlightCode: React.FC<{
   }, [className, text]);
   return (
     <div className="relative">
-      <div className="relative overflow-auto fbr-scrollbar p-4 bg-gray-100 leading-relaxed">
+      <div className="relative overflow-auto fbr-scrollbar p-4 bg-gray-100 dark:bg-black leading-relaxed">
         <div className="absolute inset-0 m-4 pointer-events-none">
           {blurAreas?.map((x, i) => (
             <div
