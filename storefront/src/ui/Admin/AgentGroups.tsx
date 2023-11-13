@@ -50,7 +50,7 @@ export const AgentGroups: React.FC<{
   const [editGroup, setEditGroup] = React.useState<string>();
 
   return (
-    <div className="w-full bg-white p-4 rounded-xl fog:box-shadow-s flex flex-col pl-8 gap-4">
+    <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 rounded-xl fog:box-shadow-s flex flex-col pl-8 gap-4">
       {addNewGroup && (
         <Modal
           onClose={() => {
@@ -172,7 +172,7 @@ export const AgentGroups: React.FC<{
   );
 };
 const InputClassName =
-  "w-full bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose rounded-lg";
+  "w-full bg-gray-100 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose rounded-lg";
 
 export const AddGroupForm: React.FC<{
   onClose: () => void;
@@ -315,7 +315,7 @@ export const AddGroupForm: React.FC<{
       </div>
 
       <div className="flex flex-col gap-2.5 sm:flex-row">
-        <div className="w-full flex flex-col items-start bg-gray-100 rounded-lg h-14">
+        <div className="w-full flex flex-col items-start bg-gray-100 dark:bg-black rounded-lg h-14">
           {addGroupName && <div className="text-xs text-gray-500 px-3">Group name</div>}
 
           <div className="w-full flex content-between">{addGroupNameInput}</div>
@@ -353,7 +353,7 @@ export const AddGroupForm: React.FC<{
                 </div>
                 <Combobox multiple={true} value={[]}>
                   <div className="mt-2">
-                    <div className="flex bg-gray-100 items-center rounded-xl px-2">
+                    <div className="flex bg-gray-100 dark:bg-black items-center rounded-t-xl px-2">
                       <Combobox.Label className="w-4 text-gray-500 cursor-pointer">
                         {agentsSearchValue ? (
                           <Icons.XCircleFilled />
@@ -364,7 +364,7 @@ export const AddGroupForm: React.FC<{
                       <Combobox.Input
                         ref={inputRef}
                         className={
-                          "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm pl-2"
+                          "flex-1 px-2 py-3 bg-transparent outline-none text-black dark:text-white placeholder-gray-500 text-base sm:text-sm pl-2"
                         }
                         placeholder="Search agents..."
                         onChange={evt => {
@@ -378,7 +378,7 @@ export const AddGroupForm: React.FC<{
                     onFocus={() => {
                       inputRef.current?.focus();
                     }}
-                    className="bg-white focus:outline-none"
+                    className="bg-white dark:bg-black focus:outline-none"
                   >
                     {!!agentsToShow.length && (
                       <div className="max-h-72 my-2 overflow-y-auto fbr-scrollbar">
@@ -387,11 +387,11 @@ export const AddGroupForm: React.FC<{
                             <Combobox.Option
                               key={x.id}
                               value={x}
-                              className='data-[headlessui-state~="active"]:bg-gray-200 data-[headlessui-state~="selected"]:bg-gray-200'
+                              className='data-[headlessui-state~="active"]:bg-gray-200 data-[headlessui-state~="selected"]:bg-gray-200 dark:data-[headlessui-state~="active"]:bg-gray-600 dark:data-[headlessui-state~="selected"]:bg-gray-600'
                             >
                               <div
                                 key={x.id}
-                                className="flex items-center gap-x-2 p-2 hover:bg-gray-200 cursor-pointer"
+                                className="flex items-center gap-x-2 p-2 hover:bg-gray-200 hover:dark:bg-gray-600 cursor-pointer"
                                 onClick={() => {
                                   if (agentGroup?.agents.map(m => m.id).includes(x.id)) {
                                     if (membersToRemove.has(x.id)) {

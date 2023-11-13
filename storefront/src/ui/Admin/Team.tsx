@@ -155,7 +155,7 @@ const TeamTabs: React.FC<{
   }
 
   return (
-    <div className="w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
+    <div className="w-full bg-white dark:text-white dark:bg-gray-800 rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <div className="w-full md:w-auto flex flex-wrap">
         {tabs.map(t => {
           const tabTitle = t.name.substring(0, 1).toUpperCase() + t.name.substring(1);
@@ -165,7 +165,7 @@ const TeamTabs: React.FC<{
                 className={classNames(
                   "flex-1 md:flex-none fog:text-header3 justify-center leading-5 ml-4 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
                   tab === t.name
-                    ? "rounded-t-md border-brand-orange-500 border-b-5 text-black"
+                    ? "rounded-t-md border-brand-orange-500 border-b-5 text-black dark:text-white"
                     : "text-blue-700 hover:text-red-500"
                 )}
               >
@@ -212,7 +212,7 @@ const TeamMembers: React.FC<{
   }, [location]);
 
   return (
-    <div className="w-full bg-white p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8">
+    <div className="w-full bg-white dark:text-white dark:bg-gray-800 p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8">
       {sendNewInvite && (
         <Modal
           onClose={() => {
@@ -385,7 +385,7 @@ const ChangeRoleButton: React.FC<{
 };
 
 const InputClassName =
-  "w-full bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose";
+  "w-full bg-gray-100 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose";
 
 const SendInviteForm: React.FC<{
   vendorId: string;
@@ -489,7 +489,7 @@ const SendInviteForm: React.FC<{
       <div className="flex flex-col gap-2.5 sm:flex-row">
         <div
           className={classNames(
-            "w-full flex bg-gray-100 rounded-lg h-14",
+            "w-full flex bg-gray-100 dark:bg-black dark:text-white rounded-lg h-14",
             inviteEmail.length === 0 ? "flex-row items-center" : "flex-col items-start",
             "border",
             sendInviteRes.error ? "border-red-500" : "border-opacity-0"
@@ -745,7 +745,7 @@ const VerifiedDomains: React.FC<{
   */
 
   return isGeneric !== false ? null : (
-    <div className="w-full bg-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
+    <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
       <div className="fog:text-header3">Auto-join configuration</div>
       <div className="flex flex-col gap-2">
         {verifiedDomains.some(d => d.verified) && (
@@ -840,10 +840,10 @@ const VerifiedDomains: React.FC<{
                             <Icons.Trash className="w-5" />
                           </span>
                         </div>
-                        <div className="flex flex-col gap-2 rounded-lg bg-gray-100 px-3 py-2">
+                        <div className="flex flex-col gap-2 rounded-lg bg-gray-100 dark:bg-black px-3 py-2">
                           <span className="font-medium">TXT Record value</span>
                           <div className="flex-1 sm:flex gap-2 items-center">
-                            <div className="flex-1 bg-white text-sm sm:px-3 py-1 break-all rounded border border-gray-300">
+                            <div className="flex-1 bg-white dark:bg-gray-800 text-sm sm:px-3 py-1 break-all rounded border border-gray-300">
                               {d.verification_code}
                             </div>
                             <div className="mr-4" title="Copy code">

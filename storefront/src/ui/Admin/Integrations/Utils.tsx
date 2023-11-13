@@ -175,7 +175,7 @@ export function configCopyItem(name: string, value: string | JSX.Element, copy: 
     <div className="col-span-3 grid gap-2 grid-cols-3">
       <div className="col-span-1 flex items-center">{name}</div>
       <div className="col-span-2 flex">
-        <code className="p-2 text-sm flex-1 border-2 border-gray-200 rounded bg-gray-200 truncate">
+        <code className="p-2 text-sm flex-1 border-2 border-gray-200 rounded bg-gray-200 dark:text-black truncate">
           {value}
         </code>
         <div className="flex items-center">{copy}</div>
@@ -216,7 +216,7 @@ export function configListItem(
 }
 
 export function error(text: string | JSX.Element) {
-  return <div className="my-4 p-2 rounded bg-red-200">{text}</div>;
+  return <div className="my-4 p-2 rounded bg-red-200 dark:text-black">{text}</div>;
 }
 
 export const IntegrationUser: React.FC<{

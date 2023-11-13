@@ -116,7 +116,7 @@ export const EmailNotificationsSettings = ({
     <div
       className={classNames(
         "flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white",
-        "dark:bg-gray-800"
+        "dark:bg-gray-800 dark:text-white"
       )}
     >
       {userId && (
@@ -125,7 +125,7 @@ export const EmailNotificationsSettings = ({
           onClick={() => setMuteSound(x => !x)}
         >
           {muteSound ? <Icons.CheckboxOff className="w-5" /> : <Icons.CheckboxOn className="w-5" />}
-          <span className="text-black dark:text-white">Sound notifications</span>
+          <span className="text-black">Sound notifications</span>
         </div>
       )}
       <div className="flex gap-3">

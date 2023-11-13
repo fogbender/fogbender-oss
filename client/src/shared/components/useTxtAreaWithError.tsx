@@ -68,7 +68,7 @@ export const useTxtAreaWithError = ({
                 >
                   <Icons.XClose />
                 </span>
-                <div className="absolute -top-3.5 right-2.5 rotate-180 transform">
+                <div className="absolute -top-3.5 right-2.5 rotate-180 transform text-white dark:text-black">
                   <BalloonTip />
                 </div>
               </div>

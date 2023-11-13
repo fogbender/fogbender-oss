@@ -313,15 +313,12 @@ export const AddGitHubIntegration: React.FC<{
           {anchor("API settings", apiKeyHref)}. The token must be one of:
         </p>
         <p>
-          • Classic token with at least{" "}
-          <code className="py-0.5 px-1 rounded bg-yellow-200 text-sm">repo</code> and{" "}
-          <code className="py-0.5 px-1 rounded bg-yellow-200 text-sm">admin:repo_hook</code> scopes
-          selected
+          • Classic token with at least <CodeSnippet>repo</CodeSnippet> and{" "}
+          <CodeSnippet>admin:repo_hook</CodeSnippet> scopes selected
         </p>
         <p>
-          • Fine-grained token with read and write access to{" "}
-          <code className="py-0.5 px-1 rounded bg-yellow-200 text-sm">Issues</code> and{" "}
-          <code className="py-0.5 px-1 rounded bg-yellow-200 text-sm">Webhooks</code>
+          • Fine-grained token with read and write access to <CodeSnippet>Issues</CodeSnippet> and{" "}
+          <CodeSnippet>Webhooks</CodeSnippet>
         </p>
       </div>
 
@@ -811,6 +808,12 @@ export const ShowGitHubIntegration: React.FC<{
           )}
       </div>
     </div>
+  );
+};
+
+const CodeSnippet = ({ children }: { children?: React.ReactNode }) => {
+  return (
+    <code className={"py-0.5 px-1 rounded bg-yellow-200 dark:text-black text-sm"}>{children}</code>
   );
 };
 

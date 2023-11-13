@@ -99,7 +99,7 @@ const SettingsTabs: React.FC<{
 }> = ({ tab }) => {
   const secondaryTabs = ["embed", "ai", "integrations", "notifications"];
   return (
-    <div className="max-w-min lg:max-w-full pr-4 lg:pr-0 mt-2 mb-4 sm:mt-8 sm:mb-8 w-full bg-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
+    <div className="max-w-min lg:max-w-full pr-4 lg:pr-0 mt-2 mb-4 sm:mt-8 sm:mb-8 w-full bg-white dark:bg-gray-800 dark:text-white rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <TabListHeaderWrapper>
         <Link
           to={tab === "embed" ? "." : secondaryTabs.includes(tab) ? "../embed" : "embed"}

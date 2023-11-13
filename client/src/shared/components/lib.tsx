@@ -246,7 +246,7 @@ export const UnreadCircleExpanded: React.FC<{
       <span
         className={classNames(
           "min-w-1rem min-h-1rem flex items-center justify-center py-0.5 px-2 rounded-full text-white fog:text-caption-m leading-none",
-          total && total > 0 ? "bg-brand-orange-500" : "bg-gray-200"
+          total && total > 0 ? "bg-brand-orange-500" : "bg-gray-200 dark:bg-black"
         )}
       >
         <span className="px-1">
@@ -686,8 +686,8 @@ export const TabWrapper: React.FC<{ selected: boolean }> = ({ selected, children
       className={classNames(
         "flex-1 md:flex-none border-b-5 justify-center text-sm leading-5 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
         selected
-          ? "rounded-t-md border-brand-orange-500 text-black bg-blue-50"
-          : "text-blue-700 border-gray-200 hover:text-red-500 hover:border-gray-300"
+          ? "rounded-t-md border-brand-orange-500 text-black bg-blue-50 dark:bg-black dark:text-white"
+          : "text-blue-700 border-gray-200 dark:border-gray-600 hover:text-red-500 hover:border-gray-300"
       )}
     >
       {children}
@@ -705,7 +705,7 @@ export const TabHeaderWrapper: React.FC<{ selected: boolean }> = ({ selected, ch
       className={classNames(
         "flex-1 lg:flex-none justify-center fog:text-header4 leading-5 px-0 lg:px-4 py-0 lg:py-3 my-2 lg:my-0 ml-4 lg:text-center max-w-min lg:max-w-max whitespace-nowrap cursor-pointer",
         selected
-          ? "rounded-t-md border-brand-orange-500 text-black border-b-2 lg:border-b-5"
+          ? "rounded-t-md border-brand-orange-500 text-black dark:text-white border-b-2 lg:border-b-5"
           : "text-blue-700 group-hover:text-red-500 border-b-2 lg:border-b-5 border-transparent"
       )}
     >
@@ -726,7 +726,7 @@ export const BalloonTip = () => {
       >
         <path
           d="M13.8246 12.4177C11.9482 8.84016 7.68033 2.53102 0 0H30C22.3196 2.53054 18.0518 8.83999 16.1753 12.4177C15.7366 13.2541 14.2634 13.2541 13.8246 12.4177Z"
-          fill="white"
+          fill="currentColor"
         />
       </svg>
     </div>

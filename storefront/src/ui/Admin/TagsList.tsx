@@ -69,7 +69,10 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
         {!loadingTags && tags && (
           <div className="max-h-2/3 pt-2 pr-2 flex flex-col overflow-y-auto fbr-scrollbar">
             {filteredTags.map(t => (
-              <div key={t.id} className="flex items-center py-2 px-1 hover:bg-gray-100">
+              <div
+                key={t.id}
+                className="flex items-center py-2 px-1 hover:bg-gray-100 dark:hover:bg-gray-600"
+              >
                 <span className="relative flex flex-1 w-full">
                   <img src={IconTag.src} alt="Tag" className="absolute left-0 top-0" />
                   <span className="flex-1 pl-8 truncate w-2/3 fog:text-caption-l">{t.name}</span>

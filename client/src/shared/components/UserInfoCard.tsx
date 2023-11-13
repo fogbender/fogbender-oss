@@ -45,7 +45,9 @@ export const UserInfoCard: React.FC<{
           <Avatar url={author.avatarUrl} name={author.name} size={80} />
         </div>
       </div>
-      <BalloonTip />
+      <span className="text-white dark:text-black">
+        <BalloonTip />
+      </span>
     </div>
   );
 };

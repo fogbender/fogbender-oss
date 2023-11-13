@@ -52,7 +52,8 @@ export const Select = <O extends SelectOption>(props: SelectProps<O>) => {
                     isLarge ? "gap-x-4 py-3 px-4" : "gap-x-2 py-2 px-2",
                     disabled ? "bg-gray-200" : "cursor-pointer bg-gray-100",
                     disabled ? "text-gray-500" : selectedOption ? "text-black" : "text-gray-500",
-                    open ? "rounded-t-lg" : "rounded-lg"
+                    open ? "rounded-t-lg" : "rounded-lg",
+                    "dark:bg-black dark:text-white"
                   )}
                 >
                   {selectedOption && title && isLarge && (
@@ -78,6 +79,7 @@ export const Select = <O extends SelectOption>(props: SelectProps<O>) => {
                         value={v}
                         className={classNames(
                           "cursor-pointer px-4 font-normal hover:bg-gray-100 focus:bg-gray-100 data-[headlessui-state~='active']:bg-gray-100 data-[headlessui-state~='selected']:bg-gray-100",
+                          "dark:hover:bg-gray-600 dark:bg-black dark:data-[headlessui-state~='active']:bg-gray-600 data-[headlessui-state~='selected']:bg-gray-600",
                           isLarge ? "py-4" : "py-2"
                         )}
                       >

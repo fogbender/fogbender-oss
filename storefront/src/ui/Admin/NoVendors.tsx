@@ -97,7 +97,7 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
 
   return (
     <>
-      <div className="fog:text-body-m mt-4 flex max-w-screen-md flex-col gap-y-4 pr-16">
+      <div className="fog:text-body-m mt-4 flex max-w-screen-md flex-col gap-y-4 pr-16 dark:text-white">
         <p className="text-7xl">🍭</p>
         <h1 className="fog:text-header2">Welcome to Fogbender!</h1>
         <p>{userName.split(/\s+/)[0]}—hello!</p>
@@ -107,7 +107,7 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
         </p>
         <form
           className={classNames(
-            "fog:box-shadow my-4 flex flex-col gap-y-4 rounded-xl bg-white p-6"
+            "fog:box-shadow my-4 flex flex-col gap-y-4 rounded-xl bg-white dark:bg-gray-800 p-6"
           )}
           onSubmit={onSubmit}
         >
@@ -128,7 +128,9 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
       </div>
 
       <div className="mt-4 border-t border-gray-300">
-        <p className="fog:text-caption-xl mt-2">We’re looking forward to working with you!</p>
+        <p className="fog:text-caption-xl mt-2 dark:text-white">
+          We’re looking forward to working with you!
+        </p>
         <p className="fog:text-caption-l mt-5 text-gray-500">The Fogbender team</p>
         <p className="fog:text-caption-l mt-1 text-gray-500">415&ndash;290&ndash;3979</p>
         <p className="fog:text-caption-l mt-1 text-gray-500">

@@ -55,13 +55,14 @@ export const useInputWithError = ({
           inputValue.length === 0 ? "flex-row items-center" : "flex-col items-start",
           "border",
           error || redErrorBorder ? "border-red-500" : "border-opacity-0",
-          className
+          className,
+          "dark:bg-black"
         )}
       >
         {inputValue.length > 0 && <div className="text-xs text-gray-500 px-3">{title}</div>}
         <div className="w-full flex content-between">{inputElement}</div>
         {error && (
-          <div className="absolute top-0 right-0 pt-4 px-4 bg-gray-100 rounded-lg">
+          <div className="absolute top-0 right-0 pt-4 px-4 bg-gray-100 dark:bg-black rounded-lg">
             <span
               className="text-brand-red-500 cursor-pointer"
               onClick={() => setShowErrorTooltip(x => !x)}
@@ -69,7 +70,7 @@ export const useInputWithError = ({
               <Icons.Exclamation />
             </span>
             {showErrorTooltip && (
-              <div className="absolute z-10 top-full -right-2 mt-3 py-2 px-3 flex gap-x-2 rounded-lg fog:box-shadow bg-white fog:text-body-m">
+              <div className="absolute z-10 top-full -right-2 mt-3 py-2 px-3 flex gap-x-2 rounded-lg fog:box-shadow bg-white dark:bg-black fog:text-body-m">
                 <span className="whitespace-nowrap">{error}</span>
                 <span
                   className="text-gray-500 cursor-pointer"
@@ -77,7 +78,7 @@ export const useInputWithError = ({
                 >
                   <Icons.XClose />
                 </span>
-                <div className="absolute -top-3.5 right-2.5 transform rotate-180">
+                <div className="absolute -top-3.5 right-2.5 transform rotate-180 text-white dark:text-black">
                   <BalloonTip />
                 </div>
               </div>

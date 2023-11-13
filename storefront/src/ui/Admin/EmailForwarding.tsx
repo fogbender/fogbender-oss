@@ -30,7 +30,7 @@ export const EmailForwarding: React.FC<{ workspace: Workspace }> = ({ workspace 
           <div className="pointer-events-none absolute inset-0 ml-4 mr-32 rounded backdrop-blur-sm backdrop-filter">
             &nbsp;
           </div>
-          <code className="truncate rounded bg-blue-100 py-0.5 px-1 font-bold">
+          <code className="truncate rounded bg-blue-100 dark:text-black py-0.5 px-1 font-bold">
             {forwardEmailAddress || err?.toString()}
           </code>
         </div>

@@ -53,7 +53,7 @@ export const AIControls: React.FC<{
   const showAiHelper = useAtomValue(showAiHelperAtom);
 
   return (
-    <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white">
+    <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:text-white dark:bg-gray-800">
       <div className="flex flex-col gap-4">
         <div className="flex gap-2 items-center">
           <div>1. Give your bot a name: </div>
@@ -142,7 +142,10 @@ export const AIControls: React.FC<{
           New prompt
         </ThinButton>
         {aiIntegration?.prompts?.map(p => (
-          <div key={p.id} className="w-full bg-white p-4 rounded-xl flex flex-col gap-4">
+          <div
+            key={p.id}
+            className="w-full bg-white dark:bg-black p-4 rounded-xl flex flex-col gap-4"
+          >
             <Prompt workspace={workspace} prompt={p} />
           </div>
         ))}
@@ -238,7 +241,8 @@ const Prompt: React.FC<{
         maxRows={20}
         className={classNames(
           "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none border border-blue-500",
-          focused ? "bg-blue-50" : "bg-gray-100"
+          focused ? "bg-blue-50" : "bg-gray-100",
+          "dark:bg-gray-800 dark:text-white"
         )}
         onFocus={() => {
           setFocused(true);

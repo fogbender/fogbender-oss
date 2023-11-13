@@ -29,7 +29,7 @@ type OnboardingChecklistInput = {
 const StepDone = ({ title, checked = false }: { title: React.ReactNode; checked?: boolean }) => {
   return (
     <div className="flex space-x-2">
-      <div className="flex space-x-2 text-gray-700 font-medium items-center">
+      <div className="flex space-x-2 text-gray-700 dark:text-white font-medium items-center">
         <span>
           {checked ? (
             <Icons.Check className="text-green-500 w-4 h-4" />
@@ -179,7 +179,7 @@ export const OnboardingChecklist = React.memo(
     }
 
     return (
-      <div className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white">
+      <div className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-gray-800 dark:text-white">
         <div className="flex flex-col gap-y-4">
           <div className="flex justify-between items-center">
             <div className="fog:text-header3">Onboarding checklist</div>

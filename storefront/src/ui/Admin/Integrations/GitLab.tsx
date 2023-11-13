@@ -238,7 +238,7 @@ export const AddGitLabIntegration: React.FC<{
         <br />
         <p>
           The minimal permission scope your token must have is{" "}
-          <code className="py-0.5 px-1 rounded bg-yellow-200">api</code>.
+          <code className="py-0.5 px-1 rounded bg-yellow-200 dark:text-black">api</code>.
         </p>
         <br />
         <p>
