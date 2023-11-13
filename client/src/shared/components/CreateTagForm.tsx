@@ -12,7 +12,7 @@ export const CreateTagForm: React.FC<{
   creating: boolean;
 }> = ({ initialValue, nameOk, onCreate, creating }) => {
   const inputClassName =
-    "w-full bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose text-lg";
+    "w-full bg-gray-100 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose text-lg";
 
   const [newTagName, newTagNameInput] = useInput({
     type: "text",
@@ -44,7 +44,7 @@ export const CreateTagForm: React.FC<{
 
         <div
           className={classNames(
-            "flex h-14 w-full rounded-lg bg-gray-100",
+            "flex h-14 w-full rounded-lg bg-gray-100 dark:bg-black",
             newTagName.length === 0 ? "flex-row items-center" : "flex-col items-start",
             "border",
             newTagOk === undefined

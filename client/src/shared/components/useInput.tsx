@@ -63,11 +63,12 @@ export function useInput(opts: UseInputOptions) {
         }}
         onKeyDown={e => e.key === "Enter" && onEnter()}
         value={value}
-        className={
+        className={classNames(
           className === undefined
             ? "appearance-none rounded border bg-gray-100 py-1 px-2 text-sm leading-normal text-gray-800 transition focus:border-gray-700 focus:outline-none"
-            : className
-        }
+            : className,
+          "dark:bg-black dark:text-white"
+        )}
         type={type}
         placeholder={placeholder}
         disabled={!!disabled}
