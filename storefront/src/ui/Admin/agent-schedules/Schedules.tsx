@@ -401,8 +401,6 @@ const SelectableHours = (props: SelectableHourProps) => {
 
   const { selectedDay, selectedHour } = agentData?.startTime || {};
 
-  const { available } = agentData || {};
-
   const hoveredTimeRange = (
     hoveredRange[currentDayIndex as keyof typeof hoveredRange] as AgentInfo
   )?.[agent.id];
@@ -502,7 +500,7 @@ const SelectableHours = (props: SelectableHourProps) => {
     } else {
       const newSelectionState = {
         [agent.id]: {
-          available,
+          available: true,
           startTime: { selectedDay: currentDayIndex, selectedHour: h },
         },
       };
@@ -644,6 +642,7 @@ const HalfHour = (props: HalfHourProps) => {
   } = props;
 
   const isHourInSelection = day === currentDayIndex && selectedHour === currentHour;
+  const isHourInHoveredRange = currentHour >= startTime && currentHour <= finishTime;
 
   const schedules = React.useMemo(
     () => checkIsHourOccupied(currentHour),
@@ -663,7 +662,8 @@ const HalfHour = (props: HalfHourProps) => {
     "hover:bg-blue-100": !isHourInSelection,
     "rounded-t": currentHour === START_HOUR,
     "rounded-b": currentHour === FINISH_HOUR,
-    "bg-blue-100": currentHour >= startTime && currentHour <= finishTime,
+    "bg-blue-100": isHourInHoveredRange,
+    "bg-gray-100": !isHourInSelection && !isHourInHoveredRange,
   };
 
   return (
@@ -677,7 +677,7 @@ const HalfHour = (props: HalfHourProps) => {
         setHoveredRange(() => ({})); // TODO:Find issue
         setHintPosition(undefined);
       }}
-      className={classNames("py-1.5 bg-gray-100 relative h-2 w-4", classes)}
+      className={classNames("py-1.5 relative h-2 w-4", classes)}
     >
       {schedules.map((schedule, index) => (
         <ScheduledHour
