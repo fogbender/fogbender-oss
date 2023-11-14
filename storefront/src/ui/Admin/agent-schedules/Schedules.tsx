@@ -401,8 +401,6 @@ const SelectableHours = (props: SelectableHourProps) => {
 
   const { selectedDay, selectedHour } = agentData?.startTime || {};
 
-  const { available } = agentData || {};
-
   const hoveredTimeRange = (
     hoveredRange[currentDayIndex as keyof typeof hoveredRange] as AgentInfo
   )?.[agent.id];
@@ -502,7 +500,7 @@ const SelectableHours = (props: SelectableHourProps) => {
     } else {
       const newSelectionState = {
         [agent.id]: {
-          available,
+          available: true,
           startTime: { selectedDay: currentDayIndex, selectedHour: h },
         },
       };
