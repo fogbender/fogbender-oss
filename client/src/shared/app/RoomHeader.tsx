@@ -1150,7 +1150,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                         return (
                           <span
                             key={tag.id}
-                            className="h-6 inline-flex items-center mr-2 mb-2 px-2.5 rounded border border-blue-200 bg-blue-50 fog:text-body-s whitespace-nowrap"
+                            className="h-6 inline-flex items-center mr-2 mb-2 px-2.5 rounded border border-blue-200 bg-blue-50 dark:border-black dark:bg-black dark:text-gray-600 fog:text-body-s whitespace-nowrap"
                             onClick={e => {
                               if (onShowIssueInfo) {
                                 e.preventDefault();
