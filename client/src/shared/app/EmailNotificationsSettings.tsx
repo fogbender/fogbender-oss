@@ -125,7 +125,7 @@ export const EmailNotificationsSettings = ({
           onClick={() => setMuteSound(x => !x)}
         >
           {muteSound ? <Icons.CheckboxOff className="w-5" /> : <Icons.CheckboxOn className="w-5" />}
-          <span className="text-black">Sound notifications</span>
+          <span className="text-black dark:text-white">Sound notifications</span>
         </div>
       )}
       <div className="flex gap-3">
