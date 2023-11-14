@@ -122,7 +122,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
             {commsIntegrations.map(i => (
               <tr
                 key={i.id}
-                className="hover:bg-gray-100 cursor-pointer"
+                className="hover:bg-gray-100 dark:hover:bg-black cursor-pointer"
                 onClick={() => {
                   setIntegrationToShow(i);
                 }}
