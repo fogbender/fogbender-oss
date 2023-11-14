@@ -23,7 +23,7 @@ export const RosterMenu = () => {
     <span
       className={classNames(
         "relative cursor-pointer",
-        "text-gray-500 hover:text-black",
+        "text-gray-500 hover:text-brand-red-500",
         "self-center"
       )}
       onClick={() => setExpanded(x => !x)}

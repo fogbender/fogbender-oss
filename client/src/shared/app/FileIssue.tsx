@@ -693,7 +693,7 @@ export const FileIssue: React.FC<{
                           linkNewRoom &&
                           hasIssueTrackerIntegrations && (
                             <div className="mb-4">
-                              <div className="bg-gray-100 flex-none rounded-lg px-2">
+                              <div className="bg-gray-100 dark:bg-black flex-none rounded-lg px-2">
                                 <FilterInput
                                   placeholder="Search existing issues across all connected issue trackers"
                                   value={issuesFilter}
@@ -749,7 +749,7 @@ export const FileIssue: React.FC<{
                       <div className="space-y-2 border-t pt-4">
                         <div className="text-gray-500">Link external issue</div>
                         <div
-                          className="flex items-center gap-x-2 bg-white cursor-pointer"
+                          className="flex items-center gap-x-2 cursor-pointer"
                           onClick={() => {
                             setCreateNewRoom(true);
                           }}
@@ -760,7 +760,7 @@ export const FileIssue: React.FC<{
                           <span className="font-normal">To new room</span>
                         </div>
                         <div
-                          className="flex items-center gap-x-2 bg-white cursor-pointer"
+                          className="flex items-center gap-x-2 cursor-pointer"
                           onClick={() => {
                             setCreateNewRoom(false);
                           }}

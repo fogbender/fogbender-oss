@@ -101,10 +101,8 @@ export const MessageReactions: React.FC<{
               : setReaction(messageId, reaction);
           }}
           className={classNames(
-            "fog:text-body-m flex cursor-pointer items-center rounded border border-transparent py-0.5 pl-0.5 pr-1 leading-none",
-            myReaction?.reaction === reaction
-              ? "bg-blue-200 hover:border-blue-500"
-              : "hover:border-blue-200"
+            "fog:text-body-m flex cursor-pointer items-center rounded border border-transparent py-0.5 pl-0.5 pr-1 leading-none bg-blue-200",
+            myReaction?.reaction === reaction ? "hover:border-blue-500" : "hover:border-blue-200"
           )}
         >
           <span className="pr-1">{reaction}</span>{" "}

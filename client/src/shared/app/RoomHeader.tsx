@@ -1022,7 +1022,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             "layout-drag flex items-center justify-end -mx-4 px-4 fog:text-header3 select-text",
             !singleRoomMode && isActive
               ? isInternal
-                ? "bg-green-500 text-white"
+                ? "bg-green-500 dark:bg-green-950 text-white"
                 : "bg-black text-white"
               : "",
             singleRoomMode && "hidden sm:flex",
@@ -1150,7 +1150,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                         return (
                           <span
                             key={tag.id}
-                            className="h-6 inline-flex items-center mr-2 mb-2 px-2.5 rounded border border-blue-200 bg-blue-50 fog:text-body-s whitespace-nowrap"
+                            className="h-6 inline-flex items-center mr-2 mb-2 px-2.5 rounded border border-blue-200 bg-blue-50 dark:border-black dark:bg-black dark:text-gray-600 fog:text-body-s whitespace-nowrap"
                             onClick={e => {
                               if (onShowIssueInfo) {
                                 e.preventDefault();
@@ -1292,7 +1292,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
         }
       }}
     >
-      <div className="bg-gray-200 flex flex-col mt-2 mx-2 p-2 gap-2 rounded-lg text-sm">
+      <div className="bg-gray-200 dark:bg-black dark:text-white flex flex-col mt-2 mx-2 p-2 gap-2 rounded-lg text-sm">
         <span className="font-medium">
           {mode === "email" &&
             (error ? (
@@ -1315,7 +1315,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
               autoFocus={true}
               title="Please enter a valid email address"
               id="emailToVerify"
-              className="flex-grow border-1 rounded-md bg-yellow-50 px-2 leading-loose text-gray-800"
+              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-gray-800 px-2 leading-loose text-gray-800"
               type="email"
               placeholder="name@example.com"
             />
@@ -1324,7 +1324,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
             <input
               data-1p-ignore={true}
               id="codeToVerify"
-              className="flex-grow border-1 rounded-md bg-yellow-50 px-2 leading-loose text-gray-800"
+              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-gray-800 px-2 leading-loose text-gray-800"
               type="text"
               autoFocus={true}
               placeholder="Paste the code here"

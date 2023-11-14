@@ -67,7 +67,7 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
       <Combobox value={value} disabled={disabled} onChange={onChange}>
         <div
           className={classNames(
-            "flex items-center justify-between bg-white dark:bg-black pr-2",
+            "flex items-center justify-between dark:bg-black pr-2",
             props.comboboxButtonClassName,
             darkModeClassNames
           )}

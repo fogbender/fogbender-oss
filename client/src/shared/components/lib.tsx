@@ -687,7 +687,7 @@ export const TabWrapper: React.FC<{ selected: boolean }> = ({ selected, children
         "flex-1 md:flex-none border-b-5 justify-center text-sm leading-5 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
         selected
           ? "rounded-t-md border-brand-orange-500 text-black bg-blue-50 dark:bg-black dark:text-white"
-          : "text-blue-700 border-gray-200 dark:border-gray-600 hover:text-red-500 hover:border-gray-300"
+          : "fog:text-link border-gray-200 dark:border-gray-600 hover:text-red-500 hover:border-gray-300"
       )}
     >
       {children}
@@ -706,7 +706,7 @@ export const TabHeaderWrapper: React.FC<{ selected: boolean }> = ({ selected, ch
         "flex-1 lg:flex-none justify-center fog:text-header4 leading-5 px-0 lg:px-4 py-0 lg:py-3 my-2 lg:my-0 ml-4 lg:text-center max-w-min lg:max-w-max whitespace-nowrap cursor-pointer",
         selected
           ? "rounded-t-md border-brand-orange-500 text-black dark:text-white border-b-2 lg:border-b-5"
-          : "text-blue-700 group-hover:text-red-500 border-b-2 lg:border-b-5 border-transparent"
+          : "fog:text-link group-hover:text-red-500 border-b-2 lg:border-b-5 border-transparent"
       )}
     >
       {children}

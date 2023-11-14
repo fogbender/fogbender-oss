@@ -73,7 +73,7 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
   const [isEditMode] = React.useState(false);
 
   const inputClassName =
-    "appearance-none bg-gray-100 dark:bg-gray-600 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none leading-loose px-3 transition text-gray-800 w-full";
+    "appearance-none bg-gray-100 dark:text-gray-200 dark:placeholder-gray-400 focus:outline-none leading-loose px-3 transition text-gray-800 w-full";
 
   const [customerName, customerNameInput] = useInput({
     type: "text",
@@ -139,7 +139,7 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
 
       <div
         className={classNames(
-          "flex h-14 w-full rounded-lg bg-gray-100",
+          "flex h-14 w-full rounded-lg bg-gray-100 dark:bg-black",
           customerName.trim().length > 0 ? "flex-col items-start" : "flex-row items-center",
           "border border-opacity-0"
         )}
@@ -160,9 +160,9 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
         >
           <div className="flex w-full content-between">{customerIdInput}</div>
         </div>
-        <div className="ml-1 mt-1 text-gray-600">
+        <div className="ml-1 mt-1 text-gray-600 dark:text-white">
           <b>Important</b>: This id should match{" "}
-          <code className="rounded bg-yellow-200 py-0.5 px-1">customerId</code> in{" "}
+          <code className="rounded bg-yellow-200 dark:text-black py-0.5 px-1">customerId</code> in{" "}
           <a href={`/admin/-/-/settings/embed`}>settings</a>. If you get it wrong, you can always
           create another customer with the correct id.
         </div>

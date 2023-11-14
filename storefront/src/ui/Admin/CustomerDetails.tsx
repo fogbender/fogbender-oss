@@ -668,7 +668,7 @@ const CrmLink: React.FC<{
             ) : (
               <div className="mb-2">
                 <div className="flex lg:flex-row lg:items-center space-y-2 lg:space-y-3 lg:space-x-2 flex-col">
-                  <div className="inline-flex items-center rounded-lg bg-gray-100 px-4">
+                  <div className="inline-flex items-center rounded-lg bg-gray-100 dark:bg-black px-4">
                     <Icons.Search className="w-4 h-4 text-gray-500" />
                     <SelectSearch
                       selectedOption={selectedAccount}

@@ -666,7 +666,7 @@ export const Room: React.FC<{
                 "sm:border sm:rounded-lg",
                 activeRoomId === roomId
                   ? isInternal
-                    ? "border-green-500"
+                    ? "border-green-500 dark:border-green-950"
                     : "border-brand-orange-500"
                   : "border-transparent",
                 isDragActive && "border-green-800",
@@ -1012,7 +1012,11 @@ export const RoomResizeHandle: React.FC<{ isActiveRoom?: boolean; isInternal?: b
         <div
           className={classNames(
             "w-full h-full transform origin-bottom-left rotate-45 scale-150",
-            isActiveRoom ? (isInternal ? "bg-green-500" : "bg-brand-orange-500") : "bg-gray-300"
+            isActiveRoom
+              ? isInternal
+                ? "bg-green-500 dark:bg-green-950"
+                : "bg-brand-orange-500"
+              : "bg-gray-300"
           )}
         />
       </div>

@@ -346,7 +346,7 @@ export const Admin = () => {
         }}
       >
         <div className="relative bg-blue-50 dark:bg-black">
-          <div className="absolute bottom-0 w-full h-0 border-b border-blue-200" />
+          <div className="absolute bottom-0 w-full h-0 border-b border-blue-200 dark:border-gray-500" />
           <div className="relative flex items-center justify-between px-4 w-full max-w-screen-xl mx-auto">
             <Breadcrumbs
               designatedVendorId={designatedVendorId}
@@ -466,7 +466,7 @@ export const Admin = () => {
                     <div className="relative sm:ml-8 pt-10 sm:pt-0">
                       <Link
                         className={classNames(
-                          "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white fog:box-shadow-s transform transition-transform no-underline",
+                          "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                           !designatedVendorId
                             ? "-translate-x-full"
                             : "translate-x-0 sm:-translate-x-full"
@@ -743,7 +743,7 @@ export const Admin = () => {
                       <div className="sm:ml-8">
                         <Link
                           className={classNames(
-                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white fog:box-shadow-s transform transition-transform no-underline",
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                             !designatedVendorId
                               ? "-translate-x-full"
                               : "translate-x-0 sm:-translate-x-full"
@@ -799,7 +799,7 @@ export const Admin = () => {
                       <div className="sm:ml-8">
                         <Link
                           className={classNames(
-                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white fog:box-shadow-s transform transition-transform no-underline",
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                             !designatedVendorId
                               ? "-translate-x-full"
                               : "translate-x-0 sm:-translate-x-full"
