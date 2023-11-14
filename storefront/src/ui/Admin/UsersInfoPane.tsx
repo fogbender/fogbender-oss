@@ -104,7 +104,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
   const userEmailVerified = userInfo?.user?.email_verified;
 
   return (
-    <div className="p-2 bg-amber-50 rounded border flex flex-col">
+    <div className="p-2 bg-amber-50 dark:bg-gray-800 dark:text-white rounded border flex flex-col">
       <span className="font-medium">
         <Clipboardable content={userName} />
       </span>

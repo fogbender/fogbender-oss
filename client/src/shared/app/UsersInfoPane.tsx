@@ -11,7 +11,7 @@ export const UsersInfoPane: React.FC<{
   return (
     <div
       className={classNames(
-        "relative flex h-full flex-col justify-end overflow-hidden bg-white focus:outline-none",
+        "relative flex h-full flex-col justify-end overflow-hidden bg-white dark:bg-black focus:outline-none",
         "sm:border-l sm:px-2"
       )}
     >

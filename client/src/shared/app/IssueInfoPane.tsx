@@ -95,14 +95,14 @@ export const IssueInfoPane: React.FC<{
   return (
     <div
       className={classNames(
-        "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white",
+        "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white dark:bg-gray-800",
         "sm:border-l",
         "p-2"
       )}
     >
       <div
         className={classNames(
-          "fbr-scrollbar flex flex-col gap-2 justify-start flex-1 overflow-auto overflow-x-hidden text-black"
+          "fbr-scrollbar flex flex-col gap-2 justify-start flex-1 overflow-auto overflow-x-hidden text-black dark:text-white"
         )}
       >
         <div className="flex gap-2 items-center">
