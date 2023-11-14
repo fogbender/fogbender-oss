@@ -346,7 +346,7 @@ export const Admin = () => {
         }}
       >
         <div className="relative bg-blue-50 dark:bg-black">
-          <div className="absolute bottom-0 w-full h-0 border-b border-blue-200" />
+          <div className="absolute bottom-0 w-full h-0 border-b border-blue-200 dark:border-gray-500" />
           <div className="relative flex items-center justify-between px-4 w-full max-w-screen-xl mx-auto">
             <Breadcrumbs
               designatedVendorId={designatedVendorId}
