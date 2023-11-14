@@ -571,7 +571,8 @@ export const useTextarea = ({
             <div
               className={classNames(
                 "mb-1 rounded",
-                isActiveRoom ? "bg-blue-50 dark:bg-indigo-950" : "bg-gray-100"
+                isActiveRoom ? "bg-blue-50" : "bg-gray-100",
+                "dark:bg-indigo-950"
               )}
             >
               <div className="flex relative items-center">
