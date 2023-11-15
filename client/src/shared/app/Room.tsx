@@ -1105,7 +1105,7 @@ const Pin: React.FC<{
         "bg-gray-200 text-sm",
         "flex gap-1 items-center",
         !pinnedMessage && "text-gray-100",
-        "dark:bg-gray-600 dark:text-gray-100"
+        "dark:bg-gray-600 dark:text-gray-400"
       )}
       onClick={onClick}
       title={title}
