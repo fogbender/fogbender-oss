@@ -1014,7 +1014,7 @@ export const RoomResizeHandle: React.FC<{ isActiveRoom?: boolean; isInternal?: b
             "w-full h-full transform origin-bottom-left rotate-45 scale-150",
             isActiveRoom
               ? isInternal
-                ? "bg-green-500 dark:bg-green-950"
+                ? "bg-green-500 bg-green-700"
                 : "bg-brand-orange-500"
               : "bg-gray-300"
           )}

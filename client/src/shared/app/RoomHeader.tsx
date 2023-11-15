@@ -1022,7 +1022,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
             "layout-drag flex items-center justify-end -mx-4 px-4 fog:text-header3 select-text",
             !singleRoomMode && isActive
               ? isInternal
-                ? "bg-green-500 dark:bg-green-950 text-white"
+                ? "bg-green-500 dark:bg-green-900 text-white"
                 : "bg-black text-white"
               : "",
             singleRoomMode && "hidden sm:flex",
