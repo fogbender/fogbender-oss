@@ -408,7 +408,7 @@ export const RoomItem: React.FC<{
     >
       {isAgent && (
         <div className="flex items-center space-x-1 fog:text-caption-xl truncate">
-          <div className="flex-1 flex flex-col truncate text-gray-600 dark:text-white">
+          <div className="flex-1 flex flex-col truncate text-gray-600 dark:text-gray-400">
             {formatCustomerName(room.customerName)}
           </div>
           {isAgent && !resolved && (
