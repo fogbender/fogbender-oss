@@ -70,6 +70,6 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^5.0.0",
     "typescript": "*",
-    "vite-plugin-checker": "^0.5.5"
+    "vite-plugin-checker": "^0.6.2"
   }
 }
