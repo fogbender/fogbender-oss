@@ -202,6 +202,7 @@
   @apply bg-gray-800 dark:bg-gray-900;
   @apply text-gray-100;
   @apply pl-1.5;
+  @apply fbr-scrollbar;
 }
 
 .fog\:chat-message pre code {
@@ -256,6 +257,7 @@
   height: 5px;
   border: 1px solid transparent;
   @apply bg-gray-300;
+  @apply dark:bg-gray-500;
   @apply rounded-full;
   @apply bg-clip-content;
 }
