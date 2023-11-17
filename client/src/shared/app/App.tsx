@@ -1364,7 +1364,7 @@ export const App: React.FC<{
         {isAgent && vendorId && (
           <div
             className={
-              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2 dark:bg-gray-800 dark:text-white"
+              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2 dark:border-gray-500 dark:bg-gray-800 dark:text-white"
             }
           >
             {activeRoomId && infoPane === "customer" && (
