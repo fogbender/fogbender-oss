@@ -593,6 +593,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                       userId={myAuthor?.id}
                       cancelSelection={cancelSelection}
                       pinToRoom={pinToRoom}
+                      isAgent={isAgent}
                     />
                   </span>
                 </>
@@ -1137,20 +1138,29 @@ type ToolBarMenuProps = {
 };
 
 const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
-  const { message, onMarkMessageUnread, roomById, roomId, userId, cancelSelection, pinToRoom } =
-    props;
+  const {
+    message,
+    onMarkMessageUnread,
+    roomById,
+    roomId,
+    userId,
+    cancelSelection,
+    pinToRoom,
+    isAgent,
+  } = props;
   const [showMenu, setShowMenu] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
-  const [copied, setCopied] = React.useState(false);
+  const [messageLinkCopied, setMessageLinkCopied] = React.useState(false);
+  const [messageTextCopied, setMessageTextCopied] = React.useState(false);
   React.useEffect(() => {
-    if (copied) {
+    if (messageLinkCopied) {
       const timer = setTimeout(() => {
-        setCopied(false);
+        setMessageLinkCopied(false);
       }, 3000);
       return () => clearTimeout(timer);
     }
     return;
-  }, [copied]);
+  }, [messageLinkCopied]);
   useClickOutside(menuRef, () => setShowMenu(false), !showMenu);
 
   const room = roomId && roomById(roomId);
@@ -1260,15 +1270,26 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
             )}
             onClick={() => onMarkMessageUnread?.(message)}
           >
-            Mark as unread and close pane
+            Mark as unread and close
           </button>
+          {isAgent && (
+            <ClipboardCopy
+              className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-600")}
+              text={`${window.location.href}/${message.roomId}/${message.id}`}
+              onCopy={() => setMessageLinkCopied(true)}
+            >
+              <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
+                {!messageLinkCopied ? "Copy link to message" : "messageLinkCopied"}
+              </button>
+            </ClipboardCopy>
+          )}
           <ClipboardCopy
             className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-600")}
-            text={`${window.location.href}/${message.roomId}/${message.id}`}
-            onCopy={() => setCopied(true)}
+            text={message.rawText}
+            onCopy={() => setMessageTextCopied(true)}
           >
             <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
-              {!copied ? "Copy link to message" : "Copied"}
+              {!messageTextCopied ? "Copy text" : "Copied ✓"}
             </button>
           </ClipboardCopy>
         </div>
