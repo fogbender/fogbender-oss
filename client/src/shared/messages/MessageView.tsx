@@ -1135,6 +1135,7 @@ type ToolBarMenuProps = {
   userId?: string;
   cancelSelection: () => void;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
+  isAgent: boolean;
 };
 
 const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
