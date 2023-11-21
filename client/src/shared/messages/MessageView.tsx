@@ -242,6 +242,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     [message, updateLoadAround]
   );
 
+  const isVisitor =
+    myAuthor?.userType === "visitor-verified" || myAuthor?.userType === "visitor-unverified";
+
   return (
     <React.Fragment>
       <div ref={topRef} />
@@ -522,8 +525,12 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
               )}
               {(allowForward || allowFileIssue) && (
                 <div className="flex items-center whitespace-nowrap cursor-pointer">
-                  {selectedSingle && !message.deletedTs && <span className="text-gray-300">|</span>}
-                  {allowForward && (
+                  {selectedSingle &&
+                    !message.deletedTs &&
+                    ((allowForward && !isVisitor) || allowFileIssue) && (
+                      <span className="text-gray-300">|</span>
+                    )}
+                  {allowForward && !isVisitor && (
                     <span
                       title="Forward to another room"
                       onClick={() => {
