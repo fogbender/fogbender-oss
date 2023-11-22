@@ -49,6 +49,7 @@ defmodule Fog.Data.Workspace do
     belongs_to(:deleted_by_agent, Agent, type: Fog.Types.AgentId)
     field(:deleted_at, :utc_datetime_usec)
 
+    field(:feature_options, :any, virtual: true)
     timestamps()
   end
 
