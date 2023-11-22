@@ -51,10 +51,10 @@ defmodule Fog.Api.Event.Room do
 
   def preload(q) do
     Repo.preload(q, [
-      :workspace,
       :customer,
       :created_by_agent,
       :created_by_user,
+      workspace: workspace_with_feature_options_query(),
       members: [:agent, :user],
       tags: [tag: tag_integration_query()],
       last_message: [
@@ -74,6 +74,15 @@ defmodule Fog.Api.Event.Room do
         :deleted_by_user
       ]
     ])
+  end
+
+  defp workspace_with_feature_options_query() do
+    from(w in Data.Workspace,
+      left_join: fo in subquery(Data.FeatureOption.for_workspace()),
+      on: fo.workspace_id == w.id,
+      select: w,
+      select_merge: %{feature_options: fo}
+    )
   end
 
   def tag_integration_query() do
@@ -231,8 +240,6 @@ defmodule Fog.Api.Event.Room do
           []
       end
 
-    default_group_assignment = Repo.FeatureOption.get(r.workspace).default_group_assignment
-
     %Room{
       id: r.id || Fog.Types.RoomId.generate(),
       created: created,
@@ -283,7 +290,7 @@ defmodule Fog.Api.Event.Room do
       relevantMessage: to_message(r.relevant_message, to_message_opts),
       createdBy: to_created_by(r),
       commands: r.commands,
-      defaultGroupAssignment: default_group_assignment
+      defaultGroupAssignment: r.workspace.feature_options.default_group_assignment
     }
   end
 
