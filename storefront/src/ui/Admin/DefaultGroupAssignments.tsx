@@ -47,7 +47,7 @@ export const DefaultGroupAssignments = ({
         x.name
           .toLowerCase()
           .replace(/\s+/g, "")
-          .includes(groupSearch.toLowerCase().replace(/s+/g, ""))
+          .includes(groupSearch.toLowerCase().replace(/\s+/g, ""))
       );
     }
 
