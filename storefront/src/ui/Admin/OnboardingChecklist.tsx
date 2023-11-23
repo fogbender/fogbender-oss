@@ -179,7 +179,7 @@ export const OnboardingChecklist = React.memo(
     }
 
     return (
-      <div className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-gray-800 dark:text-white">
+      <div className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg dark:text-white">
         <div className="flex flex-col gap-y-4">
           <div className="flex justify-between items-center">
             <div className="fog:text-header3">Onboarding checklist</div>

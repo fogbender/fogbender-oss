@@ -379,7 +379,7 @@ export const RoomItem: React.FC<{
         <span
           className={classNames(
             "bg-blue-50 text-gray-500 font-semibold px-1 rounded uppercase text-xs",
-            "dark:bg-gray-800 dark:text-gray-400"
+            "dark:bg-brand-dark-bg dark:text-gray-400"
           )}
         >
           {priorityType}
@@ -393,7 +393,7 @@ export const RoomItem: React.FC<{
   return (
     <div
       className={classNames(
-        "group w-full relative mb-1 pt-1 pb-3 pl-1 pr-2 border-l-5 rounded-r-md cursor-pointer hover:z-10 dark:bg-gray-800",
+        "group w-full relative mb-1 pt-1 pb-3 pl-1 pr-2 border-l-5 rounded-r-md cursor-pointer hover:z-10 dark:bg-brand-dark-bg",
         !opened && "border-transparent hover:border-gray-300",
         showAsInternal ? "hover:border-green-500" : "hover:border-brand-orange-500",
         opened && showAsInternal && "bg-green-50",

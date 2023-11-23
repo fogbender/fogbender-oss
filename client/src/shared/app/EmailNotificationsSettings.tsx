@@ -116,7 +116,7 @@ export const EmailNotificationsSettings = ({
     <div
       className={classNames(
         "flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white",
-        "dark:bg-gray-800 dark:text-white"
+        "dark:bg-brand-dark-bg dark:text-white"
       )}
     >
       {userId && (

@@ -37,7 +37,7 @@ export const CustomerInfoPane: React.FC<{
   return (
     <div
       className={classNames(
-        "relative flex h-full flex-col justify-end overflow-hidden focus:outline-none bg-white dark:bg-gray-800",
+        "relative flex h-full flex-col justify-end overflow-hidden focus:outline-none bg-white dark:bg-brand-dark-bg",
         "sm:border-l dark:border-gray-500 sm:px-2"
       )}
     >

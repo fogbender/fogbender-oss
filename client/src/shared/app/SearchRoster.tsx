@@ -161,7 +161,7 @@ export const RoomItem: React.FC<{
   return (
     <div
       className={classNames(
-        "border-l-5 group relative mb-1 w-full cursor-pointer rounded-r-md pt-1 pb-3 pl-1 pr-2 hover:z-10 dark:bg-gray-800",
+        "border-l-5 group relative mb-1 w-full cursor-pointer rounded-r-md pt-1 pb-3 pl-1 pr-2 hover:z-10 dark:bg-brand-dark-bg",
         !opened && "border-transparent hover:border-gray-300",
         showAsInternal ? "hover:border-green-500" : "hover:border-brand-orange-500",
         opened && showAsInternal && "bg-green-50",

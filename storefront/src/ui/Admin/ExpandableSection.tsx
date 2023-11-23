@@ -30,7 +30,7 @@ export const ExpandableSection: React.FC<{
   return (
     <div
       id={anchor}
-      className="fog:box-shadow-m rounded-xl bg-white dark:bg-gray-800 dark:text-white py-4 px-5"
+      className="fog:box-shadow-m rounded-xl bg-white dark:bg-brand-dark-bg dark:text-white py-4 px-5"
     >
       <h2 className="fog:text-header3 flex items-center justify-between">
         <span

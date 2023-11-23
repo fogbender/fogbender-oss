@@ -21,7 +21,7 @@ export const Welcome: React.FC<{
       className={classNames(
         "fbr-scrollbar overflow-auto",
         "fixed inset-0 p-4 z-10 sm:relative sm:p-0 flex flex-col justify-center bg-white",
-        "dark:bg-gray-800"
+        "dark:bg-brand-dark-bg"
       )}
     >
       <div

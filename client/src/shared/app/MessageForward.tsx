@@ -267,7 +267,10 @@ export const MessageForward: React.FC<{
         ))}
       </div>
       <div
-        className={classNames("-mb-4 pt-6 border-t border-gray-300 bg-white", "dark:bg-gray-800")}
+        className={classNames(
+          "-mb-4 pt-6 border-t border-gray-300 bg-white",
+          "dark:bg-brand-dark-bg"
+        )}
       >
         <div className="fog:text-header2">Forward to&hellip;</div>
         {forwardModes.length > 1 && (
@@ -303,7 +306,7 @@ export const MessageForward: React.FC<{
 
         <div className="overflow-y-auto fbr-scrollbar" style={{ height: "25vh" }}>
           <table className="relative w-full fog:text-body-m border-0">
-            <thead className={classNames("sticky top-0 bg-white", "dark:bg-gray-800")}>
+            <thead className={classNames("sticky top-0 bg-white", "dark:bg-brand-dark-bg")}>
               <tr>
                 <th
                   className="w-5 p-2 border-b border-gray-200 text-blue-700 align-middle text-center"

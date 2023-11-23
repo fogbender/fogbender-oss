@@ -161,7 +161,7 @@ const Main = (props: HeaderProps) => {
 
   return (
     <div className="h-[500px] overflow-auto fbr-scrollbar mt-6 relative w-[874px]">
-      <div className="flex sticky top-0 bg-white dark:bg-gray-800 mb-4 z-10 pb-2">
+      <div className="flex sticky top-0 bg-white dark:bg-brand-dark-bg mb-4 z-10 pb-2">
         <div className="w-28 flex flex-col gap-2">
           <div className="whitespace-nowrap">{formattedWeekString}</div>
           <div className="flex gap-2 items-center">

@@ -181,7 +181,7 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
       className={classNames(
         "w-full bg-white p-6 rounded-xl fog:box-shadow-s relative",
         className,
-        "dark:bg-gray-800 dark:text-white"
+        "dark:bg-brand-dark-bg dark:text-white"
       )}
     >
       {children}

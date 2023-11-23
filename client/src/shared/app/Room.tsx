@@ -95,7 +95,7 @@ const ResolvedControls = (props: {
         </span>
       )}
       <button
-        className={classNames(commonBtnStyles, resolved && "bg-white dark:bg-gray-800")}
+        className={classNames(commonBtnStyles, resolved && "bg-white dark:bg-brand-dark-bg")}
         onClick={onResolve}
       >
         {resolved ? (resolvedTil ? "Cancel timer" : "Resolved") : "Resolve"}
@@ -659,7 +659,7 @@ export const Room: React.FC<{
       {...getRootProps({
         className: classNames(
           "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white",
-          "dark:bg-gray-800",
+          "dark:bg-brand-dark-bg",
           singleRoomMode
             ? "sm:px-2 sm:border-l"
             : [

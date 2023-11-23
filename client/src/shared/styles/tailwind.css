@@ -247,7 +247,7 @@
 
 .fbr-scrollbar::-webkit-scrollbar-track {
   @apply bg-white;
-  @apply dark:bg-gray-800;
+  @apply dark:bg-brand-dark-bg;
   @apply bg-opacity-60;
   @apply rounded-full;
 }

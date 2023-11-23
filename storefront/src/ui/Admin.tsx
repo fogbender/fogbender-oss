@@ -466,7 +466,7 @@ export const Admin = () => {
                     <div className="relative sm:ml-8 pt-10 sm:pt-0">
                       <Link
                         className={classNames(
-                          "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
+                          "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-brand-dark-bg dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                           !designatedVendorId
                             ? "-translate-x-full"
                             : "translate-x-0 sm:-translate-x-full"
@@ -490,7 +490,7 @@ export const Admin = () => {
                           />
                         )}
 
-                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-gray-800">
+                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg">
                           <ThinButton onClick={() => setIsCreateWorkspaceModalOpen(true)}>
                             {workspaces?.length === 1 ? "Add another workspace" : "Add workspace"}
                           </ThinButton>
@@ -498,7 +498,7 @@ export const Admin = () => {
                         {sortedWorkspaces.map(w => (
                           <div
                             key={w.id}
-                            className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-gray-800"
+                            className="mb-8 py-4 px-5 flex flex-col rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg"
                           >
                             <div className="flex">
                               <Link
@@ -743,7 +743,7 @@ export const Admin = () => {
                       <div className="sm:ml-8">
                         <Link
                           className={classNames(
-                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-brand-dark-bg dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                             !designatedVendorId
                               ? "-translate-x-full"
                               : "translate-x-0 sm:-translate-x-full"
@@ -799,7 +799,7 @@ export const Admin = () => {
                       <div className="sm:ml-8">
                         <Link
                           className={classNames(
-                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-gray-800 dark:text-white fog:box-shadow-s transform transition-transform no-underline",
+                            "sm:hidden z-20 absolute top-4 left-0 -mt-2 -ml-4 flex items-center gap-x-2 rounded-r p-2 bg-white dark:bg-brand-dark-bg dark:text-white fog:box-shadow-s transform transition-transform no-underline",
                             !designatedVendorId
                               ? "-translate-x-full"
                               : "translate-x-0 sm:-translate-x-full"
@@ -1082,7 +1082,7 @@ const Sidebar: React.FC<{
       )}
     >
       {hasVendorInvites && (
-        <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 rounded-xl flex flex-col">
+        <div className="w-full bg-white dark:bg-brand-dark-bg dark:text-white p-4 rounded-xl flex flex-col">
           {hasVendorInvites && (
             <div className="text-gray-500 fog:text-caption-m uppercase">Pending invitations</div>
           )}
@@ -1106,7 +1106,7 @@ const Sidebar: React.FC<{
           {vendorInvites?.length === 0 && vendorInviteCode && <BadInviteModal />}
         </div>
       )}
-      <div className="w-full bg-white px-6 rounded-xl dark:bg-gray-800 dark:text-white">
+      <div className="w-full bg-white px-6 rounded-xl dark:bg-brand-dark-bg dark:text-white">
         {hasVendors && (
           <div className="text-gray-500 fog:text-caption-m py-4 gap-4 uppercase border-b">
             Organizations
@@ -1323,7 +1323,7 @@ const AdminRedirect: React.FC<{
               .map(v => (
                 <Link
                   key={v.id}
-                  className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-gray-800 dark:text-white rounded-xl fog:box-shadow"
+                  className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-brand-dark-bg dark:text-white rounded-xl fog:box-shadow"
                   to={`/admin/vendor/${v.id}/${rest}${search}${hash}`}
                 >
                   <div className="flex-1 truncate">{v.name}</div>
@@ -1383,7 +1383,7 @@ const AdminVendorRedirect: React.FC<{
             workspaces.map(w => (
               <Link
                 key={w.id}
-                className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-gray-800 dark:text-white rounded-xl fog:box-shadow"
+                className="flex items-start fog:text-header3 fog:text-link no-underline cursor-pointer py-4 px-5 bg-white dark:bg-brand-dark-bg dark:text-white rounded-xl fog:box-shadow"
                 to={{
                   pathname: `/admin/vendor/${vendorId}/workspace/${w.id}/${rest}`,
                   search,
