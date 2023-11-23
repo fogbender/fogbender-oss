@@ -1179,19 +1179,23 @@ const Question: Icon = ({ className = "w-6" }) => {
 
 export const SwitchOff: Icon = ({ className = "w-6" }) => {
   return (
-    <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="40" height="20" rx="10" fill="#D1D5DB" />
-      <circle cx="10" cy="10" r="8" fill="white" />
-    </svg>
+    <span className="text-[#3B82F6] dark:text-gray-600">
+      <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="20" rx="10" fill="currentColor" />
+        <circle cx="10" cy="10" r="8" fill="white" />
+      </svg>
+    </span>
   );
 };
 
 export const SwitchOn: Icon = ({ className = "w-6" }) => {
   return (
-    <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="40" height="20" rx="10" fill="#3B82F6" />
-      <circle cx="30" cy="10" r="8" fill="white" />
-    </svg>
+    <span className="text-[#3B82F6] dark:text-gray-600">
+      <svg className={className} viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="20" rx="10" fill="currentColor" />
+        <circle cx="30" cy="10" r="8" fill="white" />
+      </svg>
+    </span>
   );
 };
 
