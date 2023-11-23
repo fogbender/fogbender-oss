@@ -444,7 +444,7 @@ export const useTextarea = ({
         color = "text-blue-500 dark:text-blue-700";
       }
     } else {
-      color = "text-gray-200 dark:text-gray-500";
+      color = "text-gray-200 dark:text-gray-600";
     }
 
     return color;
@@ -669,9 +669,9 @@ export const useTextarea = ({
               onHeightChange={setTextAreaHeight}
               maxRows={!!textareaValue && (!mode || mode === "Reply" || mode === "Edit") ? 4 : 1}
               className={classNames(
-                "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none",
+                "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 dark:placeholder:text-gray-400 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none",
                 "dark:text-white",
-                focused ? "bg-blue-50 dark:bg-gray-700" : "bg-gray-100 dark:bg-gray-600"
+                focused ? "bg-blue-50 dark:bg-gray-700" : "bg-gray-100 dark:bg-brand-dark-bg"
               )}
               onFocus={() => {
                 setFocused(true);
