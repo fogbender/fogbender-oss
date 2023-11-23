@@ -283,6 +283,7 @@ export const Room: React.FC<{
   });
 
   const [flash, setFlash] = React.useState<string>();
+  const [roomWidth, setRoomWidth] = React.useState<number | undefined>(0);
 
   React.useEffect(() => {
     if (loadAroundMessage && isAroundFetched) {
@@ -333,7 +334,10 @@ export const Room: React.FC<{
   React.useLayoutEffect(() => {
     let sensor: ResizeSensor | undefined;
     if (roomRef.current) {
-      sensor = new ResizeSensor(roomRef.current, maybeStickToBottom);
+      sensor = new ResizeSensor(roomRef.current, () => {
+        maybeStickToBottom();
+        setRoomWidth(roomRef.current?.clientWidth);
+      });
     }
     return () => sensor?.detach();
   }, [maybeStickToBottom]);
