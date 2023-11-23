@@ -1062,7 +1062,7 @@ const MessageContent: React.FC<{
                 </span>
               </div>
             )}
-          {codeSnippetText && (
+          {codeSnippetText && !inReply && (
             <ClipboardCopy text={codeSnippetText}>
               <div
                 className={classNames(
