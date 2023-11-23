@@ -291,6 +291,12 @@ textarea.fbr-scrollbar {
   @apply fbr-scrollbar;
 }
 
+.react-grid-layout > .react-grid-item img {
+  @apply pointer-events-auto;
+  user-select: auto;
+  -webkit-user-select: auto;
+}
+
 .react-grid-layout > .react-grid-item > .react-resizable-handle {
   @apply w-4;
   @apply h-4;
