@@ -947,7 +947,7 @@ export const App: React.FC<{
         <div
           className={classNames(
             "absolute z-10 sm:static sm:z-0 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform",
-            "dark:bg-gray-800 dark:text-white",
+            "dark:bg-brand-dark-bg dark:text-white",
             rosterVisible ? "translate-x-0" : "-translate-x-full sm:translate-x-0",
             isAgent && isOutlook ? "w-full sm:w-[32rem]" : "w-full sm:w-80"
           )}
@@ -1025,7 +1025,7 @@ export const App: React.FC<{
               >
                 <form
                   onSubmit={rosterInputSubmit}
-                  className={classNames("flex gap-2 bg-white w-full", "dark:bg-gray-800")}
+                  className={classNames("flex gap-2 bg-white w-full", "dark:bg-brand-dark-bg")}
                 >
                   {isAgent && <RosterMenu />}
                   <FilterInput
@@ -1364,7 +1364,7 @@ export const App: React.FC<{
         {isAgent && vendorId && (
           <div
             className={
-              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l-2 dark:border-gray-500 dark:bg-gray-800 dark:text-white"
+              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l dark:border-gray-500 dark:bg-brand-dark-bg dark:text-white"
             }
           >
             {activeRoomId && infoPane === "customer" && (

@@ -26,7 +26,7 @@ export const Modal: React.FC<{
       <DialogContent aria-label="Modal window content">
         <div
           className={classNames(
-            "fbr-scrollbar fixed -inset-y-1 -inset-x-3 sm:inset-0 z-10 overflow-auto sm:bg-black bg-white max-sm:dark:bg-gray-800 sm:bg-opacity-20 p-1 sm:p-4"
+            "fbr-scrollbar fixed -inset-y-1 -inset-x-3 sm:inset-0 z-10 overflow-auto sm:bg-black bg-white max-sm:dark:bg-brand-dark-bg sm:bg-opacity-20 p-1 sm:p-4"
           )}
           onClick={skipOverlayClick ? undefined : onClose}
         >
@@ -34,7 +34,7 @@ export const Modal: React.FC<{
             <div
               className={classNames(
                 "sm:fog:box-shadow relative z-40 flex sm:rounded-2xl bg-white h-full sm:h-auto",
-                "dark:bg-gray-800 dark:text-white",
+                "dark:bg-brand-dark-bg dark:text-white",
                 restricted
                   ? "min-w-full sm:min-w-0"
                   : "sm:min-w-0 sm:max-w-1/2 min-w-full max-w-full"

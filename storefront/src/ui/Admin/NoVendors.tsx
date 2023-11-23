@@ -107,7 +107,7 @@ export const NoVendors: React.FC<{ onDone: () => void }> = ({ onDone }) => {
         </p>
         <form
           className={classNames(
-            "fog:box-shadow my-4 flex flex-col gap-y-4 rounded-xl bg-white dark:bg-gray-800 p-6"
+            "fog:box-shadow my-4 flex flex-col gap-y-4 rounded-xl bg-white dark:bg-brand-dark-bg p-6"
           )}
           onSubmit={onSubmit}
         >

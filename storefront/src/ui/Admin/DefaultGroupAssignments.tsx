@@ -85,7 +85,7 @@ export const DefaultGroupAssignments = ({
   const [resetting, setResetting] = React.useState(false);
 
   return (
-    <div className="flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+    <div className="flex flex-col gap-3 py-4 px-5 rounded-xl fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
       <div className="flex gap-3">
         <span className="flex flex-col">
           <span className="flex flex-col place-self-end">

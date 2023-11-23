@@ -149,7 +149,7 @@ export const SnippetControlsNew: React.FC<{
   const queryParams = new URLSearchParams(window.location.search);
   return (
     <>
-      <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+      <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
         {title}
 
         <p className="mt-2">
@@ -159,7 +159,7 @@ export const SnippetControlsNew: React.FC<{
       </div>
 
       <div className="mt-4 flex flex-wrap gap-6">
-        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
           <p className="mb-4 fog:text-header3">widgetId</p>
           <div className="flex">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
@@ -182,7 +182,7 @@ export const SnippetControlsNew: React.FC<{
         {(serverSignature === "hmac" ||
           serverSignature === "paseto" ||
           queryParams.has("hmac")) && (
-          <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+          <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
             <p className="mb-4 fog:text-header3">Server signature type</p>
             <div className="sm:flex gap-4 mb-2">
               <div className="flex-1">
@@ -213,7 +213,7 @@ export const SnippetControlsNew: React.FC<{
           </div>
         )}
 
-        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
           <p className="mb-4 fog:text-header3">Secret</p>
           <div className="flex">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
@@ -251,7 +251,7 @@ export const SnippetControlsNew: React.FC<{
         </div>
       </div>
 
-      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
         <p className="mb-4 fog:text-header3">Visitor key</p>
         <div className="flex">
           <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
@@ -334,7 +334,7 @@ export const SnippetControlsNew: React.FC<{
         )}
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
         <h3 className="pb-2 fog:text-header3">Step 1: Install the JavaScript widget (Client)</h3>
         <>
           <div className="pb-2">
@@ -550,7 +550,7 @@ fogbender.setToken(token);
         </div>
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-gray-800 dark:text-white">
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
         <h3 className="pb-2 fog:text-header3">
           Step 2: Secure the widget with user signature (Server)
         </h3>

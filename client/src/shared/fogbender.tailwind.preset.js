@@ -39,6 +39,7 @@ module.exports = {
         "brand-red-500": "#FA3541",
         "brand-red-300": "#FC727A",
         "brand-red-100": "#FEC7CA",
+        "brand-dark-bg": "rgb(17, 10, 7)",
         gray: colors.zinc,
       },
       flex: {

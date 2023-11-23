@@ -178,7 +178,7 @@ export const CreateRoom: React.FC<{
             }}
           >
             <div className="p-4 dark:bg-black">
-              <div className="bg-gray-100 dark:bg-gray-800 px-4 rounded-lg r">
+              <div className="bg-gray-100 dark:bg-brand-dark-bg px-4 rounded-lg r">
                 <FilterInput
                   noBorder={true}
                   ref={inputRef}

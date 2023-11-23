@@ -50,7 +50,7 @@ export const AgentGroups: React.FC<{
   const [editGroup, setEditGroup] = React.useState<string>();
 
   return (
-    <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 rounded-xl fog:box-shadow-s flex flex-col pl-8 gap-4">
+    <div className="w-full bg-white dark:bg-brand-dark-bg dark:text-white p-4 rounded-xl fog:box-shadow-s flex flex-col pl-8 gap-4">
       {addNewGroup && (
         <Modal
           onClose={() => {

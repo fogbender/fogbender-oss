@@ -156,7 +156,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
         <span
           className={classNames(
             "bg-blue-50 text-gray-500 font-semibold px-1 rounded text-xs flex items-center gap-1",
-            "dark:bg-gray-800 dark:text-gray-400"
+            "dark:bg-brand-dark-bg dark:text-gray-400"
           )}
         >
           <span>Priority:</span>
@@ -1315,7 +1315,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
               autoFocus={true}
               title="Please enter a valid email address"
               id="emailToVerify"
-              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-gray-800 px-2 leading-loose text-gray-800"
+              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-brand-dark-bg px-2 leading-loose text-gray-800"
               type="email"
               placeholder="name@example.com"
             />
@@ -1324,7 +1324,7 @@ const EmailVerification = ({ serverCall }: { serverCall: ServerCall }) => {
             <input
               data-1p-ignore={true}
               id="codeToVerify"
-              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-gray-800 px-2 leading-loose text-gray-800"
+              className="flex-grow border-1 rounded-md bg-yellow-50 dark:bg-brand-dark-bg px-2 leading-loose text-gray-800"
               type="text"
               autoFocus={true}
               placeholder="Paste the code here"

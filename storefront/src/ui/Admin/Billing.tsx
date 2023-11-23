@@ -83,7 +83,7 @@ export const Billing = ({
   const price_per_seat = (billing?.price_per_seat || 0) / 100;
 
   return (
-    <div className="w-full bg-white p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8 dark:bg-gray-800 dark:text-white">
+    <div className="w-full bg-white p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8 dark:bg-brand-dark-bg dark:text-white">
       <div className="w-full flex flex-col gap-2 overflow-auto">
         {billingIsLoading && (
           <span className="w-3 h-3 flex">

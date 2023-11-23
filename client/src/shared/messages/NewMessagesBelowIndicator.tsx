@@ -20,7 +20,7 @@ export const NewMessagesBelowIndicator: React.FC<{ id: string; dimmed: boolean }
       <span
         className={classNames(
           "relative z-10 inline-flex items-center gap-x-2 bg-white px-4",
-          "dark:bg-gray-800"
+          "dark:bg-brand-dark-bg"
         )}
       >
         <span className="scale-75 transform">

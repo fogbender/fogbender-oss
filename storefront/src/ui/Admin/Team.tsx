@@ -155,7 +155,7 @@ const TeamTabs: React.FC<{
   }
 
   return (
-    <div className="w-full bg-white dark:text-white dark:bg-gray-800 rounded-xl fog:box-shadow-s flex flex-col gap-4">
+    <div className="w-full bg-white dark:text-white dark:bg-brand-dark-bg rounded-xl fog:box-shadow-s flex flex-col gap-4">
       <div className="w-full md:w-auto flex flex-wrap">
         {tabs.map(t => {
           const tabTitle = t.name.substring(0, 1).toUpperCase() + t.name.substring(1);
@@ -212,7 +212,7 @@ const TeamMembers: React.FC<{
   }, [location]);
 
   return (
-    <div className="w-full bg-white dark:text-white dark:bg-gray-800 p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8">
+    <div className="w-full bg-white dark:text-white dark:bg-brand-dark-bg p-4 rounded-xl fog:box-shadow-s flex flex-col gap-4 pl-8">
       {sendNewInvite && (
         <Modal
           onClose={() => {
@@ -745,7 +745,7 @@ const VerifiedDomains: React.FC<{
   */
 
   return isGeneric !== false ? null : (
-    <div className="w-full bg-white dark:bg-gray-800 dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
+    <div className="w-full bg-white dark:bg-brand-dark-bg dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
       <div className="fog:text-header3">Auto-join configuration</div>
       <div className="flex flex-col gap-2">
         {verifiedDomains.some(d => d.verified) && (
@@ -843,7 +843,7 @@ const VerifiedDomains: React.FC<{
                         <div className="flex flex-col gap-2 rounded-lg bg-gray-100 dark:bg-black px-3 py-2">
                           <span className="font-medium">TXT Record value</span>
                           <div className="flex-1 sm:flex gap-2 items-center">
-                            <div className="flex-1 bg-white dark:bg-gray-800 text-sm sm:px-3 py-1 break-all rounded border border-gray-300">
+                            <div className="flex-1 bg-white dark:bg-brand-dark-bg text-sm sm:px-3 py-1 break-all rounded border border-gray-300">
                               {d.verification_code}
                             </div>
                             <div className="mr-4" title="Copy code">

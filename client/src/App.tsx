@@ -319,7 +319,7 @@ const NoUserFallback: React.FC<{
   );
 
   return (
-    <div className="relative z-10 h-full max-h-screen flex-1 flex flex-col bg-white dark:bg-gray-800">
+    <div className="relative z-10 h-full max-h-screen flex-1 flex flex-col bg-white dark:bg-brand-dark-bg">
       <div className="relatve flex items-center gap-x-2 bg-blue-500 text-white py-2 px-4 fog:text-caption-xl leading-loose">
         <div className="flex-1 invisible">&nbsp;</div>
       </div>
