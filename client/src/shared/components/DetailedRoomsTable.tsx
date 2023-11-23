@@ -95,7 +95,7 @@ export const DetailedRoomsTable: React.FC<{
                       ? isInternal
                         ? "border-l-5 border-green-500"
                         : "border-l-5 border-brand-orange-500"
-                      : "border-l-5 border-white dark:border-gray-800"
+                      : "border-l-5 border-white dark:border-brand-dark-bg"
                   )}
                 >
                   <div className="flex gap-2">
