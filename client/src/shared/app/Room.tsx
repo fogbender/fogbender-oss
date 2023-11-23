@@ -873,7 +873,7 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-10 bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-[5] bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
             (keepScrollAtBottom || !room) && "invisible pointer-events-none",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
