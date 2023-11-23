@@ -9,6 +9,7 @@ import { modeAtom } from "../store/config.store";
 import { LocalStorageKeys } from "../utils/LocalStorageKeys";
 import { SafeLocalStorage } from "../utils/SafeLocalStorage";
 import { useClickOutside } from "../utils/useClickOutside";
+import { createPortal } from "react-dom";
 
 const defaultEmojis = ["👍", "🔥", "❤️", "✅"];
 
@@ -114,9 +115,11 @@ export const MessageReactions: React.FC<{
 });
 
 export const EmojiPicker: React.FC<{
+  roomWidth?: number;
   cancelSelection: () => void;
+  roomRef?: React.MutableRefObject<HTMLElement | null | undefined>;
   setReaction: (reaction: string) => void;
-}> = ({ cancelSelection, setReaction }) => {
+}> = ({ roomWidth, roomRef, cancelSelection, setReaction }) => {
   const themeMode = useAtomValue(modeAtom);
   const [showPicker, setShowPicker] = React.useState(false);
   const emojiPickerRef = React.useRef<HTMLDivElement>(null);
@@ -127,6 +130,9 @@ export const EmojiPicker: React.FC<{
     },
     !showPicker
   );
+
+  const widerRoom = roomWidth && roomWidth > 640;
+
   return (
     <>
       <span
@@ -137,18 +143,31 @@ export const EmojiPicker: React.FC<{
       >
         <Icons.EmojiSelect className="h-4 w-4" />
       </span>
-      {showPicker && (
-        <div ref={emojiPickerRef} className="absolute bottom-7 right-0 z-10">
-          <Picker
-            theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
-            onEmojiClick={emojiObject => {
-              cancelSelection();
-              setReaction(emojiObject.emoji);
-              updateRecentEmojis(emojiObject.emoji);
-            }}
-          />
-        </div>
-      )}
+      {showPicker &&
+        roomRef?.current &&
+        createPortal(
+          <div
+            ref={emojiPickerRef}
+            className={classNames("fixed z-10 top-2", {
+              "right-2": widerRoom,
+              "left-0": !widerRoom,
+            })} /*Transforming the top-level of room with 'transform' style has affected the 'fixed' positioning. The emoji picker now treats the room as a relative element, positioning itself with the room as the reference parent."*/
+            /*reference: https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block*/
+            /*Portal used to mount emoji picker on top level inside room container, avoiding visibility issues in Safari and Firefox.*/
+          >
+            <Picker
+              width="350px"
+              height="350px"
+              theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
+              onEmojiClick={emojiObject => {
+                cancelSelection();
+                setReaction(emojiObject.emoji);
+                updateRecentEmojis(emojiObject.emoji);
+              }}
+            />
+          </div>,
+          roomRef.current
+        )}
     </>
   );
 };

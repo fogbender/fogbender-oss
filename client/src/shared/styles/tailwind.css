@@ -287,6 +287,10 @@ textarea.fbr-scrollbar {
   @apply bg-transparent;
 }
 
+.EmojiPickerReact > .epr-body {
+  @apply fbr-scrollbar;
+}
+
 .react-grid-layout > .react-grid-item > .react-resizable-handle {
   @apply w-4;
   @apply h-4;

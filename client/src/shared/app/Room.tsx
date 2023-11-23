@@ -283,6 +283,7 @@ export const Room: React.FC<{
   });
 
   const [flash, setFlash] = React.useState<string>();
+  const [roomWidth, setRoomWidth] = React.useState<number | undefined>(0);
 
   React.useEffect(() => {
     if (loadAroundMessage && isAroundFetched) {
@@ -333,7 +334,10 @@ export const Room: React.FC<{
   React.useLayoutEffect(() => {
     let sensor: ResizeSensor | undefined;
     if (roomRef.current) {
-      sensor = new ResizeSensor(roomRef.current, maybeStickToBottom);
+      sensor = new ResizeSensor(roomRef.current, () => {
+        maybeStickToBottom();
+        setRoomWidth(roomRef.current?.clientWidth);
+      });
     }
     return () => sensor?.detach();
   }, [maybeStickToBottom]);
@@ -796,6 +800,8 @@ export const Room: React.FC<{
               doForward={setShowForward}
               doFileIssue={setShowFileIssue}
               roomId={roomId}
+              roomRef={roomRef}
+              roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
             />
@@ -846,6 +852,8 @@ export const Room: React.FC<{
               }
               myAuthor={myAuthor}
               cancelSelection={handleSelectionCancel}
+              roomRef={roomRef}
+              roomWidth={roomWidth}
               inDialog={room?.type === "dialog"}
             />
           ))}
@@ -869,7 +877,7 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-10 bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-[5] bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
             (keepScrollAtBottom || !room) && "invisible pointer-events-none",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"

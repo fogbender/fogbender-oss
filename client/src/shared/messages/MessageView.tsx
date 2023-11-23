@@ -69,6 +69,8 @@ type MessageViewProps = {
   doForward?: (value: boolean) => void;
   doFileIssue?: (value: boolean) => void;
   roomId?: string;
+  roomRef?: React.MutableRefObject<HTMLElement | null | undefined>;
+  roomWidth?: number;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
 };
@@ -110,6 +112,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     doForward,
     doFileIssue,
     roomId,
+    roomWidth,
+    roomRef,
     pinToRoom,
     askAi,
   } = props;
@@ -519,6 +523,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
               )}
               {selectedSingle && !message.deletedTs && (
                 <EmojiPicker
+                  roomWidth={roomWidth}
+                  roomRef={roomRef}
                   setReaction={r => props.setReaction(message.id, r)}
                   cancelSelection={cancelSelection}
                 />
@@ -1062,7 +1068,7 @@ const MessageContent: React.FC<{
                 </span>
               </div>
             )}
-          {codeSnippetText && (
+          {codeSnippetText && !inReply && (
             <ClipboardCopy text={codeSnippetText}>
               <div
                 className={classNames(
