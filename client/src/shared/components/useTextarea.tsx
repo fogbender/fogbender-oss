@@ -463,10 +463,7 @@ export const useTextarea = ({
   const Textarea = React.useMemo(() => {
     return (
       <div
-        className={classNames(
-          "relative z-10 flex items-end pr-2",
-          handleUploadClick ? "ml-10" : "ml-4"
-        )}
+        className={classNames("relative flex items-end pr-2", handleUploadClick ? "ml-10" : "ml-4")}
       >
         {showListMenu && (
           <span ref={listMenuRef} className="absolute -left-8 bottom-12 z-10">
