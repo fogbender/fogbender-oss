@@ -800,6 +800,8 @@ export const Room: React.FC<{
               doForward={setShowForward}
               doFileIssue={setShowFileIssue}
               roomId={roomId}
+              roomRef={roomRef}
+              roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
             />
@@ -850,6 +852,8 @@ export const Room: React.FC<{
               }
               myAuthor={myAuthor}
               cancelSelection={handleSelectionCancel}
+              roomRef={roomRef}
+              roomWidth={roomWidth}
               inDialog={room?.type === "dialog"}
             />
           ))}

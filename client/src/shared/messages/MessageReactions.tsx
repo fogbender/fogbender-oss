@@ -114,7 +114,9 @@ export const MessageReactions: React.FC<{
 });
 
 export const EmojiPicker: React.FC<{
+  roomWidth?: number;
   cancelSelection: () => void;
+  roomRef?: React.MutableRefObject<HTMLElement | null | undefined>;
   setReaction: (reaction: string) => void;
 }> = ({ cancelSelection, setReaction }) => {
   const themeMode = useAtomValue(modeAtom);
