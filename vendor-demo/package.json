@@ -34,7 +34,7 @@
     "rehype": "^12.0.1",
     "rehype-highlight": "^6.0.0",
     "trackjs": "^3.10.1",
-    "typescript": "^4.0.5"
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "astro": "astro",
