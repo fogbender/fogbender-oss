@@ -1,5 +1,5 @@
 import React from "react";
-import { Snapshot } from "fogbender";
+import type { Snapshot } from "fogbender";
 import { useFogbender } from "./FogbenderProvider";
 
 export const FogbenderIsConfigured: React.FC<{
