@@ -16,6 +16,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": false,
+    "verbatimModuleSyntax": true,
     "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
