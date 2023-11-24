@@ -6,13 +6,17 @@ export function checkToken(token: Token | undefined) {
 
     ["userAvatarUrl", "widgetKey", "userJWT", "userHMAC", "userPaseto", "visitorKey"].forEach(
       x =>
+        // @ts-ignore
         typeof token[x] !== "string" &&
+        // @ts-ignore
         typeof token[x] !== "undefined" &&
+        // @ts-ignore
         token[x] !== null &&
         (errors[x] = "should be string or undefined or null")
     );
 
     const isString = (x: string) =>
+      // @ts-ignore
       typeof token[x] !== "string" && (errors[x] = "should be string");
 
     ["widgetId"].forEach(isString);
