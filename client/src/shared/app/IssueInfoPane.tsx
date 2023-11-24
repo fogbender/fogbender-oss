@@ -96,8 +96,7 @@ export const IssueInfoPane: React.FC<{
     <div
       className={classNames(
         "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white dark:bg-brand-dark-bg",
-        "sm:border-l dark:border-gray-500",
-        "p-2"
+        "sm:px-2"
       )}
     >
       <div
