@@ -20,7 +20,6 @@
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "noEmit": true
   }
 }
