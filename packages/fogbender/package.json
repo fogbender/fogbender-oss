@@ -9,7 +9,7 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/server.cjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "repository": {
     "type": "git",
@@ -17,10 +17,6 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "node": {
-      "import": "./dist/server.js",
-      "require": "./dist/server.cjs"
-    },
     "import": "./dist/index.js",
     "require": "./dist/index.cjs"
   },
@@ -29,7 +25,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsup || true",
+    "build": "tsup --dts",
     "build-faster": "tsup --clean false",
     "start": "run-p start:tsup start:tsc",
     "start:tsup": "tsup --watch",
