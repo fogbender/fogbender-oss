@@ -108,7 +108,7 @@ export const CustomerInfoPane: React.FC<Parameters<RenderCustomerInfoCb>[0]> = (
 
       {!isCustomerInternal && (
         <table className="text-xs mt-3 w-full">
-          <thead className="border-b">
+          <thead className="border-b dark:border-gray-500">
             <tr>
               <td className="p-2 text-left">Team</td>
             </tr>
