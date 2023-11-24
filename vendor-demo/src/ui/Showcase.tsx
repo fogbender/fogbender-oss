@@ -6,7 +6,7 @@ import {
   FogbenderIsConfigured,
   FogbenderProvider,
   FogbenderUnreadBadge,
-  Token,
+  type Token,
 } from "fogbender-react";
 import React from "react";
 

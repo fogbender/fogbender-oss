@@ -6,9 +6,8 @@ import {
   FogbenderIsConfigured,
   FogbenderProvider,
   FogbenderUnreadBadge,
-  Token,
+  type Token,
 } from "fogbender-react";
-import {} from "fogbender";
 import React from "react";
 
 import { getClientUrl } from "../config";
