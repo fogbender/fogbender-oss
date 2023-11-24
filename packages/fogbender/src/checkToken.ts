@@ -1,4 +1,4 @@
-import { UserToken, Token, VisitorToken } from "./types";
+import type { UserToken, Token, VisitorToken } from "./types";
 
 export function checkToken(token: Token | undefined) {
   if (token !== undefined) {
