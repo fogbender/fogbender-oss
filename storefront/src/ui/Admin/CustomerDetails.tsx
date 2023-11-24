@@ -25,13 +25,6 @@ import { type MergeLink } from "./MergeLink";
 
 dayjs.extend(relativeTime);
 
-const originalPopstate = window.onpopstate;
-window.onpopstate = e => {
-  if (originalPopstate) {
-    originalPopstate.call(e);
-  }
-};
-
 export const CustomerDetails: React.FC<{
   customer: Customer;
   workspaceId: string;
