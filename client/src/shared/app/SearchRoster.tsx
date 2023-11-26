@@ -34,7 +34,6 @@ export const Roster: React.FC<{
   openRoomIds,
   activeRoomId,
   onRosterRoomClick,
-  onRoomSettingsClick,
   badges,
   isAgent,
   searchString,
@@ -104,7 +103,6 @@ export const Roster: React.FC<{
               opened={openRoomIds.includes(room.id)}
               active={activeRoomId === room.id}
               onClick={onRosterRoomClick}
-              onSettingsClick={onRoomSettingsClick}
               badge={badges[room.id]}
               isAgent={isAgent}
               ourId={ourId}
@@ -139,11 +137,10 @@ export const RoomItem: React.FC<{
   opened: boolean;
   active: boolean;
   onClick: (room: EventRoom, opts: LayoutOptions) => void;
-  onSettingsClick: (id: string) => void;
   badge?: EventBadge;
   isAgent: boolean | undefined;
   ourId?: string;
-}> = ({ room, opened, active, onClick, onSettingsClick, badge, isAgent, ourId }) => {
+}> = ({ room, opened, active, onClick, badge, isAgent, ourId }) => {
   const counterpart = calculateCounterpart(room, ourId);
   const name = counterpart?.name || room.name;
 
