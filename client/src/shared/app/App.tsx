@@ -1272,7 +1272,7 @@ export const App: React.FC<{
           </div>
         </div>
 
-        <div className="flex-1" ref={gridContainerRef}>
+        <div className="flex-1 dark:bg-black" ref={gridContainerRef}>
           <ResponsiveReactGridLayout
             className="layout z-0"
             layouts={{ xxs: [...layout] || [] }}

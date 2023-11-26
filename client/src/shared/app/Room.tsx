@@ -665,7 +665,7 @@ export const Room: React.FC<{
           "relative flex flex-col justify-end overflow-hidden h-full focus:outline-none bg-white",
           "dark:bg-brand-dark-bg",
           singleRoomMode
-            ? "sm:px-2 sm:border-l"
+            ? "sm:px-2"
             : [
                 "sm:border sm:rounded-lg",
                 activeRoomId === roomId
