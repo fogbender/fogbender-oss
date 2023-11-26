@@ -255,19 +255,6 @@ export const RoomItem: React.FC<{
           {formatRosterTs(previewMessage?.createdTs || room.createdTs)}
         </span>
       </div>
-      {isAgent && (
-        <div className="absolute right-0 bottom-1 -mb-1 mr-1 opacity-100 group-hover:opacity-100 sm:opacity-0">
-          <span
-            className="fog:box-shadow-s fog:text-body-s flex items-center rounded-full bg-white py-1 px-2 leading-none text-gray-500 hover:text-gray-800"
-            onClick={e => {
-              e.stopPropagation();
-              onSettingsClick(room.id);
-            }}
-          >
-            <Icons.Gear className="w-4" />
-          </span>
-        </div>
-      )}
     </div>
   );
 };
