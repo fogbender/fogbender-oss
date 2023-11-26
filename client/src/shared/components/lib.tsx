@@ -436,7 +436,7 @@ export const FilterInput = React.forwardRef<HTMLInputElement, FilterInputProps>(
         className={classNames(
           wrapperClassName,
           "relative flex items-center",
-          noBorder !== true && "border-b border-gray-200"
+          noBorder !== true && "border-b border-gray-200 dark:border-gray-500"
         )}
         onClick={e => {
           e.stopPropagation();

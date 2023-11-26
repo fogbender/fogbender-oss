@@ -75,6 +75,7 @@ export const Search: React.FC<{
     <div
       className={classNames(
         "relative flex h-full flex-col justify-end overflow-hidden bg-white focus:outline-none",
+        "dark:bg-brand-dark-bg",
         singleRoomMode
           ? "sm:border-l sm:px-2"
           : [
@@ -116,7 +117,7 @@ export const Search: React.FC<{
       <div
         className={classNames("flex flex-1 flex-col justify-start overflow-x-hidden text-black")}
       >
-        <form onSubmit={onSearch} className="mx-2 bg-white">
+        <form onSubmit={onSearch} className={classNames("mx-2 bg-white", "dark:bg-brand-dark-bg")}>
           <FilterInput
             placeholder="Search terms"
             value={searchTerm}

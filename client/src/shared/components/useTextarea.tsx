@@ -668,7 +668,10 @@ export const useTextarea = ({
               className={classNames(
                 "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 dark:placeholder:text-gray-400 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none",
                 "dark:text-white",
-                focused ? "bg-blue-50 dark:bg-gray-700" : "bg-gray-100 dark:bg-brand-dark-bg"
+                "border",
+                focused
+                  ? "bg-blue-50 dark:bg-gray-700 border-transparent"
+                  : "bg-gray-100 dark:bg-brand-dark-bg border-transparent dark:border-gray-700"
               )}
               onFocus={() => {
                 setFocused(true);
