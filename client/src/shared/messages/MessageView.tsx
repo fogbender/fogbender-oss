@@ -1175,6 +1175,15 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
     }
     return;
   }, [messageLinkCopied]);
+  React.useEffect(() => {
+    if (messageTextCopied) {
+      const timer = setTimeout(() => {
+        setMessageTextCopied(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+    return;
+  }, [messageTextCopied]);
   useClickOutside(menuRef, () => setShowMenu(false), !showMenu);
 
   const room = roomId && roomById(roomId);
@@ -1292,9 +1301,7 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
               text={`${window.location.href}/${message.roomId}/${message.id}`}
               onCopy={() => setMessageLinkCopied(true)}
             >
-              <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
-                {!messageLinkCopied ? "Copy link to message" : "messageLinkCopied"}
-              </button>
+              <AnimateOnCopy show={messageLinkCopied}>Copy link to message</AnimateOnCopy>
             </ClipboardCopy>
           )}
           <ClipboardCopy
@@ -1302,12 +1309,26 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
             text={message.rawText}
             onCopy={() => setMessageTextCopied(true)}
           >
-            <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
-              {!messageTextCopied ? "Copy text" : "Copied ✓"}
-            </button>
+            <AnimateOnCopy show={messageTextCopied}> Copy text</AnimateOnCopy>
           </ClipboardCopy>
         </div>
       )}
     </>
   );
 });
+
+const AnimateOnCopy = ({ show, children }: { show: boolean; children: React.ReactNode }) => {
+  return (
+    <button className="px-4 py-2 text-left text-black dark:text-white w-full whitespace-nowrap">
+      {children}{" "}
+      <span
+        className={classNames("transition-opacity duration-200 ease-in-out", {
+          "opacity-100": show,
+          "opacity-0": !show,
+        })}
+      >
+        ✅
+      </span>
+    </button>
+  );
+};
