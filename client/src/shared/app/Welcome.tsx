@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import { type Helpdesk } from "fogbender-proto";
-import React from "react";
+import type { Helpdesk } from "fogbender-proto";
+import type React from "react";
 
 import { Avatar, ThickButton } from "../components/lib";
 import { isExternalHelpdesk } from "../utils/format";

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { type Room as RoomT } from "fogbender-proto";
+import type { Room as RoomT } from "fogbender-proto";
 import React from "react";
 
 import { formatCustomerName, isInternalHelpdesk } from "../utils/format";

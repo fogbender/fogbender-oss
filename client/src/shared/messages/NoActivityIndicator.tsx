@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 
 export const NoActivityIndicator: React.FC<{
   id: string;

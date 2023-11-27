@@ -2,6 +2,7 @@
   "name": "fogbender-client",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "dependencies": {
     "@astrojs/react": "^2.0.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",

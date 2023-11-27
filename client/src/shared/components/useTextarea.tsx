@@ -19,7 +19,7 @@ import { SourceMessages } from "../messages/MessageView";
 import { modeAtom } from "../store/config.store";
 import { formatCustomerName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
-import { type DeletedFileIdsAtom, type FileIdsAtom } from "../utils/useFileUpload";
+import type { DeletedFileIdsAtom, FileIdsAtom } from "../utils/useFileUpload";
 import { usePrevious } from "../utils/usePrevious";
 
 import {

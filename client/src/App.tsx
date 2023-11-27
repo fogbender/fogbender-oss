@@ -1,10 +1,10 @@
-import { isUserToken, isVisitorToken, Token } from "fogbender";
+import { isUserToken, isVisitorToken, type Token } from "fogbender";
 import {
-  ClientSession,
+  type ClientSession,
   getServerApiUrl,
-  UserToken,
-  VisitorInfo,
-  VisitorToken,
+  type UserToken,
+  type VisitorInfo,
+  type VisitorToken,
 } from "fogbender-proto";
 import { useSetAtom } from "jotai";
 import { parse } from "query-string";
@@ -16,7 +16,7 @@ import Hand from "./assets/hand.png";
 import Unicorn from "./assets/unicorn.png";
 import {
   App as AppBody,
-  AuthorMe,
+  type AuthorMe,
   ErrorPageFallback,
   FogbenderLogo,
   GalleryModal,

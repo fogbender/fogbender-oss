@@ -32,7 +32,7 @@ import {
 } from "../utils/format";
 import { formatRosterTs } from "../utils/formatTs";
 
-import { type LayoutOptions } from "./LayoutOptions";
+import type { LayoutOptions } from "./LayoutOptions";
 
 export const Roster: React.FC<{
   openRoomIds: string[];

@@ -6,7 +6,7 @@ import React, { Suspense } from "react";
 
 import { MessageFileThumbnail } from "../messages/MessageFileThumbnail";
 import { fileToBuffer } from "../utils/readFile";
-import { type FileUploads, type Upload } from "../utils/useFileUpload";
+import type { FileUploads, Upload } from "../utils/useFileUpload";
 
 export const fileToAtom = (file: File) => {
   const fileIdAtom = atom<string | undefined>(undefined);

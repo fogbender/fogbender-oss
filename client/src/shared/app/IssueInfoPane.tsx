@@ -15,11 +15,11 @@ import { useQuery } from "react-query";
 import { DetailedRoomsTable } from "../components/DetailedRoomsTable";
 import { Icons, SwitchOff, SwitchOn } from "../components/Icons";
 import { LinkButton } from "../components/lib";
-import { type Agent } from "../types";
+import type { Agent } from "../types";
 import { queryKeys } from "../utils/client";
 import { renderTag } from "../utils/format";
 
-import { type LayoutOptions } from "./LayoutOptions";
+import type { LayoutOptions } from "./LayoutOptions";
 
 dayjs.extend(relativeTime);
 
