@@ -176,7 +176,7 @@ export const TimezoneSelector = ({ selectedTimezone }: TimezoneSelectorProps) =>
   return (
     <div ref={menuRef} className="relative cursor-pointer">
       <div
-        className="w-52 p-2 cursor-pointer bg-gray-100 font-body flex justify-between text-sm rounded-lg pl-4 "
+        className="w-52 p-2 cursor-pointer bg-gray-100 dark:bg-black font-body flex justify-between text-sm rounded-lg pl-4 "
         onClick={() => {
           setShowTimezoneMenu(s => !s);
         }}
@@ -189,7 +189,7 @@ export const TimezoneSelector = ({ selectedTimezone }: TimezoneSelectorProps) =>
       {showTimezoneMenu && (
         <div
           className={classNames(
-            "z-20 absolute top-12 rounded-md left-0 max-w-80 py-2 bg-white fog:box-shadow-m"
+            "z-20 absolute top-12 rounded-md left-0 max-w-80 py-2 bg-white dark:bg-black fog:box-shadow-m"
           )}
         >
           <SelectSearch

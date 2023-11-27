@@ -208,7 +208,7 @@ export const Billing = ({
               </table>
 
               {billing && billing.used_seats < billing.free_seats + billing.paid_seats && (
-                <div className="mt-4 text-sm text-gray-600">
+                <div className="mt-4 text-sm text-gray-600 dark:text-white">
                   Note: Even though your current usage falls under the free tier, to maintain a
                   subscription, you must be paying for at least one seat. You can{" "}
                   <button
@@ -236,9 +236,13 @@ export const Billing = ({
 };
 
 const Row = ({ children }: { children: React.ReactNode }) => {
-  return <tr className="even:bg-gray-50 odd:bg-blue-50">{children}</tr>;
+  return (
+    <tr className="even:bg-gray-50 dark:even:bg-brand-dark-bg dark:odd:bg-black odd:bg-blue-50">
+      {children}
+    </tr>
+  );
 };
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
-  return <td className="p-1 odd:text-gray-600 even:font-medium">{children}</td>;
+  return <td className="p-1 odd:text-gray-600 dark:odd:text-white even:font-medium">{children}</td>;
 };

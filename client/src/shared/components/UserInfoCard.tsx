@@ -13,7 +13,7 @@ export const UserInfoCard: React.FC<{
   const authorEmail = useAuthorEmail(author);
   return (
     <div>
-      <div className="flex rounded-lg shadow-lg truncate gap-x-4 p-3 bg-white max-w-min">
+      <div className="flex rounded-lg shadow-lg truncate gap-x-4 p-3 bg-white dark:bg-black max-w-min">
         <div className="truncate flex flex-col">
           <div className="flex items-center truncate fog:text-chat-username-m my-0.5">
             <span className="truncate">{author.name}</span>

@@ -370,11 +370,11 @@ const Hours = () => {
   const [hintPosition] = useAtom(hintPositionAtom);
 
   return (
-    <div className=" font-body rounded-xl fog:box-shadow bg-white px-2 pt-2 h-[608px]">
+    <div className=" font-body rounded-xl fog:box-shadow bg-white dark:bg-gray-600 px-2 pt-2 h-[608px]">
       {hours.map(h => (
         <div className="relative mb-2" key={h}>
           {h % 2 === 0 && (
-            <span className={classNames("w-4 text-xs text-gray-400 block h-full")}>
+            <span className={classNames("w-4 text-xs text-gray-400 dark:text-white block h-full")}>
               <span>{((h / 2) % 24).toString().padStart(2, "0")}</span>
             </span>
           )}
@@ -658,12 +658,12 @@ const HalfHour = (props: HalfHourProps) => {
   };
 
   const classes = {
-    "bg-blue-400": isHourInSelection,
-    "hover:bg-blue-100": !isHourInSelection,
+    "bg-blue-400 dark:bg-blue-700": isHourInSelection,
+    "hover:bg-blue-100 hover:dark:bg-blue-400": !isHourInSelection,
     "rounded-t": currentHour === START_HOUR,
     "rounded-b": currentHour === FINISH_HOUR,
-    "bg-blue-100": isHourInHoveredRange,
-    "bg-gray-100": !isHourInSelection && !isHourInHoveredRange,
+    "bg-blue-100 dark:bg-blue-400": isHourInHoveredRange,
+    "bg-gray-100 dark:bg-gray-500": !isHourInSelection && !isHourInHoveredRange,
   };
 
   return (
@@ -710,7 +710,7 @@ const ScheduledHour = (props: ScheduledHourProps) => {
     "rounded-b": !isStartTime && currentHour === FINISH_HOUR,
     "rounded-tl": isStartTime && currentHour === START_HOUR,
     "rounded-bl": isStartTime && currentHour === FINISH_HOUR,
-    "bg-blue-400": isAvailable,
+    "bg-blue-400 dark:bg-blue-700": isAvailable,
     "!bg-brand-pink-500": !isAvailable,
   });
 
@@ -729,7 +729,7 @@ const ScheduledHour = (props: ScheduledHourProps) => {
           onMouseOver={onMouseOver}
           className={classNames(
             "h-3 w-4 absolute top-0 border-rounded-r-lg right-0 translate-x-full",
-            { "bg-blue-400": isAvailable, "bg-brand-pink-500": !isAvailable }
+            { "bg-blue-400 dark:bg-blue-700": isAvailable, "bg-brand-pink-500": !isAvailable }
           )}
         />
       )}
@@ -776,7 +776,7 @@ const ScheduleManager = (props: ScheduleManagerProps) => {
     <div
       onClick={stopPropagation}
       ref={menuRef}
-      className="absolute -right-4 top-0 translate-x-full max-w-min rounded-lg flex px-3 py-1 bg-white fog:box-shadow-s z-10"
+      className="absolute -right-4 top-0 translate-x-full max-w-min rounded-lg flex px-3 py-1 bg-white dark:bg-black fog:box-shadow-s z-10"
     >
       <div className="flex flex-col gap-2 font-body">
         <AvailabilityButton
@@ -864,8 +864,13 @@ const Day = React.memo(
     const isWeekend = dayIndex === 5 || dayIndex === 6;
 
     return (
-      <div className={classNames("flex flex-col flex-grow relative", dayIndex !== 0 && "border-l")}>
-        <span className="flex justify-center items-center border-b h-10 relative font-semibold capitalize text-xs">
+      <div
+        className={classNames(
+          "flex flex-col flex-grow relative dark:border-gray-500",
+          dayIndex !== 0 && "border-l"
+        )}
+      >
+        <span className="flex justify-center items-center border-b dark:border-gray-500 h-10 relative font-semibold capitalize text-xs">
           <span className={classNames(isWeekend && "text-gray-400")}>{day}</span>
           {dayIndex + 1 === currentDay && (
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
@@ -984,7 +989,7 @@ const LaneAssignment = ({
       {showOptions && (
         <div
           className={classNames(
-            "z-20 absolute top-12 rounded-md right-0 max-w-80 py-2 bg-white fog:box-shadow-m"
+            "z-20 absolute top-12 rounded-md right-0 max-w-80 py-2 bg-white dark:bg-black fog:box-shadow-m"
           )}
         >
           <SelectSearch
@@ -1005,7 +1010,7 @@ const LaneAssignment = ({
 
 const Pill = ({ text }: { text: string }) => {
   return (
-    <span className="bg-brand-pink-500 font-body font-bold text-xs justify-center text-white inline-flex text-center px-1 py-0 rounded-md">
+    <span className="bg-blue-400 dark:bg-blue-700 font-body font-bold text-xs justify-center text-white inline-flex text-center px-1 py-0 rounded-md">
       {text}
     </span>
   );
@@ -1029,7 +1034,7 @@ const AgentSelector = ({
         })
       }
     >
-      <div className="w-52 rounded-xl bg-gray-100 h-10 flex items-center px-3">
+      <div className="w-52 rounded-xl bg-gray-100 dark:bg-black h-10 flex items-center px-3">
         {agent ? (
           <div className="w-full flex items-center justify-between gap-1">
             <div className="flex gap-1 fog:text-caption-m items-center truncate">
@@ -1048,7 +1053,7 @@ const AgentSelector = ({
           </div>
         ) : (
           <div className="flex gap-1 items-center">
-            <Icons.InvitedUserIcon className="w-6 h-6" />
+            <Icons.InvitedUserIcon className="w-6 h-6 dark:text-black" />
             <span className="text-xs">Add agent</span>
           </div>
         )}
@@ -1208,10 +1213,10 @@ const AgentScheduleCard = () => {
 const AgentView = (props: AgentViewProps) => {
   const { image_url, name, size } = props;
   return (
-    <div className="flex items-center gap-x-2 p-2 hover:bg-gray-200 cursor-pointer">
+    <div className="flex items-center gap-x-2 p-2 cursor-pointer">
       <Avatar url={image_url} name={name} size={size} />
       <div className="flex items-center truncate gap-x-1">
-        <span className="flex-1 truncate">{name}</span>
+        <span className="flex-1 truncate t">{name}</span>
         <Icons.AgentMark />
       </div>
     </div>
