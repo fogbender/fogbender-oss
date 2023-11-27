@@ -166,7 +166,7 @@ const TeamTabs: React.FC<{
                   "flex-1 md:flex-none fog:text-header3 justify-center leading-5 ml-4 px-6 py-2 text-center whitespace-nowrap cursor-pointer",
                   tab === t.name
                     ? "rounded-t-md border-brand-orange-500 border-b-5 text-black dark:text-white"
-                    : "text-blue-700 hover:text-red-500"
+                    : "fog:text-link hover:text-red-500"
                 )}
               >
                 {tabTitle}

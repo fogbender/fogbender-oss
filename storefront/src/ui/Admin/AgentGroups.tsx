@@ -329,7 +329,7 @@ export const AddGroupForm: React.FC<{
                 <div className="flex flex-row text-sm justify-between">
                   <div className="flex place-items-start">Agents</div>
                   <div
-                    className="flex place-items-start cursor-pointer text-blue-700 hover:text-red-500"
+                    className="flex place-items-start cursor-pointer fog:text-link hover:text-red-500"
                     onClick={() => {
                       agentsToShow.map(x => {
                         if (agentGroup?.agents.map(m => m.id).includes(x.id)) {
@@ -465,7 +465,7 @@ export const AddGroupForm: React.FC<{
                       {selectedAgents.length ? `Group members (${selectedAgents.length})` : ""}
                     </div>
                     <div
-                      className="flex cursor-pointer text-blue-700 hover:text-red-500"
+                      className="flex cursor-pointer fog:text-link hover:text-red-500"
                       onClick={() => {
                         selectedAgents.map(x => {
                           if (agentGroup?.agents.map(m => m.id).includes(x.id)) {
