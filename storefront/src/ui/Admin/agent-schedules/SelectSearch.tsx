@@ -33,15 +33,20 @@ export default function SelectSearch<o extends SelectSearchOption>(props: Select
 
   return (
     <Combobox onChange={onChange}>
-      <div className="-mt-2 px-2">
-        <div className={classNames("flex items-center", showOptions && "border-b")}>
-          <Combobox.Label className="w-4 text-gray-500 cursor-pointer">
+      <div className="-mt-2 px-2 dark:bg-black">
+        <div
+          className={classNames(
+            "flex items-center",
+            showOptions && "border-b dark:border-gray-500"
+          )}
+        >
+          <Combobox.Label className="w-4 text-gray-500 dark:text-white cursor-pointer">
             {inputSearchValue ? <XCircleFilled /> : <Icons.Search />}
           </Combobox.Label>
           <Combobox.Input
             ref={inputRef}
             className={
-              "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 text-base sm:text-sm"
+              "flex-1 px-2 py-3 bg-transparent outline-none text-black placeholder-gray-500 dark:bg-black dark:text-white text-base sm:text-sm"
             }
             placeholder={placeholder}
             onChange={evt => {
@@ -55,7 +60,7 @@ export default function SelectSearch<o extends SelectSearchOption>(props: Select
         onFocus={() => {
           inputRef.current?.focus();
         }}
-        className="bg-white focus:outline-none"
+        className="bg-white focus:outline-none dark:bg-black dark:text-white"
       >
         {!!showOptions && (
           <div className="max-h-32 my-2 overflow-y-auto fbr-scrollbar">
@@ -63,7 +68,7 @@ export default function SelectSearch<o extends SelectSearchOption>(props: Select
               <Combobox.Option
                 key={`a-${i}`}
                 value={x}
-                className='data-[headlessui-state~="active"]:bg-gray-200 data-[headlessui-state~="selected"]:bg-gray-200'
+                className='data-[headlessui-state~="active"]:bg-gray-100 dark:data-[headlessui-state~="active"]:bg-gray-600 dark:data-[headlessui-state~="selected"]:bg-gray-600 data-[headlessui-state~="selected"]:bg-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600'
               >
                 {x.option}
               </Combobox.Option>
