@@ -1327,7 +1327,7 @@ const AnimateOnCopy = ({ show, children }: { show: boolean; children: React.Reac
           "opacity-0": !show,
         })}
       >
-        ✅
+        ✓
       </span>
     </button>
   );
