@@ -902,7 +902,7 @@ export const RoomSettings: React.FC<{
           }}
           className={classNames("width-12 invisible pointer-cursor")}
         >
-          <ThickButton className="dark:text-gray-800">Show tags</ThickButton>
+          <ThickButton className="dark:text-brand-dark-bg">Show tags</ThickButton>
         </div>
       </div>
     </form>

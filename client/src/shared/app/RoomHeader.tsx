@@ -133,6 +133,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
   const issueTags = React.useMemo(() => tags.filter(t => t.meta_type === "issue"), [tags]);
 
+  const isConversation = React.useMemo(() => !tags.some(t => t.meta_type === "issue"), [tags]);
+
   const isInternal = isInternalHelpdesk(room?.customerName);
   const isExternal = isExternalHelpdesk(room?.customerName);
 
@@ -254,7 +256,11 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
     if (isIssueClosed) {
       return reopenIssueButton();
-    } else if (isAgent && (isIssueOpen || !room.isTriage || showIfInternal || isExternal)) {
+    } else if (
+      !isConversation &&
+      isAgent &&
+      (isIssueOpen || !room.isTriage || showIfInternal || isExternal)
+    ) {
       return closeIssueButton();
     } else {
       return null;
