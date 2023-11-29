@@ -176,13 +176,6 @@ defmodule Fog.Api.Event.Message do
           t = "Deleted by #{deletedByName}"
           %{text: t, rawText: t, plainText: t}
 
-        m.text
-        |> String.starts_with?(
-          "ubuntu@cwdev-hmg-servico:~$ sudo journalctl -u otelcol-contrib -f"
-        ) ->
-          t = m.text
-          %{text: t, rawText: t, plainText: t}
-
         opts[:without_parsing] ->
           t = m.text
           %{text: t, rawText: t, plainText: t}
