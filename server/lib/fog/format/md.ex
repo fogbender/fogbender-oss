@@ -2,6 +2,12 @@ defmodule Fog.Format.Md do
   import Fog.Format.Helpers
   require Logger
 
+  @max_size 5000
+
+  def parse(text) when byte_size(text) > @max_size do
+    [{"pre", [], [{"code", [], [text], %{}}], %{}}]
+  end
+
   def parse(md) do
     case Earmark.Parser.as_ast(md, earmark_options()) do
       {:ok, ast, _} ->
