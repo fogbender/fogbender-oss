@@ -863,7 +863,7 @@ defmodule Test.Api.MessageTest do
       assert [%Api.Event.Message{text: text, plainText: plain}] =
                load(ctx.user_api, ctx.user_room)
 
-      assert "<p>par1_line1<br />  par1_line2<br />par1_line3</p><p>par2 <a href=\"https://oo.o\" target=\"_blank\">aaa</a></p><p>par3</p><pre><code>code1_line1\n  code1_line2\n\ncode1_line3</code></pre><p>par4<code class=\"inline\">code2</code></p><p>par5 <em>i1</em> <em>i2</em><br />  <strong>strong1</strong> <strong>strong2</strong></p><blockquote><p>quote1<br />reply1</p></blockquote><blockquote><p>quote2</p></blockquote><p>reply2</p><blockquote><p>quote3</p></blockquote><p>not &gt; quote</p><p><code class=\"inline\">code3</code> par5</p>" ==
+      assert "<p>par1_line1<br>  par1_line2<br>par1_line3</p><p>par2 <a href=\"https://oo.o\" target=\"_blank\">aaa</a></p><p>par3</p><pre><code>code1_line1\n  code1_line2\n\ncode1_line3</code></pre><p>par4<code class=\"inline\">code2</code></p><p>par5 <em>i1</em> <em>i2</em><br>  <strong>strong1</strong> <strong>strong2</strong></p><blockquote><p>quote1<br>reply1</p></blockquote><blockquote><p>quote2</p></blockquote><p>reply2</p><blockquote><p>quote3</p></blockquote><p>not &gt; quote</p><p><code class=\"inline\">code3</code> par5</p>" ==
                text
 
       assert "par1_line1\n  par1_line2\npar1_line3\n\npar2 aaa\n\npar3\n\ncode1_line1\n  code1_line2\n\ncode1_line3\n\npar4code2\n\npar5 i1 i2\n  strong1 strong2\n\nquote1\nreply1\n\nquote2\n\nreply2\n\nquote3\n\nnot > quote\n\ncode3 par5"
@@ -885,7 +885,7 @@ defmodule Test.Api.MessageTest do
 
       [%Api.Event.Message{text: text, plainText: plain}] = load(ctx.user_api, ctx.user_room)
 
-      assert "<p><code class=\"inline\">code1</code><br /><code class=\"inline\">code`1</code><br /><code class=\"inline\">code`1`</code><br /><code class=\"inline\">`code1</code></p>" ==
+      assert "<p><code class=\"inline\">code1</code><br><code class=\"inline\">code`1</code><br><code class=\"inline\">code`1`</code><br><code class=\"inline\">`code1</code></p>" ==
                text
 
       assert "code1\ncode`1\ncode`1`\n`code1" = plain
@@ -911,7 +911,7 @@ defmodule Test.Api.MessageTest do
       [%Api.Event.Message{text: text, plainText: plain}] = load(ctx.user_api, ctx.user_room)
 
       assert text ==
-               "<p>1<em> 1</em><br /><em>2 _2<br />_3 3_3</em><br />4<em> </em>4<em> 4</em> <em> </em>5 <em>5</em> 5<br />6 <em>6</em> <em>*6</em><br /><em>7</em>.<br /><em>8</em>!</p>"
+               "<p>1<em> 1</em><br><em>2 _2<br>_3 3_3</em><br>4<em> </em>4<em> 4</em> <em> </em>5 <em>5</em> 5<br>6 <em>6</em> <em>*6</em><br><em>7</em>.<br><em>8</em>!</p>"
 
       assert plain == "11\n2 _2\n_3 3_3\n444 5 5 5\n6 6 *6\n7.\n8!"
     end
@@ -938,7 +938,7 @@ defmodule Test.Api.MessageTest do
                load(ctx.user_api, ctx.user_room)
 
       assert text ==
-               "<p> aaa.com/a<em>b</em>c<br />aaa.aa<br /><a href=\"https://aa.aa\" target=\"_blank\">https://aa.aa</a><br /><code class=\"inline\">aaa.com</code></p><pre><code>fdfdfd aaa.com asasas</code></pre><p><a href=\"http://aaa.com/_1\" target=\"_blank\">http://aaa.com/_1</a>_<br /><a href=\"aa.com/a*b*c\" target=\"_blank\">test</a></p>"
+               "<p> aaa.com/a<em>b</em>c<br>aaa.aa<br><a href=\"https://aa.aa\" target=\"_blank\">https://aa.aa</a><br><code class=\"inline\">aaa.com</code></p><pre><code>fdfdfd aaa.com asasas</code></pre><p><a href=\"http://aaa.com/_1\" target=\"_blank\">http://aaa.com/_1</a>_<br><a href=\"aa.com/a*b*c\" target=\"_blank\">test</a></p>"
 
       assert plain ==
                "aaa.com/abc\naaa.aa\nhttps://aa.aa\naaa.com\n\nfdfdfd aaa.com asasas\n\nhttp://aaa.com/_1_\ntest"

@@ -192,23 +192,12 @@
   },
   "earmark": {
     "builder": "mix",
-    "deps": {
-      "earmark_parser": false
-    },
+    "deps": {},
     "fetcher": "hex",
     "name": "earmark",
     "pkg": "earmark",
-    "sha256": "sha256-kLEG89rYWxM7ENfWKBZ8iCRhI/0c7LRVfYPSHsnmVQQ=",
-    "version": "1.4.34"
-  },
-  "earmark_parser": {
-    "builder": "mix",
-    "deps": {},
-    "fetcher": "hex",
-    "name": "earmark_parser",
-    "pkg": "earmark_parser",
-    "sha256": "sha256-O1OFwtNrBHPQsgaSe4QTQ9Ja2xT5XwEQBiUGswDNWhs=",
-    "version": "1.4.30"
+    "sha256": "sha256-eY2G2z15lk51ndwMB31eslSWjtQmOZ+/WmLeK1/4kQo=",
+    "version": "1.4.46"
   },
   "ecto": {
     "builder": "mix",
