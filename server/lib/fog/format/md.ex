@@ -3,7 +3,7 @@ defmodule Fog.Format.Md do
   require Logger
 
   def parse(md) do
-    case EarmarkParser.as_ast(md, earmark_options()) do
+    case Earmark.Parser.as_ast(md, earmark_options()) do
       {:ok, ast, _} ->
         ast
 
