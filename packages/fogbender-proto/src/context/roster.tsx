@@ -6,7 +6,6 @@ import type {
   EventRoom,
   EventTag,
   EventUser,
-  EventAgentGroup,
   IntegrationCreateIssue,
   IntegrationCreateIssueWithForward,
   IntegrationForwardToIssue,
@@ -23,12 +22,7 @@ import type { Room } from "./sharedRoster";
 import { Author, useSharedRoster, useWs, useWsCalls } from "./ws";
 
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
-import {
-  extractEventRoom,
-  extractEventTag,
-  extractEventUser,
-  extractEventAgentGroup,
-} from "../utils/castTypes";
+import { extractEventRoom, extractEventTag, extractEventUser } from "../utils/castTypes";
 import { eventRoomToRoom } from "../utils/counterpart";
 import { useLastIncomingMessage } from "./useLastIncomingMessage";
 
@@ -481,87 +475,6 @@ export const useUserTags = ({ userId }: { userId: string | undefined }) => {
   }, [userId, serverCall]);
 
   return { tags, helpdeskTags: helpdesk?.tags || [] };
-};
-
-export const useAgentGroups = ({ vendorId }: { vendorId: string }) => {
-  const lastIncomingMessage = useLastIncomingMessage();
-  const { token, serverCall } = useWs();
-
-  const [groups, setGroups] = React.useState<EventAgentGroup[]>([]);
-  const [loading, setLoading] = React.useState(false);
-
-  const updateGroups = React.useCallback((groupsIn: EventAgentGroup[]) => {
-    setGroups(groups => {
-      let newGroups = groups;
-      groupsIn
-        .filter(g => g.vendorId === vendorId)
-        .forEach(group => {
-          newGroups = newGroups.filter(x => x.name !== group.name);
-          newGroups.push(group);
-        });
-      return newGroups;
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (vendorId && lastIncomingMessage?.msgType === "Event.AgentGroup") {
-      updateGroups([lastIncomingMessage]);
-    }
-  }, [lastIncomingMessage]);
-
-  const isMounted = React.useRef(false);
-
-  React.useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (vendorId && token) {
-      const topic = `vendor/${vendorId}/groups`;
-
-      setLoading(true);
-
-      serverCall({
-        msgType: "Stream.Get",
-        topic,
-      })
-        .then(x => {
-          if (x.msgType !== "Stream.GetOk") {
-            throw x;
-          }
-          updateGroups(extractEventAgentGroup(x.items));
-          setLoading(false);
-        })
-        .catch(() => {});
-
-      serverCall({
-        msgType: "Stream.Sub",
-        topic,
-      }).then(x => {
-        console.assert(x.msgType === "Stream.SubOk");
-      });
-    }
-  }, [vendorId, token, serverCall]);
-
-  React.useEffect(() => {
-    return () => {
-      const topic = `vendor/${vendorId}/groups`;
-
-      if (vendorId && token) {
-        serverCall({
-          msgType: "Stream.UnSub",
-          topic,
-        }).then(x => {
-          console.assert(x.msgType === "Stream.UnSubOk");
-        });
-      }
-    };
-  }, [vendorId, serverCall]);
-
-  return { groups, loading };
 };
 
 export const useHelpdeskRooms = ({ helpdeskId }: { helpdeskId: string | undefined }) => {
