@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
-import { type EventAgentGroup, useAgentGroups, useWsCalls } from "fogbender-proto";
+import { type EventAgentGroup, useWsCalls, useSharedRoster } from "fogbender-proto";
 import React from "react";
 
 import { Icons, XCircleFilled } from "../components/Icons";
@@ -15,8 +15,8 @@ export const RoomAssignees: React.FC<{
   agents?: Agent[];
   readOnly?: boolean;
   vendorId: string;
-}> = ({ ourId, roomId, roomTags, agents, readOnly = false, vendorId }) => {
-  const { groups } = useAgentGroups({ vendorId });
+}> = ({ ourId, roomId, roomTags, agents, readOnly = false }) => {
+  const { agentGroups: groups } = useSharedRoster();
 
   const { updateRoom } = useWsCalls();
 
