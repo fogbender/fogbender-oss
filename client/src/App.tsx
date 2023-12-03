@@ -12,8 +12,8 @@ import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClientProvider } from "react-query";
 
-import Hand from "./assets/hand.png";
-import Unicorn from "./assets/unicorn.png";
+import Hand from "./assets/hand.png?url";
+import Unicorn from "./assets/unicorn.png?url";
 import {
   App as AppBody,
   type AuthorMe,

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import React from "react";
 import { NavLink as NavLinkOriginal, useLocation, useMatch } from "react-router-dom";
 
-import logo from "../logo.svg";
+import logo from "../logo.svg?url";
 import { useUserProfile, useVendorName } from "../store";
 
 import { AuthContext } from "./Auth";

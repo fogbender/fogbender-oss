@@ -187,7 +187,7 @@ export const MessageForward: React.FC<{
       }
       setForwarding(true);
       try {
-        await messageCreateMany(
+        messageCreateMany(
           Array.from(selectedRooms).map(targetRoomId => ({
             msgType: "Message.Create",
             clientId: uuidv4(),

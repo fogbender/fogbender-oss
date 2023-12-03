@@ -5,6 +5,7 @@
     "ignoreDeprecations": "5.0",
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
+    "allowJs": true,
     "checkJs": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react"

@@ -358,7 +358,7 @@ export const useTextarea = ({
   const onEditorKeyPress = React.useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (!browserDetect().mobile) {
-        if (e.which === 13 && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           doSend();
         }
@@ -625,13 +625,15 @@ export const useTextarea = ({
               onChange={onChange}
               onKeyUp={onEditorKeyUp}
               onKeyDown={e => {
+                /*
                 const UP = 38;
                 const DOWN = 40;
                 const TAB = 9;
                 const ENTER = 13;
-                const isUp = e.which === UP;
-                const isDown = e.which === DOWN;
-                const isEnterOrTab = e.which === TAB || e.which === ENTER;
+                */
+                const isUp = e.key === "ArrowUp";
+                const isDown = e.key === "ArrowDown";
+                const isEnterOrTab = e.key === "Tab" || e.key === "Enter";
                 if (isEnterOrTab || isUp || isDown) {
                   readMentions().then(mentions => {
                     // mentions is undefined if mention picker is not visible
