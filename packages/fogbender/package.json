@@ -17,15 +17,21 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs"
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    }
   },
   "source": "src/index.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsup --dts",
+    "build": "tsup",
     "build-faster": "tsup --clean false",
     "start": "run-p start:tsup start:tsc",
     "start:tsup": "tsup --watch",
@@ -56,6 +62,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "tsup": "^8.0.1",
+    "tsup-preset-solid": "^2.1.0",
     "typescript": "^5.2.2"
   },
   "files": [
@@ -64,5 +71,7 @@
   "dependencies": {
     "solid-js": "1.8.0",
     "twind": "^0.16.16"
-  }
+  },
+  "browser": {},
+  "typesVersions": {}
 }
