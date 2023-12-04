@@ -66,6 +66,8 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
 
   const selectedAvatarLibraryUrl = featureOptions?.avatar_library_url;
 
+  console.log({avatarLibraries, selectedAvatarLibraryUrl});
+
   return (
     <ExpandableSection title="User avatar library" expand={false}>
       <p className="my-4">
@@ -82,7 +84,7 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
                 id={l.id}
                 name={l.name}
                 url={l.url}
-                checked={selectedAvatarLibraryUrl === l.url}
+                checked={l.url.startsWith(selectedAvatarLibraryUrl)}
                 onChange={v => setAvatarLibraryUrlMutation.mutate(v)}
               />
             ))}
