@@ -112,7 +112,7 @@ function Container(props: {
             props.closeable && !props.verbose
               ? "bottom-[28px] right-[24px]"
               : "bottom-2 right-4 sm:right-0",
-            "absolute top-auto w-8 h-8 flex items-center justify-center rounded-full bg-white transition duration-700 group-hover:opacity-100",
+            "absolute top-auto w-8 h-8 flex items-center justify-center rounded-none bg-white transition duration-700 group-hover:opacity-100",
             alwaysVisibleOnTouchDevice()
           )}
           style={{ "box-shadow": "0px 3px 10px rgba(19, 29, 118, 0.1)" }}
@@ -143,7 +143,7 @@ function Talky(props: {
         props.verbose
           ? "sm:h-[calc(60vh+30px)] sm:mr-2.5"
           : "-mb-[48px] sm:h-[calc(60vh+60px)] sm:mr-8",
-        "z-10 shadow-md w-full h-full rounded-xl bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
+        "z-10 shadow-md w-full h-full rounded-none bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
       )}
     >
       <Iframe renderIframe={props.renderIframe} />
@@ -155,7 +155,7 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
   let cleanup = () => {};
   return (
     <div
-      class={tw("flex-1 rounded-xl overflow-hidden")}
+      class={tw("flex-1 rounded-none overflow-hidden")}
       ref={el => {
         if (el) {
           cleanup = props.renderIframe(el);
@@ -178,7 +178,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
 
   return props.verbose ? (
     <div
-      class={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-full bg-white transform origin-bottom-right scale-75`}
+      class={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-none bg-white transform origin-bottom-right scale-75`}
       style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
     >
       <div>
@@ -186,7 +186,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
       </div>
       <div class={tw`text-left text-sm font-semibold`}>Customer support</div>
       <div
-        class={tw`absolute top-0 right-0 text-white rounded-full bg-brand-red-500 text-xs leading-none`}
+        class={tw`absolute top-0 right-0 text-white rounded-none bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
@@ -206,7 +206,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
         <FloatingSvgOpened />
       </div>
       <div
-        class={tw`absolute text-white rounded-full bg-brand-red-500 text-xs leading-none`}
+        class={tw`absolute text-white rounded-none bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           top: "20px",
