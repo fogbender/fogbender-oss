@@ -26,7 +26,7 @@ defmodule Fog.Ai.Api do
     res =
       client()
       |> Tesla.post(path, %{
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo-instruct",
         prompt: prompt,
         max_tokens: 1500,
         temperature: 0.9,
@@ -86,7 +86,7 @@ defmodule Fog.Ai.Api do
     {:ok, %Tesla.Env{body: body, status: 200}} =
       client()
       |> Tesla.post(path, %{
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo-instruct",
         input: input,
         instruction: instruction
       })
