@@ -73,6 +73,8 @@ defmodule Fog.Comms.Slack.Agent.Hook do
                       {Slack.Utils.author_sess(helpdesk_integration, author), "slack-customer"}
                   end
 
+                text = text |> Slack.Utils.slack_links_to_markdown()
+
                 cmd = %Api.Message.Update{
                   messageId: message_id,
                   fromApp: from_app,
