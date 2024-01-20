@@ -5,7 +5,7 @@ import { blogUrl } from "../../pages/blog.astro";
 import Sidebar from "./Sidebar.astro";
 
 const activeCl = "border-black";
-const defaultCl = "border inline-flex border-transparent text-sm rounded-lg py-2 px-4";
+const defaultCl = "border inline-flex text-sm rounded-lg py-2 px-4";
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.replace(".html", "").slice(1); // remove the first "/" and .html from the end in prod
 const commonPaddingClass = "px-4 md:px-8 lg:max-xl:px-20 xl:px-5";
@@ -16,6 +16,11 @@ const links = [
   { path: "/pricing", name: "Pricing" },
   { path: "/faq", name: "FAQ" },
   { path: blogUrl, name: "Blog" },
+];
+
+const authUrls = [
+  { text: "Sign&nbsp;in", href: "/admin" },
+  { text: "Sign&nbsp;up", href: "/signup" },
 ];
 ---
 
@@ -85,6 +90,7 @@ const links = [
                               : "hover:border-gray-200",
                           ],
                       isAdminPath && "md:max-lg:mr-1",
+                      { "border-transparent": !isActivePath },
                     ]}
                   >
                     {link.name}
@@ -94,15 +100,23 @@ const links = [
             }
           </div>
         </div>
+
         <div class="hidden space-x-2 text-sm md:block lg:space-x-6">
-          <a
-            class:list={[defaultCl, "px-1 min-[800px]:px-3 lg:px-4 hover:border-gray-200"]}
-            href="/admin">Sign&nbsp;in</a
-          >
-          <a
-            class:list={[defaultCl, "px-1 min-[800px]:px-3 lg:px-4 hover:border-gray-200"]}
-            href="/signup">Sign&nbsp;up</a
-          >
+          {
+            authUrls.map(url => {
+              const { href, text } = url;
+              return (
+                <a
+                  class:list={[
+                    defaultCl,
+                    "px-1 min-[800px]:px-3 lg:px-4 border-transparent hover:border-gray-200",
+                  ]}
+                  href={href}
+                  set:html={text}
+                />
+              );
+            })
+          }
         </div>
         <Hamburger className="md:hidden" />
       </div>
