@@ -188,10 +188,11 @@ defmodule Fog.Api.Search do
   defp deprecate(
          %Roster{tag_ids: tag_ids, tag_names: tag_names, tagIds: tagIds, tagNames: tagNames} = m
        ) do
-    unless is_nil(tag_ids), do: Logger.warn("Search.Roster tag_ids is deprecated -- use tagIds")
+    unless is_nil(tag_ids),
+      do: Logger.warning("Search.Roster tag_ids is deprecated -- use tagIds")
 
     unless is_nil(tag_names),
-      do: Logger.warn("Search.Roster tag_names is deprecated -- use tagNames")
+      do: Logger.warning("Search.Roster tag_names is deprecated -- use tagNames")
 
     %Roster{
       m

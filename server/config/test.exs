@@ -9,7 +9,7 @@ config :fog, Fog.Repo,
   migration_timestamps: [type: :utc_datetime_usec],
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :logger, level: :warn
+config :logger, level: :warning
 
 config :fog, Fog.Scheduler, jobs: []
 

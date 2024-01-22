@@ -116,7 +116,7 @@ defmodule Fog.Api do
   end
 
   defp run_handlers(message, [], _session) do
-    Logger.warn("Unknown API message: #{inspect(message)}")
+    Logger.warning("Unknown API message: #{inspect(message)}")
     :unknown
   end
 

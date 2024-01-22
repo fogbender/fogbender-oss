@@ -27,7 +27,7 @@ defmodule Fog.Plug.TokenAuth do
         |> assign(:token_scopes, scopes)
 
       {:error, error} ->
-        Logger.warn("Invalid token: #{token} (#{inspect(error)})")
+        Logger.warning("Invalid token: #{token} (#{inspect(error)})")
         send_not_authorized_json(conn, %{"error" => "Invalid token"})
     end
   end
