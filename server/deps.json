@@ -42,8 +42,8 @@
     "fetcher": "hex",
     "name": "briefly",
     "pkg": "briefly",
-    "sha256": "sha256-xuv4/D3NSVDdEMA+lT+09VOovPD/TIxA1xVCQ0zX4EY=",
-    "version": "0.3.0"
+    "sha256": "sha256-vWhKqSrYt7Tg2SwxIAmTxLwUafxozW1fFRRAQb0Vy1c=",
+    "version": "0.5.1"
   },
   "bypass": {
     "builder": "mix",
@@ -64,8 +64,8 @@
     "fetcher": "hex",
     "name": "certifi",
     "pkg": "certifi",
-    "sha256": "sha256-Jm2ka9sG1sbTX955m8so022YXUJK18CLW7SPW1zdRkE=",
-    "version": "2.9.0"
+    "sha256": "sha256-7mjYXfIuVUBAzbS+EA8zhzrGBROHuvao9s6CJyNA/xw=",
+    "version": "2.12.0"
   },
   "combine": {
     "builder": "mix",
@@ -387,8 +387,8 @@
     "fetcher": "hex",
     "name": "hackney",
     "pkg": "hackney",
-    "sha256": "sha256-pOza/0QpfptYlK5JnpoHDqGIjISv3R/Zt7K8OElQEo4=",
-    "version": "1.18.1"
+    "sha256": "sha256-r5TVyfl4V9slcJCkoQ5UJuy29JGKpcxmZ5hWauFLZf0=",
+    "version": "1.18.2"
   },
   "hkdf": {
     "builder": "mix",
@@ -609,8 +609,8 @@
     "fetcher": "hex",
     "name": "parse_trans",
     "pkg": "parse_trans",
-    "sha256": "sha256-B82Vd4hfVjYtQU6MTE5r3xDUOodnq7ktJMvoskxUiIs=",
-    "version": "3.3.1"
+    "sha256": "sha256-YgpAbOddragnuC5FPBnPBndr4mb1pnz/NOHvLLtg5Jo=",
+    "version": "3.4.1"
   },
   "parsey": {
     "builder": "mix",
@@ -764,8 +764,8 @@
     "fetcher": "hex",
     "name": "ssl_verify_fun",
     "pkg": "ssl_verify_fun",
-    "sha256": "sha256-vbDSRx9FPIj/OQjnaG+G+b4yfQZcwewW+kVAGX6gRoA=",
-    "version": "1.1.6"
+    "sha256": "sha256-/kwZDo83QB0wFnyMQF7aGUafNFd5h8dt3mE+g4u8Z/g=",
+    "version": "1.1.7"
   },
   "sweet_xml": {
     "builder": "mix",
@@ -799,6 +799,7 @@
     "deps": {
       "castore": true,
       "exjsx": true,
+      "finch": true,
       "fuse": true,
       "gun": true,
       "hackney": true,
@@ -806,14 +807,15 @@
       "jason": true,
       "mime": false,
       "mint": true,
+      "msgpax": true,
       "poison": true,
       "telemetry": true
     },
     "fetcher": "hex",
     "name": "tesla",
     "pkg": "tesla",
-    "sha256": "sha256-JkjxwnYQL5JQKZ4Le1fzBxxngnNJ2Rc/NMKBdWobEkw=",
-    "version": "1.3.3"
+    "sha256": "sha256-EFAfNgzZJqMJUBKHRwNyrxpuHL7Q9DlJIDpMEzALx58=",
+    "version": "1.8.0"
   },
   "timex": {
     "builder": "mix",

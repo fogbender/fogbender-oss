@@ -39,7 +39,7 @@ defmodule Fog.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:briefly, "~> 0.3"},
+      {:briefly, "~> 0.5"},
       {:configparser_ex, "~> 4.0"},
       {:corsica, "~> 1.0"},
       {:csv, "~> 2.3"},
@@ -60,7 +60,7 @@ defmodule Fog.MixProject do
       {:recon, "~> 2.5"},
       {:snowflake, "~> 1.0"},
       {:sweet_xml, "~> 0.6"},
-      {:tesla, "~> 1.3.0"},
+      {:tesla, "~> 1.8.0"},
       {:ueberauth_google, "~> 0.8"},
       {:ueberauth, "~> 0.6"},
       {:syn, "~> 2.1"},
@@ -93,6 +93,7 @@ defmodule Fog.MixProject do
       {:floki, "~> 0.33.0"},
       {:earmark, "~> 1.4"},
       {:fast_html, "~> 2.0"},
+      {:ssl_verify_fun, "~> 1.1.7"},
 
       # dev
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
