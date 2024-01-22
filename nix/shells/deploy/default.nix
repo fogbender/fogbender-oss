@@ -1,10 +1,10 @@
-{ pkgs, unstable, ... }:
+{ pkgs, ... }:
 
 with pkgs; mkShell {
   buildInputs = [
-    unstable.pulumi-bin
-    unstable.nodejs
-    unstable.yarn
+    pulumi-bin
+    nodejs
+    yarn
     python3
     deploy-rs
     sops

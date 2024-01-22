@@ -35,7 +35,7 @@ defmodule Fog.Api.Transport.Ws do
     {:ok, state}
   end
 
-  def websocket_info({'EXIT', _, :normal}, state) do
+  def websocket_info({~c"EXIT", _, :normal}, state) do
     {:ok, state}
   end
 
