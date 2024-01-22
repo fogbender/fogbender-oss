@@ -361,7 +361,7 @@ CREATE TABLE public.embeddings_source (
     text text,
     url text NOT NULL,
     description text,
-    status character varying(255),
+    status text,
     workspace_id bigint NOT NULL,
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
@@ -432,8 +432,8 @@ ALTER SEQUENCE public.feature_option_id_seq OWNED BY public.feature_option.id;
 CREATE TABLE public.file (
     id bigint NOT NULL,
     message_id bigint,
-    filename character varying(255) NOT NULL,
-    content_type character varying(255) NOT NULL,
+    filename text NOT NULL,
+    content_type text NOT NULL,
     data jsonb,
     inserted_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -446,10 +446,10 @@ CREATE TABLE public.file (
 
 CREATE TABLE public.fogvite (
     id bigint NOT NULL,
-    invite_sent_to_email character varying(255),
+    invite_sent_to_email text,
     sender_agent_id bigint NOT NULL,
     accepted_by_agent_id bigint,
-    fogvite_code character varying(255) DEFAULT NULL::character varying,
+    fogvite_code text DEFAULT ''::text,
     deleted_at timestamp without time zone,
     inserted_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
@@ -461,7 +461,7 @@ CREATE TABLE public.fogvite (
 --
 
 CREATE TABLE public.fogvite_code (
-    code character varying(255) NOT NULL,
+    code text NOT NULL,
     "limit" bigint,
     disabled boolean DEFAULT false,
     inserted_at timestamp without time zone NOT NULL,
@@ -625,9 +625,9 @@ CREATE TABLE public.message (
     edited_at timestamp without time zone,
     edited_by_agent_id bigint,
     edited_by_user_id bigint,
-    from_name_override character varying(255),
-    from_image_url_override character varying(255),
-    source character varying(255)
+    from_name_override text,
+    from_image_url_override text,
+    source text
 );
 
 
@@ -768,10 +768,10 @@ CREATE TABLE public.msteams_user_mapping (
 
 CREATE TABLE public.org (
     id bigint NOT NULL,
-    name character varying(255),
-    domain character varying(255),
-    logo character varying(255),
-    site character varying(255),
+    name text,
+    domain text,
+    logo text,
+    site text,
     inserted_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -827,7 +827,7 @@ CREATE TABLE public.room (
     type text DEFAULT 'public'::text NOT NULL,
     dialog_id text,
     is_triage boolean DEFAULT false NOT NULL,
-    agent_groups character varying(255)[],
+    agent_groups text[],
     resolved boolean DEFAULT false NOT NULL,
     resolved_by_agent_id bigint,
     resolved_at timestamp without time zone,
@@ -1005,8 +1005,8 @@ CREATE SEQUENCE public.snowflake_id_seq
 
 CREATE TABLE public.subscription_emails (
     id bigint NOT NULL,
-    email character varying(255) NOT NULL,
-    user_info character varying(255),
+    email text NOT NULL,
+    user_info text,
     inserted_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
@@ -1184,7 +1184,7 @@ CREATE TABLE public.vendor_api_token (
     vendor_id bigint,
     created_by_agent_id bigint,
     description text,
-    scopes character varying(255)[],
+    scopes text[],
     is_deleted boolean DEFAULT false,
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
@@ -1282,7 +1282,7 @@ CREATE TABLE public.workspace (
     updated_at timestamp without time zone NOT NULL,
     signature_type text,
     signature_secret text,
-    description character varying(255),
+    description text,
     triage_name text DEFAULT 'Triage'::text NOT NULL,
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
@@ -2582,3 +2582,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230831172052);
 INSERT INTO public."schema_migrations" (version) VALUES (20230915213638);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004060737);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004155001);
+INSERT INTO public."schema_migrations" (version) VALUES (20240122163610);
