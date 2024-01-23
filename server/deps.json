@@ -307,11 +307,12 @@
     "deps": {
       "jason": false
     },
-    "fetcher": "hex",
+    "fetcher": "git",
     "name": "exmoji",
-    "pkg": "exmoji",
-    "sha256": "sha256-BIpFJuXwMUMiq5h2qXUG6asDoYzITxvCaChVFzjyWfo=",
-    "version": "0.3.0"
+    "rev": "ce15b73c0e75ca0094c9fcb8b8411757b55ff060",
+    "sha256": "sha256-gWK+beEHzq9di8nnc8MAIBXzrb1Uwky4bVYTGlvnW1E=",
+    "url": "https://github.com/fogbender/exmoji.git",
+    "version": "git"
   },
   "exsync": {
     "builder": "mix",
