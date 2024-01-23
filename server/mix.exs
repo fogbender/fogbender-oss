@@ -43,7 +43,7 @@ defmodule Fog.MixProject do
       {:configparser_ex, "~> 4.0"},
       {:corsica, "~> 1.0"},
       {:csv, "~> 2.3"},
-      {:ecto_sql, "~> 3.9"},
+      {:ecto_sql, "~> 3.11"},
       {:ex_aws, "~> 2.1.6"},
       {:ex_aws_s3, "~> 2.0"},
       {:ex_aws_ses, "~> 2.1"},

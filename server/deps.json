@@ -85,15 +85,6 @@
     "sha256": "sha256-AubRpVk2GgY8unt1vD6y1q1+YnMMVRzEcDVB/RHmXls=",
     "version": "4.0.0"
   },
-  "connection": {
-    "builder": "mix",
-    "deps": {},
-    "fetcher": "hex",
-    "name": "connection",
-    "pkg": "connection",
-    "sha256": "sha256-ciwesKQY++kbp71ZpH4oAIoYnUfjfg57uFWFoBayhpw=",
-    "version": "1.1.0"
-  },
   "corsica": {
     "builder": "mix",
     "deps": {
@@ -172,14 +163,13 @@
   "db_connection": {
     "builder": "mix",
     "deps": {
-      "connection": false,
       "telemetry": false
     },
     "fetcher": "hex",
     "name": "db_connection",
     "pkg": "db_connection",
-    "sha256": "sha256-wSfBWw+mz7Mu7QdGXgXabIFbAyUI1O18EWEihx33PBI=",
-    "version": "2.4.3"
+    "sha256": "sha256-wvmS0Vcl5yHsf7wRidTs24r+92ZIx0ao4crTXjuKNfM=",
+    "version": "2.6.0"
   },
   "decimal": {
     "builder": "mix",
@@ -209,8 +199,8 @@
     "fetcher": "hex",
     "name": "ecto",
     "pkg": "ecto",
-    "sha256": "sha256-3xe8BrpveKe3ZOShTvh3/l9EmTMsWhBazhH+cBO3LIQ=",
-    "version": "3.9.6"
+    "sha256": "sha256-69PTdyzQ382NdyZZ5B7VJ8KLKoveSwD+A+BGPaDxmDs=",
+    "version": "3.11.1"
   },
   "ecto_sql": {
     "builder": "mix",
@@ -225,8 +215,8 @@
     "fetcher": "hex",
     "name": "ecto_sql",
     "pkg": "ecto_sql",
-    "sha256": "sha256-qPP3IAc7ixrEyXi+Jfp5YO1/1EmXQgwwSkouIAtZZFM=",
-    "version": "3.9.0"
+    "sha256": "sha256-zhQGOrNRRCQnbn42AQitbCMI9tiBZKB2qsijh+H+pjQ=",
+    "version": "3.11.1"
   },
   "elixir_make": {
     "builder": "mix",
@@ -695,7 +685,6 @@
   "postgrex": {
     "builder": "mix",
     "deps": {
-      "connection": false,
       "db_connection": false,
       "decimal": false,
       "jason": true,
@@ -704,8 +693,8 @@
     "fetcher": "hex",
     "name": "postgrex",
     "pkg": "postgrex",
-    "sha256": "sha256-7erWOdxuiCYYwB2PyJEhTEgauaN4jf443V43/R1fsug=",
-    "version": "0.16.5"
+    "sha256": "sha256-ZFj31bcGUryBw+p1n5FzbBajG+AA8wbTxkvN/poYs8w=",
+    "version": "0.17.4"
   },
   "quantum": {
     "builder": "mix",

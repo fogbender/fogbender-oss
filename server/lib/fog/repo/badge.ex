@@ -38,6 +38,7 @@ defmodule Fog.Repo.Badge do
       join: v in assoc(w, :vendor),
       as: :vendor,
       join: au in fragment("(select 'A' as t UNION ALL select 'U')"),
+      on: true,
       left_join: a in assoc(v, :agents),
       on: au.t == "A",
       as: :agent,
@@ -255,9 +256,8 @@ defmodule Fog.Repo.Badge do
           first(
             from(rt in Data.RoomTag,
               join: ut in Data.AuthorTag,
-              where:
-                rt.room_id == parent_as(:room).id and ut.user_id == parent_as(:user).id and
-                  rt.tag_id == ut.tag_id,
+              on: ut.user_id == parent_as(:user).id and rt.tag_id == ut.tag_id,
+              where: rt.room_id == parent_as(:room).id,
               select: %{room_id: rt.room_id, user_id: ut.user_id}
             )
           )
