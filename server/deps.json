@@ -287,8 +287,8 @@
     "deps": {},
     "fetcher": "git",
     "name": "ex_crypto",
-    "rev": "0915c274503f9fc6d6f5fab8c98467e7414cf8fc",
-    "sha256": "sha256-brbbSoJyIOl3BaBqHlpUHP6P0H8UjbbCp7Yc/OrMbWw=",
+    "rev": "0997a1aaebe701523c0a9b71d4acec4a1819354e",
+    "sha256": "sha256-JCYGCcfmVfU3jtmNvAb4f5RwovAlWdhTVn3Mg2iSZ5w=",
     "url": "https://github.com/ntrepid8/ex_crypto.git",
     "version": "git"
   },

@@ -89,7 +89,7 @@ defmodule Fog.MixProject do
       {:exmoji_fogbender, "~> 0.3"},
       {:ex_crypto,
        git: "https://github.com/ntrepid8/ex_crypto.git",
-       ref: "0915c274503f9fc6d6f5fab8c98467e7414cf8fc"},
+       ref: "0997a1aaebe701523c0a9b71d4acec4a1819354e"},
       {:floki, "~> 0.33.0"},
       {:earmark, "~> 1.4"},
       {:fast_html, "~> 2.0"},
