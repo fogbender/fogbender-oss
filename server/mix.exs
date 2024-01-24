@@ -86,7 +86,7 @@ defmodule Fog.MixProject do
       {:simple_markdown, "~> 0.8.2"},
       {:linkify, "~> 0.5"},
       {:iconv, "~> 1.0.10"},
-      {:exmoji, "~> 0.3", git: "https://github.com/fogbender/exmoji.git", ref: "ce15b73"},
+      {:exmoji_fogbender, "~> 0.3"},
       {:ex_crypto,
        git: "https://github.com/ntrepid8/ex_crypto.git",
        ref: "0915c274503f9fc6d6f5fab8c98467e7414cf8fc"},

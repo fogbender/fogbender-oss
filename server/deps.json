@@ -292,17 +292,16 @@
     "url": "https://github.com/ntrepid8/ex_crypto.git",
     "version": "git"
   },
-  "exmoji": {
+  "exmoji_fogbender": {
     "builder": "mix",
     "deps": {
       "jason": false
     },
-    "fetcher": "git",
-    "name": "exmoji",
-    "rev": "ce15b73c0e75ca0094c9fcb8b8411757b55ff060",
-    "sha256": "sha256-gWK+beEHzq9di8nnc8MAIBXzrb1Uwky4bVYTGlvnW1E=",
-    "url": "https://github.com/fogbender/exmoji.git",
-    "version": "git"
+    "fetcher": "hex",
+    "name": "exmoji_fogbender",
+    "pkg": "exmoji_fogbender",
+    "sha256": "sha256-PehC0ZqQTf6YV1Q6Q9cPaCVpDrmj4gOIGC3oGcaUeSE=",
+    "version": "0.3.2"
   },
   "exsync": {
     "builder": "mix",
