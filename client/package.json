@@ -4,7 +4,7 @@
   "private": true,
   "sideEffects": false,
   "dependencies": {
-    "@astrojs/react": "^2.0.2",
+    "@astrojs/react": "^3.0.9",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -26,7 +26,7 @@
     "@types/react-redux": "^7.1.7",
     "@types/throttle-debounce": "^2.1.0",
     "@types/uuid": "^7.0.3",
-    "astro": "3.4.3",
+    "astro": "^4.2.4",
     "autoprefixer": "^10.4.12",
     "chrono-node": "^2.4.1",
     "classnames": "^2.2.6",
