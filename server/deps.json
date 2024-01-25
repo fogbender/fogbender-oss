@@ -105,8 +105,8 @@
     "fetcher": "hex",
     "name": "cowboy",
     "pkg": "cowboy",
-    "sha256": "sha256-LHKfk0tOGqFJr/iC9XxjcsFTmaINVPZcjWe+9YMCG94=",
-    "version": "2.9.0"
+    "sha256": "sha256-Ov3Mtxg8xvFDyxTTz1H6AOU9ueyAzc1SVIL16ZvEHWs=",
+    "version": "2.10.0"
   },
   "cowboy_telemetry": {
     "builder": "rebar3",
@@ -126,8 +126,8 @@
     "fetcher": "hex",
     "name": "cowlib",
     "pkg": "cowlib",
-    "sha256": "sha256-Kz6doLIcRWV1Gm1JAcING0zCXLt/1Q2R0qtt0oe8hqk=",
-    "version": "2.11.0"
+    "sha256": "sha256-Fjtz9jZ6c0GzPHlMTojn2/5kmKxC3Nae9ExbxVB8jbA=",
+    "version": "2.12.1"
   },
   "crontab": {
     "builder": "mix",
@@ -221,13 +221,14 @@
   "elixir_make": {
     "builder": "mix",
     "deps": {
-      "castore": true
+      "castore": true,
+      "certifi": true
     },
     "fetcher": "hex",
     "name": "elixir_make",
     "pkg": "elixir_make",
-    "sha256": "sha256-JK2j45lq2+0foCTKFJle8ro9DRe2eLDz8rH2bmzisnQ=",
-    "version": "0.7.3"
+    "sha256": "sha256-enGUW5E9N+qJsGlm4TQshc/lSbFebW0IHoCBxJMGLAc=",
+    "version": "0.7.8"
   },
   "ex_aws": {
     "builder": "mix",
@@ -236,13 +237,15 @@
       "hackney": true,
       "jason": true,
       "jsx": true,
-      "sweet_xml": true
+      "mime": false,
+      "sweet_xml": true,
+      "telemetry": false
     },
     "fetcher": "hex",
     "name": "ex_aws",
     "pkg": "ex_aws",
-    "sha256": "sha256-Pmx3ZwPJB2AB++H3wElTXwQssq+g0svTtHy8TpKsDRA=",
-    "version": "2.1.9"
+    "sha256": "sha256-G5VDH3DERvoYcfDrmxgwQ8WmJfdfmUikLSX0OuLv8Ss=",
+    "version": "2.5.1"
   },
   "ex_aws_s3": {
     "builder": "mix",
@@ -322,8 +325,8 @@
     "fetcher": "hex",
     "name": "fast_html",
     "pkg": "fast_html",
-    "sha256": "sha256-YF9PSClEPBQSdpTrq7aBd4cSzuy0Rw7DKqMQEjMOZQY=",
-    "version": "2.0.5"
+    "sha256": "sha256-BkxPI7SmFo+Rh9rImEsFbyxTG7B4f1Wf1qizSziu+64=",
+    "version": "2.2.0"
   },
   "file_system": {
     "builder": "mix",
@@ -351,8 +354,8 @@
     "fetcher": "hex",
     "name": "gen_stage",
     "pkg": "gen_stage",
-    "sha256": "sha256-w+QJkscudNnE7aFtdRW/MsnntjToJ6sRCR//MpD3tQM=",
-    "version": "1.2.0"
+    "sha256": "sha256-g+i+ZX+gW5kv+mrB469tV6pQqs6PaR/PaW/wL4M1sAE=",
+    "version": "1.2.1"
   },
   "gettext": {
     "builder": "mix",
@@ -483,8 +486,8 @@
     "fetcher": "hex",
     "name": "libsalty2",
     "pkg": "libsalty2",
-    "sha256": "sha256-n3f3yIbPRjkq+UvnGyMOmqEaA/h+dhnY9rYW4JL370I=",
-    "version": "0.2.1"
+    "sha256": "sha256-mc6j9xffZy1RhTb9p6ut7mkrrJKnbUGNtGg9X7VMH5o=",
+    "version": "0.3.0"
   },
   "linkify": {
     "builder": "mix",
@@ -576,13 +579,13 @@
   "oauth2": {
     "builder": "mix",
     "deps": {
-      "hackney": false
+      "tesla": false
     },
     "fetcher": "hex",
     "name": "oauth2",
     "pkg": "oauth2",
-    "sha256": "sha256-xk4g1NEFvNvL4DFw+1MNDt3Do+axNah1KKIsiuz3TFI=",
-    "version": "2.0.1"
+    "sha256": "sha256-isB/hbMwfdGs/rDshS9kFhsi9X0M4MFeYWod/I6+K0E=",
+    "version": "2.1.0"
   },
   "parallel_stream": {
     "builder": "mix",
@@ -621,8 +624,8 @@
     "fetcher": "hex",
     "name": "paseto",
     "pkg": "paseto",
-    "sha256": "sha256-y5E5W64KBhPzM9k0pDY4HOu19vKe29IHvYH/HMB9d2Y=",
-    "version": "1.3.1"
+    "sha256": "sha256-xFnrfnquc+sfWn3lOIrPbEewtaMP/FhX3uQwznhEQa8=",
+    "version": "1.4.0"
   },
   "phoenix_html": {
     "builder": "mix",
@@ -645,8 +648,8 @@
     "fetcher": "hex",
     "name": "plug",
     "pkg": "plug",
-    "sha256": "sha256-vwIEMsfU/rezrxagwnAUVcu7uV5baGYTLLCesMKa3BQ=",
-    "version": "1.14.0"
+    "sha256": "sha256-zENlo8AQpWr0AuCAkgiHPRE+nDjEAcq9iAJ+9PXAH9I=",
+    "version": "1.15.3"
   },
   "plug_cowboy": {
     "builder": "mix",
@@ -658,8 +661,8 @@
     "fetcher": "hex",
     "name": "plug_cowboy",
     "pkg": "plug_cowboy",
-    "sha256": "sha256-6m6H93TIYI1gyNNAIqfQc712gKCgE/BJ/GK/Ne/qEEQ=",
-    "version": "2.5.2"
+    "sha256": "sha256-lR7SQz3yL0yXuF/bFF1M7lYfNrdIVNZMBtiW180pIac=",
+    "version": "2.6.2"
   },
   "plug_crypto": {
     "builder": "mix",
@@ -667,8 +670,8 @@
     "fetcher": "hex",
     "name": "plug_crypto",
     "pkg": "plug_crypto",
-    "sha256": "sha256-tWcgmcatXCAsRfWkA/IaNBEkfxZOSo+rBW5c2KKQ9KI=",
-    "version": "1.2.3"
+    "sha256": "sha256-U2lbrlfMTlRWbZk+sBB05NiUtlo3ZvHEPixhobD0Xqk=",
+    "version": "2.0.0"
   },
   "poison": {
     "builder": "mix",
@@ -700,13 +703,14 @@
     "deps": {
       "crontab": false,
       "gen_stage": false,
-      "telemetry": false
+      "telemetry": false,
+      "telemetry_registry": false
     },
     "fetcher": "hex",
     "name": "quantum",
     "pkg": "quantum",
-    "sha256": "sha256-0OtklX09xJyO1zDMIgMQgzQiZJZTWWW436Pz289DD4c=",
-    "version": "3.4.0"
+    "sha256": "sha256-yrc30dl3n0PLHXAfRt0F6lgUb9liONkcng2mYsGYK7Y=",
+    "version": "3.5.0"
   },
   "ranch": {
     "builder": "rebar3",
@@ -762,8 +766,8 @@
     "fetcher": "hex",
     "name": "sweet_xml",
     "pkg": "sweet_xml",
-    "sha256": "sha256-aJTmihIPRUU02ZBF6jMl93QOpxJgvDFfguKXMdVwpug=",
-    "version": "0.7.2"
+    "sha256": "sha256-58Swvb9GDJKCNJUd71T+h+3xoXD2iWZ1RDJ54tvroWc=",
+    "version": "0.7.4"
   },
   "syn": {
     "builder": "rebar3",
@@ -782,6 +786,17 @@
     "pkg": "telemetry",
     "sha256": "sha256-63K4Nl/9pb7WimINHaiFJeMmy4KnXuYTVPwkuER2gEE=",
     "version": "0.4.3"
+  },
+  "telemetry_registry": {
+    "builder": "mix",
+    "deps": {
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "telemetry_registry",
+    "pkg": "telemetry_registry",
+    "sha256": "sha256-QiHO+8rdCz5wdpYDOSI3Qtlz8Tcbwg84Jq9kAle8NpA=",
+    "version": "0.2.1"
   },
   "tesla": {
     "builder": "mix",
@@ -838,8 +853,8 @@
     "fetcher": "hex",
     "name": "ueberauth",
     "pkg": "ueberauth",
-    "sha256": "sha256-LvrZAi6UmDTxbMUs2TUWUEnYH6npJWkPkQNcLktY2QU=",
-    "version": "0.7.0"
+    "sha256": "sha256-C8z3Pi/9YzeXE0CDKUe6Iyh3qoEi26TJW+n3KciYc3c=",
+    "version": "0.10.7"
   },
   "ueberauth_google": {
     "builder": "mix",
@@ -850,8 +865,8 @@
     "fetcher": "hex",
     "name": "ueberauth_google",
     "pkg": "ueberauth_google",
-    "sha256": "sha256-t5n1R9J5u4NuH3A5/J+7Op0AimleKiW9Br/+WRoWi6E=",
-    "version": "0.10.1"
+    "sha256": "sha256-f33qzWebK2bjv/to7Md6obU5agy6wpQYFfJTEo5FjDg=",
+    "version": "0.12.1"
   },
   "unicode_util_compat": {
     "builder": "rebar3",
