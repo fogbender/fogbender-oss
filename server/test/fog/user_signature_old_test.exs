@@ -61,7 +61,7 @@ defmodule FogUserSignatureOldTest do
              user_data,
              signature_type,
              secret
-           ) === {:decrypt, {:error, "Failed to decrypt payload due to: forged"}}
+           ) === {:decrypt, {:error, :forged}}
 
     assert Fog.UserSignature.verify_user_signature(
              user_paseto,
@@ -75,7 +75,7 @@ defmodule FogUserSignatureOldTest do
              user_data,
              signature_type,
              Fog.UserSignature.generate_192bit_secret()
-           ) === {:decrypt, {:error, "Failed to decrypt payload due to: forged"}}
+           ) === {:decrypt, {:error, :forged}}
 
     wrong_paseto = Paseto.V2.encrypt(user_data.userId, secret)
 
