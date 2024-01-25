@@ -20,7 +20,6 @@ defmodule Fog.Plug.AgentSession do
       # salts can be public, but it could be a good idea to change them from time to time
       encryption_salt: "37BbUPIWmTQ493DPJgnk",
       signing_salt: "JwjmCN7i0RzPi6V9PivX",
-      key_length: 64,
       log: :debug,
       # Set session for a month, in seconds
       max_age: 60 * 60 * 24 * 30
