@@ -9,7 +9,6 @@ defmodule Fog.Plug.DetectiveSession do
         # salts can be public, but it could be a good idea to change them from time to time
         encryption_salt: "AAETv-dxsUYZVfgvRSDE",
         signing_salt: "D7rdvJ7UTIzho7uFNLFa",
-        key_length: 64,
         log: :debug
       )
 

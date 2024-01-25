@@ -10,6 +10,7 @@ defmodule Fog.Repo.Search do
     from(m in Data.Message,
       as: :message,
       left_lateral_join: s in ^forwarded_source(term),
+      on: true,
       where: m.room_id == ^room_id,
       where: not is_nil(s.rel) or Fts.is_similar(m.text, ^term),
       order_by: ^[desc: dynamic([m, s], coalesce(s.rel, ^Fts.relevance([m], m.text, term)))],

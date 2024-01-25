@@ -53,14 +53,14 @@ defmodule Fog.Api.Perm do
         true
 
       {:deny, mod, pred} ->
-        Logger.warn(
+        Logger.warning(
           "DENY #{mod_name(mod)}/#{action} by #{pred} rule for #{session_info(sess)}. #{inspect(data)}"
         )
 
         false
 
       [] ->
-        Logger.warn(
+        Logger.warning(
           "DENY #{mod_name(mod)}/#{action} by no allow rule found for #{session_info(sess)}. #{inspect(data)}"
         )
 

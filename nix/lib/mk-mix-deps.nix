@@ -43,7 +43,7 @@ let
 
   fetch = spec :
     if spec.fetcher == "hex" then fetchHex {inherit (spec) pkg version sha256;}
-    else if spec.fetcher == "git" then fetchgit {inherit (spec) url sha256 rev; leaveDotGit = true;}
+    else if spec.fetcher == "git" then fetchgit {inherit (spec) url sha256 rev;}
     else abort "Unknown fetcher ${spec.fetcher}";
 
   mkConfig =

@@ -14,7 +14,7 @@ defmodule Fog.Format.Md do
         ast
 
       {:error, ast, errors} ->
-        Logger.warn("Error processing markdown:\n #{md}:\n\n #{inspect(errors)}")
+        Logger.warning("Error processing markdown:\n #{md}:\n\n #{inspect(errors)}")
         ast
     end
   end

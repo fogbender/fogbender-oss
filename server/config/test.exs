@@ -9,7 +9,7 @@ config :fog, Fog.Repo,
   migration_timestamps: [type: :utc_datetime_usec],
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :logger, level: :warn
+config :logger, level: :warning
 
 config :fog, Fog.Scheduler, jobs: []
 
@@ -33,6 +33,8 @@ config :fog,
   fog_api_url: "http://localhost:8001"
 
 config :fog, Fog.Mailer, adapter: Bamboo.TestAdapter
+
+config :fog, Fog.Repo, pool_size: 10
 
 # Integrations
 config :fog,

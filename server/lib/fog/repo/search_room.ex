@@ -156,6 +156,7 @@ defmodule Fog.Repo.SearchRoom do
 
       from(r in query,
         left_lateral_join: m in ^mq,
+        on: true,
         as: :message,
         select_merge: %{relevant_message_id: m.id}
       )
@@ -296,7 +297,8 @@ defmodule Fog.Repo.SearchRoom do
               exists(
                 from(rt in Data.RoomTag,
                   join: ru in ^Repo.Tag.with_user(user_id),
-                  where: rt.room_id == parent_as(:room).id and ru.tag_id == rt.tag_id
+                  on: ru.tag_id == rt.tag_id,
+                  where: rt.room_id == parent_as(:room).id
                 )
               )
         )

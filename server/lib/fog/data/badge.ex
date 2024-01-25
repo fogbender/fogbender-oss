@@ -19,11 +19,17 @@ defmodule Fog.Data.Badge do
     # 0 - not | 1 - auto | 2 - manual
     field(:following, :integer)
 
-    has_one(:first_unread_message, Message, references: :first_unread_message_id, foreign_key: :id)
+    has_one(:first_unread_message, Message,
+      references: :first_unread_message_id,
+      foreign_key: :id
+    )
 
     has_one(:last_room_message, Message, references: :last_room_message_id, foreign_key: :id)
 
-    has_one(:next_mention_message, Message, references: :next_mention_message_id, foreign_key: :id)
+    has_one(:next_mention_message, Message,
+      references: :next_mention_message_id,
+      foreign_key: :id
+    )
 
     # needed for EmailDigest struct
     belongs_to(:email_digest, EmailDigest)

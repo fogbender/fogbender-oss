@@ -103,7 +103,7 @@ defmodule Mix.Tasks.MixToJson do
   end
 
   defp nix_git_sha(name, url, rev) do
-    sha = run_cmd("nix-universal-prefetch fetchgit --url #{url} --rev #{rev} --leaveDotGit true")
+    sha = run_cmd("nix-universal-prefetch fetchgit --url #{url} --rev #{rev}")
     log("GIT", name, sha)
     sha
   end

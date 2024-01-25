@@ -1,8 +1,8 @@
-{ pkgs, unstable, fogbender, beamPackages, writeScriptBin, lib, ... }:
+{ pkgs, fogbender, beamPackages, writeScriptBin, lib, ... }:
 let
   pg = pkgs.postgresql_14.withPackages (p: [ p.pg_bigm ]);
 
-  js_libs = with unstable; [
+  js_libs = with pkgs; [
     nodejs
     yarn
   ];

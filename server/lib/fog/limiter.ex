@@ -22,7 +22,7 @@ defmodule Fog.Limiter do
 
       %{exp: exp} ->
         diff = time_diff(exp)
-        Logger.warn("Limit for #{key}: #{diff} msec")
+        Logger.warning("Limit for #{key}: #{diff} msec")
         {:reply, {:limit, diff}, state}
     end
   end

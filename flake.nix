@@ -2,7 +2,7 @@
   description = "Fogbender flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     utils.url = "github:numtide/flake-utils";
@@ -25,8 +25,7 @@
       overlay = final: prev: {
         inherit (gitignore.lib) gitignoreSource;
         unstable = unstable.legacyPackages.${final.system};
-        # TODO switch to beam_nox.packages.erlang_26 when available in nix cache
-        beamPackages = final.unstable.beam.packages.erlang_26.extend(new: old: {
+        beamPackages = final.beam_nox.packages.erlang.extend(new: old: {
           rebar3 = old.rebar3.overrideAttrs{ doCheck = false; };
         });
         mkMixDeps = final.callPackage ./nix/lib/mk-mix-deps.nix { };
