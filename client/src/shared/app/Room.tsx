@@ -49,7 +49,7 @@ import { useHeightWatcher } from "../utils/useHeightWatcher";
 import { useScrollTracker } from "../utils/useScrollTracker";
 
 import { FileIssue } from "./FileIssue";
-import { type LayoutOptions } from "./LayoutOptions";
+import type { LayoutOptions } from "./LayoutOptions";
 import { MessageForward } from "./MessageForward";
 import { RoomHeader } from "./RoomHeader";
 import styles from "./styles/room.module.css";
@@ -473,7 +473,7 @@ export const Room: React.FC<{
   }, [messages, noLongerPending, pendingMessages, setPendingMessages]);
 
   const messageCreateWithPending: typeof messageCreate = React.useCallback(
-    (message: MessageCreate & { createdTs?: number }) => {
+    async (message: MessageCreate & { createdTs?: number }) => {
       if (message.linkType === "forward") {
         return messageCreate(message);
       }

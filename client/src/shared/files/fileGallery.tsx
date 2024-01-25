@@ -76,7 +76,7 @@ export const GalleryModal = () => {
   React.useEffect(() => {
     const listen = (e: KeyboardEvent) => {
       // Escape
-      if (e.keyCode === 27) {
+      if (e.key === "Escape") {
         setShowingFileId(undefined);
       }
     };

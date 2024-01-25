@@ -1,4 +1,4 @@
-import { createNewFogbender, FallbackToken, VisitorToken } from "fogbender";
+import { createNewFogbender, type FallbackToken, type VisitorToken } from "fogbender";
 import {
   FogbenderConfig,
   FogbenderFloatingWidget,

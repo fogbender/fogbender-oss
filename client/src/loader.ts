@@ -1,4 +1,4 @@
-import { createNewFogbender, Fogbender, FogbenderLoader } from "fogbender";
+import { createNewFogbender, type Fogbender, type FogbenderLoader } from "fogbender";
 
 // create Fogbender
 const newFogbenderInstance = createNewFogbender();

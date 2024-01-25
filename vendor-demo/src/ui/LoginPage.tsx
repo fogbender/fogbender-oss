@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { getStorefrontUrl } from "../config";
-import logo from "../logo.svg";
+import logo from "../logo.svg?url";
 import { useStorageToken, useVendorName } from "../store";
 
 import { AuthContext } from "./Auth";

@@ -25,7 +25,7 @@ import {
 import { formatRosterTs } from "../utils/formatTs";
 
 import { viewIdAtom } from "./Folders";
-import { type LayoutOptions } from "./LayoutOptions";
+import type { LayoutOptions } from "./LayoutOptions";
 
 export const SectionRoster: React.FC<{
   selectedSectionId: string | undefined;

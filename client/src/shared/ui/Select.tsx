@@ -1,6 +1,6 @@
 import { Listbox } from "@headlessui/react";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 
 import { ChevronButton } from "./ChevronButton";
 

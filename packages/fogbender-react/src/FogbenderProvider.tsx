@@ -1,6 +1,6 @@
 import { createNewFogbender } from "fogbender";
 import React from "react";
-import { Fogbender } from ".";
+import type { Fogbender } from ".";
 
 export interface FogbenderProviderProps {
   fogbender?: Fogbender;

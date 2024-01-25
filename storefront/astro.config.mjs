@@ -6,6 +6,7 @@ import { defineAstro } from "qgp";
 import { common } from "./qgp.config.mjs";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
+import checker from "vite-plugin-checker";
 
 // const assetsDir = "storefront";
 
@@ -34,6 +35,13 @@ export default defineConfig({
     format: "file",
   },
   vite: defineAstro(common, {
+    plugins: [
+      checker({
+        typescript: true,
+        overlay: { initialIsOpen: false, badgeStyle: "left: 55px; bottom: 8px;" },
+        enableBuild: false, // we already check that in `yarn ci:check`
+      }),
+    ],
     build: {
       // assetsDir,
       sourcemap: true,

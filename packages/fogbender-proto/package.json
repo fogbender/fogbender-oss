@@ -12,14 +12,16 @@
     "url": "https://github.com/fogbender/fogbender-oss/blob/main/packages/fogbender-proto"
   },
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "module": "dist/index.mjs",
   "source": "src/index.tsx",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle --jsx React.createElement --no-compress --format modern,cjs",
-    "start": "microbundle watch --jsx React.createElement --no-compress --format modern,cjs",
+    "build": "tsup --dts",
+    "start": "run-p build start:tsc",
+    "start:tsup": "tsup --watch",
+    "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
     "prepare": "run-s build",
     "test": "run-s test:lint",
     "test:lint": "eslint . || true",
@@ -60,13 +62,13 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "jotai": "^1.6.3",
-    "microbundle": "^0.14.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^4.0.0",
-    "typescript": "^4.8.4"
+    "typescript": "^5.2.2",
+    "tsup": "^8.0.1"
   },
   "files": [
     "dist"

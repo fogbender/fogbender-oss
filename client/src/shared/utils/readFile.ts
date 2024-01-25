@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-export const fileToBuffer = (file: File) => {
+export const fileToBuffer = async (file: File) => {
   if ("arrayBuffer" in file) {
     return file.arrayBuffer().then(x => Buffer.from(x));
   }

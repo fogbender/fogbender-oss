@@ -1,6 +1,6 @@
 import type { UserToken, VisitorToken } from "fogbender-proto";
 import { stringifyUrl } from "query-string";
-import React from "react";
+import type React from "react";
 
 import { Icons } from "./Icons";
 

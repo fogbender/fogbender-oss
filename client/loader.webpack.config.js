@@ -19,6 +19,7 @@ module.exports = {
           loader: "ts-loader",
           options: {
             compilerOptions: {
+              importsNotUsedAsValues: undefined,
               noEmit: false,
             },
           },

@@ -5,7 +5,7 @@ import React from "react";
 
 import { Icons, XCircleFilled } from "../components/Icons";
 import { Avatar, ThickButton, ThinButton } from "../components/lib";
-import { type Agent } from "../types";
+import type { Agent } from "../types";
 import { useClickOutside } from "../utils/useClickOutside";
 
 export const RoomAssignees: React.FC<{

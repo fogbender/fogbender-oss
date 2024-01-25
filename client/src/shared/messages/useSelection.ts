@@ -1,4 +1,4 @@
-import { type Message as MessageT } from "fogbender-proto";
+import type { Message as MessageT } from "fogbender-proto";
 import React from "react";
 
 import { findLast } from "../utils/findLast";

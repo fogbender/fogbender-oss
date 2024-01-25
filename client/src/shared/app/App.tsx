@@ -57,13 +57,13 @@ import {
 import { usePrevious } from "../utils/usePrevious";
 
 import { CreateRoom } from "./CreateRoom";
-import { type RenderCustomerInfoCb } from "./CustomerInfo";
+import type { RenderCustomerInfoCb } from "./CustomerInfo";
 import { CustomerInfoPane } from "./CustomerInfoPane";
 import { Customers } from "./Customers";
 import { EmailNotificationsSettings } from "./EmailNotificationsSettings";
 import { Folders } from "./Folders";
 import { IssueInfoPane } from "./IssueInfoPane";
-import { type LayoutOptions } from "./LayoutOptions";
+import type { LayoutOptions } from "./LayoutOptions";
 import { Room } from "./Room";
 import { RoomNameLine } from "./RoomHeader";
 import { RoomSettings } from "./RoomSettings";
@@ -72,7 +72,7 @@ import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
 import { SectionRoster } from "./SectionRoster";
-import { type RenderUsersInfoCb } from "./UsersInfo";
+import type { RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
 

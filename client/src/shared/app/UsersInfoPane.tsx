@@ -1,8 +1,8 @@
 import classNames from "classnames";
-import { type Room } from "fogbender-proto";
-import React from "react";
+import type { Room } from "fogbender-proto";
+import type React from "react";
 
-import { type RenderUsersInfoCb } from "./UsersInfo";
+import type { RenderUsersInfoCb } from "./UsersInfo";
 
 export const UsersInfoPane: React.FC<{
   room: Room | undefined;

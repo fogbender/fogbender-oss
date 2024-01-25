@@ -1,5 +1,5 @@
 import type { Token } from "fogbender-react";
-import { atom, PrimitiveAtom, useAtomValue } from "jotai";
+import { atom, type PrimitiveAtom, useAtomValue } from "jotai";
 
 import { getWidgetIdAndKey } from "./config";
 

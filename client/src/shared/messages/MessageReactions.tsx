@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import Picker, { Theme } from "emoji-picker-react";
-import { type Reaction } from "fogbender-proto";
+import type { Reaction } from "fogbender-proto";
 import { useAtomValue } from "jotai";
 import React from "react";
 

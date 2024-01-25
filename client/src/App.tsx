@@ -1,10 +1,10 @@
-import { isUserToken, isVisitorToken, Token } from "fogbender";
+import { isUserToken, isVisitorToken, type Token } from "fogbender";
 import {
-  ClientSession,
+  type ClientSession,
   getServerApiUrl,
-  UserToken,
-  VisitorInfo,
-  VisitorToken,
+  type UserToken,
+  type VisitorInfo,
+  type VisitorToken,
 } from "fogbender-proto";
 import { useSetAtom } from "jotai";
 import { parse } from "query-string";
@@ -12,11 +12,11 @@ import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClientProvider } from "react-query";
 
-import Hand from "./assets/hand.png";
-import Unicorn from "./assets/unicorn.png";
+import Hand from "./assets/hand.png?url";
+import Unicorn from "./assets/unicorn.png?url";
 import {
   App as AppBody,
-  AuthorMe,
+  type AuthorMe,
   ErrorPageFallback,
   FogbenderLogo,
   GalleryModal,
