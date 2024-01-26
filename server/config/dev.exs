@@ -10,5 +10,3 @@ config :fog, Fog.Mailer,
     )
 
 config :fog, Fog.Scheduler, debug_logging: true
-
-config :fog, Fog.Repo, pool_size: 15
