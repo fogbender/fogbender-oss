@@ -34,8 +34,6 @@ config :fog,
 
 config :fog, Fog.Mailer, adapter: Bamboo.TestAdapter
 
-config :fog, Fog.Repo, pool_size: 10
-
 # Integrations
 config :fog,
   msteams_renew_job_enable: false

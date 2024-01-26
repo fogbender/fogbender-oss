@@ -13,6 +13,7 @@ config :fog, Fog.Repo,
   password: System.get_env("PG_PASS"),
   hostname: System.get_env("PG_HOST"),
   port: System.get_env("PG_PORT"),
+  pool_size: (System.get_env("FOG_POOL_SIZE") || "10") |> String.to_integer(),
   migration_timestamps: [type: :utc_datetime_usec],
   start_apps_before_migration: [:snowflake],
   after_connect: {Postgrex, :query!, ["SET pg_bigm.similarity_limit TO 0.02", []]}
