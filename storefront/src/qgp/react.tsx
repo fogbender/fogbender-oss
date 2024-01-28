@@ -1,6 +1,8 @@
 // tslint:disable:ordered-imports
-import "./env";
-import "../trackjs";
+import { initEnv } from "./env";
+initEnv();
+import { initTrackJS as initTrackJS } from "../trackjs";
+initTrackJS();
 import "../styles/tailwind.css";
 import ReactSPA from "../App";
 
