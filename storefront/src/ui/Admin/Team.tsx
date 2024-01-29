@@ -744,6 +744,24 @@ const VerifiedDomains: React.FC<{
     - Owners/agents can enable auto-joining accounts with emails on any domain with DNS proof
   */
 
+  const trash = (d: VerifiedDomain) => (
+    <span
+      title="Delete"
+      className="text-gray-500 hover:text-red-500 cursor-pointer"
+      onClick={e => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure?") === true) {
+          deleteDomainMutation.mutate({
+            vendorId: vendor.id,
+            domain: d.domain,
+          });
+        }
+      }}
+    >
+      <Icons.Trash className="w-5" />
+    </span>
+  );
+
   return isGeneric !== false ? null : (
     <div className="w-full bg-white dark:bg-brand-dark-bg dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
       <div className="fog:text-header3">Auto-join configuration</div>
@@ -796,26 +814,11 @@ const VerifiedDomains: React.FC<{
                           <Icons.Check />
                           <span className="font-medium">Verified</span>
                         </div>
-                        <span
-                          title="Delete"
-                          className="text-gray-500 hover:text-red-500 cursor-pointer"
-                          onClick={e => {
-                            e.stopPropagation();
-                            if (window.confirm("Are you sure?") === true) {
-                              deleteDomainMutation.mutate({
-                                vendorId: vendor.id,
-                                domain: d.domain,
-                              });
-                            }
-                          }}
-                        >
-                          <Icons.Trash className="w-5" />
-                        </span>
                       </div>
                     </td>
                   )}
                   {!d.verified && (
-                    <td className="py-3">
+                    <td className="py-3" colSpan={2}>
                       <div className="flex flex-col gap-2">
                         <div className="flex justify-between">
                           <div className="flex items-center w-32">
@@ -824,21 +827,6 @@ const VerifiedDomains: React.FC<{
                               <span className="font-medium">Not verified</span>
                             </div>
                           </div>
-                          <span
-                            title="Delete"
-                            className="text-gray-500 hover:text-red-500 cursor-pointer"
-                            onClick={e => {
-                              e.stopPropagation();
-                              if (window.confirm("Are you sure?") === true) {
-                                deleteDomainMutation.mutate({
-                                  vendorId: vendor.id,
-                                  domain: d.domain,
-                                });
-                              }
-                            }}
-                          >
-                            <Icons.Trash className="w-5" />
-                          </span>
                         </div>
                         <div className="flex flex-col gap-2 rounded-lg bg-gray-100 dark:bg-black px-3 py-2">
                           <span className="font-medium">TXT Record value</span>
@@ -872,11 +860,13 @@ const VerifiedDomains: React.FC<{
                             >
                               Verification instructions
                             </a>
+                            <span className="justify-self-center ml-auto">{trash(d)}</span>
                           </div>
                         </div>
                       </div>
                     </td>
                   )}
+                  {d.verified && <td className="flex justify-end">{trash(d)}</td>}
                 </tr>
               ))}
             </tbody>
