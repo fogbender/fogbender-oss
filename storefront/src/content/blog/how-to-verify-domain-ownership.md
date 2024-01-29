@@ -21,7 +21,7 @@ Just a reminder that Reader access means the following:
 
 Since creating or updating DNS records is a bit of a pain, we make an exception for one specific scenario: if you're an owner of the team in question, you can easily allow auto-join Reader access from emails matching the domain of your email address by answering "Yes" here:
 
-![img](/assets/blog/how-to-verify-domain-ownership/exception.png)
+![img](https://fogbender-blog.s3.amazonaws.com/exception.png)
 
 To do it the hard way, or to verify additional domains, add your domain, update your DNS TXT record, and click "Verify". For instructions on how to actually add or modify a DNS TXT record, please consult with the most appropriate article from the following list:
 
