@@ -626,24 +626,30 @@ defmodule Fog.Comms.Slack.Agent.Hook do
         # The common use case here is that a company uses Google Auth with domain X
         # and Slack with domain Y (due to pivot)
         [username, _] = email |> String.split("@")
-        emails = [
-          email | workspace.vendor.verified_domains
-          |> Enum.filter(& &1.verified)
-          |> Enum.map(& "#{username}@#{&1.domain}")
-        ] |> Enum.uniq
 
-        agent = case from(
-          a in Data.Agent,
-          join: var in assoc(a, :vendors),
-          on: var.vendor_id == ^workspace.vendor_id,
-          where: a.email in ^emails
-        ) |> Repo.all() do
-          [a | _] ->
-            a
+        emails =
+          [
+            email
+            | workspace.vendor.verified_domains
+              |> Enum.filter(& &1.verified)
+              |> Enum.map(&"#{username}@#{&1.domain}")
+          ]
+          |> Enum.uniq()
 
-          nil ->
-            nil
-        end
+        agent =
+          case from(
+                 a in Data.Agent,
+                 join: var in assoc(a, :vendors),
+                 on: var.vendor_id == ^workspace.vendor_id,
+                 where: a.email in ^emails
+               )
+               |> Repo.all() do
+            [a | _] ->
+              a
+
+            nil ->
+              nil
+          end
 
         role =
           case agent do
@@ -872,7 +878,7 @@ defmodule Fog.Comms.Slack.Agent.Hook do
 
   defp workspace_et_cetera(integration) do
     {access_token, team_id, user_info, linked_channel_id, wid} = specifics(integration)
-    workspace = Repo.Workspace.get(wid) |> Repo.preload([vendor: :verified_domains])
+    workspace = Repo.Workspace.get(wid) |> Repo.preload(vendor: :verified_domains)
     {access_token, team_id, user_info, linked_channel_id, workspace}
   end
 
