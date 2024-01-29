@@ -1,6 +1,8 @@
 defmodule Fog.Comms.Slack.Agent.Hook do
   require Logger
 
+  import Ecto.Query, only: [from: 2, order_by: 2]
+
   import Ecto.Query
 
   alias Fog.{Api, Data, Repo}
@@ -619,7 +621,29 @@ defmodule Fog.Comms.Slack.Agent.Hook do
     case {slack_user_info(access_token, slack_user_id), channel_id} do
       {{email, ^agent_team_id, _name, _avatar_url}, ^linked_channel_id} ->
         # Slack user is native to the agent Slack app posting in Slack (Agent) integration channel
-        agent = email && Data.Agent |> Repo.get_by(email: email)
+
+        # We'll assume that bob@fogbender.net is the same agent as bob@fogbender.com
+        # The common use case here is that a company uses Google Auth with domain X
+        # and Slack with domain Y (due to pivot)
+        [username, _] = email |> String.split("@")
+        emails = [
+          email | workspace.vendor.verified_domains
+          |> Enum.filter(& &1.verified)
+          |> Enum.map(& "#{username}@#{&1.domain}")
+        ] |> Enum.uniq
+
+        agent = case from(
+          a in Data.Agent,
+          join: var in assoc(a, :vendors),
+          on: var.vendor_id == ^workspace.vendor_id,
+          where: a.email in ^emails
+        ) |> Repo.all() do
+          [a | _] ->
+            a
+
+          nil ->
+            nil
+        end
 
         role =
           case agent do
@@ -848,7 +872,7 @@ defmodule Fog.Comms.Slack.Agent.Hook do
 
   defp workspace_et_cetera(integration) do
     {access_token, team_id, user_info, linked_channel_id, wid} = specifics(integration)
-    workspace = Repo.Workspace.get(wid) |> Repo.preload(:vendor)
+    workspace = Repo.Workspace.get(wid) |> Repo.preload([vendor: :verified_domains])
     {access_token, team_id, user_info, linked_channel_id, workspace}
   end
 
