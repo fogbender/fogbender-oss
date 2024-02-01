@@ -2,11 +2,24 @@ import { CreateTagForm, FilterInput, Modal, type Tag } from "fogbender-client/sr
 import React from "react";
 import { useMutation, useQuery } from "react-query";
 
-import IconTag from "../../assets/icon-tag.svg";
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
 
 import { ExpandableSection } from "./ExpandableSection";
+
+const IconTag = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M7 7H7.01M7 3H12C12.512 3 13.024 3.195 13.414 3.586L20.414 10.586C20.7889 10.9611 20.9996 11.4697 20.9996 12C20.9996 12.5303 20.7889 13.0389 20.414 13.414L13.414 20.414C13.0389 20.7889 12.5303 20.9996 12 20.9996C11.4697 20.9996 10.9611 20.7889 10.586 20.414L3.586 13.414C3.4 13.2285 3.25249 13.0081 3.15192 12.7655C3.05136 12.5228 2.99973 12.2627 3 12V7C3 5.93913 3.42143 4.92172 4.17157 4.17157C4.92172 3.42143 5.93913 3 7 3Z"
+        stroke="#10B981"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
 
 export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> = ({
   designatedWorkspaceId,
@@ -74,7 +87,9 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
                 className="flex items-center py-2 px-1 hover:bg-gray-100 dark:hover:bg-gray-600"
               >
                 <span className="relative flex flex-1 w-full">
-                  <img src={IconTag.src} alt="Tag" className="absolute left-0 top-0" />
+                  <div className="absolute left-0 top-0">
+                    <IconTag />
+                  </div>
                   <span className="flex-1 pl-8 truncate w-2/3 fog:text-caption-l">{t.name}</span>
                   <span className="fog:text-body-m">{t.id}</span>
                 </span>
