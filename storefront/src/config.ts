@@ -1,4 +1,4 @@
-import { TrackJS } from "trackjs";
+import HyperDX from "@hyperdx/browser";
 
 const config = {
   prod: {
@@ -109,7 +109,7 @@ export function getVersion(env?: Env) {
   return { version, niceVersion, debugVersion };
 }
 
-TrackJS.configure({
+HyperDX.setGlobalAttributes({
   version: getVersion().niceVersion,
 });
 

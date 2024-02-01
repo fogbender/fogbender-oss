@@ -22111,11 +22111,6 @@ tr46@~0.0.3:
   resolved "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
-trackjs@^3.10.1:
-  version "3.10.1"
-  resolved "https://registry.npmjs.org/trackjs/-/trackjs-3.10.1.tgz"
-  integrity sha512-VehGLBlBKsfSnycBogNza8IFU/TOQ8vxk0u8+0bynAoXoAz41QIZibB2kXy24wWT0EfYPMT8jFqXgYC9pMAAsA==
-
 traverse@^0.6.6:
   version "0.6.6"
   resolved "https://registry.npmjs.org/traverse/-/traverse-0.6.6.tgz"

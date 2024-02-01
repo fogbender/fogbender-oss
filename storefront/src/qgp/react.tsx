@@ -1,8 +1,8 @@
 // tslint:disable:ordered-imports
 import { initEnv } from "./env";
 initEnv();
-import { initTrackJS as initTrackJS } from "../trackjs";
-initTrackJS();
+import { initHyperDx as initHyperDx } from "../hyperdx";
+initHyperDx();
 import "../styles/tailwind.css";
 import "fogbender-client/src/shared/styles/tailwind.css";
 import ReactSPA from "../App";
