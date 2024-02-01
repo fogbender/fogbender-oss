@@ -11,7 +11,7 @@
     "fix": "yarn lint:fix; yarn fmt",
     "lint:fix": "yarn wsrun --exclude-missing lint --fix",
     "lint:full": "turbo run lint:full",
-    "fmt": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern $(git diff --name-only --diff-filter d | xargs || '')",
+    "fmt": "./scripts/web-format",
     "fmt:force": "prettier --write --ignore-unknown --no-error-on-unmatched-pattern ."
   },
   "workspaces": [
