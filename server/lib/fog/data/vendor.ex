@@ -9,6 +9,7 @@ defmodule Fog.Data.Vendor do
     VendorAgentRole,
     VendorApiToken,
     VendorStripeCustomer,
+    VendorVerifiedDomain,
     Workspace
   }
 
@@ -35,6 +36,7 @@ defmodule Fog.Data.Vendor do
     has_many(:groups, VendorAgentGroup)
     has_many(:api_tokens, VendorApiToken)
     has_many(:stripe_customers, VendorStripeCustomer)
+    has_many(:verified_domains, VendorVerifiedDomain)
 
     belongs_to(:deleted_by_agent, Agent, type: Fog.Types.AgentId)
     field(:deleted_at, :utc_datetime_usec)
