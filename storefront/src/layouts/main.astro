@@ -1,6 +1,7 @@
 ---
 import AnalyticsBody from "../ui/AnalyticsBody.astro";
 import AnalyticsHead from "../ui/AnalyticsHead.astro";
+import HyperDxHead from "../ui/HyperDxHead.astro";
 import Nav from "../ui/landing/Nav.astro";
 import Footer from "../ui/landing/Footer.astro";
 import BaseHead from "../ui/landing/BaseHead.astro";
@@ -25,6 +26,8 @@ const { meta, linkedData } = Astro.props;
     {linkedData && <script type="application/ld+json" set:html={JSON.stringify(linkedData)} />}
 
     <AnalyticsHead />
+
+    <HyperDxHead />
 
     <script>
       window.addEventListener("DOMContentLoaded", () => {

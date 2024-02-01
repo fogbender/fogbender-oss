@@ -1,0 +1,16 @@
+---
+---
+
+<script is:inline src="https://www.unpkg.com/@hyperdx/browser@0.18.4/build/index.js"></script>
+<script is:inline>
+  if (window.HyperDX) {
+    window.HyperDX.init({
+      apiKey: 'dfad399b-975f-4da6-8022-aac8c75aedc1',
+      service: 'storefront',
+      consoleCapture: true,
+      advancedNetworkCapture: true,
+    });
+  } else {
+    console.log("NO HyperDX");
+  }
+</script>
