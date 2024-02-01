@@ -1,6 +1,6 @@
 // tslint:disable:ordered-imports
 import "./env";
-import "../trackjs";
+import "../hyperdx";
 import ReactSPA from "../App";
 import "../styles/tailwind.css";
 
