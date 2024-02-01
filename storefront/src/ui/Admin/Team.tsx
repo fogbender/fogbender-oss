@@ -247,7 +247,7 @@ const TeamMembers: React.FC<{
                             url={UserPlus.src}
                             imageSize={14}
                             className="w-4"
-                            bgClassName="bg-gray-200"
+                            bgClassName="bg-gray-200 dark:bg-gray-400"
                           />
                         ) : (
                           <Avatar size={35} url={member.image_url} name={member.name} />

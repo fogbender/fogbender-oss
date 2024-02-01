@@ -206,7 +206,7 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
         <FloatingSvgOpened />
       </div>
       <div
-        class={tw`absolute text-white rounded-none bg-brand-red-500 text-xs leading-none`}
+        class={tw`absolute text-white rounded-lg bg-brand-red-500 text-xs leading-none`}
         style={{
           display: unreadCounter() === 0 ? "none" : "block",
           top: "20px",
