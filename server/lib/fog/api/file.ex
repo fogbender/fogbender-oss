@@ -22,19 +22,13 @@ defmodule Fog.Api.File do
 
   def info(%command{} = m, s) when command in @commands do
     if auth(m, s) do
+      binary = get_file_binary(m)
+      mime_type = ExMarcel.MimeType.for({:string, binary})
+
       is_binary =
-        case m do
-          %Upload{fileType: file_type} ->
-            case MIME.extensions(file_type) do
-              ["bin"] ->
-                true
-
-              [] ->
-                true
-
-              _ ->
-                false
-            end
+        case mime_type do
+          "application/octet-stream" ->
+            true
 
           _ ->
             false
