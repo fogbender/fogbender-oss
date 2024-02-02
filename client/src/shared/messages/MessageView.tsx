@@ -888,7 +888,9 @@ export const SourceMessages: React.FC<{
                           }}
                         >
                           <ClipboardCopy text={`${url}/${sm.roomId}/${sm.id}`}>
-                            <span className="text-gray-500">{formatTs(sm.createdTs)}</span>
+                            <span className="text-gray-500 dark:text-gray-200">
+                              {formatTs(sm.createdTs)}
+                            </span>
                           </ClipboardCopy>
                         </a>
                       ) : (
