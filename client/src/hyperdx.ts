@@ -1,8 +1,10 @@
-import HyperDX from '@hyperdx/browser';
+import HyperDX from "@hyperdx/browser";
 
 HyperDX.init({
-  apiKey: 'dfad399b-975f-4da6-8022-aac8c75aedc1',
-  service: 'client',
+  apiKey: "dfad399b-975f-4da6-8022-aac8c75aedc1",
+  service: "client",
   consoleCapture: true,
   advancedNetworkCapture: true,
+  maskAllInputs: true,
+  maskAllText: true,
 });
