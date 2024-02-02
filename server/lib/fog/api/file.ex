@@ -28,7 +28,7 @@ defmodule Fog.Api.File do
       is_binary =
         case mime_type do
           "application/octet-stream" ->
-            true
+            String.valid?(binary) == false
 
           _ ->
             false
