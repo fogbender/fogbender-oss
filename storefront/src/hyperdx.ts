@@ -6,5 +6,7 @@ export function initHyperDx() {
     service: "admin-app",
     consoleCapture: true,
     advancedNetworkCapture: true,
+    maskAllInputs: true,
+    maskAllText: true,
   });
 }
