@@ -94,6 +94,7 @@ defmodule Fog.MixProject do
       {:earmark, "~> 1.4"},
       {:fast_html, "~> 2.2"},
       {:ssl_verify_fun, "~> 1.1.7"},
+      {:ex_marcel, "~> 0.1.0"},
 
       # dev
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},

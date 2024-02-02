@@ -295,6 +295,15 @@
     "url": "https://github.com/ntrepid8/ex_crypto.git",
     "version": "git"
   },
+  "ex_marcel": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "ex_marcel",
+    "pkg": "ex_marcel",
+    "sha256": "sha256-SN/El0NanFLA6QweB9jOcxagldzsDgTRguglDkk7cvs=",
+    "version": "0.1.0"
+  },
   "exmoji_fogbender": {
     "builder": "mix",
     "deps": {

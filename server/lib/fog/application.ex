@@ -10,6 +10,7 @@ defmodule Fog.Application do
       [
         # Starts a worker by calling: Fog.Worker.start_link(arg)
         # {Fog.Worker, arg}
+        ExMarcel.TableWrapper,
         Fog.Repo,
         Fog.Limiter,
         {Task.Supervisor, name: Fog.TaskSupervisor},
