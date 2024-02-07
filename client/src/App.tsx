@@ -33,6 +33,9 @@ import { modeAtom } from "./shared/store/config.store";
 import { queryClient } from "./shared/utils/client";
 import Headless from "./ui/Headless";
 
+import "./styles/tailwind.css";
+import "./shared/styles/tailwind.css";
+
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
   // const [mode, setMode] = React.useState<"light" | "dark">("light");
