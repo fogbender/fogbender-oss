@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import {
+  getVersion,
+  isEventUser,
   type Author,
   type EventRoom,
-  getVersion,
   type Integration as IntegrationT,
-  isEventUser,
   type Room as RoomT,
   type Tag as TagT,
   useLoadAround,

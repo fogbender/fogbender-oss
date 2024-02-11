@@ -1,6 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
-import { type EventAgentGroup, useWsCalls, useSharedRoster } from "fogbender-proto";
+import { type EventAgentGroup, useSharedRoster, useWsCalls } from "fogbender-proto";
 import React from "react";
 
 import { Icons, XCircleFilled } from "../components/Icons";

@@ -4,7 +4,7 @@ import React from "react";
 
 import { filterMap } from "../utils/filterMap";
 
-import { type RosterViewOptions, RosterViewSubscription } from "./Roster";
+import { RosterViewSubscription, type RosterViewOptions } from "./Roster";
 
 export const Customers = ({
   selectedCustomerIds,

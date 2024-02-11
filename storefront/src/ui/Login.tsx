@@ -13,10 +13,10 @@ import { store } from "../redux/store";
 import { Auth } from "./amazon";
 import {
   addLocation,
-  type AuthErrors,
   ConfirmEmailForm,
   extractRelativeUrl,
   SpinnerSmall,
+  type AuthErrors,
   useReturnBackWhenDone,
   useTimePassedSince,
 } from "./authUtils";

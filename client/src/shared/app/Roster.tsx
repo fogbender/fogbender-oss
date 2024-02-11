@@ -3,11 +3,11 @@ import classNames from "classnames";
 import {
   calculateCounterpart,
   calculateStartPosFast,
+  invariant,
   type EventBadge,
   type EventRoom,
   type EventRosterRoom,
   type EventRosterSection,
-  invariant,
   type RosterOpenView,
   type RosterSectionActions,
   type RosterSectionId,

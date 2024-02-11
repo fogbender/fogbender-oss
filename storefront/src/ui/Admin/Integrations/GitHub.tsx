@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Icons, type Integration, ThinButton, useInput } from "fogbender-client/src/shared";
+import { Icons, ThinButton, type Integration, useInput } from "fogbender-client/src/shared";
 import React from "react";
 
 import { getWebhookUrl } from "../../../config";

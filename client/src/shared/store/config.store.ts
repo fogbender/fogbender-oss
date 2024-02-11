@@ -1,4 +1,5 @@
 import type { SetStateAction } from "jotai";
+
 import { atomWithRealTimeLocalStorage } from "../utils/atomWithLocalStorage";
 
 export const modeAtom = atomWithRealTimeLocalStorage<"light" | "dark">(

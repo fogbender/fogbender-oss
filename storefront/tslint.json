@@ -16,7 +16,8 @@
     "import-name": false,
     "object-shorthand-properties-first": false,
     "no-boolean-literal-compare": false,
-    "strict-boolean-expressions": false
+    "strict-boolean-expressions": false,
+    "no-parameter-reassignment": false
     // "no-restricted-globals": [
     //     true,
     //     // https://github.com/sidoshi/eslint-restricted-globals/blob/master/index.js

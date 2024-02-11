@@ -2,14 +2,14 @@ import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import dayjs from "dayjs";
 import {
+  convertEventMessageToMessage,
+  extractEventMessage,
+  KnownIssueTrackerIntegrations,
   type AiSuggest,
   type Author,
-  convertEventMessageToMessage,
   type EventRoom,
-  extractEventMessage,
   type Helpdesk,
   type Integration as IntegrationT,
-  KnownIssueTrackerIntegrations,
   type Message,
   type MessageCreate,
   type MessageUpdate,

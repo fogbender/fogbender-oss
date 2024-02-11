@@ -1,19 +1,19 @@
 import classNames from "classnames";
 import {
-  type Author,
   calculateCounterpart,
+  MetaTypes,
+  type Author,
   type EventRoom,
   type Helpdesk,
   type IntegrationCloseIssue,
   type IntegrationReopenIssue,
-  MetaTypes,
   type RoomUpdate,
   type SearchRoster,
   type ServerCall,
   type Tag,
-  useWs,
   type VisitorVerifyCode,
   type VisitorVerifyEmail,
+  useWs,
 } from "fogbender-proto";
 import React from "react";
 import { useMutation, useQuery } from "react-query";
