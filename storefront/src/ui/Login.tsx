@@ -206,7 +206,7 @@ export const LoginForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogin
                     errors?.userNotFound === true ? "border-brand-pink-500" : "border-gray-300",
                     errors?.notAuthorized === true && "border-b-0"
                   )}
-                  placeholder="Email 2"
+                  placeholder="Email"
                 />
               </div>
               <div>
