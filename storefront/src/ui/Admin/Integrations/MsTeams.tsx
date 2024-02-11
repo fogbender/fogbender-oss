@@ -1,4 +1,4 @@
-import { type Integration, ThinButton } from "fogbender-client/src/shared";
+import { ThinButton, type Integration } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "react-query";
 

@@ -1,8 +1,8 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
 import {
-  type AuthorMe,
   LocalStorageKeys,
   SafeLocalStorage,
+  type AuthorMe,
   type UserMe,
 } from "fogbender-client/src/shared";
 

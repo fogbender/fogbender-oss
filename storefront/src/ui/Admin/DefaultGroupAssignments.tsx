@@ -1,9 +1,9 @@
 import {
-  type AgentGroup,
-  type FeatureOptions,
   GroupDefaultIcon,
   ThickButton,
   ThinButton,
+  type AgentGroup,
+  type FeatureOptions,
 } from "fogbender-client/src/shared";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";

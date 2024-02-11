@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import {
+  KnownIssueTrackerIntegrations,
   type EventIssue,
   type EventRoom,
   type Integration as IntegrationT,
-  KnownIssueTrackerIntegrations,
   type Room as RoomT,
   type Tag as TagT,
   useIssues,

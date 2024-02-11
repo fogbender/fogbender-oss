@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import {
-  type EventRoom,
   invariant,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
+  type EventRoom,
   type Message,
   type MessageCreate,
   type SearchRoster,

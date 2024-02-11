@@ -1,9 +1,9 @@
 import {
-  type BooleanConfigAtom,
   showAiHelperAtom,
   showFocusedRosterAtom,
   showOutlookRosterAtom,
   swNotificationsAtom,
+  type BooleanConfigAtom,
 } from "fogbender-client/src/shared/store/config.store";
 import { useAtom } from "jotai";
 import React from "react";

@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import {
   calculateCounterpart,
+  invariant,
   type EventBadge,
   type EventRoom,
-  invariant,
   type SearchRoster,
   useWs,
 } from "fogbender-proto";

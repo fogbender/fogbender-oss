@@ -1,8 +1,8 @@
 import { Icons } from "fogbender-client/src/shared";
 import {
-  type Integration,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
+  type Integration,
 } from "fogbender-proto";
 import React from "react";
 import { useQuery } from "react-query";

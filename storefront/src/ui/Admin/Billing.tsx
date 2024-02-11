@@ -2,8 +2,8 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import {
   Icons,
-  type StripeCustomer,
   ThinButton,
+  type StripeCustomer,
   type VendorBilling,
 } from "fogbender-client/src/shared";
 import React from "react";

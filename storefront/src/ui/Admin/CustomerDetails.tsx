@@ -2,13 +2,13 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
-  type CrmData,
-  type Customer,
-  type CustomerCrm,
   Icons,
   isExternalHelpdesk,
   ThickButton,
   ThinButton,
+  type CrmData,
+  type Customer,
+  type CustomerCrm,
   useInputWithError,
 } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";

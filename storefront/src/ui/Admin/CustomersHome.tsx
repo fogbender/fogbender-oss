@@ -2,7 +2,6 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
-  type Customer,
   CustomerAvatar,
   FilterInput,
   formatCustomerName,
@@ -10,6 +9,7 @@ import {
   LinkButton,
   Modal,
   ThinButton,
+  type Customer,
   useSortedCustomers,
 } from "fogbender-client/src/shared";
 import React, { useState } from "react";

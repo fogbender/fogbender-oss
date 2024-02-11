@@ -1,13 +1,13 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
 import {
-  type Agent,
-  type AgentGroup,
   Avatar,
   GroupDefaultIcon,
   Icons,
   Modal,
   ThickButton,
+  type Agent,
+  type AgentGroup,
   useClickOutside,
   useInput,
 } from "fogbender-client/src/shared";

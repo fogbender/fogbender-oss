@@ -2,9 +2,9 @@ import classNames from "classnames";
 import {
   Icons,
   LinkButton,
-  type Prompt as PromptT,
   ThickButton,
   ThinButton,
+  type Prompt as PromptT,
   useInput,
   useInputWithError,
 } from "fogbender-client/src/shared";

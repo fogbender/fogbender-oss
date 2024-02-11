@@ -12,10 +12,10 @@ import { store } from "../redux/store";
 
 import { Auth } from "./amazon";
 import {
-  type AuthErrors,
   ConfirmEmailForm,
   popupCenter,
   SpinnerSmall,
+  type AuthErrors,
   useReturnBackWhenDone,
   useTimePassedSince,
 } from "./authUtils";

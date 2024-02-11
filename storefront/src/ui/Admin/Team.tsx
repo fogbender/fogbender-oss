@@ -1,7 +1,5 @@
 import classNames from "classnames";
 import {
-  type Agent,
-  type AgentRole,
   Avatar,
   formatTs,
   Icons,
@@ -9,6 +7,8 @@ import {
   renderTag,
   ThickButton,
   ThinButton,
+  type Agent,
+  type AgentRole,
   useInput,
   useInputWithError,
 } from "fogbender-client/src/shared";
@@ -28,7 +28,7 @@ import { apiServer, queryClient, queryKeys } from "../client";
 import { DeleteInvitedModal } from "../components/modals/DeleteInvitedModal";
 import { DeleteMemberModal } from "../components/modals/DeleteMemberModal";
 import { fetchServerApiPost } from "../useServerApi";
-import { useVerifiedDomains, type VerifiedDomain } from "../useVerifiedDomains";
+import { type VerifiedDomain, useVerifiedDomains } from "../useVerifiedDomains";
 
 import { ScheduleOverview } from "./agent-schedules/ScheduleOverview";
 import { Schedules } from "./agent-schedules/Schedules";

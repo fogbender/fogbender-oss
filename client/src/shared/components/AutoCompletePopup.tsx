@@ -1,6 +1,6 @@
 import { type Author, type Room, useRoomMembers, useRoster } from "fogbender-proto";
 import { filter } from "fuzzy";
-import { atom, useAtom, type WritableAtom } from "jotai";
+import { atom, type WritableAtom, useAtom } from "jotai";
 import { atomFamily, useAtomCallback, useAtomValue, useUpdateAtom } from "jotai/utils";
 import React from "react";
 import { throttle } from "throttle-debounce";

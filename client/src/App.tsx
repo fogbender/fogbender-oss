@@ -1,7 +1,7 @@
 import { isUserToken, isVisitorToken, type Token } from "fogbender";
 import {
-  type ClientSession,
   getServerApiUrl,
+  type ClientSession,
   type UserToken,
   type VisitorInfo,
   type VisitorToken,
@@ -16,7 +16,6 @@ import Hand from "./assets/hand.png?url";
 import Unicorn from "./assets/unicorn.png?url";
 import {
   App as AppBody,
-  type AuthorMe,
   ErrorPageFallback,
   FogbenderLogo,
   GalleryModal,
@@ -24,17 +23,17 @@ import {
   IsIdleProvider,
   isIframe,
   ThickButton,
+  type AuthorMe,
   useInputWithError,
   useIsIdle,
   WsProvider,
 } from "./shared";
 import { handleGoFullScreen } from "./shared/components/GoFullScreen";
 import { modeAtom } from "./shared/store/config.store";
-import { queryClient } from "./shared/utils/client";
-import Headless from "./ui/Headless";
-
-import "./styles/tailwind.css";
 import "./shared/styles/tailwind.css";
+import { queryClient } from "./shared/utils/client";
+import "./styles/tailwind.css";
+import Headless from "./ui/Headless";
 
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);

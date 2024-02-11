@@ -12,7 +12,7 @@ import { Icons } from "../components/Icons";
 import { UnreadCircle } from "../components/lib";
 import { showFocusedRosterAtom } from "../store/config.store";
 
-import { type RosterViewOptions, RosterViewSubscription } from "./Roster";
+import { RosterViewSubscription, type RosterViewOptions } from "./Roster";
 
 export const viewIdAtom = atom(undefined as string | undefined);
 

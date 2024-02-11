@@ -4,13 +4,13 @@ import dayjs from "dayjs";
 import {
   Avatar,
   ConfirmDialog,
-  type Customer,
   FilterInput,
   Icons,
   Modal,
-  type Tag,
   ThickButton,
   ThinButton,
+  type Customer,
+  type Tag,
   XCircleFilled,
 } from "fogbender-client/src/shared";
 import React from "react";

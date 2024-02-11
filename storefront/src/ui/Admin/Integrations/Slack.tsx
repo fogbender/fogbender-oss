@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { type Customer, Icons, type Integration, ThinButton } from "fogbender-client/src/shared";
+import { Icons, ThinButton, type Customer, type Integration } from "fogbender-client/src/shared";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
 import { useMutation, useQuery } from "react-query";

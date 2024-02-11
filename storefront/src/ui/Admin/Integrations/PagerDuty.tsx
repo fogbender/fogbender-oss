@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import {
-  type AgentGroup,
-  type Integration,
   LocalStorageKeys,
   SafeLocalStorage,
   ThickButton,
   ThinButton,
+  type AgentGroup,
+  type Integration,
   useInputWithError,
 } from "fogbender-client/src/shared";
 import { satisfy } from "fogbender-client/src/shared/types";

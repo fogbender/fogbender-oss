@@ -2,10 +2,10 @@ import {
   formatTs,
   IconMsTeams,
   IconSlack,
-  type Integration,
   KnownCommsIntegrations,
   Modal,
   ThinButton,
+  type Integration,
 } from "fogbender-client/src/shared";
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import React from "react";

@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import {
+  invariant,
   type EventIssue,
   type Integration as IntegrationT,
-  invariant,
   type Message,
   type MessageCreate,
   type Room,
