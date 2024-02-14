@@ -9,6 +9,7 @@ import rehypeHighlight from "rehype-highlight";
 
 export const HighlightCode: React.FC<{
   className?: string;
+  children?: React.ReactNode;
   blurAreas?: {
     line: number;
     column: number;
