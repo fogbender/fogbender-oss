@@ -10,7 +10,7 @@ export function getVersion() {
   return version || undefined;
 }
 
-export function get(_: APIContext) {
+export function GET(_: APIContext) {
   const version = getVersion();
   return {
     body: JSON.stringify({ version }),
