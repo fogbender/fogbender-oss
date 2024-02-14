@@ -4,6 +4,7 @@ import { atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import prettyBytes from "pretty-bytes";
 import React from "react";
+import { PiFileTextDuotone } from "react-icons/pi";
 
 import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";
@@ -67,7 +68,6 @@ export const MessageFileThumbnail: React.FC<{
       isImage || isPlainText ? id : undefined,
       getGalleryElement
     );
-    // const [isGifPlaying, setIsGifPlaying] = React.useState(true);
     const nameDotPosition = name.lastIndexOf(".");
     const [fileName, fileExt] =
       nameDotPosition > 0
@@ -115,26 +115,14 @@ export const MessageFileThumbnail: React.FC<{
                     onTrash={onTrash}
                   >
                     {!inUpload && !props.isExpired && (
-                      <a
-                        href={props.linkHref}
-                        onClick={e => {
-                          if (props.linkOnClick) {
-                            props.linkOnClick(e);
-                          }
+                      <span
+                        onClick={() => {
+                          setShowingFileId(id);
                         }}
-                        target="_blank"
-                        rel="noopener"
-                        className="fog:text-link no-underline"
+                        className={classNames(inReply && "scale-75 transform")}
                       >
-                        <span
-                          className={classNames(
-                            "text-pink-400 hover:text-brand-red-500",
-                            inReply && "scale-75 transform"
-                          )}
-                        >
-                          <Icons.Download />
-                        </span>
-                      </a>
+                        <PiFileTextDuotone size={27} />
+                      </span>
                     )}
                     {!inUpload && props.isExpired && (
                       <span className={classNames(inReply && "scale-75 transform")}>Retry</span>
@@ -157,6 +145,7 @@ export const MessageFileThumbnail: React.FC<{
                           )}
                           title={fileSize + " bytes"}
                         >
+                          <span className="uppercase text-xs">TXT</span> &middot;{" "}
                           {prettyBytes(fileSize)}
                         </span>
                       )}
