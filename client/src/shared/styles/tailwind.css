@@ -232,10 +232,12 @@
 
 /* Scrollbars */
 
+.fog-thick-scrollbar,
 .fbr-scrollbar {
   scrollbar-gutter: stable;
 }
 
+.fog-thick-scrollbar.fog-scrollbar-no-gutter,
 .fbr-scrollbar.fbr-scrollbar-no-gutter {
   scrollbar-gutter: initial;
 }
@@ -245,6 +247,7 @@
   height: 7px;
 }
 
+.fog-thick-scrollbar::-webkit-scrollbar-track,
 .fbr-scrollbar::-webkit-scrollbar-track {
   @apply bg-white;
   @apply dark:bg-brand-dark-bg;
@@ -252,6 +255,7 @@
   @apply rounded-full;
 }
 
+.fog-thick-scrollbar::-webkit-scrollbar-thumb,
 .fbr-scrollbar::-webkit-scrollbar-thumb {
   width: 5px;
   height: 5px;
@@ -260,6 +264,16 @@
   @apply dark:bg-gray-500;
   @apply rounded-full;
   @apply bg-clip-content;
+}
+
+.fog-thick-scrollbar::-webkit-scrollbar-thumb {
+  width: 24px;
+  height: 24px;
+}
+
+.fog-thick-scrollbar::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
 }
 
 .fbr-no-scrollbar::-webkit-scrollbar {
