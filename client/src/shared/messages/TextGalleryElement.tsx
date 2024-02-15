@@ -26,12 +26,12 @@ export const TextGalleryElement = ({
   return (
     <GalleryElement attachment={attachment} message={message}>
       {fileUrl && (
-        <div
-          className="w-[90%] self-center p-10 max-h-full overflow-auto fbr-scrollbar text-sm"
-          onClick={stopEvent}
-        >
+        <div className="w-[70%] self-center p-10 max-h-full text-sm" onClick={stopEvent}>
           <div
             className={classNames(
+              "max-h-full",
+              "fog-thick-scrollbar",
+              "overflow-auto",
               "text-left whitespace-pre-wrap break-all",
               "text-black dark:text-white",
               "bg-white dark:bg-brand-dark-bg",
