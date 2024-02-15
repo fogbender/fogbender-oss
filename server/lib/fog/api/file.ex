@@ -25,18 +25,28 @@ defmodule Fog.Api.File do
       binary = get_file_binary(m)
       mime_type = ExMarcel.MimeType.for({:string, binary})
 
-      is_binary =
+      mime_type =
         case mime_type do
           "application/octet-stream" ->
-            String.valid?(binary) == false
+            try do
+              [_ | _] = String.to_charlist(binary)
+              # Whatever this file is, we were able to turn into a
+              # valid UTF8 string - let's designate it as text/plain
+              "text/plain"
+            rescue
+              _ ->
+                mime_type
+            end
 
           _ ->
-            false
+            mime_type
         end
 
       case m do
-        _ when is_binary ->
-          {:reply, Err.invalid_request(error: "Binaries not supported"), s}
+        # NOTE since it's hard to definitely tell what constitutes a binary,
+        # let's shift the risk to the user for now
+        #   _ when is_binary ->
+        #    {:reply, Err.invalid_request(error: "Binaries not supported"), s}
 
         %Upload{} ->
           file_binary = get_file_binary(m)
@@ -46,7 +56,8 @@ defmodule Fog.Api.File do
               {:reply, Err.invalid_request(error: "The file size exceeds the maximum limit")}
 
             true ->
-              {:ok, fileId} = handle_command(m, file_binary, s)
+              {:ok, fileId} = handle_command(%{m | fileType: mime_type}, file_binary, s)
+              # {:ok, fileId} = handle_command(m, file_binary, s)
               {:reply, %Ok{fileId: fileId}}
           end
       end
