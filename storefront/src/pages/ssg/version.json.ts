@@ -12,7 +12,9 @@ export function getVersion() {
 
 export function GET(_: APIContext) {
   const version = getVersion();
-  return {
-    body: JSON.stringify({ version }),
-  };
+  return new Response(
+    JSON.stringify({
+      body: JSON.stringify({ version }),
+    })
+  );
 }
