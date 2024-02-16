@@ -153,7 +153,7 @@ export const GalleryModal = () => {
       />
       <div
         className={classNames(
-          "absolute top-0 right-0 z-10 cursor-pointer pt-4 pr-4 sm:pt-12 sm:pr-8",
+          "absolute top-0 right-0 z-10 cursor-pointer pt-4 pr-2 sm:pt-12 sm:pr-8",
           isIdle && "opacity-0 transition-opacity duration-300"
         )}
         onClick={() => setShowingFileId(undefined)}
