@@ -100,7 +100,7 @@ export const GalleryModal = () => {
         <div
           onClick={clickHandler}
           className={classNames(
-            "max-w-[8rem] group absolute top-24 bottom-24 z-10 flex w-24 cursor-pointer items-center [@media(hover:hover)]:w-52",
+            "max-w-[4rem] group absolute top-24 bottom-24 z-10 flex w-24 cursor-pointer items-center [@media(hover:hover)]:w-40",
             direction === "prev"
               ? "left-0 justify-start pl-4 lg:justify-center lg:pl-0"
               : "right-0 justify-end pr-4 lg:justify-center lg:pr-0"
@@ -153,7 +153,7 @@ export const GalleryModal = () => {
       />
       <div
         className={classNames(
-          "absolute top-0 right-0 z-10 cursor-pointer pt-4 pr-4 sm:pt-12 sm:pr-12",
+          "absolute top-0 right-0 z-10 cursor-pointer pt-4 pr-4 sm:pt-12 sm:pr-8",
           isIdle && "opacity-0 transition-opacity duration-300"
         )}
         onClick={() => setShowingFileId(undefined)}
