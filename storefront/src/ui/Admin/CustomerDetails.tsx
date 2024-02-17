@@ -182,11 +182,21 @@ const CustomerCrmData = ({
           <CustomerInfoWrapper label="Address">
             <span className={infoClassName}>
               {addresses.length
-                ? addresses.map((address, i) => (
-                    <span className="block" key={i}>
-                      {address}
-                    </span>
-                  ))
+                ? addresses.map((address, i) => {
+                    const { country, city, state, postal_code, street_1, street_2 } = address;
+                    return (
+                      <div key={i}>
+                        <AddressBlock>{street_1}</AddressBlock>
+                        <AddressBlock>{street_2}</AddressBlock>
+                        <AddressBlock>
+                          {city && city}
+                          {city && state && ", "}
+                          {state && state}
+                        </AddressBlock>
+                        <AddressBlock>{country + ", " + postal_code}</AddressBlock>
+                      </div>
+                    );
+                  })
                 : "Not Found"}
             </span>
           </CustomerInfoWrapper>
@@ -712,4 +722,8 @@ const CrmLink: React.FC<{
       <hr />
     </div>
   );
+};
+
+const AddressBlock = ({ children }: { children?: React.ReactNode }) => {
+  return <span className="block">{children}</span>;
 };
