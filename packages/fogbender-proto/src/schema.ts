@@ -1088,7 +1088,14 @@ export type CustomerCrm = {
 };
 
 export type CustomerCrmData = {
-  addresses: string[];
+  addresses: {
+    street_1: string;
+    street_2?: string;
+    city?: string;
+    state?: string;
+    postal_code: string;
+    country: string;
+  }[];
   description: string;
   id: string;
   industry: string;
