@@ -1750,7 +1750,7 @@ const NewVersionChecker = React.memo(() => {
   });
   const newVersion = versionQuery.data?.version;
 
-  if (newVersion !== oldVersion) {
+  if (newVersion && newVersion !== oldVersion) {
     return (
       <button
         title={`New version available: ${oldVersion} -> ${newVersion}`}
