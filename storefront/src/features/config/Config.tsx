@@ -28,10 +28,7 @@ export const Config = function Config() {
   );
 };
 
-export const Checkbox: React.FC<{ atom: BooleanConfigAtom; children?: React.ReactNode }> = ({
-  atom,
-  children,
-}) => {
+export const Checkbox: React.FC<{ atom: BooleanConfigAtom }> = ({ atom, children }) => {
   const [value, setValue] = useAtom(atom);
   return (
     <label className="block">

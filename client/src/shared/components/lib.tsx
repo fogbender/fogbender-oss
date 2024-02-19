@@ -272,7 +272,6 @@ export const ThinButton: React.FC<{
   className?: string | undefined;
   colorClassName?: string | undefined;
   title?: string;
-  children?: React.ReactNode;
 }> = props => {
   const { small, onClick, disabled, loading, className, colorClassName, title } = props;
   return (
@@ -306,7 +305,6 @@ export const ThickButton: React.FC<{
   small?: boolean;
   className?: string | undefined;
   disabled?: boolean;
-  children?: React.ReactNode;
 }> = props => {
   const { onClick = () => undefined, loading, small, className, disabled } = props;
   return (
@@ -339,7 +337,6 @@ export const LinkButton: React.FC<{
   onClick?: () => void;
   position?: "start" | "end" | undefined;
   className?: string;
-  children?: React.ReactNode;
 }> = props => {
   const { onClick, position, className } = props;
   return (
@@ -683,10 +680,7 @@ export const TabListWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const TabWrapper: React.FC<{ selected: boolean; children?: React.ReactNode }> = ({
-  selected,
-  children,
-}) => {
+export const TabWrapper: React.FC<{ selected: boolean }> = ({ selected, children }) => {
   return (
     <div
       className={classNames(
@@ -705,10 +699,7 @@ export const TabListHeaderWrapper = ({ children }: { children: React.ReactNode }
   return <div className="w-full flex flex-col lg:flex-row lg:flex-wrap">{children}</div>;
 };
 
-export const TabHeaderWrapper: React.FC<{ selected: boolean; children?: React.ReactNode }> = ({
-  selected,
-  children,
-}) => {
+export const TabHeaderWrapper: React.FC<{ selected: boolean }> = ({ selected, children }) => {
   return (
     <div
       className={classNames(

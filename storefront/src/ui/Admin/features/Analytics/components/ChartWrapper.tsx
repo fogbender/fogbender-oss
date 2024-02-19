@@ -2,7 +2,6 @@ import React from "react";
 
 type ChartWrapperProps = {
   title: string;
-  children?: React.ReactNode;
 };
 
 export const ChartWrapper: React.FC<ChartWrapperProps> = ({ children, title }) => (

@@ -166,6 +166,6 @@ export const GalleryModal = () => {
   );
 };
 
-const IconButton: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const IconButton: React.FC<{}> = ({ children }) => {
   return <div className="fog:box-shadow-m rounded-2xl bg-white p-3">{children}</div>;
 };

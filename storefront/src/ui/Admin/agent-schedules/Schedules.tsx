@@ -410,7 +410,7 @@ const SelectableHours = (props: SelectableHourProps) => {
   const hoveredFinishTime = hoveredTimeRange?.hoveredFinishTime;
 
   const checkIsHourOccupied = React.useCallback(
-    (h: number) => {
+    h => {
       const agentSchedules = weekState.schedule.filter(schedule => schedule.agentId === agent.id);
 
       const scheduleIds: string[] = [];
