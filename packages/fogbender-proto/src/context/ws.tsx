@@ -838,6 +838,7 @@ export const useRoomHistory = ({
     if (!fogSessionId) {
       return;
     }
+
     if (
       lastIncomingMessage?.msgType === "Event.Message" &&
       lastIncomingMessage?.roomId === roomId

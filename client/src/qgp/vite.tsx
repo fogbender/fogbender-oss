@@ -5,7 +5,7 @@ import { App } from "./react";
 
 function AppWithCallbackAfterRender() {
   useEffect(() => {
-    console.info("rendered");
+    console.info("rendered (client)");
   });
 
   return <App />;

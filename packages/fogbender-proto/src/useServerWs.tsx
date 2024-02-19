@@ -3,6 +3,7 @@ import { atom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
+import { flushSync } from "react-dom";
 import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
@@ -119,7 +120,11 @@ export function useServerWs(
   {
     const setLastIncomingMessage = useUpdateAtom(lastIncomingMessageAtom);
     React.useEffect(() => {
-      setLastIncomingMessage(lastIncomingMessage);
+      setTimeout(() => {
+        flushSync(() => {
+          setLastIncomingMessage(lastIncomingMessage);
+        });
+      }, 0);
     }, [lastIncomingMessage]);
   }
 
