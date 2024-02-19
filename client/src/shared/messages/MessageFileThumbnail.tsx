@@ -5,6 +5,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import prettyBytes from "pretty-bytes";
 import React from "react";
 import { PiFileTextDuotone } from "react-icons/pi";
+import { PiFileVideoDuotone } from "react-icons/pi";
 
 import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";
@@ -13,6 +14,7 @@ import { useAddFileToGallery } from "../files/fileGallery";
 import { useFileRefresher } from "./useFileRefresher";
 import { ImageGalleryElement } from "./ImageGalleryElement";
 import { TextGalleryElement } from "./TextGalleryElement";
+import { VideoGalleryElement } from "./VideoGalleryElement";
 import { ImageFileCard } from "./ImageFileCard";
 
 export const MessageFileThumbnail: React.FC<{
@@ -52,6 +54,7 @@ export const MessageFileThumbnail: React.FC<{
     inPin,
   }) => {
     const isPlainText = attachment?.contentType === "text/plain";
+    const isVideo = ["video/webm"].includes(attachment?.contentType ?? "");
     const maxSize = inReply || inUpload ? 80 : inPin ? 26 : isSingle ? 320 : 120;
     const getGalleryElement = React.useCallback(() => {
       if (!attachment || !message) {
@@ -59,13 +62,15 @@ export const MessageFileThumbnail: React.FC<{
       }
       if (isPlainText) {
         return <TextGalleryElement attachment={attachment} message={message} />;
+      } else if (isVideo) {
+        return <VideoGalleryElement attachment={attachment} message={message} />;
       } else {
         return <ImageGalleryElement attachment={attachment} message={message} />;
       }
     }, [attachment, message]);
     const { setShowingFileId } = useAddFileToGallery(
       roomId,
-      isImage || isPlainText ? id : undefined,
+      isImage || isPlainText || isVideo ? id : undefined,
       getGalleryElement
     );
     const nameDotPosition = name.lastIndexOf(".");
@@ -154,6 +159,62 @@ export const MessageFileThumbnail: React.FC<{
                 )}
               </LinkRefresher>
             );
+          } else if (isVideo) {
+            return (
+              <LinkRefresher attachment={attachment} message={message}>
+                {props => (
+                  <FileCard
+                    className={classNames(
+                      "fog:text-link block flex max-w-xs items-center py-1 no-underline",
+                      inReply
+                        ? "fog:text-caption-s gap-x-1 px-1"
+                        : "fog:text-caption-m gap-x-2 px-2"
+                    )}
+                    title={name}
+                    error={fileError ? <div>{fileError}</div> : undefined}
+                    loading={loading}
+                    onTrash={onTrash}
+                  >
+                    {!inUpload && !props.isExpired && (
+                      <span
+                        onClick={() => {
+                          setShowingFileId(id);
+                        }}
+                        className={classNames(inReply && "scale-75 transform")}
+                      >
+                        <PiFileVideoDuotone size={27} />
+                      </span>
+                    )}
+                    {!inUpload && props.isExpired && (
+                      <span className={classNames(inReply && "scale-75 transform")}>Retry</span>
+                    )}
+                    <span
+                      onClick={() => {
+                        setShowingFileId(id);
+                      }}
+                      className={classNames("flex-1 truncate", inUpload && "my-1 ml-2 mr-4")}
+                    >
+                      <span className="flex truncate">
+                        <span className="flex-1 truncate text-right">{fileName}</span>
+                        <span className="truncate">{fileExt}</span>
+                      </span>
+                      {!inUpload && fileSize && (
+                        <span
+                          className={classNames(
+                            "block text-gray-500",
+                            inReply ? "fog:text-body-xs" : "fog:text-body-s"
+                          )}
+                          title={fileSize + " bytes"}
+                        >
+                          <span className="uppercase text-xs">Video</span> &middot;{" "}
+                          {prettyBytes(fileSize)}
+                        </span>
+                      )}
+                    </span>
+                  </FileCard>
+                )}
+              </LinkRefresher>
+            );
           } else {
             return (
               <LinkRefresher attachment={attachment} message={message}>
@@ -164,8 +225,6 @@ export const MessageFileThumbnail: React.FC<{
                       if (props.linkOnClick) {
                         props.linkOnClick(e);
                       }
-                      e.preventDefault();
-                      e.stopPropagation();
                     }}
                     target="_blank"
                     rel="noopener"
