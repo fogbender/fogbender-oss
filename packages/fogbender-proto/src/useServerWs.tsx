@@ -96,10 +96,8 @@ export function useServerWs(
       onError("error", "other", new Error("Failed to parse incoming data"));
       return;
     }
-
     if (token !== undefined && lastJsonMessage !== null) {
       const message = lastJsonMessage as FogSchema["inbound"] | undefined;
-
       if (message) {
         if (!isServerEvent(message)) {
           const x = inFlight.current.get(message.msgId);
