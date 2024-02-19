@@ -17,11 +17,11 @@ export const VideoGalleryElement = ({
   return (
     <GalleryElement attachment={attachment} message={message}>
       {fileUrl && (
-        <div className="w-[93%] self-center p-10 max-h-full text-sm flex justify-center" onClick={stopEvent}>
-          <ReactPlayer
-            url={fileUrl}
-            controls={true}
-          />
+        <div
+          className="w-[93%] self-center p-10 max-h-full text-sm flex justify-center"
+          onClick={stopEvent}
+        >
+          <ReactPlayer url={fileUrl} controls={true} width="100%" height="100%" />
         </div>
       )}
     </GalleryElement>
