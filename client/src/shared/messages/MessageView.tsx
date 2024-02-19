@@ -705,7 +705,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
   );
 });
 
-const UserInfoCardReveal: React.FC<{ show: boolean }> = ({ show, children }) => {
+const UserInfoCardReveal: React.FC<{ show: boolean; children?: React.ReactNode }> = ({
+  show,
+  children,
+}) => {
   const [mounted, setMounted] = React.useState<HTMLDivElement | null>(null);
   const [visible, setVisible] = React.useState(false);
   React.useLayoutEffect(() => {

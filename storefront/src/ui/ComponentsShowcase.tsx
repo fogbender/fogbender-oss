@@ -20,6 +20,7 @@ import { IntegrationUser } from "./Admin/Integrations/Utils";
 export const ShowcaseAccordion: React.FC<{
   title: string;
   forceOpen?: boolean;
+  children?: React.ReactNode;
 }> = ({ title, forceOpen = false, children }) => {
   return (
     <ExpandableSection title={title} expand={forceOpen}>
