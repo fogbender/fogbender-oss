@@ -10,7 +10,6 @@ export const ExpandableSection: React.FC<{
   anchor?: string;
   url?: string;
   count?: number;
-  children?: React.ReactNode;
 }> = ({ title, expand, hash, anchor, url, count, children }) => {
   const [expanded, setExpanded] = React.useState(false);
 

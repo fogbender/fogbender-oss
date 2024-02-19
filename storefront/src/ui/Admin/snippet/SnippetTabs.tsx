@@ -2,10 +2,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs, useTabsContext } from "@reach/
 import { TabListWrapper, TabWrapper } from "fogbender-client/src/shared";
 import React from "react";
 
-const CustomTab: React.FC<{ index: number; children?: React.ReactNode }> = ({
-  index,
-  children,
-}) => {
+const CustomTab: React.FC<{ index: number }> = ({ index, children }) => {
   const { selectedIndex } = useTabsContext();
   return (
     <Tab className="flex-1 md:flex-none">

@@ -21,7 +21,7 @@ const Fogvites: React.FC<{}> = () => {
     error,
     data,
     refetch,
-  } = useQuery<FogviteCode[], React.ReactNode>("fogviteCodes", () =>
+  } = useQuery<FogviteCode[]>("fogviteCodes", () =>
     fetch(`${getServerUrl()}/detective_api/fogvite_codes`, {
       credentials: "include",
     }).then(res => res.json())

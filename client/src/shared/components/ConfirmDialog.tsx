@@ -11,7 +11,6 @@ type ConfirmDialogProps = {
   onDelete: () => void;
   loading?: boolean;
   error?: string;
-  children?: React.ReactNode;
 };
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
