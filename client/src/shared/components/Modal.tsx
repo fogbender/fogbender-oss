@@ -12,6 +12,7 @@ export const Modal: React.FC<{
   skipOverlayClick?: boolean;
   inUserWidget?: boolean;
   onClose: () => void;
+  children?: React.ReactNode;
 }> = ({ restricted = true, skipOverlayClick = false, inUserWidget, onClose, children }) => {
   const mode = useAtomValue(modeAtom);
 

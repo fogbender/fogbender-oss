@@ -190,7 +190,7 @@ export const SeedCustomers: React.FC<{
   const [isCreateCustomerModalOpen, setCreateCustomerModalOpen] = React.useState(false);
 
   const onDrop = React.useCallback(
-    acceptedFiles => {
+    (acceptedFiles: File[]) => {
       call(acceptedFiles);
     },
     [call]
@@ -236,7 +236,7 @@ export const SeedCustomers: React.FC<{
               </div>
             </div>
           )}
-          {res && res.error && <div>{res.error}</div>}
+          {res && res.error && <div>{res.error.message}</div>}
         </div>
       )}
       <div className="flex items-center justify-between">
