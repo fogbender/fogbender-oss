@@ -14,6 +14,7 @@ module.exports = {
         admin: ['"Prompt"', ...defaultTheme.fontFamily.sans],
         // font user in both
         body: ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+        mono: ["monospace", ...defaultTheme.fontFamily.mono],
       },
       fontSize: {
         "2xs": "0.625rem",

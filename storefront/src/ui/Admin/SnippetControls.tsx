@@ -13,7 +13,7 @@ import { useServerApiGet, useServerApiPost } from "../useServerApi";
 import { useDedicatedVendorId, useVendorById } from "../useVendor";
 
 import { useFullScreenClientUrl } from "./HeadlessForSupport";
-import { HighlightCode } from "./HighlightCode";
+import { HighlightCode, HighlightCodeWithMask, type MaskMode } from "./HighlightCode";
 import { ServerSnippetTabs, SnippetTabs } from "./snippet/SnippetTabs";
 
 const clientUrl = getClientUrl();
@@ -131,20 +131,32 @@ export const SnippetControlsNew: React.FC<{
     )[signature]) || ["", ""];
 
   const constTokenWithoutSignature = `const token = {
-  widgetId: "${widgetId}",
-  customerId: "${customerId}",
-  customerName: "Netflix",
-  userId: "${userId}",
-  userEmail: "jim@netflix.com",
-  userName: "Jim Lee", // Don’t know the name? Reuse email here
-  userAvatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=${userId}" // optional
-};`;
+    widgetId: "${widgetId}",
+    customerId: "${customerId}",
+    customerName: "Netflix",
+    userId: "${userId}",
+    userEmail: "jim@netflix.com",
+    userName: "Jim Lee", // Don’t know the name? Reuse email here
+    userAvatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=${userId}" // optional
+  };`;
 
-  const constTokenWithKey = constTokenWithoutSignature.replace(
-    "customerId",
-    `widgetKey: "${widgetKey}", // 🚩 NOT SECURE! SEE STEP 2
-  customerId`
-  );
+  const toMask = (x: string | undefined, visible?: number) =>
+    x
+      ? x
+          .split("")
+          .map((x, i) => (i >= (visible ?? 0) ? "*" : x))
+          .join("")
+      : "";
+
+  const constTokenWithKeyWithMask = (mode: MaskMode) => {
+    return constTokenWithoutSignature.replace(
+      "customerId",
+      `widgetKey: "${
+        mode === "clear" ? widgetKey : toMask(widgetKey)
+      }", // 🚩 NOT SECURE! SEE STEP 2
+    customerId`
+    );
+  };
 
   const queryParams = new URLSearchParams(window.location.search);
   return (
@@ -161,11 +173,11 @@ export const SnippetControlsNew: React.FC<{
       <div className="mt-4 flex flex-wrap gap-6">
         <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
           <p className="mb-4 fog:text-header3">widgetId</p>
-          <div className="flex">
+          <div className="flex items-center gap-2">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
               {widgetId}
             </code>
-            <div className="py-0.5 px-1">
+            <div className="py-0.5">
               <ClipboardCopy text={widgetId}>
                 <Icons.Clipboard />
               </ClipboardCopy>
@@ -215,11 +227,11 @@ export const SnippetControlsNew: React.FC<{
 
         <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
           <p className="mb-4 fog:text-header3">Secret</p>
-          <div className="flex">
+          <div className="flex items-center gap-2">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
               ••••••••••••••••••••••••••••••••
             </code>
-            <div className="py-0.5 px-1">
+            <div className="py-0.5">
               <ClipboardCopy text={serverSecret}>
                 <Icons.Clipboard />
               </ClipboardCopy>
@@ -253,11 +265,11 @@ export const SnippetControlsNew: React.FC<{
 
       <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
         <p className="mb-4 fog:text-header3">Visitor key</p>
-        <div className="flex">
+        <div className="flex gap-2 items-center">
           <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
             ••••••••••••••••••••••••••••••••
           </code>
-          <div className="py-0.5 px-1">
+          <div className="py-0.5">
             <ClipboardCopy text={visitorKey}>
               <Icons.Clipboard />
             </ClipboardCopy>
@@ -389,20 +401,26 @@ export const SnippetControlsNew: React.FC<{
                   </DemoButton>
                 }
               </div>
-              <HighlightCode
-                className="rounded language-js "
-                blurAreas={[
-                  { line: 4, column: 14, length: 28 },
-                  { line: 5, column: 15, length: 19 },
-                ]}
-              >
-                {`import { FogbenderSimpleWidget } from "fogbender-react";
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `import { FogbenderSimpleWidget } from "fogbender-react";
 
-${constTokenWithKey}
+  ${constTokenWithKeyWithMask(mode)}
 
-<FogbenderSimpleWidget${defaultEnv === "prod" ? "" : ` clientUrl="${clientUrl}"`} token={token} />
-                             `}
-              </HighlightCode>
+  <FogbenderSimpleWidget${defaultEnv === "prod" ? "" : ` clientUrl="${clientUrl}"`} token={token} />
+                                 `;
+                };
+
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           javascript={
@@ -422,25 +440,31 @@ ${constTokenWithKey}
                 2️⃣ Call the Fogbender widget with your user token (see example for Jim Lee at
                 Netflix below)
               </div>
-              <HighlightCode
-                className="rounded language-js"
-                blurAreas={[
-                  { line: 4, column: 14, length: 28 },
-                  { line: 5, column: 15, length: 19 },
-                ]}
-              >
-                {`import { createNewFogbender } from "fogbender";
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `import { createNewFogbender } from "fogbender";
 
-${constTokenWithKey}
+${constTokenWithKeyWithMask(mode)}
 
 const fogbender = createNewFogbender();${
-                  defaultEnv === "prod" ? "" : `\nfogbender.setClientUrl("${clientUrl}")`
-                }
+                    defaultEnv === "prod" ? "" : `\nfogbender.setClientUrl("${clientUrl}")`
+                  }
 fogbender.setToken(token);
 
 const rootEl = document.getElementById("app");
-fogbender.renderIframe({ rootEl });`}
-              </HighlightCode>
+fogbender.renderIframe({ rootEl });`;
+                };
+
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           script={
@@ -462,20 +486,26 @@ fogbender.renderIframe({ rootEl });`}
               <div className="mt-2 mb-4">
                 2️⃣ Call the widget with your user token (see example for Jim Lee at Netflix below)
               </div>
-              <HighlightCode
-                className="rounded language-js"
-                blurAreas={[
-                  { line: 2, column: 14, length: 28 },
-                  { line: 3, column: 15, length: 19 },
-                ]}
-              >
-                {`${constTokenWithKey}
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `${constTokenWithKeyWithMask(mode)}
 ${defaultEnv === "prod" ? "" : `\nfogbender.setClientUrl("${clientUrl}")`}
 fogbender.setToken(token);
 
 const rootEl = document.getElementById("app");
-fogbender.renderIframe({ rootEl });`}
-              </HighlightCode>
+fogbender.renderIframe({ rootEl });`;
+                };
+
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           more={
@@ -503,14 +533,10 @@ fogbender.renderIframe({ rootEl });`}
                   </DemoButton>{" "}
                   for possible widget options
                 </div>
-                <HighlightCode
-                  className="rounded language-js"
-                  blurAreas={[
-                    { line: 2, column: 14, length: 29 },
-                    { line: 3, column: 14, length: 21 },
-                  ]}
-                >
-                  {`${constTokenWithKey}
+                {(() => {
+                  const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                  const text = (mode: MaskMode) => {
+                    return `${constTokenWithKeyWithMask(mode)}
 
 /* Intercom-style chat widget */
 import { FogbenderSimpleFloatie } from "fogbender-react";
@@ -530,15 +556,25 @@ import { FogbenderProvider, FogbenderConfig, FogbenderIsConfigured,
 /* mix between plain JavaScript and React */
 import { FogbenderProvider, FogbenderWidget, createNewFogbender } from "fogbender-react";
 const fogbender = createNewFogbender();${
-                    defaultEnv === "prod" ? "" : `\nfogbender.setClientUrl("${clientUrl}")`
-                  }
+                      defaultEnv === "prod" ? "" : `\nfogbender.setClientUrl("${clientUrl}")`
+                    }
 fogbender.setToken(token);
 
 <FogbenderProvider fogbender={fogbender}>
   <FogbenderWidget />
 </FogbenderProvider>
-                               `}
-                </HighlightCode>
+                               `;
+                  };
+
+                  return (
+                    <HighlightCodeWithMask
+                      onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                      className="rounded language-js "
+                      clearText={text("clear")}
+                      visibleText={text(maskMode)}
+                    />
+                  );
+                })()}
               </div>
             </>
           }
@@ -601,25 +637,20 @@ fogbender.setToken(token);
               <div className="pb-2">
                 3️⃣ Replace{" "}
                 <code>
-                  widgetKey:{" "}
-                  <span className="relative inline-block">
-                    {widgetKey}
-                    <span className="absolute inset-0 mx-4 backdrop-blur-sm backdrop-filter rounded pointer-events-none" />
-                  </span>
+                  widgetKey: <span className="relative inline-block">{toMask(widgetKey, 4)}</span>
                 </code>{" "}
                 in your token with <code>{x[0]}: [signature]</code>
               </div>
               <div className="mb-4">
                 Below is sample code that generates a signature in Node.js:
               </div>
-              <HighlightCode
-                className="rounded language-js"
-                blurAreas={[{ line: 3, column: 17, length: 33 }]}
-              >
-                {signature === "hmac" &&
-                  `import { createHmac } from "crypto";
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  if (signature === "hmac") {
+                    return `import { createHmac } from "crypto";
 
-const secret = "${serverSecret}";
+const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 const userId = "${userId}";
 
 const userHMAC = createHmac("sha256", secret)
@@ -629,11 +660,11 @@ const userHMAC = createHmac("sha256", secret)
 console.log(userHMAC); // is "${userHMAC}"
 
 // test
-console.assert(userHMAC === "${userHMAC}");`}
-                {signature === "paseto" &&
-                  `const { V2 } = require("paseto"); // npm install --save paseto@1
+console.assert(userHMAC === "${userHMAC}");`;
+                  } else if (signature === "paseto") {
+                    return `const { V2 } = require("paseto"); // npm install --save paseto@1
 
-const secret = "${serverSecret}";
+const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 const userId = "${userId}";
 const customerId = "${customerId}";
 
@@ -644,11 +675,11 @@ const customerId = "${customerId}";
   // test
   const x = await V2.decrypt(userPaseto, secret);
   console.assert(x.userId === userId && x.customerId === customerId);
-})();`}
-                {signature === "jwt" &&
-                  `const { sign, verify } = require("jsonwebtoken");
+})();`;
+                  } else if (signature === "jwt") {
+                    return `const { sign, verify } = require("jsonwebtoken");
 
-const secret = "${serverSecret}";
+const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 const userId = "${userId}"; // Jim Lee’s user id; REPLACE
 const customerId = "${customerId}"; // Netflix customer id; REPLACE
 
@@ -660,8 +691,21 @@ console.log(userJWT); // like "${userJWT}"
 
 // test
 const x = verify(userJWT, secret);
-console.assert(x.userId === userId && x.customerId === customerId);`}
-              </HighlightCode>
+console.assert(x.userId === userId && x.customerId === customerId);`;
+                  } else {
+                    return "N/A";
+                  }
+                };
+
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           fetch={
@@ -683,13 +727,12 @@ console.assert(x.userId === userId && x.customerId === customerId);`}
                 Below is sample code that gets a signature from our <code>/tokens</code> API in
                 Node.js:
               </div>
-              <HighlightCode
-                className="rounded language-js"
-                blurAreas={[{ line: 3, column: 17, length: 33 }]}
-              >
-                {`import fetch from "node-fetch";
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `import fetch from "node-fetch";
 
-const secret = "${serverSecret}";
+const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 const userId = "${userId}"; // Jim Lee’s user id; REPLACE
 const customerId = "${customerId}"; // Netflix customer id; REPLACE
 
@@ -707,8 +750,17 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
     const x = await JSON.parse(atob(userJWT.split(".")[1]));
     console.assert(x.userId === userId && x.customerId === customerId);
   }
-})();`}
-              </HighlightCode>
+})();`;
+                };
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           curl={
@@ -718,16 +770,24 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
                 <code>{x[0]}</code> field, you can use <code>curl</code> with our{" "}
                 <code>/tokens</code> API to generate a signature:
               </div>
-              <HighlightCode
-                className="rounded language-bash"
-                blurAreas={[{ line: 3, column: 41, length: 34 }]}
-              >
-                {`# 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `# 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
 
-curl -X POST -H "Authorization: Bearer ${serverSecret}" \\
+curl -X POST -H "Authorization: Bearer ${mode === "mask" ? toMask(serverSecret) : serverSecret}" \\
      -d '{"userId":"${userId}","customerId":"${customerId}"}' \\
-     ${getServerUrl()}/tokens`}
-              </HighlightCode>
+     ${getServerUrl()}/tokens`;
+                };
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
           fullstack={
@@ -744,16 +804,12 @@ curl -X POST -H "Authorization: Bearer ${serverSecret}" \\
               <div className="mb-4">
                 Below is sample code that generates such a token in Node.js:
               </div>
-              <HighlightCode
-                className="rounded language-js"
-                blurAreas={[
-                  { line: 3, column: 17, length: 34 },
-                  { line: 5, column: 14, length: 29 },
-                ]}
-              >
-                {`import fetch from "node-fetch";
+              {(() => {
+                const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
+                const text = (mode: MaskMode) => {
+                  return `import fetch from "node-fetch";
 
-const secret = "${serverSecret}";
+const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 ${constTokenWithoutSignature.replace("const token", "const unsignedToken")}
 
 (async () => {
@@ -774,8 +830,17 @@ ${constTokenWithoutSignature.replace("const token", "const unsignedToken")}
 
   // Now just pass this \`token\` to your web app
   return token;
-})();`}
-              </HighlightCode>
+})();`;
+                };
+                return (
+                  <HighlightCodeWithMask
+                    onMaskToggle={(mode: MaskMode) => setMaskMode(mode)}
+                    className="rounded language-js "
+                    clearText={text("clear")}
+                    visibleText={text(maskMode)}
+                  />
+                );
+              })()}
             </>
           }
         />

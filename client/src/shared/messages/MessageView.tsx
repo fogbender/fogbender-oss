@@ -542,7 +542,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                       onClick={() => {
                         doForward?.(true);
                       }}
-                      className="flex items-center gap-x-1 px-1 text-gray-500 hover:text-brand-red-500"
+                      className="flex items-center gap-x-1 px-1 text-gray-500 dark:text-gray-300 hover:text-brand-red-500 hover:dark:text-brand-red-500"
                     >
                       <Icons.ArrowRightThin className="w-4 h-4" />
                       {(!selectedSingle || message.deletedTs) && (
@@ -558,7 +558,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                       onClick={() => {
                         doFileIssue?.(true);
                       }}
-                      className="flex items-center gap-x-1 px-1 text-gray-500 hover:text-brand-red-500"
+                      className="flex items-center gap-x-1 px-1 text-gray-500 dark:text-gray-300 hover:text-brand-red-500 dark:hover:text-brand-red-500"
                     >
                       <Icons.Exclamation className="w-4 h-4" />
                       {(!selectedSingle || message.deletedTs) && (
