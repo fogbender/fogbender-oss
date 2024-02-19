@@ -1,5 +1,17 @@
-import ReactDOM from "react-dom";
+import { useEffect } from "react";
+import { createRoot } from "react-dom/client";
 
 import { App } from "./react";
 
-ReactDOM.render(<App />, document.getElementById("root")!);
+function AppWithCallbackAfterRender() {
+  useEffect(() => {
+    console.info("rendered (client)");
+  });
+
+  return <App />;
+}
+
+const container = document.getElementById("root");
+const root = createRoot(container!);
+
+root.render(<AppWithCallbackAfterRender />);

@@ -19,12 +19,15 @@ const Fogvites: React.FC<{ agentId: string }> = ({ agentId }) => {
     error,
     data,
     refetch,
-  } = useQuery<{
-    id: string;
-    name: string;
-    my_fogvites: Fogvite[];
-    fogvited: Fogvite[];
-  }>("fogvites", () =>
+  } = useQuery<
+    {
+      id: string;
+      name: string;
+      my_fogvites: Fogvite[];
+      fogvited: Fogvite[];
+    },
+    React.ReactNode // Error must be of type React.ReactNode in order to use it in JSX
+  >("fogvites", () =>
     fetch(`${getServerUrl()}/detective_api/agents/${agentId}`, {
       credentials: "include",
       cache: "no-cache",
