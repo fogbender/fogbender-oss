@@ -970,7 +970,9 @@ export const App: React.FC<{
                         </span>
                       </span>
                     </div>
-                    {userInfo.customerName && userType === "user" ? (
+                    {userInfo.customerName &&
+                    userType === "user" &&
+                    !isExternalHelpdesk(userInfo.customerName) ? (
                       <div className="fog:text-body-m truncate">{userInfo.customerName}</div>
                     ) : (
                       <div className="fog:text-body-m truncate">
