@@ -53,8 +53,10 @@ export const MessageFileThumbnail: React.FC<{
     nonInteractive = false,
     inPin,
   }) => {
+    console.log(attachment?.contentType);
+
     const isPlainText = attachment?.contentType === "text/plain";
-    const isVideo = ["video/webm"].includes(attachment?.contentType ?? "");
+    const isVideo = ["video/webm", "video/mp4"].includes(attachment?.contentType ?? "");
     const maxSize = inReply || inUpload ? 80 : inPin ? 26 : isSingle ? 320 : 120;
     const getGalleryElement = React.useCallback(() => {
       if (!attachment || !message) {
