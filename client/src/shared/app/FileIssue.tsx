@@ -608,7 +608,7 @@ export const FileIssue: React.FC<{
                   "py-3 px-6 border-b-5 whitespace-nowrap fog:text-body-m rounded-t",
                   mode === fileIssueMode
                     ? "border-brand-orange-500 bg-blue-50 dark:bg-black"
-                    : "border-transparent text-blue-700 hover:text-brand-red-500 cursor-pointer"
+                    : "border-transparent text-blue-700 dark:text-blue-500 hover:text-brand-red-500 dark:hover:text-brand-red-500 cursor-pointer"
                 )}
                 onClick={() => {
                   setFileIssueMode(mode);
