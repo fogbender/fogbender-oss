@@ -75,6 +75,7 @@ import { SectionRoster } from "./SectionRoster";
 import type { RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
+import { flushSync } from "react-dom";
 
 // tslint:disable-next-line:ordered-imports
 
@@ -572,9 +573,11 @@ export const App: React.FC<{
           isAgent || !isIframe ? (width < 640 ? 1 : Math.floor(height / minRoomHeight) || 1) : 1;
         const rowHeight = Math.floor(height / rows);
 
-        setMaxCols(cols);
-        setMaxRows(rows);
-        setRowHeight(rowHeight);
+        flushSync(() => {
+          setMaxCols(cols);
+          setMaxRows(rows);
+          setRowHeight(rowHeight);
+        });
 
         if (!isAgent && !helpdeskId) {
           return;
