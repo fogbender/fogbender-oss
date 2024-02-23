@@ -41,7 +41,14 @@ export function getServerWsUrl(env?: Env, client?: Client) {
 }
 
 export function getVersion(env?: Env) {
-  const { PUBLIC_SHA, PUBLIC_BRANCH, PUBLIC_VERSION } = process.env;
+  const { PUBLIC_SHA, PUBLIC_BRANCH, PUBLIC_VERSION } =
+    typeof import.meta === "undefined"
+      ? process.env
+      : (
+          import.meta as any as {
+            env: Record<string, string>;
+          }
+        ).env;
   const version = PUBLIC_VERSION || "0.0.0";
   const sha = (PUBLIC_SHA || "00000000").substring(0, 8);
   const niceVersion = `${version}-${sha}`;
