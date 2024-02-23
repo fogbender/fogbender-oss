@@ -214,7 +214,7 @@ const Frequency: React.FC<{
 }> = ({ id, checked, name, onChange }) => {
   return (
     <div
-      className="cursor-pointer flex gap-3 items-center text-blue-500 dark:text-pink-900"
+      className="cursor-pointer flex gap-3 items-center text-blue-500 dark:text-pink-700"
       onClick={() => onChange(id)}
     >
       {checked ? <Icons.RadioFull /> : <Icons.RadioEmpty />}
