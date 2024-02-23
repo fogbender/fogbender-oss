@@ -14,6 +14,7 @@ import {
 } from "fogbender-proto";
 import React from "react";
 import { useQuery } from "react-query";
+import { PiWarningCircleFill } from "react-icons/pi";
 
 import {
   IconAsana,
@@ -481,10 +482,15 @@ export const FileIssue: React.FC<{
     }
   };
 
-  const goodToGo =
-    fileIssueMode === "New room" || fileIssueMode === "Create new external issue"
-      ? roomNameValue.length !== 0
-      : selectedIssue && hasIssueTrackerIntegrations;
+  const goodToGo = (() => {
+    if (fileIssueMode === "New room") {
+      return roomNameValue.length !== 0;
+    } else if (fileIssueMode === "Create new external issue") {
+      return roomNameValue.length !== 0 && hasIssueTrackerIntegrations;
+    } else {
+      return selectedIssue && hasIssueTrackerIntegrations;
+    }
+  })();
 
   const integrationOptions = issueTrackerIntegrations.map(i => ({
     id: i.id,
@@ -775,8 +781,11 @@ export const FileIssue: React.FC<{
                   </span>
                 </span>
                 {!hasIssueTrackerIntegrations && (
-                  <div className="text-black flex w-[556px] py-3 px-4 bg-gray-100 dark:bg-black dark:text-gray-500 rounded-lg flex-col gap-4">
-                    <div>You don’t have any integrations configured</div>
+                  <div className="text-black dark:text-gray-200  flex w-[556px] py-3 px-4 bg-gray-100 dark:bg-black rounded-lg flex-col gap-4">
+                    <div className="text-brand-red-500 font-medium flex items-center gap-1">
+                      <PiWarningCircleFill size={22} />
+                      <span>You don’t have any integrations configured</span>
+                    </div>
                     <div className="text-gray-500">
                       <span className="flex flex-row pb-2 gap-2">
                         <IconGitlab className="w-5 h-5" />
@@ -785,13 +794,15 @@ export const FileIssue: React.FC<{
                         <IconOutlineTrello className="w-5 h-5" />
                         <IconAsana className="w-5 h-5" />
                       </span>
-                      To link rooms to issues in GitLab, GitHub, Asana, Jira, or similar,{" "}
-                      <a
-                        className="fog:text-link no-underline"
-                        href={`/admin/vendor/${vendorId}/workspace/${workspaceId}/settings/integrations?add_integration`}
-                      >
-                        add an integration in workspace settings
-                      </a>
+                      <span className="text-gray-600 dark:text-gray-200">
+                        To link rooms to issues in GitLab, GitHub, Asana, Jira, or similar,{" "}
+                        <a
+                          className="fog:text-link no-underline"
+                          href={`/admin/vendor/${vendorId}/workspace/${workspaceId}/settings/integrations?add_integration`}
+                        >
+                          add an integration in workspace settings
+                        </a>
+                      </span>
                     </div>
                   </div>
                 )}

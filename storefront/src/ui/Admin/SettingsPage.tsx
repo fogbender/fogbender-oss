@@ -12,7 +12,6 @@ import { CommsIntegrations } from "./CommsIntegrations";
 import { CrmIntegrationsWrapper as CrmIntegrations } from "./CrmIntegrationsWrapper";
 import { DefaultGroupAssignments } from "./DefaultGroupAssignments";
 import { EmailForwarding } from "./EmailForwarding";
-import { IncidentResponseIntegrations } from "./IncidentResponseIntegrations";
 import { Integrations as IssueTrackerIntegrations } from "./Integrations";
 import { TagsList } from "./TagsList";
 
@@ -51,7 +50,6 @@ export const SettingsPage: React.FC<{
             <SettingsTabs tab="integrations" />
             {workspace && (
               <div className="flex flex-col gap-8 pb-20">
-                <IncidentResponseIntegrations workspace={workspace} />
                 <IssueTrackerIntegrations workspace={workspace} />
                 <CommsIntegrations workspace={workspace} />
                 <CrmIntegrations workspace={workspace} />
