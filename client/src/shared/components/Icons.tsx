@@ -736,7 +736,7 @@ const RadioEmpty: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle
-        className="fill-gray-200 dark:fill-gray-400"
+        className="fill-white dark:fill-brand-dark-bg"
         cx="10"
         cy="10"
         r="9.5"
@@ -758,7 +758,7 @@ const RadioFull: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle
-        className="fill-gray-200 dark:fill-gray-400"
+        className="fill-white dark:fill-brand-dark-bg"
         cx="10"
         cy="10"
         r="9.5"
