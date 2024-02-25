@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import browserDetect from "browser-detect";
 import { ResizeSensor } from "css-element-queries";
 import {
   getVersion,
@@ -99,6 +100,7 @@ export const App: React.FC<{
   setRoomIdToOpen?: (roomId: string) => void;
   renderCustomerInfoPane?: RenderCustomerInfoCb;
   renderUsersInfoPane?: RenderUsersInfoCb;
+  closeFloaty?: () => void;
 }> = ({
   authorMe,
   billing,
@@ -110,6 +112,7 @@ export const App: React.FC<{
   setNotificationsPermission,
   roomIdToOpen,
   setRoomIdToOpen,
+  closeFloaty,
   renderCustomerInfoPane,
   renderUsersInfoPane,
   isIdle,
@@ -895,6 +898,7 @@ export const App: React.FC<{
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
+        "bg-white",
         mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark")
       )}
     >
@@ -902,11 +906,12 @@ export const App: React.FC<{
         <div
           ref={floatieHeaderRef}
           className={classNames(
-            "sm:hidden relatve flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose",
-            "dark:bg-black"
+            "relative flex items-center gap-x-2 bg-blue-500 text-white py-3 px-4 fog:text-caption-xl leading-loose",
+            "dark:bg-black",
+            !browserDetect().mobile && "sm:hidden"
           )}
         >
-          <div className="flex-1">
+          <div className="flex-1 truncate">
             {activeRoom && roomName && (
               <div className={classNames("h-8 flex items-center justify-center sm:hidden")}>
                 <RoomNameLine
@@ -940,8 +945,15 @@ export const App: React.FC<{
             </span>
           </div>
           {isIframe && token && ("userId" in token || "visitor" in token) && (
-            <div className="h-full flex items-center">
-              <GoFullScreen token={token} visitorJWT={visitorJWT} />
+            <div className="flex items-center gap-4">
+              <div className="h-full flex items-center" title="Open in a new tab">
+                <GoFullScreen token={token} visitorJWT={visitorJWT} />
+              </div>
+              {closeFloaty && (
+                <div onClick={() => closeFloaty()} title="Close" className="cursor-pointer">
+                  <Icons.Chevron />
+                </div>
+              )}
             </div>
           )}
         </div>
