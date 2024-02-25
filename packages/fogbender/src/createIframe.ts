@@ -7,6 +7,7 @@ type FogbenderEventMap = {
   "configured": boolean;
   "fogbender.badges": { badges: { [roomId: string]: Badge } };
   "fogbender.unreadCount": { unreadCount: number };
+  "fogbender.closeFloaty": true;
 };
 
 export type Events = {
@@ -140,6 +141,8 @@ export function renderIframe(
           }
         };
       }
+    } else if (e.data?.type === "CLOSE_FLOATY") {
+      events.emit("fogbender.closeFloaty", true);
     }
   });
 
