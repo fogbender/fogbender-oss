@@ -1,5 +1,5 @@
 import { render } from "solid-js/web";
-import { Accessor, createMemo, createSignal } from "solid-js";
+import { Accessor, createMemo, createSignal, createEffect } from "solid-js";
 import { tw } from "twind";
 import { css } from "twind/css";
 import { Events } from "./createIframe";
@@ -16,6 +16,23 @@ export function createFloatingWidget(
     defaultOpen?: boolean;
   } = {}
 ) {
+  // https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
+  window.isMobile = function () {
+    let check = false;
+    (function (a) {
+      if (
+        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+          a
+        ) ||
+        /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+          a.substr(0, 4)
+        )
+      )
+        check = true;
+    })(navigator.userAgent || navigator.vendor || window.opera);
+    return check;
+  };
+
   const container = document.createElement("div");
   container.attachShadow({ mode: "open" });
   const { attach } = getTwind();
@@ -56,6 +73,21 @@ function Container(props: {
   if (props.openWindow && props.defaultOpen) {
     props.openWindow();
   }
+  createEffect(() => {
+    const onOpenChange = () => {
+      if (isMobile()) {
+        if (open() === "open") {
+          window.top.document.body.style.overflow = "hidden";
+        } else {
+          window.top.document.body.style.overflow = "auto";
+        }
+      }
+    };
+    onOpenChange(open());
+  });
+  props.events.on("fogbender.closeFloaty", () => {
+    setIsOpen("closed");
+  });
   const isOpen = createMemo(() => open() === "open");
   const close = () => {
     setIsOpen("hidden");
@@ -74,13 +106,34 @@ function Container(props: {
         },
       })
     );
+  const heightClasses = createMemo(() => {
+    if (isOpen()) {
+      if (window.isMobile()) {
+        return "top-0 h-full";
+      } else {
+        return "top-2 h-[98vh] sm:h-auto";
+      }
+    } else {
+      return "h-full bottom-0 sm:h-auto";
+    }
+  });
+
+  const widthClasses = createMemo(() => {
+    if (window.isMobile()) {
+      return "w-full";
+    } else {
+      return "w-full sm:w-auto";
+    }
+  });
+
   return (
     <div
       class={tw(
         closed() ? "hidden" : "flex",
         "pointer-events-none",
-        isOpen() ? "top-2 h-[98vh]" : "h-full bottom-0",
-        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse w-full sm:h-auto sm:w-auto items-center group",
+        heightClasses(),
+        "fixed sm:top-auto sm:bottom-0 right-0 flex-col-reverse items-center group",
+        widthClasses(),
         props.verbose && "sm:mr-4 mb-4"
       )}
       style="z-index: 9999;"
@@ -135,15 +188,41 @@ function Talky(props: {
   close: () => void;
   renderIframe: (el: HTMLElement) => () => void;
 }) {
+  const mrClasses = createMemo(() => {
+    if (props.verbose) {
+      return "sm:mr-2.5";
+    } else {
+      if (!window.isMobile()) {
+        return "sm:mr-8";
+      }
+    }
+  });
+  const heightClasses = createMemo(() => {
+    if (props.verbose) {
+      return "sm:h-[calc(60vh+30px)] h-full sm:max-h-screen";
+    } else {
+      if (window.isMobile()) {
+        return "h-full";
+      } else {
+        return "-mb-[48px] sm:h-[calc(60vh+60px)] h-full sm:max-h-screen";
+      }
+    }
+  });
+  const widthClasses = createMemo(() => {
+    if (window.isMobile()) {
+      return "w-full";
+    } else {
+      return "w-full min-w-[340px] sm:min-w-[480px] max-w-[90vw]";
+    }
+  });
   return (
     <div
       class={tw(
         "pointer-events-auto",
         props.isOpen() ? "flex flex-col" : "hidden",
-        props.verbose
-          ? "sm:h-[calc(60vh+30px)] sm:mr-2.5"
-          : "-mb-[48px] sm:h-[calc(60vh+60px)] sm:mr-8",
-        "z-10 shadow-md w-full h-full rounded-none bg-white min-w-[340px] sm:min-w-[480px] max-w-[90vw] sm:max-h-screen"
+        heightClasses(),
+        mrClasses(),
+        widthClasses()
       )}
     >
       <Iframe renderIframe={props.renderIframe} />
@@ -176,48 +255,52 @@ function Floatie(props: { isOpen: Accessor<boolean>; events: Events; verbose?: b
     setUnreadCount(e.unreadCount);
   });
 
-  return props.verbose ? (
-    <div
-      class={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-none bg-white transform origin-bottom-right scale-75`}
-      style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
-    >
-      <div>
-        <FloatingVerboseSvg />
-      </div>
-      <div class={tw`text-left text-sm font-semibold`}>Customer support</div>
+  if (props.verbose) {
+    return (
       <div
-        class={tw`absolute top-0 right-0 text-white rounded-none bg-brand-red-500 text-xs leading-none`}
-        style={{
-          display: unreadCounter() === 0 ? "none" : "block",
-          padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
-        }}
+        class={tw`w-36 mb-4 mr-7 sm:mr-2.5 py-2 px-4 flex items-center justify-center gap-x-2 rounded-none bg-white transform origin-bottom-right scale-75`}
+        style={{ "box-shadow": "0px 6px 20px rgba(19, 29, 118, 0.15)" }}
       >
-        {unreadCounter() === -1 ? "@" : unreadCounter()}
+        <div>
+          <FloatingVerboseSvg />
+        </div>
+        <div class={tw`text-left text-sm font-semibold`}>Customer support</div>
+        <div
+          class={tw`absolute top-0 right-0 text-white rounded-none bg-brand-red-500 text-xs leading-none`}
+          style={{
+            display: unreadCounter() === 0 ? "none" : "block",
+            padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
+          }}
+        >
+          {unreadCounter() === -1 ? "@" : unreadCounter()}
+        </div>
       </div>
-    </div>
-  ) : (
-    <div class={tw("relative w-32 h-32")}>
-      <div class={tw("absolute inset-0")}>
-        <FloatingSvg />
+    );
+  } else {
+    return (
+      <div class={tw("relative w-32 h-32", props.isOpen() && window.isMobile() && "hidden")}>
+        <div class={tw("absolute inset-0")}>
+          <FloatingSvg />
+        </div>
+        <div
+          class={tw("absolute inset-0 duration-300", props.isOpen() ? "opacity-100" : "opacity-0")}
+        >
+          <FloatingSvgOpened />
+        </div>
+        <div
+          class={tw`absolute text-white rounded-lg bg-brand-red-500 text-xs leading-none`}
+          style={{
+            display: unreadCounter() === 0 ? "none" : "block",
+            top: "20px",
+            left: "78px",
+            padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
+          }}
+        >
+          {unreadCounter() === -1 ? "@" : unreadCounter()}
+        </div>
       </div>
-      <div
-        class={tw("absolute inset-0 duration-300", props.isOpen() ? "opacity-100" : "opacity-0")}
-      >
-        <FloatingSvgOpened />
-      </div>
-      <div
-        class={tw`absolute text-white rounded-lg bg-brand-red-500 text-xs leading-none`}
-        style={{
-          display: unreadCounter() === 0 ? "none" : "block",
-          top: "20px",
-          left: "78px",
-          padding: unreadCounter() === -1 ? "2px 3px" : "2px 5px",
-        }}
-      >
-        {unreadCounter() === -1 ? "@" : unreadCounter()}
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 function FloatingVerboseSvg() {
