@@ -70,16 +70,32 @@ function Container(props: {
   const [open, setIsOpen] = createSignal<Open>(
     (props.defaultOpen && !props.openWindow && "open") || "closed"
   );
+
   if (props.openWindow && props.defaultOpen) {
     props.openWindow();
   }
+
+  const originalOverflow = createMemo(() => {
+    const body = window?.top?.document?.body;
+
+    if (body) {
+      const style = getComputedStyle(body);
+
+      if (style) {
+        return style["overflow"];
+      }
+    }
+
+    return undefined;
+  });
+
   createEffect(() => {
     const onOpenChange = () => {
       if (isMobile()) {
         if (open() === "open") {
           window.top.document.body.style.overflow = "hidden";
         } else {
-          window.top.document.body.style.overflow = "auto";
+          window.top.document.body.style.overflow = originalOverflow() ?? "auto";
         }
       }
     };
