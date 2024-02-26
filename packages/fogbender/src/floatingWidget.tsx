@@ -254,7 +254,7 @@ function Talky(props: {
         widthClasses()
       )}
     >
-      <Iframe renderIframe={props.renderIframe} />
+      <Iframe title="Fogbender chat widget" renderIframe={props.renderIframe} />
     </div>
   );
 }
