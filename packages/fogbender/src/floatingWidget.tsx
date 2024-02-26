@@ -124,6 +124,7 @@ function Container(props: {
         },
       })
     );
+
   const heightClasses = createMemo(() => {
     if (isOpen()) {
       if (window.isMobile()) {
@@ -141,6 +142,14 @@ function Container(props: {
       return "w-full";
     } else {
       return "w-full sm:w-auto";
+    }
+  });
+
+  const talkyOpacity = createMemo(() => {
+    if (isOpen()) {
+      return "transition-opacity duration-500 opacity-100";
+    } else {
+      return "opacity-0";
     }
   });
 
@@ -170,12 +179,14 @@ function Container(props: {
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
       {open() !== "closed" && (
-        <Talky
-          isOpen={isOpen}
-          close={close}
-          verbose={props.verbose}
-          renderIframe={props.renderIframe}
-        />
+        <div class={tw(talkyOpacity())}>
+          <Talky
+            isOpen={isOpen}
+            close={close}
+            verbose={props.verbose}
+            renderIframe={props.renderIframe}
+          />
+        </div>
       )}
       {props.closeable && !isOpen() && (
         <div
