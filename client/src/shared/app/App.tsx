@@ -895,13 +895,20 @@ export const App: React.FC<{
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
 
+  const [opacity, setOpacity] = React.useState("opacity-0");
+
+  React.useEffect(() => {
+    setOpacity("transition-opacity duration-[600ms] opacity-100");
+  }, []);
+
   return (
     <div
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
         "bg-white",
-        mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark")
+        mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark"),
+        opacity
       )}
     >
       {isUser && userInfo && (
