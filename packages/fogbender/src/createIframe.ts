@@ -51,6 +51,7 @@ export function renderIframe(
     headless,
     disableFit,
     onVisitorInfo,
+    onLightDarkModeInfo,
     initialMode = () => "light",
   }: {
     rootEl: HTMLElement;
@@ -58,9 +59,10 @@ export function renderIframe(
     url: string;
     token: Token;
     onVisitorInfo: (info: VisitorInfo, reload: boolean) => void;
+    onLightDarkModeInfo: (x: "light" | "dark") => void;
     headless?: boolean;
     disableFit?: boolean;
-    initialMode: () => "dark" | "light";
+    initialMode: () => "light" | "dark";
   },
   openWindow: () => void
 ) {
@@ -123,6 +125,8 @@ export function renderIframe(
       })();
       events.unreadCount = unreadCount;
       events.emit("fogbender.unreadCount", { unreadCount });
+    } else if (e.data?.type === "WIDGET_LIGHT_DARK_MODE" && e.data.lightDarkMode !== undefined) {
+      onLightDarkModeInfo(e.data.lightDarkMode);
     } else if (
       e.data?.type === "NOTIFICATION" &&
       e.data.notification !== undefined &&
