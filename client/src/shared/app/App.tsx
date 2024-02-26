@@ -908,6 +908,17 @@ export const App: React.FC<{
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
         "bg-white",
         mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark"),
+        (() => {
+          if (mode === "dark") {
+            if (isIframe) {
+              return "bg-brand-dark-bg dark";
+            } else {
+              return "bg-black dark";
+            }
+          } else {
+            return "bg-white";
+          }
+        })(),
         opacity
       )}
     >
