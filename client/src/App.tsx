@@ -141,6 +141,12 @@ const App = () => {
     }
   };
 
+  const onWidgetLightDarkModeChange = React.useCallback((mode: "light" | "dark") => {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: "WIDGET_LIGHT_DARK_MODE", lightDarkMode: mode }, "*"); // nosemgrep: javascript.browser.security.wildcard-postmessage-configuration.wildcard-postmessage-configuration
+    }
+  }, []);
+
   const userToken = isUserToken(token) ? token : undefined;
   const visitorToken = isVisitorToken(token) ? token : undefined;
 
@@ -163,6 +169,7 @@ const App = () => {
           roomIdToOpen={roomIdToOpen}
           setRoomIdToOpen={setRoomIdToOpen}
           closeFloaty={closeFloaty}
+          onWidgetLightDarkModeChange={onWidgetLightDarkModeChange}
         />
       </IsIdleProvider>
     </ErrorBoundary>
@@ -181,6 +188,7 @@ const ProviderWrapper: React.FC<{
   roomIdToOpen: string | undefined;
   setRoomIdToOpen: (roomId: string) => void;
   closeFloaty: () => void;
+  onWidgetLightDarkModeChange: (x: "light" | "dark") => void;
 }> = ({
   token,
   clientEnv,
@@ -193,6 +201,7 @@ const ProviderWrapper: React.FC<{
   roomIdToOpen,
   setRoomIdToOpen,
   closeFloaty,
+  onWidgetLightDarkModeChange,
 }) => {
   const envRef = React.useRef(clientEnv);
   envRef.current = clientEnv;
@@ -235,6 +244,7 @@ const ProviderWrapper: React.FC<{
               roomIdToOpen={roomIdToOpen}
               setRoomIdToOpen={setRoomIdToOpen}
               closeFloaty={closeFloaty}
+              onWidgetLightDarkModeChange={onWidgetLightDarkModeChange}
             />
             <GalleryModal />
           </QueryClientProvider>
