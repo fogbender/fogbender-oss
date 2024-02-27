@@ -1,12 +1,13 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
-import { Badge, Env, Token } from ".";
+import type { Badge, Env, Token } from ".";
 import { type VisitorInfo } from "./types";
 
 type FogbenderEventMap = {
   "configured": boolean;
   "fogbender.badges": { badges: { [roomId: string]: Badge } };
   "fogbender.unreadCount": { unreadCount: number };
+  "fogbender.closeFloaty": true;
 };
 
 export type Events = {
@@ -140,6 +141,8 @@ export function renderIframe(
           }
         };
       }
+    } else if (e.data?.type === "CLOSE_FLOATY") {
+      events.emit("fogbender.closeFloaty", true);
     }
   });
 

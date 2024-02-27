@@ -339,7 +339,7 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
         </header>
       </div>
       <main className="-mt-32 flex-1 flex flex-col w-full">
-        <div className="max-w-7xl px-4 sm:px-6 lg:px-8 flex-1 flex flex-col">
+        <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex-1 flex flex-col mx-auto">
           {/* Replace with your content */}
           <div
             className={classNames(
