@@ -1,8 +1,8 @@
 import { render } from "solid-js/web";
-import { Accessor, createMemo, createSignal, createEffect } from "solid-js";
+import { type Accessor, createMemo, createSignal, createEffect } from "solid-js";
 import { tw } from "twind";
 import { css } from "twind/css";
-import { Events } from "./createIframe";
+import { type Events } from "./createIframe";
 import { getTwind } from "./twind";
 
 export function createFloatingWidget(
@@ -91,10 +91,12 @@ function Container(props: {
 
   createEffect(() => {
     const onOpenChange = () => {
-      if (isMobile()) {
+      if (window.isMobile()) {
         if (open() === "open") {
-          window.top.document.body.style.overflow = "hidden";
-        } else {
+          if (window.top) {
+            window.top.document.body.style.overflow = "hidden";
+          }
+        } else if (window.top) {
           window.top.document.body.style.overflow = originalOverflow() ?? "auto";
         }
       }
