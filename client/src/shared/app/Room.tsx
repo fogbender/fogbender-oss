@@ -872,7 +872,9 @@ export const Room: React.FC<{
       <div
         className={classNames(
           "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
-          keepScrollAtBottom || onSelectionHover ? "border-transparent" : "border-gray-300"
+          keepScrollAtBottom || onSelectionHover
+            ? "border-transparent opacity-0"
+            : "border-gray-300 transition-oopacity duration-1000 opacity-100"
         )}
       >
         <span className="h-4 flex-1 my-1 truncate">{typingNames ? typingNames + "..." : ""}</span>
@@ -889,7 +891,9 @@ export const Room: React.FC<{
           className={classNames(
             "absolute z-[5] bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
-            (onSelectionHover || keepScrollAtBottom || !room) && "invisible pointer-events-none",
+            onSelectionHover || keepScrollAtBottom || !room
+              ? "invisible pointer-events-none opacity-0"
+              : "transition-opacity duration-1000 opacity-100",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
         >
