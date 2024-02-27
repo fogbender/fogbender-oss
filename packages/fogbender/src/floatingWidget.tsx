@@ -179,7 +179,7 @@ function Container(props: {
         <Floatie isOpen={isOpen} events={props.events} verbose={props.verbose} />
       </button>
       {open() !== "closed" && (
-        <div class={tw(talkyOpacity())}>
+        <div class={tw("h-full w-full", talkyOpacity())}>
           <Talky
             isOpen={isOpen}
             close={close}
