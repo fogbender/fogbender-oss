@@ -28,7 +28,12 @@ defmodule Mix.Tasks.Db.Boot do
   end
 
   defp run_command(["agent"]) do
-    a = Data.Agent |> Repo.one()
+    a =
+      Data.Agent
+      |> Repo.all()
+      |> Enum.sort(&(&1.inserted_at < &2.inserted_at))
+      |> List.first()
+
     v = Data.Vendor |> Repo.get(Fog.env(:fogbender_vendor_id))
 
     Repo.transaction(fn _ ->
