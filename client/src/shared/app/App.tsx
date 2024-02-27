@@ -906,7 +906,6 @@ export const App: React.FC<{
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
-        "bg-white",
         mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark"),
         (() => {
           if (mode === "dark") {
@@ -916,7 +915,7 @@ export const App: React.FC<{
               return "bg-black dark";
             }
           } else {
-            return "bg-white";
+            return "bg-transparent";
           }
         })(),
         opacity
