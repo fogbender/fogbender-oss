@@ -101,7 +101,9 @@ export const App: React.FC<{
   renderCustomerInfoPane?: RenderCustomerInfoCb;
   renderUsersInfoPane?: RenderUsersInfoCb;
   closeFloaty?: () => void;
+  onWidgetLightDarkModeChange?: (x: "light" | "dark") => void;
 }> = ({
+  isIdle,
   authorMe,
   billing,
   agents,
@@ -115,7 +117,7 @@ export const App: React.FC<{
   closeFloaty,
   renderCustomerInfoPane,
   renderUsersInfoPane,
-  isIdle,
+  onWidgetLightDarkModeChange,
 }) => {
   const [mode, setMode] = useAtom(modeAtom);
   const {
@@ -893,13 +895,31 @@ export const App: React.FC<{
 
   const roomName = roomToName(activeRoom, ourId, !!isAgent);
 
+  const [opacity, setOpacity] = React.useState("opacity-0");
+
+  React.useEffect(() => {
+    setOpacity("transition-opacity duration-[600ms] opacity-100");
+  }, []);
+
   return (
     <div
       ref={appRef}
       className={classNames(
         "relative h-full max-h-screen flex-1 flex flex-col z-10",
         "bg-white",
-        mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark")
+        mode === "dark" && (isIframe ? "bg-brand-dark-bg dark" : "bg-black dark"),
+        (() => {
+          if (mode === "dark") {
+            if (isIframe) {
+              return "bg-brand-dark-bg dark";
+            } else {
+              return "bg-black dark";
+            }
+          } else {
+            return "bg-white";
+          }
+        })(),
+        opacity
       )}
     >
       {isUser && userInfo && (
@@ -1243,7 +1263,11 @@ export const App: React.FC<{
                 >
                   <div className="w-full shrink-0 snap-center flex">
                     <div className="flex items-center cursor-pointer z-20 gap-2">
-                      <ThemeModeController mode={mode} setMode={setMode} />
+                      <ThemeModeController
+                        mode={mode}
+                        setMode={setMode}
+                        onWidgetLightDarkModeChange={onWidgetLightDarkModeChange}
+                      />
                     </div>
                     <a
                       href="https://fogbender.com"
@@ -1501,14 +1525,22 @@ export const App: React.FC<{
 const ThemeModeController = ({
   mode,
   setMode,
+  onWidgetLightDarkModeChange,
 }: {
   mode: "light" | "dark";
   setMode: (x: ThemeModeSetStateAction) => void;
+  onWidgetLightDarkModeChange?: (x: "light" | "dark") => void;
 }) => {
   const lightMode = mode === "light";
   const darkMode = mode === "dark";
 
   const commonClassNames = "p-1 rounded-full";
+
+  React.useEffect(() => {
+    if (onWidgetLightDarkModeChange) {
+      onWidgetLightDarkModeChange(mode);
+    }
+  }, [mode, onWidgetLightDarkModeChange]);
 
   return (
     <>

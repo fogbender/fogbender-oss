@@ -1,5 +1,6 @@
-import type { Message as MessageT } from "fogbender-proto";
+import { flushSync } from "react-dom";
 import React from "react";
+import type { Message as MessageT } from "fogbender-proto";
 
 import { findLast } from "../utils/findLast";
 
@@ -29,7 +30,11 @@ export function useSelection({
           newSelection = messages.filter(x => msg.id <= x.id && x.id <= selection.slice(-1)[0]?.id);
         }
       }
-      setSelection(newSelection);
+      setTimeout(() => {
+        flushSync(() => {
+          setSelection(newSelection);
+        });
+      }, 0);
       setLastSelected(newSelection.length > 0 ? msg : undefined);
     },
     [selection, lastSelected, messages]

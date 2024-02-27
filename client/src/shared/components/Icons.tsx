@@ -772,8 +772,13 @@ const RadioFull: Icon = ({ className = "w-5" }) => {
 const RadioFullDisabled: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="10" fill="#E5E7EB" />
-      <circle cx="10" cy="10" r="6" fill="currentColor" />
+      <circle
+        cx="10"
+        cy="10"
+        r="10"
+        className="fill-white dark:fill-brand-dark-bg stroke-current"
+      />
+      <circle cx="10" cy="10" r="6" className="fill-current opacity-60" />
     </svg>
   );
 };

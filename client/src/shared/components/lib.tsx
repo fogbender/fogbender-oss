@@ -255,7 +255,7 @@ export const UnreadCircleExpanded: React.FC<{
               {total} unread {total === 1 ? "room" : "rooms"}
             </>
           ) : (
-            "No new messages"
+            <span className="text-white dark:text-gray-400">No new messages</span>
           )}
         </span>
       </span>

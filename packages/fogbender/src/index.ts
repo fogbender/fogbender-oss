@@ -18,6 +18,7 @@ export { checkToken, isUserToken, isVisitorToken } from "./checkToken";
 
 export const createNewFogbender = (): Fogbender => {
   const defaultUrl = "https://client.fogbender.com";
+  const lightDarkModeKey = (widgetId: string) => `light-dark-mode-${widgetId}`;
   const state = {
     versions: {} as { [key: string]: string },
     env: undefined as Env | undefined,
@@ -25,7 +26,7 @@ export const createNewFogbender = (): Fogbender => {
     url: defaultUrl as string | undefined,
     events: createEvents(),
     chatWindow: null as null | Window,
-    mode: "light" as "light" | "dark",
+    mode: "dark" as "light" | "dark",
     setIframeMode: undefined as ((mode: "light" | "dark") => void) | undefined,
   };
   const openWindow = () => {
@@ -46,6 +47,16 @@ export const createNewFogbender = (): Fogbender => {
       localStorage.setItem(`visitor-${widgetId}`, JSON.stringify(info));
     } catch (e) {
       console.error(e);
+    }
+  };
+  const storeLightDarkModeInfo = (mode: "light" | "dark") => {
+    if (state.token) {
+      const { widgetId } = state.token;
+      try {
+        localStorage.setItem(lightDarkModeKey(widgetId), mode);
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
   const updateConfigured = () => {
@@ -96,6 +107,19 @@ export const createNewFogbender = (): Fogbender => {
           console.error(e);
         }
       }
+
+      if (token) {
+        try {
+          const { widgetId } = token;
+          const mode = localStorage.getItem(lightDarkModeKey(widgetId));
+          if (mode && ["light", "dark"].includes(mode)) {
+            state.mode = mode as "light" | "dark";
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       if (state.token) {
         state.token = {
           ...state.token,
@@ -147,6 +171,7 @@ export const createNewFogbender = (): Fogbender => {
                     cleanup = cleanup2;
                   }
                 },
+                onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
                 initialMode: () => state.mode,
               },
               openWindow
@@ -186,6 +211,7 @@ export const createNewFogbender = (): Fogbender => {
                 cleanup = cleanup3;
               }
             },
+            onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
             initialMode: () => state.mode,
           },
           openWindow
