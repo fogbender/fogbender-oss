@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
-import { Badge, Env, Token } from ".";
+import type { Badge, Env, Token } from ".";
 import { type VisitorInfo } from "./types";
 
 type FogbenderEventMap = {
