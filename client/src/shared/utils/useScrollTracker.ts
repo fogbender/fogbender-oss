@@ -1,4 +1,6 @@
 import React from "react";
+import { flushSync } from "react-dom";
+import type { Message as MessageT } from "fogbender-proto";
 
 import { usePrevious } from "./usePrevious";
 
@@ -18,6 +20,8 @@ export const useScrollTracker = ({
   onSeen,
   isIdle,
   isConnected,
+  selection,
+  onSelectionHover,
 }: {
   isActiveRoom: boolean;
   messages: { id: string; createdTs: number }[];
@@ -34,6 +38,8 @@ export const useScrollTracker = ({
   onSeen: (id: string) => void;
   isIdle: boolean;
   isConnected: boolean;
+  selection: MessageT[];
+  onSelectionHover: boolean;
 }) => {
   const prevMessages = usePrevious(messages);
   const messagesRefs = React.useRef<Set<HTMLDivElement>>(new Set<HTMLDivElement>());
@@ -180,14 +186,22 @@ export const useScrollTracker = ({
       const { scrollHeight, clientHeight, scrollTop } = historyRef.current;
 
       if (newerHistoryComplete && !resizing) {
-        if (clientHeight + scrollTop + 1 >= scrollHeight) {
-          setKeepScrollAtBottom(true);
+        if (
+          clientHeight + scrollTop + 1 >= scrollHeight &&
+          selection.length === 0 &&
+          !onSelectionHover
+        ) {
+          setTimeout(() => {
+            flushSync(() => {
+              setKeepScrollAtBottom(true);
+            });
+          }, 0);
         } else {
           setKeepScrollAtBottom(false);
         }
       }
     }
-  }, [historyRef, resizing, newerHistoryComplete]);
+  }, [historyRef, resizing, newerHistoryComplete, selection, onSelectionHover]);
 
   React.useEffect(() => {
     if (loadAroundMessage) {

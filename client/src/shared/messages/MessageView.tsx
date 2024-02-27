@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { flushSync } from "react-dom";
 import DOMPurify from "dompurify";
 import {
   type Attachment,
@@ -73,6 +74,7 @@ type MessageViewProps = {
   roomWidth?: number;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
+  setOnSelectionHover?: (x: boolean) => void;
 };
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
@@ -116,6 +118,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     roomRef,
     pinToRoom,
     askAi,
+    setOnSelectionHover,
   } = props;
   const themeMode = useAtomValue(modeAtom);
 
@@ -279,6 +282,12 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           />
         )}
         <div
+          onMouseEnter={() =>
+            setOnSelectionHover && setTimeout(() => flushSync(() => setOnSelectionHover(true)), 0)
+          }
+          onMouseLeave={() =>
+            setOnSelectionHover && setTimeout(() => flushSync(() => setOnSelectionHover(false)), 0)
+          }
           className={classNames(
             "selector group flex absolute inset-y-0 -left-4 w-12 border-l-3 border-transparent",
             !nonInteractive && "cursor-pointer"

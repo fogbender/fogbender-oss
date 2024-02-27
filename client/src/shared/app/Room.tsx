@@ -82,9 +82,14 @@ const ResolvedControls = (props: {
     resolveRoom(roomId, dateTs);
   };
   const showSnoozeTimer = resolved && resolvedTil;
+  const [opacity, setOpacity] = React.useState("opacity-0");
+  React.useEffect(() => {
+    setOpacity("transition-opacity duration-[3000ms] opacity-100");
+  }, []);
   return (
     <div
       className={classNames(
+        opacity,
         styles["z-1"],
         "absolute bg-gray-200 dark:bg-black dark:text-white items-center flex p-1 right-0 rounded-bl-lg text-xs top-0 whitespace-nowrap gap-2"
       )}
@@ -258,6 +263,11 @@ export const Room: React.FC<{
   const historyRef = React.useRef<HTMLDivElement>(null);
   const messageareaHeight = useHeightWatcher(historyRef);
 
+  const { selection, handleMessageClick, handleSelectionCancel, handleLastMessageEdit } =
+    useSelection({ messages, userId: ourId });
+
+  const [onSelectionHover, setOnSelectionHover] = React.useState(false);
+
   const {
     onMessageRef,
     onHistoryScroll,
@@ -280,6 +290,8 @@ export const Room: React.FC<{
     onSeen,
     isIdle,
     isConnected,
+    selection,
+    onSelectionHover,
   });
 
   const [flash, setFlash] = React.useState<string>();
@@ -380,9 +392,6 @@ export const Room: React.FC<{
     room?.counterpart?.name ||
     (room && room.name && room.createdTs && formatRoomName(room, !!isAgent)) ||
     undefined;
-
-  const { selection, handleMessageClick, handleSelectionCancel, handleLastMessageEdit } =
-    useSelection({ messages, userId: ourId });
 
   const [highlightedTags, setHighlightedTags] = React.useState<string[]>([]);
 
@@ -804,6 +813,7 @@ export const Room: React.FC<{
               roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
+              setOnSelectionHover={setOnSelectionHover}
             />
           ))}
           {pendingMessages.map((msg, i) => (
@@ -862,7 +872,7 @@ export const Room: React.FC<{
       <div
         className={classNames(
           "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
-          keepScrollAtBottom ? "border-transparent" : "border-gray-300"
+          keepScrollAtBottom || onSelectionHover ? "border-transparent" : "border-gray-300"
         )}
       >
         <span className="h-4 flex-1 my-1 truncate">{typingNames ? typingNames + "..." : ""}</span>
@@ -879,7 +889,7 @@ export const Room: React.FC<{
           className={classNames(
             "absolute z-[5] bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
-            (keepScrollAtBottom || !room) && "invisible pointer-events-none",
+            (onSelectionHover || keepScrollAtBottom || !room) && "invisible pointer-events-none",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
         >
