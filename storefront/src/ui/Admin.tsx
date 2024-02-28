@@ -418,8 +418,8 @@ export const Admin = () => {
             <div
               className={classNames(
                 "relative z-0 w-full",
-                !isAgentApp && "pb-36",
-                !isAgentApp && !customersMode && "max-w-screen-xl mx-auto"
+                !isAgentApp && !supportMode && "pb-36",
+                !isAgentApp && !customersMode && !supportMode && "max-w-screen-xl mx-auto"
               )}
             >
               <Routes>

@@ -173,6 +173,7 @@ export const createNewFogbender = (): Fogbender => {
                 },
                 onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
                 initialMode: () => state.mode,
+                isFloaty: true,
               },
               openWindow
             );
