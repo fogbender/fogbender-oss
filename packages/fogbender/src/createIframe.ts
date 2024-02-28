@@ -53,6 +53,7 @@ export function renderIframe(
     onVisitorInfo,
     onLightDarkModeInfo,
     initialMode = () => "light",
+    isFloaty = false,
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
@@ -63,6 +64,7 @@ export function renderIframe(
     headless?: boolean;
     disableFit?: boolean;
     initialMode: () => "light" | "dark";
+    isFloaty?: boolean;
   },
   openWindow: () => void
 ) {
@@ -89,7 +91,10 @@ export function renderIframe(
       return;
     }
     if (e.data?.type === "APP_IS_READY") {
-      iFrame.contentWindow?.postMessage({ env, initToken: token, headless, mode: _mode }, url);
+      iFrame.contentWindow?.postMessage(
+        { env, initToken: token, headless, mode: _mode, isFloaty },
+        url
+      );
       iFrame.contentWindow?.postMessage(
         { notificationsPermission: window.Notification?.permission },
         url
