@@ -164,6 +164,7 @@ function Container(props: {
         props.verbose && "sm:mr-4 mb-4"
       )}
       style="z-index: 9999;"
+      id="fogbender-floaty"
     >
       <button
         onClick={() => {
