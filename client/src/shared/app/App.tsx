@@ -102,6 +102,7 @@ export const App: React.FC<{
   renderUsersInfoPane?: RenderUsersInfoCb;
   closeFloaty?: () => void;
   onWidgetLightDarkModeChange?: (x: "light" | "dark") => void;
+  isFloaty?: boolean;
 }> = ({
   isIdle,
   authorMe,
@@ -118,6 +119,7 @@ export const App: React.FC<{
   renderCustomerInfoPane,
   renderUsersInfoPane,
   onWidgetLightDarkModeChange,
+  isFloaty,
 }) => {
   const [mode, setMode] = useAtom(modeAtom);
   const {
@@ -968,7 +970,7 @@ export const App: React.FC<{
               <div className="h-full flex items-center" title="Open in a new tab">
                 <GoFullScreen token={token} visitorJWT={visitorJWT} />
               </div>
-              {closeFloaty && (
+              {isFloaty && closeFloaty && (
                 <div onClick={() => closeFloaty()} title="Close" className="cursor-pointer">
                   <Icons.Chevron />
                 </div>

@@ -34,6 +34,7 @@ const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
   // const [mode, setMode] = React.useState<"light" | "dark">("light");
   const setMode = useSetAtom(modeAtom);
+  const [isFloaty, setIsFloaty] = React.useState(false);
   const [tokenWithoutVersion, setToken] = React.useState<Token>();
   const token = React.useMemo(() => {
     return addVersion(tokenWithoutVersion);
@@ -111,6 +112,10 @@ const App = () => {
         setMode(e.data.mode);
       }
 
+      if (e.data.isFloaty) {
+        setIsFloaty(true);
+      }
+
       if (e.data.initToken) {
         if (e.data.env) {
           setClientEnv(e.data.env);
@@ -170,6 +175,7 @@ const App = () => {
           setRoomIdToOpen={setRoomIdToOpen}
           closeFloaty={closeFloaty}
           onWidgetLightDarkModeChange={onWidgetLightDarkModeChange}
+          isFloaty={isFloaty}
         />
       </IsIdleProvider>
     </ErrorBoundary>
@@ -189,6 +195,7 @@ const ProviderWrapper: React.FC<{
   setRoomIdToOpen: (roomId: string) => void;
   closeFloaty: () => void;
   onWidgetLightDarkModeChange: (x: "light" | "dark") => void;
+  isFloaty: boolean;
 }> = ({
   token,
   clientEnv,
@@ -202,6 +209,7 @@ const ProviderWrapper: React.FC<{
   setRoomIdToOpen,
   closeFloaty,
   onWidgetLightDarkModeChange,
+  isFloaty,
 }) => {
   const envRef = React.useRef(clientEnv);
   envRef.current = clientEnv;
@@ -245,6 +253,7 @@ const ProviderWrapper: React.FC<{
               setRoomIdToOpen={setRoomIdToOpen}
               closeFloaty={closeFloaty}
               onWidgetLightDarkModeChange={onWidgetLightDarkModeChange}
+              isFloaty={isFloaty}
             />
             <GalleryModal />
           </QueryClientProvider>
