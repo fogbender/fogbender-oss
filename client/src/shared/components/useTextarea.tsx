@@ -154,7 +154,7 @@ export const useTextarea = ({
       if (selection.length === 0) {
         return undefined;
       }
-      if (selection.length > 0 && (mode === undefined || mode === "Edit")) {
+      if (selection.length > 0 && mode === undefined) {
         return "Reply";
       }
       if (editAllowed && (mode === undefined || mode === "Edit")) {
