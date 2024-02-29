@@ -237,7 +237,7 @@ const CheckboxOff: Icon = ({ className = "w-5" }) => {
         width="19"
         height="19"
         rx="4.5"
-        className="stroke-current fill-white dark:fill-black disabled:fill-gray-400"
+        className="stroke-current fill-white dark:fill-brand-dark-bg disabled:fill-gray-400"
       />
     </svg>
   );
@@ -573,7 +573,7 @@ const Menu: Icon = ({ className = "w-6" }) => {
   );
 };
 
-const MessageCheckboxOff: Icon = ({ className = "w-4", solidColor = "white" }) => {
+const MessageCheckboxOff: Icon = ({ className = "w-4" }) => {
   return (
     <svg className={className} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -582,15 +582,14 @@ const MessageCheckboxOff: Icon = ({ className = "w-4", solidColor = "white" }) =
         width="13"
         height="13"
         rx="3"
-        fill={solidColor}
-        stroke="currentColor"
+        className="fill-white dark:fill-brand-dark-bg stroke-current"
         strokeWidth="2"
       />
     </svg>
   );
 };
 
-const MessageCheckboxOn: Icon = ({ className = "w-4", solidColor = "white" }) => {
+const MessageCheckboxOn: Icon = ({ className = "w-4" }) => {
   return (
     <svg className={className} viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -599,7 +598,7 @@ const MessageCheckboxOn: Icon = ({ className = "w-4", solidColor = "white" }) =>
         width="13"
         height="13"
         rx="3"
-        fill={solidColor}
+        className="fill-white dark:fill-brand-dark-bg"
         stroke="currentColor"
         strokeWidth="2"
       />

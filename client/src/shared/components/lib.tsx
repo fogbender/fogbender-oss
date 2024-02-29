@@ -663,18 +663,8 @@ export const LoadingIndicator = ({ visible }: { visible: boolean }) => {
   );
 };
 
-export const MessageCheckbox = ({
-  checked,
-  solidColor = "white",
-}: {
-  checked: boolean;
-  solidColor?: string;
-}) => {
-  return checked ? (
-    <Icons.MessageCheckboxOn solidColor={solidColor} />
-  ) : (
-    <Icons.MessageCheckboxOff solidColor={solidColor} />
-  );
+export const MessageCheckbox = ({ checked }: { checked: boolean }) => {
+  return checked ? <Icons.MessageCheckboxOn /> : <Icons.MessageCheckboxOff />;
 };
 
 export const TabListWrapper = ({ children }: { children: React.ReactNode }) => {

@@ -332,18 +332,18 @@ export const MessageForward: React.FC<{
                     Customer
                   </th>
                 )}
+                <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">Room</th>
+                {isConnectedToIssue && forwardMode === "Related rooms" && (
+                  <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">
+                    Issue
+                  </th>
+                )}
                 {isAgent && (
                   <th
                     className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
                     style={{ width: "40%" }}
                   >
                     Customer id
-                  </th>
-                )}
-                <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">Room</th>
-                {isConnectedToIssue && forwardMode === "Related rooms" && (
-                  <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">
-                    Issue
                   </th>
                 )}
               </tr>
@@ -354,8 +354,8 @@ export const MessageForward: React.FC<{
                   key={x.id}
                   className={classNames(
                     "w-5 p-2 hover:bg-gray-100 cursor-pointer",
-                    "dark:hover:bg-gray-500",
-                    selectedRooms.has(x.id) && "bg-gray-100 dark:bg-gray-500"
+                    "dark:hover:bg-zinc-700",
+                    selectedRooms.has(x.id) && "bg-gray-100 dark:bg-zinc-700"
                   )}
                   onClick={() =>
                     setSelectedRooms(rooms => {
@@ -374,16 +374,16 @@ export const MessageForward: React.FC<{
                       </span>
                     </td>
                   )}
-                  {isAgent && (
-                    <td className="p-2">
-                      <span className="overflow-ellipsis">{x.customerId}</span>
-                    </td>
-                  )}
                   <td className="p-2">
                     <span className="overflow-ellipsis">{x.name}</span>
                   </td>
                   {isConnectedToIssue && connectedIssueTag && forwardMode === "Related rooms" && (
                     <td className="p-2">{renderTag(connectedIssueTag)}</td>
+                  )}
+                  {isAgent && (
+                    <td className="p-2">
+                      <span className="overflow-ellipsis">{x.customerId}</span>
+                    </td>
                   )}
                 </tr>
               ))}
