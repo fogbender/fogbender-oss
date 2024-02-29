@@ -78,7 +78,7 @@ export const UpdateVendorForm: React.FC<{
         </ThickButton>
         <LinkButton
           position="end"
-          className="col-start-3 !text-brand-red-500"
+          className="col-start-3 !text-brand-red-500/80 hover:!text-brand-red-500"
           onClick={onDeleteClick}
         >
           Delete organization

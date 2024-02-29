@@ -521,7 +521,7 @@ export const Admin = () => {
                                 </div>
                               </Link>
                               <button
-                                className="flex items-start p-1 ml-2 -mr-2 text-gray-500 hover:text-black cursor-pointer"
+                                className="flex items-start p-1 ml-2 -mr-2 text-zinc-500 hover:text-black dark:hover:text-zinc-400 cursor-pointer"
                                 onClick={() => setEditWorkspace(w)}
                               >
                                 <Icons.Gear className="w-6" />
@@ -1123,7 +1123,7 @@ const Sidebar: React.FC<{
                   <div className="flex items-center justify-between mb-2.5">
                     <div className="fog:text-caption-xl">{v.name}</div>
                     <div
-                      className="text-gray-500 hover:text-black cursor-pointer"
+                      className="text-zinc-500 hover:text-black dark:hover:text-zinc-400 cursor-pointer"
                       onClick={() => setEditVendor(v)}
                     >
                       <Icons.Gear />
