@@ -252,7 +252,6 @@ const CheckboxOn: Icon = ({ className = "w-5", disabled = false }) => {
       <rect width="20" height="20" rx="5" fill="currentColor" />
       <path
         d="M4.988 9.871a1.5 1.5 0 0 0-1.976 2.258L4.988 9.87ZM8 14.5l-.988 1.129 1.089.952.991-1.053L8 14.5Zm9.092-7.472a1.5 1.5 0 1 0-2.184-2.056l2.184 2.056Zm-14.08 5.1 4 3.5 1.976-2.257-4-3.5-1.976 2.258Zm6.08 3.4 8-8.5-2.184-2.056-8 8.5 2.184 2.056Z"
-        // fill={fg}
         className="fill-white disabled:fill-gray-400"
       />
     </svg>
