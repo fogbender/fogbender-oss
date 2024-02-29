@@ -44,8 +44,8 @@ export const Welcome: React.FC<{
               </p>
             )}
             <div
-              onClick={disable ? undefined : onAvatarClick}
-              className={disable ? "cursor-default" : "cursor-pointer"}
+              onClick={disable || changeArrowOff ? undefined : onAvatarClick}
+              className={disable || changeArrowOff ? "cursor-default" : "cursor-pointer"}
             >
               <Avatar url={userInfo.avatarUrl} name={userInfo.name} size={40} />
             </div>
