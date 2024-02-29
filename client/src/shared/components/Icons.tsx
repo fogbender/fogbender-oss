@@ -237,7 +237,7 @@ const CheckboxOff: Icon = ({ className = "w-5" }) => {
         width="19"
         height="19"
         rx="4.5"
-        className="stroke-current fill-white dark:fill-black disabled:fill-gray-400"
+        className="stroke-current fill-white dark:fill-brand-dark-bg disabled:fill-gray-400"
       />
     </svg>
   );
