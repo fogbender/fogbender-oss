@@ -261,7 +261,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           "fog:chat-message relative my-1 border-transparent text-black fog:text-body-m",
           "dark:text-white",
           nonInteractive ? "ml-0 border-l-0" : "ml-2 border-l-5",
-          !selected && !nonInteractive && "hover:border-gray-300",
+          !selected && !nonInteractive && inInternalRoom && "hover:border-green-500/50",
+          !selected && !nonInteractive && !inInternalRoom && "hover:border-brand-orange-500/50",
           isFirst && "mt-auto",
           tags && tags.some(t => highlightedTags.includes(t)) && "bg-red-200",
           // (highlight || true) && "bg-yellow-100 dark:bg-amber-700",
@@ -308,15 +309,24 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
             className={classNames(
               isPending && "hidden",
               "absolute z-10 w-4 h-4 top-1/2 left-0 -mt-2 ml-0 border-l-3 border-transparent opacity-0 group-hover:opacity-100",
-              inInternalRoom ? "text-green-500" : "text-brand-orange-500"
+              (() => {
+                if (inInternalRoom) {
+                  if (selected) {
+                    return "text-green-500";
+                  } else {
+                    return "text-green-500/50";
+                  }
+                } else {
+                  if (selected) {
+                    return "text-brand-orange-500";
+                  } else {
+                    return "text-brand-orange-500/50";
+                  }
+                }
+              })()
             )}
           >
-            {!isSearchView && (
-              <MessageCheckbox
-                checked={selected}
-                solidColor={themeMode === "dark" ? "#cbd5e1" : "white"}
-              />
-            )}
+            {!isSearchView && <MessageCheckbox checked={selected} />}
           </div>
           <div className="h-full w-full flex flex-col justify-end">
             {isLastInContiguousBlock && (
@@ -521,7 +531,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           <div
             className={classNames(
               "max-w-min flex px-2 py-1 rounded-full bg-white fog:box-shadow-s",
-              "dark:bg-black"
+              "dark:bg-black",
+              "border border-transparent dark:border-gray-300"
             )}
           >
             <div className={classNames("h-6 mt-0.5 flex items-center")}>
