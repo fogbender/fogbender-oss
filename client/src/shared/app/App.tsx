@@ -1513,7 +1513,9 @@ export const App: React.FC<{
               userInfo={userInfo}
               onAvatarClick={handleUserAvatarClick}
               onClose={closeWelcome}
-              changeArrowOff={token === undefined}
+              changeArrowOff={
+                token === undefined || ("userAvatarUrl" in token && token["userAvatarUrl"] !== null)
+              }
               disable={token === undefined || ourId === undefined}
             />
           </Modal>
