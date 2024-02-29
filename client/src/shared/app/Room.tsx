@@ -873,8 +873,8 @@ export const Room: React.FC<{
         className={classNames(
           "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
           keepScrollAtBottom || onSelectionHover
-            ? "border-transparent opacity-0"
-            : "border-gray-300 transition-oopacity duration-1000 opacity-100"
+            ? "border-transparent opacity-100"
+            : "border-gray-300 transition-opacity duration-1000 opacity-100"
         )}
       >
         <span className="h-4 flex-1 my-1 truncate">{typingNames ? typingNames + "..." : ""}</span>
