@@ -232,24 +232,28 @@ const Check: Icon = ({ className = "w-4" }) => {
 };
 
 const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
-  const themeMode = useAtomValue(modeAtom);
-  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#000000") : disabled ? "#eee" : "#fff";
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x=".5" y=".5" width="19" height="19" rx="4.5" fill={fg} stroke="currentColor" />
+      <rect
+        x=".5"
+        y=".5"
+        width="19"
+        height="19"
+        rx="4.5"
+        className="stroke-current fill-white dark:fill-black disabled:fill-gray-400"
+      />
     </svg>
   );
 };
 
 const CheckboxOn: Icon = ({ className = "w-5", disabled = false }) => {
-  const themeMode = useAtomValue(modeAtom);
-  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#9CA3AF") : disabled ? "#eee" : "#fff";
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="20" height="20" rx="5" fill="currentColor" />
       <path
         d="M4.988 9.871a1.5 1.5 0 0 0-1.976 2.258L4.988 9.87ZM8 14.5l-.988 1.129 1.089.952.991-1.053L8 14.5Zm9.092-7.472a1.5 1.5 0 1 0-2.184-2.056l2.184 2.056Zm-14.08 5.1 4 3.5 1.976-2.257-4-3.5-1.976 2.258Zm6.08 3.4 8-8.5-2.184-2.056-8 8.5 2.184 2.056Z"
-        fill={fg}
+        // fill={fg}
+        className="fill-white disabled:fill-gray-400"
       />
     </svg>
   );
