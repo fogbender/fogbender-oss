@@ -453,7 +453,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                               return (
                                 <li
                                   key={t.id}
-                                  className="px-2 flex items-center gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                                  className="px-2 flex items-center gap-2 cursor-pointer hover:opacity-50"
                                   onClick={() => {
                                     setIssueTagIdsToReopen(s => {
                                       if (s.has(t.id)) {
@@ -505,7 +505,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                           ).length > 1 && (
                             <li
                               key={"All"}
-                              className="px-2 flex gap-1.5 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                              className="px-2 flex gap-1.5 items-center cursor-pointer hover:opacity-50"
                               onClick={() => {
                                 setReopenAll(x => {
                                   const reopenAll = !x;
@@ -548,7 +548,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                               return (
                                 <li
                                   key={r.id}
-                                  className="px-2 flex gap-2 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                                  className="px-2 flex gap-2 items-center cursor-pointer hover:opacity-50"
                                   onClick={() => {
                                     setReopenAll(false);
                                     setRoomIdsToReopen(s => {
@@ -828,7 +828,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                             return (
                               <li
                                 key={t.id}
-                                className="px-2 flex items-center gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                                className="px-2 flex items-center gap-2 cursor-pointer hover:opacity-50"
                                 onClick={() => {
                                   setIssueTagIdsToClose(s => {
                                     if (s.has(t.id)) {
@@ -876,7 +876,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                         ).length > 1 && (
                           <li
                             key={"All"}
-                            className="px-2 flex gap-1.5 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                            className="px-2 flex gap-1.5 items-center cursor-pointer hover:opacity-50"
                             onClick={() => {
                               setCloseAll(x => {
                                 const closeAll = !x;
@@ -919,7 +919,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                             return (
                               <li
                                 key={r.id}
-                                className="px-2 flex gap-2 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
+                                className="px-2 flex gap-2 items-center cursor-pointer hover:opacity-50"
                                 onClick={() => {
                                   setCloseAll(false);
                                   setRoomIdsToClose(s => {
