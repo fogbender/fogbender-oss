@@ -245,6 +245,7 @@ function Talky(props: {
       return "w-full min-w-[340px] sm:min-w-[480px] max-w-[90vw]";
     }
   });
+
   return (
     <div
       class={tw(
@@ -252,7 +253,8 @@ function Talky(props: {
         props.isOpen() ? "flex flex-col" : "hidden",
         heightClasses(),
         mrClasses(),
-        widthClasses()
+        widthClasses(),
+        "z-10 shadow-md rounded-none"
       )}
     >
       <Iframe title="Fogbender chat widget" renderIframe={props.renderIframe} />
