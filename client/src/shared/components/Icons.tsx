@@ -233,7 +233,7 @@ const Check: Icon = ({ className = "w-4" }) => {
 
 const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
   const themeMode = useAtomValue(modeAtom);
-  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#9CA3AF") : disabled ? "#eee" : "#fff";
+  const fg = themeMode === "dark" ? (disabled ? "#4B5563" : "#000000") : disabled ? "#eee" : "#fff";
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x=".5" y=".5" width="19" height="19" rx="4.5" fill={fg} stroke="currentColor" />
