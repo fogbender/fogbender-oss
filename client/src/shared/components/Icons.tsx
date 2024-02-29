@@ -1,7 +1,4 @@
 import classNames from "classnames";
-import { useAtomValue } from "jotai";
-
-import { modeAtom } from "../store/config.store";
 
 export type Icon = React.FC<{
   className?: string;
@@ -231,7 +228,7 @@ const Check: Icon = ({ className = "w-4" }) => {
   );
 };
 
-const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
+const CheckboxOff: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -246,7 +243,7 @@ const CheckboxOff: Icon = ({ className = "w-5", disabled = false }) => {
   );
 };
 
-const CheckboxOn: Icon = ({ className = "w-5", disabled = false }) => {
+const CheckboxOn: Icon = ({ className = "w-5" }) => {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="20" height="20" rx="5" fill="currentColor" />
