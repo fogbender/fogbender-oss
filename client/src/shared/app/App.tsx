@@ -236,7 +236,9 @@ export const App: React.FC<{
     roomIds.forEach(roomId => {
       newLayout = newLayout.filter(x => x.i !== roomId);
     });
-    setActiveRoomId(undefined);
+    if (activeRoomId && roomIds.includes(activeRoomId)) {
+      setActiveRoomId(undefined);
+    }
     setLayoutPins(pins => pins.filter(x => !roomIds.includes(x)));
     return newLayout;
   }, []);
