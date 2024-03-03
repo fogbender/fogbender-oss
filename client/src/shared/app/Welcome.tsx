@@ -19,7 +19,6 @@ export const Welcome: React.FC<{
   return (
     <div
       className={classNames(
-        "fbr-scrollbar overflow-auto",
         "fixed inset-0 p-4 z-10 sm:relative sm:p-0 flex flex-col justify-center bg-white",
         "dark:bg-brand-dark-bg"
       )}
@@ -32,7 +31,12 @@ export const Welcome: React.FC<{
       >
         {isProfile ? "Update profile" : "Welcome!"}
       </div>
-      <div className={classNames("flex-1 flex flex-col gap-y-4 mt-24 sm:mt-4", "dark:text-white")}>
+      <div
+        className={classNames(
+          "flex-1 fbr-scrollbar overflow-auto flex flex-col pt-24 sm:pt-4 mb-4",
+          "dark:text-white"
+        )}
+      >
         {userInfo && (
           <div className="flex flex-col items-center gap-x-2">
             {changeArrowOff === false && (
@@ -91,8 +95,8 @@ export const Welcome: React.FC<{
             )}
           </div>
         )}
-        <ThickButton onClick={onClose}>{isProfile ? "Done" : "Sounds good, let’s go!"}</ThickButton>
       </div>
+      <ThickButton onClick={onClose}>{isProfile ? "Done" : "Sounds good, let’s go!"}</ThickButton>
     </div>
   );
 };
