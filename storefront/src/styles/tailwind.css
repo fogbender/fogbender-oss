@@ -48,4 +48,5 @@ a {
 
 html pre code.hljs {
   @apply overflow-visible bg-transparent p-0 text-black;
+  white-space: pre-wrap;
 }

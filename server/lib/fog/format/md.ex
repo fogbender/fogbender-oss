@@ -5,7 +5,7 @@ defmodule Fog.Format.Md do
   @max_size 5000
 
   def parse(text) when byte_size(text) > @max_size do
-    [{"pre", [], [{"code", [], [text], %{}}], %{}}]
+    [{"pre", [], [{"code", [{"class", "language-plaintext"}], [text], %{}}], %{}}]
   end
 
   def parse(md) do
