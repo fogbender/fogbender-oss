@@ -21,7 +21,6 @@ export const useScrollTracker = ({
   isIdle,
   isConnected,
   selection,
-  onSelectionHover,
 }: {
   isActiveRoom: boolean;
   messages: { id: string; createdTs: number }[];
@@ -39,7 +38,6 @@ export const useScrollTracker = ({
   isIdle: boolean;
   isConnected: boolean;
   selection: MessageT[];
-  onSelectionHover: boolean;
 }) => {
   const prevMessages = usePrevious(messages);
   const messagesRefs = React.useRef<Set<HTMLDivElement>>(new Set<HTMLDivElement>());
@@ -186,11 +184,7 @@ export const useScrollTracker = ({
       const { scrollHeight, clientHeight, scrollTop } = historyRef.current;
 
       if (newerHistoryComplete && !resizing) {
-        if (
-          clientHeight + scrollTop + 1 >= scrollHeight &&
-          selection.length === 0 &&
-          !onSelectionHover
-        ) {
+        if (clientHeight + scrollTop + 1 >= scrollHeight && selection.length === 0) {
           setTimeout(() => {
             flushSync(() => {
               setKeepScrollAtBottom(true);
@@ -201,7 +195,7 @@ export const useScrollTracker = ({
         }
       }
     }
-  }, [historyRef, resizing, newerHistoryComplete, selection, onSelectionHover]);
+  }, [historyRef, resizing, newerHistoryComplete, selection]);
 
   React.useEffect(() => {
     if (loadAroundMessage) {
