@@ -9,6 +9,7 @@ import {
   type MessageUpdate,
   useLoadAround,
   useSharedRoster,
+  useRoomTyping,
 } from "fogbender-proto";
 import { useAtom, useAtomValue } from "jotai";
 import React from "react";
@@ -48,7 +49,6 @@ export const useTextarea = ({
   messageCreate,
   messageUpdate,
   myAuthor,
-  onEditorChange,
   onFocus,
   roomId,
   roomName,
@@ -71,7 +71,7 @@ export const useTextarea = ({
   messageCreate: (params: MessageCreate) => void;
   messageUpdate: (params: MessageUpdate) => void;
   myAuthor: Author;
-  onEditorChange: (mode: TextAreaMode | undefined) => void;
+  onEditorChange?: (mode: TextAreaMode | undefined) => void;
   onFocus?: (roomId: string) => void;
   roomId: string;
   roomName: string | undefined;
@@ -89,6 +89,8 @@ export const useTextarea = ({
   const { setMentions, readMentions } = useAutoCompleteUpdateFor(roomId);
   const dispatchMentionSelector = useRoomMentionDispatchFor(roomId);
   const [acceptedMentions, setAcceptedMentions] = React.useState<Mention[]>([]);
+
+  const { typingNames, updateTyping } = useRoomTyping({ userId, roomId });
 
   const { roomById } = useSharedRoster();
 
@@ -369,12 +371,14 @@ export const useTextarea = ({
 
   const onChange = React.useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onEditorChange(mode);
+      if (mode === undefined || mode === "Reply") {
+        updateTyping();
+      }
       // selectionStart === selectionEnd for onChange
       handleMentions(e.currentTarget);
       setHasText(textareaRef.current?.value.trim().length !== 0);
     },
-    [mode, onEditorChange]
+    [mode, updateTyping]
   );
 
   const onMentionAccepted = React.useCallback(
@@ -459,6 +463,19 @@ export const useTextarea = ({
       ? roomName + " " + `(${formatCustomerName(roomById(roomId)?.customerName)})`
       : roomName;
   }
+  const typingContent = (
+    <span
+      className={classNames(
+        "absolute left-10 -translate-y-4 h-4 flex-1 mb-1 truncate text-gray-500 fog:text-caption-m transition-opacity duration-1000",
+        {
+          "opacity-100": typingNames,
+          "opacity-0": !typingNames,
+        }
+      )}
+    >
+      {typingNames ? typingNames + "..." : ""}
+    </span>
+  );
 
   const Textarea = React.useMemo(() => {
     return (

@@ -19,7 +19,6 @@ import {
   type Tag as TagT,
   useLoadAround,
   useRoomHistory,
-  useRoomTyping,
   useRosterActions,
   useSharedRoster,
   useWsCalls,
@@ -32,7 +31,7 @@ import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
 import { LoadingIndicator, UnreadCircle } from "../components/lib";
 import { Modal } from "../components/Modal";
-import { type TextAreaMode, useTextarea } from "../components/useTextarea";
+import { useTextarea } from "../components/useTextarea";
 import { MessageFileThumbnail } from "../messages/MessageFileThumbnail";
 import { MessageView } from "../messages/MessageView";
 import { useNewMessagesAt } from "../messages/useNewMessagesAt";
@@ -321,8 +320,6 @@ export const Room: React.FC<{
     };
   }, [roomId, updateLoadAround]);
 
-  const { typingNames, updateTyping } = useRoomTyping({ userId: ourId, roomId });
-
   const roomRef = React.useRef<HTMLDivElement>(null);
 
   const {
@@ -529,11 +526,6 @@ export const Room: React.FC<{
     deletedFileIdsAtom,
     selection,
     cancelSelection: handleSelectionCancel,
-    onEditorChange: (mode: TextAreaMode | undefined) => {
-      if (mode === undefined || mode === "Reply") {
-        updateTyping();
-      }
-    },
     afterSend: () => {
       jumpToBottom();
       filterInputFiles();
@@ -873,8 +865,6 @@ export const Room: React.FC<{
             : "border-gray-300 transition-opacity duration-1000 opacity-100"
         )}
       >
-        <span className="h-4 flex-1 my-1 truncate">{typingNames ? typingNames + "..." : ""}</span>
-
         {fetchingNewer ||
           (messages.length === 0 && !newerHistoryComplete && (
             <div className="absolute top-0 left-1/2 w-8 h-8 flex items-center justify-center -mt-4 -ml-4 p-2 rounded-full fog:box-shadow-s bg-white overflow-hidden">
