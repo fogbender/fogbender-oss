@@ -420,6 +420,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
         {linkType && (
           <SourceMessages
             isAgent={isAgent}
+            className="ml-8"
             sourceMessages={sourceMessages}
             linkType={message.rawText === "[Broadcast]" ? "broadcast" : linkType}
             sourceLinkRoom={sourceLinkRoom}
@@ -499,7 +500,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
       )}
 
       {((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
-        <div className="sticky z-10 top-2 bottom-6 right-0 max-w-min -mt-8 -mb-0.5 ml-auto flex ">
+        <div className="sticky z-10 top-2 bottom-24 right-0 max-w-min -mt-8 -mb-0.5 ml-auto flex ">
           {showAiHelper &&
             isAgent &&
             ((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
@@ -797,6 +798,7 @@ const PendingMessageIndicator: React.FC<{
 
 export const SourceMessages: React.FC<{
   isAgent: boolean;
+  className?: string;
   sourceMessages?: MessageT[];
   linkType?: "forward" | "reply" | "broadcast";
   sourceLinkRoom?: RoomT;
@@ -805,6 +807,7 @@ export const SourceMessages: React.FC<{
   isSearchView?: boolean;
   nonInteractive?: boolean;
 }> = ({
+  className,
   sourceMessages,
   linkType,
   linkStartMessageId,
@@ -856,10 +859,11 @@ export const SourceMessages: React.FC<{
 
       <div
         className={classNames(
-          "fog:chat-message fbr-link-preview ml-8 py-1 px-2 rounded-md cursor-pointer",
+          "fog:chat-message fbr-link-preview py-1 px-2 rounded-md cursor-pointer",
           linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
           linkType === "reply" && "bg-green-50 fog:text-body-s dark:bg-cyan-950",
-          linkType === "broadcast" && "bg-red-50 dark:bg-pink-900"
+          linkType === "broadcast" && "bg-red-50 dark:bg-pink-900",
+          className
         )}
         onClick={!isSearchView ? onClick : undefined}
       >
