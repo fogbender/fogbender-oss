@@ -500,7 +500,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
       )}
 
       {((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
-        <div className="sticky z-10 top-2 bottom-[116px] right-0 max-w-min -mt-8 -mb-0.5 ml-auto flex ">
+        <div className="sticky z-10 top-2 bottom-[180px] right-0 max-w-min -mt-9 ml-auto flex">
           {showAiHelper &&
             isAgent &&
             ((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (

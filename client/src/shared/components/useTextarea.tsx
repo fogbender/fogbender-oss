@@ -480,11 +480,11 @@ export const useTextarea = ({
 
   const Textarea = React.useMemo(() => {
     return (
-      <div className={classNames("relative pr-2 pb-4", !selection.length && "pt-4")}>
+      <div className={classNames("relative pr-2 py-5")}>
         {typingContent}
         <div className="flex items-center">
           {showListMenu && (
-            <span ref={listMenuRef} className="absolute left-2 bottom-12 z-10">
+            <span ref={listMenuRef} className="absolute left-2 bottom-12 z-5">
               <div
                 className={classNames(
                   "flex flex-col bg-white fog:box-shadow-m rounded-lg fog:text-body-m py-1.5",
@@ -574,7 +574,7 @@ export const useTextarea = ({
             <div
               ref={textAreaModeRef}
               className={classNames(
-                "absolute pl-9 pr-12 pt-4 top-0 w-full border-t text-gray-500 -translate-y-full bg-white dark:bg-black"
+                "absolute pl-9 pr-12 pt-4 top-4 w-full border-t text-gray-500 -translate-y-full bg-white dark:bg-black z-10"
               )}
             >
               {typingContent}
