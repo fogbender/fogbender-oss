@@ -98,6 +98,7 @@ export const useTextarea = ({
 
   const { updateLoadAround } = useLoadAround();
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const textAreaModeRef = React.useRef<HTMLDivElement>(null);
 
   const [focused, setFocused] = React.useState(false);
   React.useEffect(() => {
@@ -571,6 +572,7 @@ export const useTextarea = ({
           )}
           {selection.length > 0 && (
             <div
+              ref={textAreaModeRef}
               className={classNames(
                 "absolute pl-9 pr-12 pt-4 top-0 w-full border-t text-gray-500 -translate-y-full bg-white dark:bg-black"
               )}
@@ -739,5 +741,5 @@ export const useTextarea = ({
     userId,
     updateLoadAround,
   ]);
-  return { Textarea, mode, textareaRef };
+  return { Textarea, mode, textareaRef, textAreaModeRef };
 };

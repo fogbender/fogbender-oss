@@ -513,7 +513,7 @@ export const Room: React.FC<{
     [setPendingMessages, messageCreate, myAuthor, roomId]
   );
 
-  const { Textarea, mode, textareaRef } = useTextarea({
+  const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
     userId: ourId,
     isAgent,
     workspaceId,
@@ -655,6 +655,7 @@ export const Room: React.FC<{
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
   const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
+  const textAreaModeHeight = textAreaModeRef?.current?.clientHeight || 0;
 
   return (
     <div
@@ -875,13 +876,15 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-[5] right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-20 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
             keepScrollAtBottom || !room
               ? "invisible pointer-events-none opacity-0"
               : "transition-opacity duration-1000 opacity-100",
-            selection.length ==1 && 'bottom-20',
-            selection.length > 1 && "bottom-[30px]",
+            { "bottom-[150px]": selection.length == 1 && textAreaModeHeight > 170 },
+            selection.length == 1 &&
+              (textAreaModeHeight > 135 ? "bottom-[118px]" : "bottom-[66px]"),
+            selection.length > 1 && "bottom-4",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
         >
