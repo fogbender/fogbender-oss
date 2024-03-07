@@ -572,7 +572,7 @@ export const useTextarea = ({
           {selection.length > 0 && (
             <div
               className={classNames(
-                "absolute pl-9 pr-12 pt-4 top-0 w-full -translate-y-full bg-white dark:bg-black"
+                "absolute pl-9 pr-12 pt-4 top-0 w-full border-t text-gray-500 -translate-y-full bg-white dark:bg-black"
               )}
             >
               {typingContent}
