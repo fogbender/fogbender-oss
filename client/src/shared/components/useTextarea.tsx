@@ -484,7 +484,7 @@ export const useTextarea = ({
         {typingContent}
         <div className="flex items-center">
           {showListMenu && (
-            <span ref={listMenuRef} className="absolute left-2 bottom-12 z-5">
+            <span ref={listMenuRef} className="absolute left-2 bottom-12 z-[11]">
               <div
                 className={classNames(
                   "flex flex-col bg-white fog:box-shadow-m rounded-lg fog:text-body-m py-1.5",
@@ -546,7 +546,7 @@ export const useTextarea = ({
           )}
 
           {showEmojiSelect && (
-            <div ref={emojiPickerRef} className="absolute left-2 bottom-12 z-10">
+            <div ref={emojiPickerRef} className="absolute left-2 bottom-12 z-[21]">
               <Picker
                 theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
                 onEmojiClick={emoji => {
