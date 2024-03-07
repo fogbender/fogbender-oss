@@ -19,7 +19,6 @@ import {
   type Tag as TagT,
   useLoadAround,
   useRoomHistory,
-  useRoomTyping,
   useRosterActions,
   useSharedRoster,
   useWsCalls,
@@ -32,7 +31,7 @@ import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
 import { LoadingIndicator, UnreadCircle } from "../components/lib";
 import { Modal } from "../components/Modal";
-import { type TextAreaMode, useTextarea } from "../components/useTextarea";
+import { useTextarea } from "../components/useTextarea";
 import { MessageFileThumbnail } from "../messages/MessageFileThumbnail";
 import { MessageView } from "../messages/MessageView";
 import { useNewMessagesAt } from "../messages/useNewMessagesAt";
@@ -266,8 +265,6 @@ export const Room: React.FC<{
   const { selection, handleMessageClick, handleSelectionCancel, handleLastMessageEdit } =
     useSelection({ messages, userId: ourId });
 
-  const [onSelectionHover, setOnSelectionHover] = React.useState(false);
-
   const {
     onMessageRef,
     onHistoryScroll,
@@ -291,7 +288,6 @@ export const Room: React.FC<{
     isIdle,
     isConnected,
     selection,
-    onSelectionHover,
   });
 
   const [flash, setFlash] = React.useState<string>();
@@ -323,8 +319,6 @@ export const Room: React.FC<{
       updateLoadAround(roomId, undefined);
     };
   }, [roomId, updateLoadAround]);
-
-  const { typingNames, updateTyping } = useRoomTyping({ userId: ourId, roomId });
 
   const roomRef = React.useRef<HTMLDivElement>(null);
 
@@ -519,7 +513,7 @@ export const Room: React.FC<{
     [setPendingMessages, messageCreate, myAuthor, roomId]
   );
 
-  const { Textarea, mode, textareaRef } = useTextarea({
+  const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
     userId: ourId,
     isAgent,
     workspaceId,
@@ -532,11 +526,6 @@ export const Room: React.FC<{
     deletedFileIdsAtom,
     selection,
     cancelSelection: handleSelectionCancel,
-    onEditorChange: (mode: TextAreaMode | undefined) => {
-      if (mode === undefined || mode === "Reply") {
-        updateTyping();
-      }
-    },
     afterSend: () => {
       jumpToBottom();
       filterInputFiles();
@@ -666,6 +655,7 @@ export const Room: React.FC<{
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
   const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
+  const textAreaModeHeight = textAreaModeRef?.current?.clientHeight || 0;
 
   return (
     <div
@@ -813,7 +803,6 @@ export const Room: React.FC<{
               roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
-              setOnSelectionHover={setOnSelectionHover}
             />
           ))}
           {pendingMessages.map((msg, i) => (
@@ -872,13 +861,11 @@ export const Room: React.FC<{
       <div
         className={classNames(
           "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
-          keepScrollAtBottom || onSelectionHover
+          keepScrollAtBottom
             ? "border-transparent opacity-100"
             : "border-gray-300 transition-opacity duration-1000 opacity-100"
         )}
       >
-        <span className="h-4 flex-1 my-1 truncate">{typingNames ? typingNames + "..." : ""}</span>
-
         {fetchingNewer ||
           (messages.length === 0 && !newerHistoryComplete && (
             <div className="absolute top-0 left-1/2 w-8 h-8 flex items-center justify-center -mt-4 -ml-4 p-2 rounded-full fog:box-shadow-s bg-white overflow-hidden">
@@ -889,11 +876,15 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-[5] bottom-3 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-20 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
-            onSelectionHover || keepScrollAtBottom || !room
+            keepScrollAtBottom || !room
               ? "invisible pointer-events-none opacity-0"
               : "transition-opacity duration-1000 opacity-100",
+            { "bottom-[150px]": selection.length == 1 && textAreaModeHeight > 170 },
+            selection.length == 1 &&
+              (textAreaModeHeight > 135 ? "bottom-[118px]" : "bottom-[66px]"),
+            selection.length > 1 && "bottom-4",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
         >
