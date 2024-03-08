@@ -515,8 +515,6 @@ export const Room: React.FC<{
 
   const [selectHover, setSelectHover] = React.useState(false);
 
-  console.log({ selectHover });
-
   const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
     userId: ourId,
     isAgent,
