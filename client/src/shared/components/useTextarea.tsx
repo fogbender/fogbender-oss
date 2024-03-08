@@ -56,6 +56,7 @@ export const useTextarea = ({
   userId,
   workspaceId,
   onLastMessageEdit,
+  onSelectHover,
 }: {
   afterSend: () => void;
   agentRole?: string;
@@ -79,6 +80,7 @@ export const useTextarea = ({
   userId: string | undefined;
   workspaceId?: string | undefined;
   onLastMessageEdit: (cb: () => void) => void;
+  onSelectHover: (x: boolean) => void;
 }) => {
   const themeMode = useAtomValue(modeAtom);
   const preservedText = React.useRef("");
@@ -574,12 +576,26 @@ export const useTextarea = ({
             <div
               ref={textAreaModeRef}
               className={classNames(
-                "absolute pl-9 pr-12 pt-4 top-4 w-full border-t text-gray-500 -translate-y-full bg-white dark:bg-black z-10"
+                "absolute pl-9 pr-12 pt-4 top-4 w-full border-t text-gray-500 -translate-y-full z-10",
+                "bg-transparent"
               )}
             >
+              <div
+                className="absolute w-9 h-full top-0 left-0 opacity-50 cursor-pointer"
+                onMouseEnter={() => {
+                  onSelectHover(true);
+                }}
+                onMouseLeave={() => {
+                  onSelectHover(false);
+                }}
+                onClick={() => {
+                  cancelSelection();
+                }}
+              />
+
               {typingContent}
               {selection.length === 1 && mode === "Reply" && (
-                <div className="mb-1 dark:text-white">
+                <div className="mb-1 text-zinc-800 dark:text-white">
                   <SourceMessages
                     isAgent={selection[0].author.type === "agent"}
                     sourceMessages={[selection[0]]}

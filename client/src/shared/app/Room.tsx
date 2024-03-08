@@ -513,6 +513,8 @@ export const Room: React.FC<{
     [setPendingMessages, messageCreate, myAuthor, roomId]
   );
 
+  const [selectHover, setSelectHover] = React.useState(false);
+
   const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
     userId: ourId,
     isAgent,
@@ -538,6 +540,7 @@ export const Room: React.FC<{
     agentRole,
     onLastMessageEdit: handleLastMessageEdit,
     isCustomerInternal: isInternal,
+    onSelectHover: x => setSelectHover(x),
   });
 
   React.useLayoutEffect(() => {
@@ -803,6 +806,7 @@ export const Room: React.FC<{
               roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
+              selectHover={selectHover}
             />
           ))}
           {pendingMessages.map((msg, i) => (
@@ -854,6 +858,7 @@ export const Room: React.FC<{
               roomRef={roomRef}
               roomWidth={roomWidth}
               inDialog={room?.type === "dialog"}
+              selectHover={selectHover}
             />
           ))}
         </div>

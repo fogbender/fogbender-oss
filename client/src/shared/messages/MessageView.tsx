@@ -73,6 +73,7 @@ type MessageViewProps = {
   roomWidth?: number;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
+  selectHover?: boolean;
 };
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
@@ -116,6 +117,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     roomRef,
     pinToRoom,
     askAi,
+    selectHover = false,
   } = props;
   const themeMode = useAtomValue(modeAtom);
 
@@ -299,7 +301,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           <div
             className={classNames(
               isPending && "hidden",
-              "absolute z-10 w-4 h-4 top-1/2 left-0 -mt-2 ml-0 border-l-3 border-transparent opacity-0 group-hover:opacity-100",
+              "absolute z-10 w-4 h-4 top-1/2 left-0 -mt-2 ml-0 border-l-3 border-transparent",
+              "opacity-0 group-hover:opacity-100",
+              selectHover && isLastSelected && "opacity-100",
               (() => {
                 if (inInternalRoom) {
                   if (selected) {
@@ -861,7 +865,7 @@ export const SourceMessages: React.FC<{
         className={classNames(
           "fog:chat-message fbr-link-preview py-1 px-2 rounded-md cursor-pointer",
           linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
-          linkType === "reply" && "bg-green-50 fog:text-body-s dark:bg-cyan-950",
+          linkType === "reply" && "bg-sky-200 fog:text-body-s dark:bg-cyan-950",
           linkType === "broadcast" && "bg-red-50 dark:bg-pink-900",
           className
         )}
