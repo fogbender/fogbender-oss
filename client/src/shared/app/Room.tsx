@@ -880,15 +880,16 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-20 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-20 right-2 flex p-2 items-center justify-center rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
             "dark:bg-gray-300",
             keepScrollAtBottom || !room
               ? "invisible pointer-events-none opacity-0"
               : "transition-opacity duration-1000 opacity-100",
-            !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
+            !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none",
+            hasMentions || totalUnreadCount > 0 &&  "gap-x-1.5"
           )}
         >
-          <span className="pl-1">Jump to recent</span>
+           <Icons.Chevron className="w-5 h-5" />
           {hasMentions && (
             <span
               className={classNames(
