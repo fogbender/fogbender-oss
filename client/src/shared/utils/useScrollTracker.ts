@@ -184,7 +184,7 @@ export const useScrollTracker = ({
       const { scrollHeight, clientHeight, scrollTop } = historyRef.current;
 
       if (newerHistoryComplete && !resizing) {
-        if (clientHeight + scrollTop + 1 >= scrollHeight && selection.length === 0) {
+        if (clientHeight + scrollTop + 1 >= scrollHeight) {
           setTimeout(() => {
             flushSync(() => {
               setKeepScrollAtBottom(true);

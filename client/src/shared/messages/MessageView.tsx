@@ -810,6 +810,7 @@ export const SourceMessages: React.FC<{
   linkEndMessageId?: string;
   isSearchView?: boolean;
   nonInteractive?: boolean;
+  isPreview?: boolean;
 }> = ({
   className,
   sourceMessages,
@@ -820,6 +821,7 @@ export const SourceMessages: React.FC<{
   isAgent,
   isSearchView,
   nonInteractive,
+  isPreview = false,
 }) => {
   const { updateLoadAround } = useLoadAround();
   const sm = sourceMessages?.[0];
@@ -864,6 +866,8 @@ export const SourceMessages: React.FC<{
       <div
         className={classNames(
           "fog:chat-message fbr-link-preview py-1 px-2 rounded-md cursor-pointer",
+          isPreview && "drop-shadow-[10px_-10px_4px_rgba(9,9,11,0.10)]",
+          isPreview && "dark:drop-shadow-[10px_-10px_4px_rgba(9,9,11,0.5)]",
           linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
           linkType === "reply" && "bg-sky-200 fog:text-body-s dark:bg-cyan-950",
           linkType === "broadcast" && "bg-red-50 dark:bg-pink-900",

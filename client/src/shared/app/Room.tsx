@@ -26,6 +26,7 @@ import {
 import { useAtom, useAtomValue } from "jotai";
 import React, { Suspense } from "react";
 import { useQuery } from "react-query";
+import { TbChevronsDown } from "react-icons/tb";
 
 import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
@@ -515,7 +516,7 @@ export const Room: React.FC<{
 
   const [selectHover, setSelectHover] = React.useState(false);
 
-  const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
+  const { Textarea, mode, textareaRef } = useTextarea({
     userId: ourId,
     isAgent,
     workspaceId,
@@ -658,7 +659,6 @@ export const Room: React.FC<{
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
   const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
-  const textAreaModeHeight = textAreaModeRef?.current?.clientHeight || 0;
 
   return (
     <div
@@ -865,7 +865,7 @@ export const Room: React.FC<{
       </div>
       <div
         className={classNames(
-          "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
+          "relative flex items-center text-gray-500 fog:text-caption-m",
           keepScrollAtBottom
             ? "border-transparent opacity-100"
             : "border-gray-300 transition-opacity duration-1000 opacity-100"
@@ -881,22 +881,20 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-20 right-2 flex items-center justify-center px-2.5 py-1.5 gap-x-1.5 rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-20 right-2 flex p-2 items-center justify-center rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer gap-1 items-center",
             "dark:bg-gray-300",
             keepScrollAtBottom || !room
-              ? "invisible pointer-events-none opacity-0"
-              : "transition-opacity duration-1000 opacity-100",
-            { "bottom-[150px]": selection.length == 1 && textAreaModeHeight > 170 },
-            selection.length == 1 &&
-              (textAreaModeHeight > 135 ? "bottom-[118px]" : "bottom-[66px]"),
-            selection.length > 1 && "bottom-4",
-            !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
+              ? "pointer-events-none transition-opacity duration-300 opacity-0"
+              : "transition-opacity duration-300 opacity-100",
+            !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none",
+            hasMentions || (totalUnreadCount > 0 && "gap-x-1.5")
           )}
         >
-          <span className="pl-1">Jump to recent</span>
+          <TbChevronsDown size={17} />
           {hasMentions && (
             <span
               className={classNames(
+                "text-sm",
                 "text-base leading-none",
                 isInternal ? "text-green-500" : "text-brand-orange-500"
               )}
@@ -905,20 +903,17 @@ export const Room: React.FC<{
                 jumpToFirstUnreadMention();
               }}
             >
-              @
+              <Icons.Mention className="w-3 h-3" />
             </span>
           )}
           <span
+            className={totalUnreadCount === 0 && "hidden"}
             onClick={e => {
               e.stopPropagation();
               jumpToFirstUnread();
             }}
           >
-            <UnreadCircle
-              total={totalUnreadCount}
-              asMention={hasMentions}
-              isInternal={isInternal}
-            />
+            <UnreadCircle total={totalUnreadCount} isInternal={isInternal} />
           </span>
         </span>
       </div>

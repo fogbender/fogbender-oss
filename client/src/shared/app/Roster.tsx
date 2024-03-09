@@ -249,7 +249,7 @@ const RoomSection = (props: RoomSectionProps) => {
         <div className="flex items-center gap-x-1">
           <span className="text-gray-500 fog:text-body-s font-normal">{section.count}</span>
           <span className={classNames("text-gray-400", !section.mentionsCount && "hidden")}>
-            <Icons.Mention />
+            <Icons.Mention className="w-3 h-3" />
           </span>
           <span
             className={classNames(
