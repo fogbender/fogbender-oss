@@ -16,7 +16,7 @@ export const TextGalleryElement = ({
   const { fileUrl } = attachment;
   const { data } = useQuery({
     queryKey: ["url", fileUrl],
-    queryFn: () => {
+    queryFn: async () => {
       return fetch(fileUrl, {
         method: "GET",
       }).then(res => res.text());

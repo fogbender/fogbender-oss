@@ -907,7 +907,7 @@ export const Room: React.FC<{
             </span>
           )}
           <span
-            className={totalUnreadCount === 0 && "hidden"}
+            className={classNames(!totalUnreadCount && "hidden")}
             onClick={e => {
               e.stopPropagation();
               jumpToFirstUnread();
