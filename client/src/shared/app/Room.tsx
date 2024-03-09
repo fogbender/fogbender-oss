@@ -26,6 +26,7 @@ import {
 import { useAtom, useAtomValue } from "jotai";
 import React, { Suspense } from "react";
 import { useQuery } from "react-query";
+import { TbChevronsDown } from "react-icons/tb";
 
 import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
@@ -880,19 +881,20 @@ export const Room: React.FC<{
         <span
           onClick={jumpToBottom}
           className={classNames(
-            "absolute z-20 right-2 flex p-2 items-center justify-center rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer",
+            "absolute z-20 right-2 flex p-2 items-center justify-center rounded-full bg-white text-black hover:text-brand-red-500 fog:box-shadow-s fog:text-body-s cursor-pointer gap-1 items-center",
             "dark:bg-gray-300",
             keepScrollAtBottom || !room
-              ? "invisible pointer-events-none opacity-0"
-              : "transition-opacity duration-1000 opacity-100",
+              ? "pointer-events-none transition-opacity duration-300 opacity-0"
+              : "transition-opacity duration-300 opacity-100",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none",
-            hasMentions || totalUnreadCount > 0 &&  "gap-x-1.5"
+            hasMentions || (totalUnreadCount > 0 && "gap-x-1.5")
           )}
         >
-           <Icons.Chevron className="w-5 h-5" />
+          <TbChevronsDown size={17} />
           {hasMentions && (
             <span
               className={classNames(
+                "text-sm",
                 "text-base leading-none",
                 isInternal ? "text-green-500" : "text-brand-orange-500"
               )}
@@ -901,20 +903,17 @@ export const Room: React.FC<{
                 jumpToFirstUnreadMention();
               }}
             >
-              @
+              <Icons.Mention className="w-3 h-3" />
             </span>
           )}
           <span
+            className={totalUnreadCount === 0 && "hidden"}
             onClick={e => {
               e.stopPropagation();
               jumpToFirstUnread();
             }}
           >
-            <UnreadCircle
-              total={totalUnreadCount}
-              asMention={hasMentions}
-              isInternal={isInternal}
-            />
+            <UnreadCircle total={totalUnreadCount} isInternal={isInternal} />
           </span>
         </span>
       </div>

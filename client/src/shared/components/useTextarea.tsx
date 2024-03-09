@@ -600,6 +600,7 @@ export const useTextarea = ({
                     linkType="reply"
                     linkStartMessageId={selection[0].id}
                     linkEndMessageId={selection[0].id}
+                    isPreview={true}
                   />
                 </div>
               )}
