@@ -515,7 +515,7 @@ export const Room: React.FC<{
 
   const [selectHover, setSelectHover] = React.useState(false);
 
-  const { Textarea, mode, textareaRef, textAreaModeRef } = useTextarea({
+  const { Textarea, mode, textareaRef } = useTextarea({
     userId: ourId,
     isAgent,
     workspaceId,
@@ -658,7 +658,6 @@ export const Room: React.FC<{
   }, [handleSelectionCancel, roomId, selection, serverCall]);
 
   const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
-  const textAreaModeHeight = textAreaModeRef?.current?.clientHeight || 0;
 
   return (
     <div
@@ -886,10 +885,6 @@ export const Room: React.FC<{
             keepScrollAtBottom || !room
               ? "invisible pointer-events-none opacity-0"
               : "transition-opacity duration-1000 opacity-100",
-            { "bottom-[150px]": selection.length == 1 && textAreaModeHeight > 170 },
-            selection.length == 1 &&
-              (textAreaModeHeight > 135 ? "bottom-[118px]" : "bottom-[66px]"),
-            selection.length > 1 && "bottom-4",
             !isActiveRoom && totalUnreadCount > 0 && "invisible pointer-events-none"
           )}
         >
