@@ -864,7 +864,7 @@ export const Room: React.FC<{
       </div>
       <div
         className={classNames(
-          "relative flex items-center pl-4 pr-2 border-t text-gray-500 fog:text-caption-m",
+          "relative flex items-center text-gray-500 fog:text-caption-m",
           keepScrollAtBottom
             ? "border-transparent opacity-100"
             : "border-gray-300 transition-opacity duration-1000 opacity-100"

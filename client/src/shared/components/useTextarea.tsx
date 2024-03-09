@@ -468,7 +468,7 @@ export const useTextarea = ({
   const typingContent = (
     <span
       className={classNames(
-        "absolute left-10 -translate-y-4 h-4 flex-1 mb-1 truncate text-gray-500 fog:text-caption-m transition-opacity duration-1000",
+        "absolute left-10 -translate-y-4 h-4 flex-1 mb-1 truncate text-gray-500 fog:text-caption-m transition-opacity duration-500",
         {
           "opacity-100": typingNames,
           "opacity-0": !typingNames,
@@ -574,7 +574,7 @@ export const useTextarea = ({
           {selection.length > 0 && (
             <div
               className={classNames(
-                "absolute pl-9 pr-12 pt-4 top-4 w-full border-t text-gray-500 -translate-y-full z-10",
+                "absolute pl-9 pr-12 pt-4 top-4 w-full text-gray-500 -translate-y-full z-10",
                 "bg-transparent"
               )}
             >
