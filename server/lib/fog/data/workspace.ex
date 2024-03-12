@@ -19,6 +19,7 @@ defmodule Fog.Data.Workspace do
              :vendor_id,
              :signature_type,
              :visitors_enabled,
+             :agent_name_override,
              :visitor_key,
              :triage_name,
              :inserted_at,
@@ -36,6 +37,7 @@ defmodule Fog.Data.Workspace do
     field(:triage_name, :string)
     field(:visitor_key, :string)
     field(:visitors_enabled, :boolean)
+    field(:agent_name_override, :string)
     belongs_to(:vendor, Vendor, type: Fog.Types.VendorId)
     has_many(:agents, WorkspaceAgentRole)
     has_many(:helpdesks, Helpdesk)
@@ -66,7 +68,8 @@ defmodule Fog.Data.Workspace do
       :deleted_at,
       :deleted_by_agent_id,
       :visitor_key,
-      :visitors_enabled
+      :visitors_enabled,
+      :agent_name_override
     ])
     |> validate_required([:name, :signature_type, :signature_secret])
     |> cast_assoc(:helpdesks)

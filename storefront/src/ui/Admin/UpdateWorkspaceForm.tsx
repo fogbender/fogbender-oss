@@ -3,6 +3,7 @@ import { LinkButton, ThickButton, useInput } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "react-query";
 
+import { SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import { getServerUrl } from "../../config";
 import { type Vendor, type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
@@ -20,12 +21,17 @@ export const UpdateWorkspaceForm: React.FC<{
   onDeleteClick?: () => void;
 }> = ({ workspace, vendor, nameOk, onClose, onDeleteClick }) => {
   const updateWorkspaceMutation = useMutation(
-    (params: { name: string; triageName: string; description: string }) => {
-      const { name, triageName, description } = params;
+    (params: {
+      name: string;
+      triageName: string;
+      description: string;
+      agentNameOverride: string;
+    }) => {
+      const { name, triageName, description, agentNameOverride } = params;
       return fetch(`${getServerUrl()}/api/vendors/${vendor.id}/workspaces/${workspace.id}`, {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify({ name, triageName, description }),
+        body: JSON.stringify({ name, triageName, description, agentNameOverride }),
       });
     },
     {
@@ -69,6 +75,27 @@ export const UpdateWorkspaceForm: React.FC<{
     placeholder: `Description (e.g. ${vendor.name} production customer support)`,
   });
 
+  const [agentNameOverrideEnabled, setAgentNameOverrideEnabled] = React.useState(false);
+
+  React.useEffect(() => {
+    if (workspace?.agent_name_override) {
+      setAgentNameOverrideEnabled(true);
+    }
+  }, [workspace?.agent_name_override]);
+
+  const [
+    workspaceAgentNameOverride,
+    workspaceAgentNameOverrideInput,
+    resetWorkspaceAgentNameOverride,
+  ] = useInput({
+    defaultValue: workspace?.agent_name_override ?? undefined,
+    type: "text",
+    className: InputClassName,
+    outerDivClassName: "flex-1",
+    placeholder: "Name to show users as agent alias (e.g. Support Agent)",
+    disabled: agentNameOverrideEnabled === false,
+  });
+
   const workspaceNameOk = workspace
     ? workspace.name === workspaceName.trim() || nameOk(workspaceName.trim())
     : nameOk(workspaceName.trim());
@@ -96,6 +123,7 @@ export const UpdateWorkspaceForm: React.FC<{
             name: workspaceName,
             triageName: workspaceTriageName,
             description: workspaceDescription,
+            agentNameOverride: workspaceAgentNameOverride,
           });
         }
       }}
@@ -139,6 +167,36 @@ export const UpdateWorkspaceForm: React.FC<{
         )}
         label={workspaceDescription.trim().length > 0 ? "Description" : ""}
       />
+
+      <div className="flex gap-4 items-center">
+        <div
+          onClick={() => {
+            resetWorkspaceAgentNameOverride();
+            setAgentNameOverrideEnabled(x => !x);
+          }}
+        >
+          {agentNameOverrideEnabled ? (
+            <SwitchOn className="w-10" />
+          ) : (
+            <SwitchOff className="w-10" />
+          )}
+        </div>
+        <WorkspaceInput
+          inputElement={workspaceAgentNameOverrideInput}
+          errorMessage={updateWorkspaceError}
+          error={!!updateWorkspaceError && !updateWorkspaceMutation.isLoading}
+          className={classNames(
+            workspaceAgentNameOverride.trim().length === 0
+              ? "flex-row items-center"
+              : "flex-col items-start",
+            "border border-opacity-0",
+            !agentNameOverrideEnabled && "opacity-50"
+          )}
+          label={
+            workspaceAgentNameOverride.trim().length > 0 ? "Agent alias (e.g. Support Agent)" : ""
+          }
+        />
+      </div>
 
       <div className="flex flex-wrap flex-col justify-between gap-y-4 md:flex-row md:gap-x-4">
         <ThickButton disabled={!formOk} loading={updateWorkspaceMutation.isLoading}>

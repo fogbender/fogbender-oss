@@ -903,6 +903,7 @@ defmodule Fog.Web.APIRouter do
       name = workspace["name"]
       description = workspace["description"]
       triage_name = workspace["triageName"]
+      agent_name_override = workspace["agentNameOverride"]
 
       old =
         from(w in Data.Workspace,
@@ -914,7 +915,8 @@ defmodule Fog.Web.APIRouter do
         Data.Workspace.update(old,
           name: name,
           description: description,
-          triage_name: triage_name
+          triage_name: triage_name,
+          agent_name_override: agent_name_override
         )
         |> Repo.update!()
       end

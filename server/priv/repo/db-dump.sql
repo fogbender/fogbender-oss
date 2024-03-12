@@ -1287,7 +1287,8 @@ CREATE TABLE public.workspace (
     deleted_at timestamp without time zone,
     deleted_by_agent_id bigint,
     visitor_key text,
-    visitors_enabled boolean DEFAULT false
+    visitors_enabled boolean DEFAULT false,
+    agent_name_override character varying(255)
 );
 
 
@@ -2583,3 +2584,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20230915213638);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004060737);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004155001);
 INSERT INTO public."schema_migrations" (version) VALUES (20240122163610);
+INSERT INTO public."schema_migrations" (version) VALUES (20240312034644);
