@@ -125,6 +125,7 @@ defmodule Fog.Api do
       {:ok, session} -> {:ok, session}
       {:reply, reply} -> {:reply, reply, session}
       {:reply, reply, session} -> {:reply, reply, session}
+      {:next, new_message, session} -> run_handlers(new_message, t, session)
       :skip -> run_handlers(message, t, session)
     end
   end
