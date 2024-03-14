@@ -17,7 +17,9 @@ defmodule Fog.Api.Session do
       email_verified: true,
       verification_code: nil,
       verification_email: nil,
-      verification_attempts: 0
+      verification_attempts: 0,
+      agent_name_override_enabled: false,
+      agent_name_override: ""
     ]
   end
 
@@ -56,11 +58,14 @@ defmodule Fog.Api.Session do
   end
 
   def for_user(vendor_id, helpdesk_id, user_id) do
+    ws = Repo.Workspace.get_by_helpdesk(helpdesk_id)
     %User{
       id: next_id(),
       vendorId: vendor_id,
       helpdeskId: helpdesk_id,
-      userId: user_id
+      userId: user_id,
+      agent_name_override_enabled: ws.agent_name_override != "",
+      agent_name_override: ws.agent_name_override
     }
   end
 

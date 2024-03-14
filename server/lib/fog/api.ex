@@ -22,6 +22,7 @@ defmodule Fog.Api do
     Api.User,
     Api.Tag,
     Api.NotifyDelay,
+    Api.AgentNameOverride,
     Api.Event,
     Api.Ai
   ]
