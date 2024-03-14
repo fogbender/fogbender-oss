@@ -26,7 +26,10 @@ defmodule Fog.Api.AgentNameOverride do
       fn(%{type: "agent"} = member) -> %{member | name: name, email: "", imageUrl: ""}
         (member) -> member
       end)
-    %Event.Room{r | members: members}
+    %Event.Room{r |
+        members: members,
+        createdBy: override_created_by(r.createdBy, name)
+    }
   end
   def override_agent_name(%Event.RosterRoom{} = r, name) do
     %Event.RosterRoom{r |
@@ -56,4 +59,12 @@ defmodule Fog.Api.AgentNameOverride do
     %Event.Message{m | mentions: mentions }
   end
 
+  defp override_created_by(%{type: "agent"} = created_by, name) do
+    %{created_by |
+      name: name,
+      email: "",
+      imageUrl: ""
+    }
+  end
+  defp override_created_by(created_by, _), do: created_by
 end

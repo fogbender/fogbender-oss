@@ -66,7 +66,7 @@ defmodule Fog.Api.AgentNameOverrideTest do
             }] = ApiProcess.flush(ctx.user_api)
     end
 
-    test "hide agent name in room members", ctx do
+    test "hide agent name in room members and created_by", ctx do
       sub(ctx.user_api, "helpdesk/#{ctx.helpdesk.id}/rooms")
       request = %Api.Room.Create{
         helpdeskId: ctx.helpdesk.id,
@@ -76,8 +76,9 @@ defmodule Fog.Api.AgentNameOverrideTest do
       }
       %Api.Room.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
-      assert [%Event.Room{members: members}] = ApiProcess.flush(ctx.user_api)
+      assert [%Event.Room{members: members, createdBy: created_by}] = ApiProcess.flush(ctx.user_api)
       assert [%{name: "Support Agent", email: ""}, %{name: "USER 1"}] = Enum.sort_by(members, & &1.name)
+      assert %{name: "Support Agent", email: "", imageUrl: ""} = created_by
     end
   end
 
