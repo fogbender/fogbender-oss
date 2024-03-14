@@ -65,7 +65,7 @@ defmodule Fog.Api.Session do
       vendorId: vendor_id,
       helpdeskId: helpdesk_id,
       userId: user_id,
-      agent_name_override_enabled: ws.agent_name_override != "",
+      agent_name_override_enabled: (ws.agent_name_override || "") != "",
       agent_name_override: ws.agent_name_override
     }
   end

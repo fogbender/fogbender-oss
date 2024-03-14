@@ -25,21 +25,14 @@ defmodule Fog.Api.TrivialHandler2 do
   def info(_, _), do: :skip
 end
 
-defmodule Fog.Api.UpdateHandler do
-  use Fog.Api.Handler
-
-  def info({:update, message}, session), do: {:next, message, session}
-  def info(_, _), do: :skip
-end
-
 defmodule Test.Api.TrivialHandlerTest do
   use ExUnit.Case
   alias Fog.Api
-  alias Fog.Api.{TrivialHandler, TrivialHandler2, UpdateHandler, Encoder}
+  alias Fog.Api.{TrivialHandler, TrivialHandler2, Encoder}
   import ExUnit.CaptureLog
 
   setup do
-    api = Fog.Api.init(:session1, [TrivialHandler, UpdateHandler, TrivialHandler2])
+    api = Fog.Api.init(:session1, [TrivialHandler, TrivialHandler2])
     [api: api]
   end
 
@@ -132,10 +125,5 @@ defmodule Test.Api.TrivialHandlerTest do
                {:ok, %TrivialHandler.Ok{msgId: 1, message: "MESSAGE 2"}}
              ] = Enum.map(reply_json, &Encoder.Json.decode/1)
     end
-  end
-
-  test "Updating message via next directive", ctx do
-    assert {:reply, "UPDATED MESSAGE", _} =
-             Api.info({:update, {:handler2_echo, "UPDATED MESSAGE"}}, ctx.api)
   end
 end

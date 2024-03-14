@@ -25,25 +25,29 @@ defmodule Fog.Api.AgentNameOverrideTest do
     Kernel.binding()
   end
 
-  describe "Workspace have agent_name_override set" do
-    test "hide agent name in typing from users", ctx do
-      sub(ctx.user_api, "room/#{ctx.room.id}/typing")
+  describe "Hide agent name in Api.Event structs" do
+    test "typing", ctx do
+      topic = "room/#{ctx.room.id}/typing"
+      sub(ctx.user_api, topic)
 
       request = %Api.Typing.Set{roomId: ctx.room.id}
       :ok = ApiProcess.request(ctx.agent_api, request)
-
       assert [%Event.Typing{data: [%{name: "Support Agent"}]}] = ApiProcess.flush(ctx.user_api)
+
+      assert [%Event.Typing{data: [%{name: "Support Agent"}]}] = stream_get(ctx.user_api, topic)
     end
 
-    test "hide agent name in new message", ctx do
-      sub(ctx.user_api, "room/#{ctx.room.id}/messages")
+    test "new message", ctx do
+      topic = "room/#{ctx.room.id}/messages"
+      sub(ctx.user_api, topic)
       request = %Api.Message.Create{roomId: ctx.room.id, text: "TEXT"}
       %Api.Message.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
       assert [%Event.Message{fromName: "Support Agent"}] = ApiProcess.flush(ctx.user_api)
+      assert [%Event.Message{fromName: "Support Agent"}] = stream_get(ctx.user_api, topic)
     end
 
-    test "hide agent name in mentions", ctx do
+    test "mentions", ctx do
       sub(ctx.user_api, "room/#{ctx.room.id}/messages")
 
       request = %Api.Message.Create{
@@ -61,8 +65,9 @@ defmodule Fog.Api.AgentNameOverrideTest do
       assert [%{name: "Support Agent"}, %{name: "USER 1"}] = Enum.sort_by(mentions, & &1.id)
     end
 
-    test "hide agent name in badge", ctx do
-      sub(ctx.user_api, "user/#{ctx.user1.id}/badges")
+    test "badge", ctx do
+      topic = "user/#{ctx.user1.id}/badges"
+      sub(ctx.user_api, topic)
       request = %Api.Message.Create{roomId: ctx.room.id, text: "TEXT"}
       %Api.Message.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
@@ -72,10 +77,18 @@ defmodule Fog.Api.AgentNameOverrideTest do
                  lastRoomMessage: %{fromName: "Support Agent"}
                }
              ] = ApiProcess.flush(ctx.user_api)
+
+      assert [
+               %Event.Badge{
+                 firstUnreadMessage: %{fromName: "Support Agent"},
+                 lastRoomMessage: %{fromName: "Support Agent"}
+               }
+             ] = stream_get(ctx.user_api, topic)
     end
 
-    test "hide agent name in room members and created_by", ctx do
-      sub(ctx.user_api, "helpdesk/#{ctx.helpdesk.id}/rooms")
+    test "room members and created_by", ctx do
+      topic = "helpdesk/#{ctx.helpdesk.id}/rooms"
+      sub(ctx.user_api, topic)
 
       request = %Api.Room.Create{
         helpdeskId: ctx.helpdesk.id,
@@ -93,11 +106,28 @@ defmodule Fog.Api.AgentNameOverrideTest do
                Enum.sort_by(members, & &1.name)
 
       assert %{name: "Support Agent", email: "", imageUrl: ""} = created_by
+
+      assert [%Event.Room{members: members, createdBy: created_by}] =
+               stream_get(ctx.user_api, topic) |> Enum.filter(&(&1.type == "private"))
+
+      assert [%{name: "Support Agent", email: ""}, %{name: "USER 1"}] =
+               Enum.sort_by(members, & &1.name)
+
+      assert %{name: "Support Agent", email: "", imageUrl: ""} = created_by
     end
   end
 
   defp sub(api, topic) do
-    assert %Api.Stream.SubOk{} = ApiProcess.request(api, %Api.Stream.Sub{topic: topic})
-    :ok
+    assert %Api.Stream.SubOk{items: items} =
+             ApiProcess.request(api, %Api.Stream.Sub{topic: topic})
+
+    items
+  end
+
+  defp stream_get(api, topic) do
+    assert %Api.Stream.GetOk{items: items} =
+             ApiProcess.request(api, %Api.Stream.Get{topic: topic})
+
+    items
   end
 end

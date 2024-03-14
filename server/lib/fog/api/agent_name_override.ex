@@ -1,15 +1,20 @@
 defmodule Fog.Api.AgentNameOverride do
-  use Fog.Api.Handler
   alias Fog.Api.{Session, Event}
 
-  def info(
-        message,
-        %Session.User{agent_name_override_enabled: true, agent_name_override: name} = s
-      ) do
-    {:next, override_agent_name(message, name), s}
+  def process(message, %Session.User{agent_name_override_enabled: true, agent_name_override: name}) do
+    override_agent_name(message, name)
   end
 
-  def info(_, _), do: :skip
+  def process(message, _), do: message
+
+  def override_agent_name(%{items: items} = m, name) do
+    items = override_agent_name(items, name)
+    %{m | items: items}
+  end
+
+  def override_agent_name(messages, name) when is_list(messages) do
+    Enum.map(messages, fn m -> override_agent_name(m, name) end)
+  end
 
   def override_agent_name(%Event.Agent{} = a, name), do: %Event.Agent{a | name: name}
 
