@@ -77,16 +77,33 @@ defmodule Fog.Api.AgentNameOverride do
 
   defp override_mention_name(%Event.Message{mentions: mentions} = m, name)
        when is_list(mentions) do
-    mentions =
-      Enum.map(
-        mentions,
-        fn
-          %{type: "agent"} = mention -> %{mention | name: name, text: name}
-          mention -> mention
-        end
-      )
+    Enum.reduce(
+      mentions,
+      %Event.Message{m | mentions: []},
+      fn
+        %{type: "agent", text: mention_text} = mention, %Event.Message{} = m ->
+          mention = %{mention | name: name, text: name}
+          m = %Event.Message{m | mentions: [mention | m.mentions]}
+          override_mention_text(m, mention_text, name)
 
-    %Event.Message{m | mentions: mentions}
+        mention, %Event.Message{} = m ->
+          %Event.Message{m | mentions: [mention | m.mentions]}
+      end
+    )
+  end
+
+  defp override_mention_name(message, _), do: message
+
+  defp override_mention_text(%Event.Message{} = m, mention_text, name) do
+    mention_text = "@" <> mention_text
+    name = "@" <> name
+
+    %Event.Message{
+      m
+      | text: String.replace(m.text, mention_text, name),
+        plainText: String.replace(m.plainText, mention_text, name),
+        rawText: String.replace(m.rawText, mention_text, name)
+    }
   end
 
   defp override_created_by(%{type: "agent"} = created_by, name) do

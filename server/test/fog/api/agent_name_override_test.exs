@@ -61,8 +61,18 @@ defmodule Fog.Api.AgentNameOverrideTest do
 
       %Api.Message.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
-      assert [%Event.Message{mentions: mentions}] = ApiProcess.flush(ctx.user_api)
-      assert [%{name: "Support Agent"}, %{name: "USER 1"}] = Enum.sort_by(mentions, & &1.id)
+      assert [
+               %Event.Message{
+                 mentions: mentions,
+                 text:
+                   "<p>TEXT <b class=\"mention\">@USER 1</b>, <b class=\"mention\">@Support Agent</b></p>",
+                 rawText: "TEXT @USER 1, @Support Agent",
+                 plainText: "TEXT @USER 1, @Support Agent"
+               }
+             ] = ApiProcess.flush(ctx.user_api)
+
+      assert [%{name: "Support Agent", text: "Support Agent"}, %{name: "USER 1"}] =
+               Enum.sort_by(mentions, & &1.id)
     end
 
     test "badge", ctx do
