@@ -113,8 +113,7 @@ export const MentionsPopup: React.FC<{
   // TODO: do not hide mention picker if `hide` is `true` but window is out of focus
 
   const [hideMentions, SetHideMentions] = React.useState(false);
-  // This extra hide state was introduced because list is renderd through UserList component and styles are applied in this component so even if list length is 0 still this component
-  // will apply style due to which unwanted ui will appear.
+  // New 'hide' state fixes a issue where empty lists still get styled by UserList, causing weird UI bits to show up
   return (
     <div
       className={classNames(
