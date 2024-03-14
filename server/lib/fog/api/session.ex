@@ -59,6 +59,7 @@ defmodule Fog.Api.Session do
 
   def for_user(vendor_id, helpdesk_id, user_id) do
     ws = Repo.Workspace.get_by_helpdesk(helpdesk_id)
+
     %User{
       id: next_id(),
       vendorId: vendor_id,

@@ -135,6 +135,7 @@ defmodule Test.Api.TrivialHandlerTest do
   end
 
   test "Updating message via next directive", ctx do
-    assert {:reply, "UPDATED MESSAGE", _} = Api.info({:update, {:handler2_echo, "UPDATED MESSAGE"}}, ctx.api)
+    assert {:reply, "UPDATED MESSAGE", _} =
+             Api.info({:update, {:handler2_echo, "UPDATED MESSAGE"}}, ctx.api)
   end
 end

@@ -42,7 +42,7 @@ defmodule Fog.RepoCaseUtils do
 
     Data.User.new(
       id: id,
-      name: (name || "user #{id}"),
+      name: name || "user #{id}",
       email: (name || "user") <> "#{id}@example.com",
       helpdesk_id: h.id
     )

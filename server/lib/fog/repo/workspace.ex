@@ -6,10 +6,12 @@ defmodule Fog.Repo.Workspace do
   import Fog.Repo, only: [sql_split_part: 3]
 
   def get(wid), do: Data.Workspace |> Fog.Repo.get(wid)
+
   def get_by_helpdesk(hid) do
     from(w in Data.Workspace,
       join: h in assoc(w, :helpdesks),
-      where: h.id == ^hid)
+      where: h.id == ^hid
+    )
     |> Repo.one()
   end
 
