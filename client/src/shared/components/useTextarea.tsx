@@ -25,6 +25,7 @@ import { usePrevious } from "../utils/usePrevious";
 
 import {
   MentionsPopup,
+  roomAutocompleteFamily,
   useAutoCompleteUpdateFor,
   useRoomMentionDispatchFor,
 } from "./AutoCompletePopup";
@@ -455,6 +456,12 @@ export const useTextarea = ({
 
     return color;
   };
+  const searchString = useAtomValue(roomAutocompleteFamily(roomId));
+
+  const hideModeDropdown = React.useMemo(
+    () => focused && searchString !== undefined,
+    [focused, searchString]
+  );
 
   let placeholder = "";
 
@@ -557,11 +564,12 @@ export const useTextarea = ({
             </div>
           )}
 
-          {userId && (
+          {userId && focused && searchString !== undefined && (
             <MentionsPopup
               isPrivate={room?.type === "private"}
               userId={userId}
               workspaceId={workspaceId}
+              searchString={searchString}
               helpdeskId={helpdeskId}
               hide={!focused}
               roomId={roomId}
@@ -592,7 +600,7 @@ export const useTextarea = ({
               />
 
               {typingContent}
-              {selection.length === 1 && mode === "Reply" && (
+              {selection.length === 1 && mode === "Reply" && !hideModeDropdown && (
                 <div className="mb-1 text-zinc-800 dark:text-white">
                   <SourceMessages
                     isAgent={selection[0].author.type === "agent"}
@@ -604,7 +612,7 @@ export const useTextarea = ({
                   />
                 </div>
               )}
-              {selection.length > 0 && (
+              {selection.length > 0 && !hideModeDropdown && (
                 <div
                   className={classNames(
                     "mb-1 rounded",

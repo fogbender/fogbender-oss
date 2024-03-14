@@ -1,7 +1,7 @@
 import { type Author, type Room, useRoomMembers, useRoster } from "fogbender-proto";
 import { filter } from "fuzzy";
 import { atom, type WritableAtom, useAtom } from "jotai";
-import { atomFamily, useAtomCallback, useAtomValue, useUpdateAtom } from "jotai/utils";
+import { atomFamily, useAtomCallback, useUpdateAtom } from "jotai/utils";
 import React from "react";
 import { throttle } from "throttle-debounce";
 
@@ -10,7 +10,7 @@ import { type AutocompleteItem, useRoomList } from "./useRoomList";
 type State = string | undefined;
 
 // to access autocomplete of one room
-const roomAutocompleteFamily = atomFamily((_roomId: string) => atom<State>(undefined));
+export const roomAutocompleteFamily = atomFamily((_roomId: string) => atom<State>(undefined));
 // stores selector index for a room
 const roomSelectorFamily = atomFamily((_roomId: string) => atom(0));
 // stores max selector index value for a room
@@ -81,6 +81,7 @@ export const MentionsPopup: React.FC<{
   isPrivate: boolean;
   userId: string;
   workspaceId: string | undefined;
+  searchString: string;
   helpdeskId: string;
   roomId: string;
   hide: boolean;
@@ -97,6 +98,7 @@ export const MentionsPopup: React.FC<{
     helpdeskId,
     roomId,
     hide,
+    searchString,
     onMentionAccepted,
     bottomOffset,
     isAgent,
@@ -108,11 +110,8 @@ export const MentionsPopup: React.FC<{
     helpdeskId,
     roomId,
   });
-  const searchString = useAtomValue(roomAutocompleteFamily(roomId));
+
   // TODO: do not hide mention picker if `hide` is `true` but window is out of focus
-  if (hide || searchString === undefined) {
-    return null;
-  }
 
   return (
     <div
