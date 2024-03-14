@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { type Author, type Room, useRoomMembers, useRoster } from "fogbender-proto";
 import { filter } from "fuzzy";
 import { atom, type WritableAtom, useAtom } from "jotai";
@@ -111,9 +112,15 @@ export const MentionsPopup: React.FC<{
 
   // TODO: do not hide mention picker if `hide` is `true` but window is out of focus
 
+  const [hideMentions, SetHideMentions] = React.useState(false);
+  // This extra hide state was introduced because list is renderd through UserList component and styles are applied in this component so even if list length is 0 still this component
+  // will apply style due to which unwanted ui will appear.
   return (
     <div
-      className="fbr-scrollbar absolute bottom-12 left-0 right-12 z-10 mb-3.5 mr-0.5 max-h-40 overflow-y-auto rounded-t-md border border-blue-50 bg-white dark:bg-black dark:text-white"
+      className={classNames(
+        "fbr-scrollbar absolute bottom-12 left-0 right-12 z-10 mb-3.5 mr-0.5 max-h-40 overflow-y-auto rounded-t-md border border-blue-50 bg-white dark:bg-black dark:text-white",
+        { "hidden": hideMentions, "block": !hideMentions }
+      )}
       style={bottomOffset ? { bottom: bottomOffset } : {}}
       onPointerDown={e => {
         e.preventDefault();
@@ -123,6 +130,8 @@ export const MentionsPopup: React.FC<{
         isPrivate={isPrivate}
         searchString={searchString}
         userId={userId}
+        setHideMentions={SetHideMentions}
+        hideMentions={hideMentions}
         filteredDialogs={filteredDialogs}
         setRosterFilter={setRosterFilter}
         roomId={roomId}
@@ -140,6 +149,8 @@ const uId = (room: Room) => room.userId || room.agentId;
 
 export const UserList: React.FC<{
   isPrivate: boolean;
+  hideMentions: boolean;
+  setHideMentions: (val: boolean) => void;
   searchString: string;
   userId: string;
   filteredDialogs: Room[];
@@ -157,6 +168,8 @@ export const UserList: React.FC<{
     userId,
     helpdeskId,
     filteredDialogs,
+    hideMentions,
+    setHideMentions,
     setRosterFilter,
     searchString,
     onMentionAccepted,
@@ -273,6 +286,14 @@ export const UserList: React.FC<{
       },
     }).map(({ original /* `string` will have matched parts of word highlighted */ }) => original);
   }, [expandCommands, isAgent, roomIdToExpand, searchString, selfRoom, userRoomsOriginal]);
+
+  React.useEffect(() => {
+    if (autocompleteItems.length && hideMentions) {
+      setHideMentions(false);
+    } else if (!autocompleteItems.length && !hideMentions) {
+      setHideMentions(true);
+    }
+  }, [autocompleteItems]);
 
   const selectedItems = React.useMemo(() => {
     const item = autocompleteItems[selectorIndex];
