@@ -84,7 +84,6 @@ export const MentionsPopup: React.FC<{
   searchString: string;
   helpdeskId: string;
   roomId: string;
-  hide: boolean;
   onMentionAccepted: onMentionAccepted;
   bottomOffset?: number;
   isAgent: boolean | undefined;
@@ -97,7 +96,6 @@ export const MentionsPopup: React.FC<{
     workspaceId,
     helpdeskId,
     roomId,
-    hide,
     searchString,
     onMentionAccepted,
     bottomOffset,

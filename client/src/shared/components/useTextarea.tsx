@@ -571,7 +571,6 @@ export const useTextarea = ({
               workspaceId={workspaceId}
               searchString={searchString}
               helpdeskId={helpdeskId}
-              hide={!focused}
               roomId={roomId}
               onMentionAccepted={onMentionAccepted}
               bottomOffset={textAreaHeight}
