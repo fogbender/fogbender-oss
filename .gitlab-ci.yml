@@ -51,7 +51,7 @@ sync_to_github:
   script:
     - echo Syncing to GitHub...
     # make sure we do not publish anything that contains the original repo's commits (because they had secrets in plaintext)
-    - git merge-base --is-ancestor 543fd37c1197a4aaddef79592b4fdd417b6d7587 HEAD; if [ $? -eq 0 ]; then echo "Good"; else echo "Can only push from clean history"; exit 1; fi
+    - git merge-base --is-ancestor 2c683e0ef476fec5125127fb691fc1419dbdd3fb HEAD; if [ $? -eq 0 ]; then echo "Good"; else echo "Can only push from clean history"; exit 1; fi
     - ps -p $SSH_AGENT_PID > /dev/null || eval `ssh-agent -s`
     - echo "$GITHUB_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - git remote add github git@github.com:fogbender/fogbender.git || true
