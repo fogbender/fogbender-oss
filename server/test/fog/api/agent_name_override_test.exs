@@ -43,8 +43,20 @@ defmodule Fog.Api.AgentNameOverrideTest do
       request = %Api.Message.Create{roomId: ctx.room.id, text: "TEXT"}
       %Api.Message.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
-      assert [%Event.Message{fromName: "Support Agent"}] = ApiProcess.flush(ctx.user_api)
-      assert [%Event.Message{fromName: "Support Agent"}] = stream_get(ctx.user_api, topic)
+
+      assert [
+               %Event.Message{
+                 fromName: "Support Agent",
+                 fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=Support%20Agent"
+               }
+             ] = ApiProcess.flush(ctx.user_api)
+
+      assert [
+               %Event.Message{
+                 fromName: "Support Agent",
+                 fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=Support%20Agent"
+               }
+             ] = stream_get(ctx.user_api, topic)
     end
 
     test "mentions", ctx do

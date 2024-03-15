@@ -20,7 +20,7 @@ defmodule Fog.Api.AgentNameOverride do
     do: %Event.Agent{
       a
       | name: name,
-        imageUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{name}"
+        imageUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{URI.encode(name)}"
     }
 
   def override_agent_name(%Event.Badge{} = b, name) do
@@ -78,7 +78,7 @@ defmodule Fog.Api.AgentNameOverride do
     %Event.Message{
       m
       | fromName: name,
-        fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{name}"
+        fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{URI.encode(name)}"
     }
   end
 
