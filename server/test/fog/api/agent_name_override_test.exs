@@ -43,7 +43,6 @@ defmodule Fog.Api.AgentNameOverrideTest do
       request = %Api.Message.Create{roomId: ctx.room.id, text: "TEXT"}
       %Api.Message.Ok{} = ApiProcess.request(ctx.agent_api, request)
 
-
       assert [
                %Event.Message{
                  fromName: "Support Agent",
