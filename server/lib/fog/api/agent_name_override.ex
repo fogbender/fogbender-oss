@@ -16,7 +16,12 @@ defmodule Fog.Api.AgentNameOverride do
     Enum.map(messages, fn m -> override_agent_name(m, name) end)
   end
 
-  def override_agent_name(%Event.Agent{} = a, name), do: %Event.Agent{a | name: name}
+  def override_agent_name(%Event.Agent{} = a, name),
+    do: %Event.Agent{
+      a
+      | name: name,
+        imageUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{name}"
+    }
 
   def override_agent_name(%Event.Badge{} = b, name) do
     %Event.Badge{
@@ -70,7 +75,11 @@ defmodule Fog.Api.AgentNameOverride do
   def override_agent_name(message, _), do: message
 
   defp override_message_author_name(%Event.Message{fromType: "agent"} = m, name) do
-    %Event.Message{m | fromName: name}
+    %Event.Message{
+      m
+      | fromName: name,
+        fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=#{name}"
+    }
   end
 
   defp override_message_author_name(m, _), do: m
