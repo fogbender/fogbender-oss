@@ -156,11 +156,15 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                     <div className="relative ml-3">
                       <div>
                         <button
-                          className="focus:shadow-solid flex max-w-xs items-center rounded-full text-sm text-white focus:outline-none"
+                          className="w-8 h-8 focus:shadow-solid flex max-w-xs items-center rounded-full text-sm text-white focus:outline-none"
                           id="user-menu"
                           aria-label="User menu"
                           aria-haspopup="true"
-                          onClick={() => setDropdown(!showDropdown)}
+                          type="button"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setDropdown(!showDropdown);
+                          }}
                         >
                           <img
                             className="h-8 w-8 rounded-full"
