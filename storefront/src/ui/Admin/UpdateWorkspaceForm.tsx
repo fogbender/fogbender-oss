@@ -107,12 +107,20 @@ export const UpdateWorkspaceForm: React.FC<{
       workspaceName.trim().length === 0 ||
       workspaceNameOk === false ||
       workspaceTriageName.trim().length === 0 ||
-      workspaceTriageNameOk === false
+      workspaceTriageNameOk === false ||
+      (agentNameOverrideEnabled && workspaceAgentNameOverride.trim().length === 0)
     ) {
       return false;
     }
     return true;
-  }, [workspaceName, workspaceNameOk, workspaceTriageName, workspaceTriageNameOk]);
+  }, [
+    workspaceName,
+    workspaceNameOk,
+    workspaceTriageName,
+    workspaceTriageNameOk,
+    agentNameOverrideEnabled,
+    workspaceAgentNameOverride,
+  ]);
 
   return (
     <form
@@ -170,16 +178,19 @@ export const UpdateWorkspaceForm: React.FC<{
 
       <div className="flex gap-4 items-center">
         <div
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => {
             resetWorkspaceAgentNameOverride();
             setAgentNameOverrideEnabled(x => !x);
           }}
         >
+          <span className={classNames(agentNameOverrideEnabled && "opacity-50")}>OFF</span>
           {agentNameOverrideEnabled ? (
             <SwitchOn className="w-10" />
           ) : (
             <SwitchOff className="w-10" />
           )}
+          <span className={classNames(!agentNameOverrideEnabled && "opacity-50")}>ON</span>
         </div>
         <WorkspaceInput
           inputElement={workspaceAgentNameOverrideInput}
