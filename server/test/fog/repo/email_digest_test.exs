@@ -6,12 +6,12 @@ defmodule Test.Repo.EmailDigestTest do
     v1 = vendor()
     w1 = workspace(v1)
     a1 = agent(w1)
-    a2 = agent(w1)
+    a2 = agent(w1, "admin", "AGENT 2")
     h1 = helpdesk(w1)
     r1 = public_room(h1)
     r2 = public_room(h1)
-    u1 = user(h1)
-    u2 = user(h1)
+    u1 = user(h1, "USER 1")
+    u2 = user(h1, "USER 2")
 
     Repo.FeatureOption.vendor_defaults(
       agent_customer_following: false,
@@ -413,5 +413,24 @@ defmodule Test.Repo.EmailDigestTest do
       assert first_unread_message.from_agent.name == "Support Agent"
     end
 
+    test "override agent name in mention", ctx do
+      Data.Workspace.update(ctx.w1, agent_name_override: "Support Agent")
+      |> Repo.update!()
+
+      seen(ctx.u1, ctx.r1, %{id: "m0"})
+      message(ctx.r1, ctx.a1, "TEST 1, @USER 1, @AGENT 2", [ctx.u1, ctx.a2])
+
+      ed =
+        Repo.EmailDigest.users_to_notify(ctx.t2, 100)
+        |> Repo.EmailDigest.load_user_badges()
+
+      [
+        %Data.EmailDigest{
+          badges: [%Data.Badge{room: %Data.Room{messages: [message]}}]
+        }
+      ] = ed
+
+      assert "TEST 1, @USER 1, @Support Agent" == message.text
+    end
   end
 end
