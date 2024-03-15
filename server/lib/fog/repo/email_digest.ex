@@ -70,7 +70,37 @@ defmodule Fog.Repo.EmailDigest do
     ])
     |> preload_room_messages()
     |> filter_badge_messages()
+    |> override_agent_name()
   end
+
+  defp override_agent_name(data) do
+    for %Data.EmailDigest{} = em <- data do
+      w = %Data.Workspace{} = em.workspace
+
+      if (w.agent_name_override || "") != "" do
+        badges = override_agent_name(em.badges, w.agent_name_override)
+        %Data.EmailDigest{em | badges: badges}
+      else
+        em
+      end
+    end
+  end
+
+  defp override_agent_name(badges, name) do
+    badges
+    |> update_in(
+      [Access.all(), :room, :messages, Access.all()],
+      &override_message(&1, name)
+    )
+    |> update_in([Access.all(), :first_unread_message], &override_message(&1, name))
+  end
+
+  defp override_message(%Data.Message{} = m, name) do
+    update_in(m.from_agent, &maybe_override_author_name(&1, name))
+  end
+
+  defp maybe_override_author_name(nil, _), do: nil
+  defp maybe_override_author_name(%Data.Agent{} = a, name), do: put_in(a.name, name)
 
   defp preload_room_messages(digests) do
     query =

@@ -393,5 +393,25 @@ defmodule Test.Repo.EmailDigestTest do
 
       assert [_] = Repo.EmailDigest.users_to_notify(ctx.t2, 100)
     end
+
+    test "override author agent name", ctx do
+      Data.Workspace.update(ctx.w1, agent_name_override: "Support Agent")
+      |> Repo.update!()
+
+      seen(ctx.u1, ctx.r1, %{id: "m0"})
+      message(ctx.r1, ctx.a1, "TEST 1")
+      ed = Repo.EmailDigest.users_to_notify(ctx.t2, 100)
+      [%Data.EmailDigest{badges: [badge]}] = Repo.EmailDigest.load_user_badges(ed)
+
+      %Data.Badge{
+        first_unread_message: first_unread_message,
+        room: room
+      } = badge
+
+      %Data.Room{messages: [room_message]} = room
+      assert room_message.from_agent.name == "Support Agent"
+      assert first_unread_message.from_agent.name == "Support Agent"
+    end
+
   end
 end
