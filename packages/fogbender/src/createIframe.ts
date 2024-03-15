@@ -71,7 +71,9 @@ export function renderIframe(
   let _mode = initialMode();
   const iFrame = document.createElement("iframe");
 
-  rootEl.style.height = "100%";
+  if (!headless) {
+    rootEl.style.height = "100%";
+  }
   iFrame.src = url;
   iFrame.style.display = "block";
   iFrame.style.width = headless ? "0" : "100%";
