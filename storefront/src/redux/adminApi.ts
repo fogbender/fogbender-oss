@@ -57,6 +57,7 @@ export type Workspace = {
   inserted_at: number;
   vendor_id: number;
   deleted_at: number | null;
+  agent_name_override: string | null;
 };
 
 export type CrmValue = string | boolean | Record<string, string>;

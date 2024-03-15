@@ -79,6 +79,7 @@ defmodule Fog.Api do
 
       {:ok, message} ->
         run(message, state)
+        |> override_agent_name()
         |> update_unknown(allow_unknown)
         |> set_reply_msg_id(message)
         |> encode_reply(oformat)
@@ -90,6 +91,12 @@ defmodule Fog.Api do
         |> encode_reply(oformat)
     end
   end
+
+  defp override_agent_name({:reply, reply, %Api{session: session} = state}) do
+    {:reply, Api.AgentNameOverride.process(reply, session), state}
+  end
+
+  defp override_agent_name(reply), do: reply
 
   defp run(message, %Api{handlers: handlers, session: session} = state) do
     case run_handlers(message, handlers, session) do

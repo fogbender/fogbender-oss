@@ -7,6 +7,14 @@ defmodule Fog.Repo.Workspace do
 
   def get(wid), do: Data.Workspace |> Fog.Repo.get(wid)
 
+  def get_by_helpdesk(hid) do
+    from(w in Data.Workspace,
+      join: h in assoc(w, :helpdesks),
+      where: h.id == ^hid
+    )
+    |> Repo.one()
+  end
+
   def get_tags(wid) do
     from(
       t in Data.Tag,
@@ -30,7 +38,7 @@ defmodule Fog.Repo.Workspace do
         integration_issue: issue
       }
     )
-    |> Fog.Repo.all()
+    |> Repo.all()
   end
 
   def get_tags(wid, ids) do
