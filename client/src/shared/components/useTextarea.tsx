@@ -516,7 +516,7 @@ export const useTextarea = ({
                           "text-gray-500 dark:text-gray-400 group-hover:text-gray-800"
                       )}
                     />
-                    Upload a file...
+                    Upload files
                   </div>
                 )}
                 <div
@@ -527,7 +527,7 @@ export const useTextarea = ({
                   }}
                 >
                   <Icons.EmojiSelect className="w-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-800" />
-                  Emoji selector
+                  Select emoji
                 </div>
               </div>
             </span>
