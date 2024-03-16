@@ -539,7 +539,8 @@ export const useTextarea = ({
                 "px-2",
                 mode === undefined || mode === "Reply" || mode === "Edit"
                   ? "text-gray-500 cursor-pointer"
-                  : "text-gray-200"
+                  : "text-gray-200",
+                "self-end mb-2"
               )}
               onClick={() => {
                 if (mode === undefined || mode === "Reply" || mode === "Edit") {
@@ -673,7 +674,7 @@ export const useTextarea = ({
             </div>
           )}
           <div className="flex-1 truncate">
-            <div className="relative">
+            <div className="relative flex items-center">
               <TextareaAutosize
                 ref={textareaRef}
                 onChange={onChange}
@@ -737,7 +738,10 @@ export const useTextarea = ({
               />
             </div>
           </div>
-          <div onClick={doSend} className={classNames("ml-2 cursor-pointer", sendButtonColor())}>
+          <div
+            onClick={doSend}
+            className={classNames("ml-2 cursor-pointer self-end mb-px", sendButtonColor())}
+          >
             <Icons.MessageSend />
           </div>
         </div>
