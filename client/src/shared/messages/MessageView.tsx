@@ -74,6 +74,7 @@ type MessageViewProps = {
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
   selectHover?: boolean;
+  modeContainerHeight?: number;
 };
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
@@ -118,6 +119,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     pinToRoom,
     askAi,
     selectHover = false,
+    modeContainerHeight,
   } = props;
   const themeMode = useAtomValue(modeAtom);
 
@@ -251,6 +253,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
   const isVisitor =
     myAuthor?.userType === "visitor-verified" || myAuthor?.userType === "visitor-unverified";
 
+  const defaultMessageReactionBottom = 160;
+  const messageReactionBottom = (modeContainerHeight ?? defaultMessageReactionBottom) + "px";
   return (
     <React.Fragment>
       <div ref={topRef} />
@@ -504,7 +508,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
       )}
 
       {((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
-        <div className="sticky z-10 top-2 bottom-[180px] right-0 max-w-min -mt-9 ml-auto flex">
+        <div
+          style={{ bottom: messageReactionBottom }}
+          className="sticky z-10 top-2 right-0 max-w-min -mt-9 ml-auto flex"
+        >
           {showAiHelper &&
             isAgent &&
             ((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
@@ -930,7 +937,7 @@ export const SourceMessages: React.FC<{
                     "-ml-6 -mr-2 my-1",
                     linkType === "reply" && "truncate",
                     linkType === "reply" &&
-                      (sm.deletedTs ? "max-h-8" : sm.files.length === 0 ? "max-h-4" : undefined)
+                      (sm.deletedTs || sm.files.length === 0 ? "max-h-14" : undefined)
                   )}
                 >
                   <MessageContentMemo
@@ -1063,7 +1070,10 @@ const MessageContent: React.FC<{
         </div>
       ) : (
         <div className={classNames("break-words", isSingleEmoji && !inReply && "text-6xl")}>
-          <div dangerouslySetInnerHTML={{ __html: finalHtml }} />
+          <div
+            className={classNames({ "max-h-16 overflow-auto fbr-scrollbar": inReply })}
+            dangerouslySetInnerHTML={{ __html: finalHtml }}
+          />
           {images.length > 0 && (
             <MessageImages
               message={message}

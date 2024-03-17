@@ -516,7 +516,7 @@ export const Room: React.FC<{
 
   const [selectHover, setSelectHover] = React.useState(false);
 
-  const { Textarea, mode, textareaRef } = useTextarea({
+  const { Textarea, mode, textareaRef, modeContainerHeight } = useTextarea({
     userId: ourId,
     isAgent,
     workspaceId,
@@ -807,6 +807,7 @@ export const Room: React.FC<{
               pinToRoom={pinToRoom}
               askAi={askAi}
               selectHover={selectHover}
+              modeContainerHeight={modeContainerHeight}
             />
           ))}
           {pendingMessages.map((msg, i) => (
@@ -859,6 +860,7 @@ export const Room: React.FC<{
               roomWidth={roomWidth}
               inDialog={room?.type === "dialog"}
               selectHover={selectHover}
+              modeContainerHeight={modeContainerHeight}
             />
           ))}
         </div>
