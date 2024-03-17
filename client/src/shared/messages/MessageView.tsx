@@ -74,6 +74,7 @@ type MessageViewProps = {
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
   selectHover?: boolean;
+  modeContainerHeight?: number;
 };
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
@@ -118,6 +119,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     pinToRoom,
     askAi,
     selectHover = false,
+    modeContainerHeight,
   } = props;
   const themeMode = useAtomValue(modeAtom);
 
