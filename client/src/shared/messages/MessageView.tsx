@@ -937,7 +937,7 @@ export const SourceMessages: React.FC<{
                     "-ml-6 -mr-2 my-1",
                     linkType === "reply" && "truncate",
                     linkType === "reply" &&
-                      (sm.deletedTs ? "max-h-8" : sm.files.length === 0 ? "max-h-4" : undefined)
+                      (sm.deletedTs || sm.files.length === 0 ? "max-h-14" : undefined)
                   )}
                 >
                   <MessageContentMemo
@@ -1070,7 +1070,10 @@ const MessageContent: React.FC<{
         </div>
       ) : (
         <div className={classNames("break-words", isSingleEmoji && !inReply && "text-6xl")}>
-          <div dangerouslySetInnerHTML={{ __html: finalHtml }} />
+          <div
+            className={classNames({ "max-h-16 overflow-auto fbr-scrollbar": inReply })}
+            dangerouslySetInnerHTML={{ __html: finalHtml }}
+          />
           {images.length > 0 && (
             <MessageImages
               message={message}
