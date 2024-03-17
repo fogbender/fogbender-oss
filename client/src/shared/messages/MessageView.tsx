@@ -253,6 +253,8 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
   const isVisitor =
     myAuthor?.userType === "visitor-verified" || myAuthor?.userType === "visitor-unverified";
 
+  const defaultMessageReactionBottom = 160;
+  const messageReactionBottom = (modeContainerHeight ?? defaultMessageReactionBottom) + "px";
   return (
     <React.Fragment>
       <div ref={topRef} />
@@ -506,7 +508,10 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
       )}
 
       {((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
-        <div className="sticky z-10 top-2 bottom-[180px] right-0 max-w-min -mt-9 ml-auto flex">
+        <div
+          style={{ bottom: messageReactionBottom }}
+          className="sticky z-10 top-2 right-0 max-w-min -mt-9 ml-auto flex"
+        >
           {showAiHelper &&
             isAgent &&
             ((selectedSingle && !message.deletedTs) || (allowForward && isLastSelected)) && (
