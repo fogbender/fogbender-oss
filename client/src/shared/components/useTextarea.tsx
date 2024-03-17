@@ -541,7 +541,7 @@ export const useTextarea = ({
                   ? "text-gray-500 cursor-pointer"
                   : "text-gray-200",
                 "self-end",
-                "mb-3 sm:mb-2"
+                "mb-2.5 sm:mb-2"
               )}
               onClick={() => {
                 if (mode === undefined || mode === "Reply" || mode === "Edit") {
@@ -745,7 +745,7 @@ export const useTextarea = ({
             className={classNames(
               "ml-2 cursor-pointer self-end",
               sendButtonColor(),
-              "mb-1 sm:mb-px"
+              "mb-1 sm:mb-0.5"
             )}
           >
             <Icons.MessageSend />
