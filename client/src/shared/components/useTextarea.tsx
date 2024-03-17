@@ -540,7 +540,8 @@ export const useTextarea = ({
                 mode === undefined || mode === "Reply" || mode === "Edit"
                   ? "text-gray-500 cursor-pointer"
                   : "text-gray-200",
-                "self-end mb-2"
+                "self-end",
+                "mb-3 sm:mb-2"
               )}
               onClick={() => {
                 if (mode === undefined || mode === "Reply" || mode === "Edit") {
@@ -723,12 +724,13 @@ export const useTextarea = ({
                 onHeightChange={setTextAreaHeight}
                 maxRows={!!textareaValue && (!mode || mode === "Reply" || mode === "Edit") ? 4 : 1}
                 className={classNames(
-                  "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 dark:placeholder:text-gray-400 fbr-placeholder-truncate text-base sm:text-sm focus:outline-none",
+                  "fbr-scrollbar resize-none w-full py-1.5 px-2.5 rounded text-black placeholder:text-gray-500 dark:placeholder:text-gray-400 fbr-placeholder-truncate text-base focus:outline-none",
                   "dark:text-white",
                   "border",
                   focused
                     ? "bg-blue-50 dark:bg-gray-700 border-transparent"
-                    : "bg-gray-100 dark:bg-brand-dark-bg border-transparent dark:border-gray-700"
+                    : "bg-gray-100 dark:bg-brand-dark-bg border-transparent dark:border-gray-700",
+                  "sm:text-sm"
                 )}
                 onFocus={() => {
                   setFocused(true);
@@ -740,7 +742,11 @@ export const useTextarea = ({
           </div>
           <div
             onClick={doSend}
-            className={classNames("ml-2 cursor-pointer self-end mb-px", sendButtonColor())}
+            className={classNames(
+              "ml-2 cursor-pointer self-end",
+              sendButtonColor(),
+              "mb-1 sm:mb-px"
+            )}
           >
             <Icons.MessageSend />
           </div>
