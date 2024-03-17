@@ -411,6 +411,7 @@ export const useTextarea = ({
   const textareaValue = textareaRef.current?.value;
 
   const listMenuRef = React.useRef<HTMLSpanElement>(null);
+  const [modeContainerHeight, setModeContainerHeight] = React.useState(0);
   const [showListMenu, setShowListMenu] = React.useState(false);
   useClickOutside(
     listMenuRef,
@@ -582,6 +583,18 @@ export const useTextarea = ({
           )}
           {selection.length > 0 && (
             <div
+              ref={ref => {
+                if (ref) {
+                  // Just to make sure it doesn't update the height if it's the same
+                  setModeContainerHeight(prevHeight => {
+                    if (prevHeight !== ref.clientHeight) {
+                      return ref.clientHeight;
+                    } else {
+                      return prevHeight;
+                    }
+                  });
+                }
+              }}
               className={classNames(
                 "absolute pl-9 pr-12 pt-4 top-4 w-full text-gray-500 -translate-y-full z-10",
                 "bg-transparent"
@@ -773,5 +786,5 @@ export const useTextarea = ({
     userId,
     updateLoadAround,
   ]);
-  return { Textarea, mode, textareaRef };
+  return { Textarea, mode, textareaRef, modeContainerHeight };
 };
