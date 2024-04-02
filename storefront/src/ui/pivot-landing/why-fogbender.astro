@@ -1,0 +1,22 @@
+---
+import AnimateOnScroll from "../../layouts/animate-on-scroll.astro";
+import Features from "../../ui/pivot-landing/features.astro";
+import HeroText from "../../ui/pivot-landing/hero-text.astro";
+import GradientDivider from "./gradient-divider.astro";
+---
+<section class="relative overflow-hidden">
+    <GradientDivider/>
+    <AnimateOnScroll>
+        <div class="relative flex flex-col items-center gap-14 px-6 font-prompt py-16 md:py-24 lg:py-32">
+            <div class="flex flex-col items-center gap-5 md:gap-6">
+                <HeroText variant="small">
+                    Why Fogbender?
+                </HeroText>
+                <p class="leading-snug text-[#00000080] dark:text-[#FFFFFFB2] text-[16px] lg:text-[20px] max-w-md text-center md:max-w-xl lg:max-w-[640px]">
+                    Turborepo reimagines build system techniques used by Facebook and Google to remove maintenance burden and overhead.
+                </p>
+            </div>
+            <Features/>
+        </div>
+    </AnimateOnScroll>
+</section>
