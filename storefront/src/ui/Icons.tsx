@@ -82,7 +82,7 @@ export const FogbenderText: Icon = ({ width = "198", height = "41", className = 
   );
 };
 
-export const Hamburger = ({ className = defaultClassName, ariaLabel = "", stroke = "#6B7280" }) => {
+export const Hamburger = ({ className = defaultClassName, ariaLabel = ""}) => {
   return (
     <svg
       aria-label={ariaLabel}
@@ -95,7 +95,7 @@ export const Hamburger = ({ className = defaultClassName, ariaLabel = "", stroke
     >
       <path
         d="M2 26H34M2 2H34H2ZM2 14H34H2Z"
-        stroke={stroke}
+        stroke="currentColor"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
