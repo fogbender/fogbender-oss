@@ -1,0 +1,17 @@
+---
+import PivotSectionLayout from "../../layouts/pivot-section-layout.astro";
+import Features from "../../ui/pivot-landing/features.astro";
+import HeroText from "../../ui/pivot-landing/hero-text.astro";
+import Caption from "./caption.astro";
+---
+<PivotSectionLayout>
+  <div class="flex flex-col items-center gap-5 md:gap-6">
+    <HeroText variant="small">Why Fogbender?</HeroText>
+    <Caption>
+      Turborepo reimagines build system techniques used by Facebook and
+      Google to remove maintenance burden and overhead.
+    </Caption>
+  </div>
+  <Features />
+</PivotSectionLayout>
+  

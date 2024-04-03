@@ -4,7 +4,7 @@ import colors from "tailwindcss/colors";
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
-  plugins: [require("autoprefixer")],
+  plugins: [require("autoprefixer"),require("daisyui")],
   theme: {
     extend: {
       fontFamily: {
