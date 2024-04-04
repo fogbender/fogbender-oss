@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import React from "react";
 import { type Attachment, type Message as MessageT } from "fogbender-proto";
+import React from "react";
 import { useQuery } from "react-query";
 
 import { GalleryElement } from "./GalleryElement";

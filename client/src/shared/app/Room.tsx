@@ -25,8 +25,8 @@ import {
 } from "fogbender-proto";
 import { useAtom, useAtomValue } from "jotai";
 import React, { Suspense } from "react";
-import { useQuery } from "react-query";
 import { TbChevronsDown } from "react-icons/tb";
+import { useQuery } from "react-query";
 
 import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";

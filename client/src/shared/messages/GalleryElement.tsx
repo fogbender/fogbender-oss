@@ -1,13 +1,13 @@
 import classNames from "classnames";
-import React from "react";
 import { type Attachment, type Message as MessageT, } from "fogbender-proto";
+import React from "react";
+
+import { Icons } from "../components/Icons";
+import { Avatar } from "../components/lib";
+import { useIdle } from "../utils/useIdle";
 
 import { formatTs } from "./times";
 import { useFileRefresher } from "./useFileRefresher";
-
-import { Icons } from "../components/Icons";
-import { useIdle } from "../utils/useIdle";
-import { Avatar } from "../components/lib";
 
 export const GalleryElement = ({
   attachment,

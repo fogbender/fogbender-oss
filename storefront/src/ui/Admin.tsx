@@ -49,7 +49,6 @@ import { Title } from "reactjs-meta";
 import wretch from "wretch";
 
 import AdminBackgroundImage from "../assets/kiwihug-zGZYQQVmXw0-unsplash.jpg?url";
-
 import logo from "../assets/logo.svg?url";
 import { defaultEnv, getServerUrl } from "../config";
 import { Config } from "../features/config/Config";

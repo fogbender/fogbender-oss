@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import browserDetect from "browser-detect";
+import classNames from "classnames";
 import { ResizeSensor } from "css-element-queries";
 import {
   getVersion,
@@ -18,6 +18,7 @@ import {
 } from "fogbender-proto";
 import { useAtom } from "jotai";
 import React from "react";
+import { flushSync } from "react-dom";
 import ReactGridLayout, { Responsive, WidthProvider } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -76,7 +77,6 @@ import { SectionRoster } from "./SectionRoster";
 import type { RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
-import { flushSync } from "react-dom";
 
 // tslint:disable-next-line:ordered-imports
 

@@ -8,8 +8,8 @@ import {
   type MessageCreate,
   type MessageUpdate,
   useLoadAround,
-  useSharedRoster,
   useRoomTyping,
+  useSharedRoster,
 } from "fogbender-proto";
 import { useAtom, useAtomValue } from "jotai";
 import React from "react";

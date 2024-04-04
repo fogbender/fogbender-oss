@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import React from "react";
 import { type Attachment, } from "fogbender-proto";
+import React from "react";
 
 import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";

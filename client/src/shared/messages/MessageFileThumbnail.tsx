@@ -11,11 +11,11 @@ import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";
 import { useAddFileToGallery } from "../files/fileGallery";
 
-import { useFileRefresher } from "./useFileRefresher";
+import { ImageFileCard } from "./ImageFileCard";
 import { ImageGalleryElement } from "./ImageGalleryElement";
 import { TextGalleryElement } from "./TextGalleryElement";
+import { useFileRefresher } from "./useFileRefresher";
 import { VideoGalleryElement } from "./VideoGalleryElement";
-import { ImageFileCard } from "./ImageFileCard";
 
 export const MessageFileThumbnail: React.FC<{
   id?: string;

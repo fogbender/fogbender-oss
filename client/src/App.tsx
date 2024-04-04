@@ -11,6 +11,7 @@ import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClientProvider } from "react-query";
 
+import NoUserFallback from "./NoUserFallback";
 import {
   App as AppBody,
   ErrorPageFallback,
@@ -28,7 +29,6 @@ import "./shared/styles/tailwind.css";
 import { queryClient } from "./shared/utils/client";
 import "./styles/tailwind.css";
 import Headless from "./ui/Headless";
-import NoUserFallback from "./NoUserFallback";
 
 const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
