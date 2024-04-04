@@ -4,8 +4,7 @@ import { atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import prettyBytes from "pretty-bytes";
 import React from "react";
-import { PiFileTextDuotone } from "react-icons/pi";
-import { PiFileVideoDuotone } from "react-icons/pi";
+import { PiFileTextDuotone, PiFileVideoDuotone } from "react-icons/pi";
 
 import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";
