@@ -5,10 +5,9 @@ import { Clipboard } from "fogbender-client/src/shared/components/Icons";
 import "highlight.js/lib/common";
 import "highlight.js/styles/base16/one-light.css";
 import React from "react";
+import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
 import { rehype } from "rehype";
 import rehypeHighlight from "rehype-highlight";
-import { PiEyeClosedBold } from "react-icons/pi";
-import { PiEyeBold } from "react-icons/pi";
 
 export type MaskMode = "mask" | "clear";
 

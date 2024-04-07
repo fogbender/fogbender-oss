@@ -1,8 +1,7 @@
 import { Icons } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import React from "react";
-import { PiEyeClosedBold } from "react-icons/pi";
-import { PiEyeBold } from "react-icons/pi";
+import { PiEyeBold,PiEyeClosedBold } from "react-icons/pi";
 
 import { type Workspace } from "../../redux/adminApi";
 import { useServerApiGet } from "../useServerApi";

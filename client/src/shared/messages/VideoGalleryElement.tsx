@@ -1,5 +1,5 @@
-import React from "react";
 import { type Attachment, type Message as MessageT } from "fogbender-proto";
+import React from "react";
 import ReactPlayer from "react-player";
 
 import { GalleryElement } from "./GalleryElement";

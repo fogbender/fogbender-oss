@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { LinkButton, ThickButton, useInput } from "fogbender-client/src/shared";
+import { SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import React from "react";
 import { useMutation } from "react-query";
 
-import { SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import { getServerUrl } from "../../config";
 import { type Vendor, type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";

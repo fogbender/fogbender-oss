@@ -1,6 +1,6 @@
+import type { Message as MessageT } from "fogbender-proto";
 import React from "react";
 import { flushSync } from "react-dom";
-import type { Message as MessageT } from "fogbender-proto";
 
 import { usePrevious } from "./usePrevious";
 

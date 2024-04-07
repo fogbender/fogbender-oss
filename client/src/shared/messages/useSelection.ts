@@ -1,6 +1,6 @@
-import { flushSync } from "react-dom";
-import React from "react";
 import type { Message as MessageT } from "fogbender-proto";
+import React from "react";
+import { flushSync } from "react-dom";
 
 import { findLast } from "../utils/findLast";
 

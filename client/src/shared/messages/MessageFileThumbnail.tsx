@@ -4,18 +4,17 @@ import { atom, type PrimitiveAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import prettyBytes from "pretty-bytes";
 import React from "react";
-import { PiFileTextDuotone } from "react-icons/pi";
-import { PiFileVideoDuotone } from "react-icons/pi";
+import { PiFileTextDuotone, PiFileVideoDuotone } from "react-icons/pi";
 
 import { FileCard } from "../components/FileCard";
 import { Icons } from "../components/Icons";
 import { useAddFileToGallery } from "../files/fileGallery";
 
-import { useFileRefresher } from "./useFileRefresher";
+import { ImageFileCard } from "./ImageFileCard";
 import { ImageGalleryElement } from "./ImageGalleryElement";
 import { TextGalleryElement } from "./TextGalleryElement";
+import { useFileRefresher } from "./useFileRefresher";
 import { VideoGalleryElement } from "./VideoGalleryElement";
-import { ImageFileCard } from "./ImageFileCard";
 
 export const MessageFileThumbnail: React.FC<{
   id?: string;

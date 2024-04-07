@@ -1,6 +1,7 @@
-import React from "react";
-import { useJotaiQuery } from "../store/fileGalery.store";
 import { useWs } from "fogbender-proto";
+import React from "react";
+
+import { useJotaiQuery } from "../store/fileGalery.store";
 
 export const useFileRefresher = (messageId: string, retryCount: number, isExpired: boolean) => {
   const { serverCall } = useWs();

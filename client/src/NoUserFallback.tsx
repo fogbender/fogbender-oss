@@ -1,6 +1,7 @@
-import React from "react";
 import { type Token } from "fogbender";
 import { getServerApiUrl } from "fogbender-proto";
+import React from "react";
+
 import Hand from "./assets/hand.png?url";
 import Unicorn from "./assets/unicorn.png?url";
 import { FogbenderLogo, ThickButton, useInputWithError } from "./shared";

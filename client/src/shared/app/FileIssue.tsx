@@ -13,8 +13,8 @@ import {
   useWs,
 } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
 import { PiWarningCircleFill } from "react-icons/pi";
+import { useQuery } from "react-query";
 
 import {
   IconAsana,
