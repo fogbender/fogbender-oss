@@ -53,6 +53,7 @@ import type { LayoutOptions } from "./LayoutOptions";
 import { MessageForward } from "./MessageForward";
 import { RoomHeader } from "./RoomHeader";
 import styles from "./styles/room.module.css";
+import { useAutoFocusInput } from "../utils/useAutofocusInput";
 
 const SelectDateMenu = React.lazy(() => import("../components/SelectDateMenu"));
 
@@ -173,6 +174,7 @@ export const Room: React.FC<{
   agentRole?: string;
   internalHelpdeskId?: string;
   rosterVisible?: boolean;
+  openRoomCount: number;
   openRoom: (room: EventRoom, opts: LayoutOptions) => void;
 }> = ({
   myAuthor,
@@ -209,6 +211,7 @@ export const Room: React.FC<{
   agentRole,
   internalHelpdeskId,
   rosterVisible,
+  openRoomCount,
 }) => {
   const room = roomById(roomId);
   const helpdeskId = room?.helpdeskId || "UNKNOWN_HELPDESK";
@@ -543,6 +546,11 @@ export const Room: React.FC<{
     isCustomerInternal: isInternal,
     onSelectHover: x => setSelectHover(x),
   });
+
+  useAutoFocusInput(
+    textareaRef,
+    openRoomCount > 1 && !isActiveRoom /*disable auto focus is more then 1 room is open and none is active*/
+  );
 
   React.useLayoutEffect(() => {
     if (isActiveRoom && textareaRef.current) {
