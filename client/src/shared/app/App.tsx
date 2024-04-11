@@ -1364,6 +1364,7 @@ export const App: React.FC<{
                   />
                 ) : (
                   <Room
+                    openRoomCount={layout.length}
                     myAuthor={myAuthor}
                     ourId={ourId}
                     isAgent={isAgent}
