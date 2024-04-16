@@ -1069,7 +1069,7 @@ const MessageContent: React.FC<{
           <span className="pr-1">{formatTs(message.deletedTs)}</span>
         </div>
       ) : (
-        <div className={classNames("break-words", isSingleEmoji && !inReply && "text-6xl")}>
+        <div className={classNames("break-words", isSingleEmoji && !inReply && "text-6xl mt-2")}>
           <div
             className={classNames({ "max-h-16 overflow-auto fbr-scrollbar": inReply })}
             dangerouslySetInnerHTML={{ __html: finalHtml }}
