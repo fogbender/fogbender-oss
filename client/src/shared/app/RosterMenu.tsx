@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useAtom } from "jotai";
 import React from "react";
 
-import { showFocusedRosterAtom, showOutlookRosterAtom } from "..";
+import { showFocusedRosterAtom } from "..";
 import { Icons, SwitchOff, SwitchOn } from "../components/Icons";
 import { useClickOutside } from "../utils/useClickOutside";
 
@@ -15,7 +15,6 @@ export const RosterMenu = () => {
   useClickOutside(menuRef, () => setExpanded(false), !expanded);
 
   const [showFocusedRoster, setShowFocusedRoster] = useAtom(showFocusedRosterAtom);
-  const [showOutlookRoster, setShowOutlookRoster] = useAtom(showOutlookRosterAtom);
 
   const menuItemClassName = "dark:text-white dark:hover:text-brand-red-500";
 
@@ -41,12 +40,6 @@ export const RosterMenu = () => {
           onClick={() => setShowFocusedRoster(x => !x)}
           text="Focused roster"
           icon={!showFocusedRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />}
-        />
-        <FancyMenuItem
-          className={menuItemClassName}
-          onClick={() => setShowOutlookRoster(x => !x)}
-          text="Expanded roster"
-          icon={!showOutlookRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />}
         />
       </div>
     </span>
