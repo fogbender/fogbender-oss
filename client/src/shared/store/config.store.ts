@@ -15,10 +15,6 @@ export const muteNotificationsAtom = atomWithRealTimeLocalStorage(
 export const muteSoundAtom = atomWithRealTimeLocalStorage("config.mute_sound", false);
 export const swNotificationsAtom = atomWithRealTimeLocalStorage("config.sw_notifications", false);
 export const hideWelcomeAtom = atomWithRealTimeLocalStorage("config.hide_welcome", false);
-export const showOutlookRosterAtom = atomWithRealTimeLocalStorage(
-  "config.show_outlook_roster",
-  false
-);
 export const showFocusedRosterAtom = atomWithRealTimeLocalStorage(
   "config.show_focused_roster",
   false
