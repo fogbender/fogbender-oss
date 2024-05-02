@@ -1,7 +1,6 @@
 import {
   showAiHelperAtom,
   showFocusedRosterAtom,
-  showOutlookRosterAtom,
   swNotificationsAtom,
   type BooleanConfigAtom,
 } from "fogbender-client/src/shared/store/config.store";
@@ -17,7 +16,6 @@ export const Config = function Config() {
       <div className="flex flex-col gap-y-4 p-2 dark:text-white">
         Debugger:
         <Checkbox atom={showAiHelperAtom}>Show AI helper</Checkbox>
-        <Checkbox atom={showOutlookRosterAtom}>use Outlook roster</Checkbox>
         <Checkbox atom={showFocusedRosterAtom}>use focused roster</Checkbox>
         <Checkbox atom={swNotificationsAtom}>Use Service Worker notifications (on mobile)</Checkbox>
         <Checkbox atom={hideHeadlessClientsAtom}>

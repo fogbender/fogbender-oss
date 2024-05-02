@@ -17,7 +17,6 @@ import {
   muteSoundAtom,
   SafeLocalStorage,
   showFocusedRosterAtom,
-  showOutlookRosterAtom,
   ThinButton,
   type Agent,
   type AgentRole,
@@ -1626,7 +1625,6 @@ const UserMenu: React.FC<{
   const [muteSound, setMuteSound] = useAtom(muteSoundAtom);
   const [muteNotifications, setMuteNotifications] = useAtom(muteNotificationsAtom);
   const [showFocusedRoster, setShowFocusedRoster] = useAtom(showFocusedRosterAtom);
-  const [showOutlookRoster, setShowOutlookRoster] = useAtom(showOutlookRosterAtom);
 
   return (
     <div className="flex justify-end relative ml-5 cursor-pointer gap-2">
@@ -1686,13 +1684,6 @@ const UserMenu: React.FC<{
             text="Focused roster"
             icon={
               !showFocusedRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
-            }
-          />
-          <FancyMenuItem
-            onClick={() => setShowOutlookRoster(x => !x)}
-            text="Expanded roster"
-            icon={
-              !showOutlookRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
             }
           />
           <FancyMenuItem
