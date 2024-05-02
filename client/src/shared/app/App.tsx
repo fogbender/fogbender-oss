@@ -40,7 +40,6 @@ import {
   hideWelcomeAtom,
   modeAtom,
   muteNotificationsAtom,
-  showOutlookRosterAtom,
   type ThemeModeSetStateAction,
 } from "../store/config.store";
 import type { Agent, AuthorMe, VendorBilling } from "../types";
@@ -61,9 +60,7 @@ import { usePrevious } from "../utils/usePrevious";
 import { CreateRoom } from "./CreateRoom";
 import type { RenderCustomerInfoCb } from "./CustomerInfo";
 import { CustomerInfoPane } from "./CustomerInfoPane";
-import { Customers } from "./Customers";
 import { EmailNotificationsSettings } from "./EmailNotificationsSettings";
-import { Folders } from "./Folders";
 import { IssueInfoPane } from "./IssueInfoPane";
 import type { LayoutOptions } from "./LayoutOptions";
 import { Room } from "./Room";
@@ -73,7 +70,6 @@ import { Roster } from "./Roster";
 import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
 import { Roster as OldRoster } from "./SearchRoster";
-import { SectionRoster } from "./SectionRoster";
 import type { RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
 import { Welcome } from "./Welcome";
@@ -862,18 +858,6 @@ export const App: React.FC<{
     }
   };
 
-  const [isOutlook] = useAtom(showOutlookRosterAtom);
-  const [selectedSectionId, setSelectedSectionId] = React.useState<string>();
-  const [selectedCustomerIds, setSelectedCustomerIds] = React.useState<Set<string>>(new Set([]));
-
-  React.useEffect(() => {
-    if (layout.length) {
-      dispatchEvent(new Event("resize")); // WidthProvider calculates width value only upon initialization or when a resize event is triggered.
-      // Reference: https://github.com/react-grid-layout/react-grid-layout
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOutlook]);
-
   const infoPane: "issue" | "customer" | "user" | undefined = React.useMemo(() => {
     if (vendorId) {
       if (
@@ -984,10 +968,9 @@ export const App: React.FC<{
       <div className="relative h-full flex-1 flex">
         <div
           className={classNames(
-            "absolute z-10 sm:static sm:z-0 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform",
+            "absolute z-10 sm:static sm:z-0 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform w-full sm:w-80",
             "dark:bg-brand-dark-bg dark:text-white",
-            rosterVisible ? "translate-x-0" : "-translate-x-full sm:translate-x-0",
-            isAgent && isOutlook ? "w-full sm:w-[32rem]" : "w-full sm:w-80"
+            rosterVisible ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
           )}
         >
           <div className="flex overflow-hidden h-full">
@@ -1081,7 +1064,7 @@ export const App: React.FC<{
                   />
                 </form>
               </div>
-              {isAgent && !isOutlook && (
+              {isAgent && (
                 // roster and search for agents (old one)
                 <div className="h-full flex flex-col -mt-12 pt-12">
                   {searching && (
@@ -1123,89 +1106,6 @@ export const App: React.FC<{
                     searching={searching}
                     isIframe={isIframe}
                   />
-                </div>
-              )}
-              {isAgent && isOutlook && (
-                // roster and search for agents (new one)
-                <div className="h-full flex flex-col -mt-12 pt-12">
-                  {searching && (
-                    // search for agents
-                    <OldRoster
-                      rooms={sortedDoubleFilteredRoster}
-                      badges={badges}
-                      openRoomIds={openRoomIds}
-                      activeRoomId={activeRoomId}
-                      onRosterRoomClick={onRosterRoomClick}
-                      onRoomSettingsClick={setShowRoomSettings}
-                      isAgent={true}
-                      searchString={searchString}
-                      searchForMessages={false}
-                      ourId={ourId}
-                    />
-                  )}
-                  {searching && <hr />}
-                  {searching && (
-                    <OldRoster
-                      rooms={sortedDoubleFilteredRoster}
-                      badges={badges}
-                      openRoomIds={openRoomIds}
-                      activeRoomId={activeRoomId}
-                      onRosterRoomClick={onRosterRoomClick}
-                      onRoomSettingsClick={setShowRoomSettings}
-                      isAgent={true}
-                      searchString={searchString}
-                      searchForMessages={true}
-                      ourId={ourId}
-                    />
-                  )}
-                  {/* outlook fog agents */}
-                  <div className={classNames("h-full w-full", searching ? "hidden" : "flex")}>
-                    <div className="h-full w-32 flex flex-col">
-                      {workspaceId && (
-                        <Customers
-                          selectedCustomerIds={selectedCustomerIds}
-                          onSelectCustomerId={customerId => {
-                            if (!customerId) {
-                              setSelectedCustomerIds(new Set<string>([]));
-                            } else {
-                              setSelectedCustomerIds(s => {
-                                s.has(customerId) ? s.delete(customerId) : s.add(customerId);
-                                return new Set(s);
-                              });
-                            }
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className="h-full w-32 flex flex-col">
-                      <Folders
-                        ourId={ourId}
-                        isAgent={isAgent === true}
-                        searching={searching}
-                        onSelectSectionId={sectionId =>
-                          setSelectedSectionId(x => {
-                            if (sectionId === x) {
-                              return undefined;
-                            } else {
-                              return sectionId;
-                            }
-                          })
-                        }
-                        selectedSectionId={selectedSectionId}
-                        selectedCustomerIds={selectedCustomerIds}
-                      />
-                    </div>
-                    <SectionRoster
-                      selectedSectionId={selectedSectionId}
-                      openRoomIds={openRoomIds}
-                      activeRoomId={activeRoomId}
-                      onRosterRoomClick={onRosterRoomClick}
-                      onRoomSettingsClick={setShowRoomSettings}
-                      userId={ourId}
-                      isAgent={isAgent === true}
-                      searching={searching}
-                    />
-                  </div>
                 </div>
               )}
               {!isAgent && (
