@@ -429,6 +429,7 @@ defmodule Fog.Comms.Slack.Agent.Hook do
            "channel" => channel_id,
            "thread_ts" => thread_ts,
            "text" => text,
+           "blocks" => blocks,
            "ts" => slack_message_ts
          } = data,
          integration_workspace_id,
@@ -468,9 +469,18 @@ defmodule Fog.Comms.Slack.Agent.Hook do
 
             case unknown_slack_user_ids do
               [] ->
-                {text, mentions} = slack_user_ids_to_mentions(known_slack_user_ids, text)
+                {text, mentions} =
+                  case Fog.Comms.Slack.RichTextToMarkdown.convert(blocks, known_slack_user_ids) do
+                    :unsupported ->
+                      {text, mentions} = slack_user_ids_to_mentions(known_slack_user_ids, text)
 
-                text = text |> Slack.Utils.slack_links_to_markdown()
+                      text = text |> Slack.Utils.slack_links_to_markdown()
+
+                      {text, mentions}
+
+                    {markdown, mentions} ->
+                      {markdown, mentions}
+                  end
 
                 cmd = %Api.Message.Create{
                   fromApp: "slack",
