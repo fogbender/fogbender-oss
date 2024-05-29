@@ -15,7 +15,7 @@ This was a bit of a pain to sort out, so I thought I’d write it down here&mdas
 
 To find your connection parameters in Supabase, look for Project Settings / Configuration / Database / Connection Paramters.
 
-Note that `:db_ssl_crt` is a string&mdash;coming from an environment variable. Since `cacertfile` wants a file, we do a little dance with [Briefly](https://github.com/CargoSense/briefly) and File.
+Note that `:db_ssl_crt` is a string&mdash;coming from an environment variable. Since `cacertfile` wants a file, we write the PEM to a temporary file with [Briefly](https://github.com/CargoSense/briefly). Note that Briefly closes its temporary file as soon as the parent process exits (causing a crash on `:invalidate_pem`), which may not be what you want.
 
 ```
   def db() do
