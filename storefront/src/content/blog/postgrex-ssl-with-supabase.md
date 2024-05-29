@@ -15,17 +15,30 @@ This was a bit of a pain to sort out, so I thought I’d write it down here&mdas
 
 To find your connection parameters in Supabase, look for Project Settings / Configuration / Database / Connection Paramters.
 
-Note that `:db_ssl_crt` is a string&mdash;coming from an environment variable. Since `cacertfile` wants a file, we write the PEM to a temporary file with [Briefly](https://github.com/CargoSense/briefly). Note that Briefly closes its temporary file as soon as the parent process exits (causing a crash on `:invalidate_pem`), which may not be what you want.
+As a separate minor challenge, I had to get my my Supabase certificate from an application configuration variable (fed in via [Doppler](https://www.doppler.com/)) to a file. To do this, I used the `Application.put_env` approach:
 
 ```
-  def db() do
-    ssl = case MyApp.env(:db_ssl_crt) do
+    # application.ex
+    case MyApp.env(:db_ssl_crt) do
       nil ->
-        []
+        :ok
 
       pem ->
         {:ok, path} = Briefly.create()
         File.write!(path, pem)
+        Application.put_env(:my_app, :cacertfile_path, path)
+    end
+```
+
+The certificate is written to a temporary file with [Briefly](https://github.com/CargoSense/briefly). Note that Briefly will close the temporary file as soon as the temp file creator process exits&mdash;in our case it’s the application process, which means the path to the certificate will remain available as long as the application is running.
+
+```
+  def db() do
+    ssl = case MyApp.env(:cacertfile_path) do
+      nil ->
+        []
+
+      path ->
         [ssl: true,
           ssl_opts: [
             verify: :verify_peer,
