@@ -11,11 +11,11 @@ coverImageAspectRatio: "20:2"
 lang: "en"
 ---
 
-This was a bit of a pain to sort out, so I thought I’d write it down here&mdash;just for you!
+As sometimes happens, I needed to create a Postgrex connection to a Supabase Postgres instance (hosted on [supabase.com](https://supabase.com)) from Elixir. After failing to get it working quickly, I embarked on a super annoying journey I’d love to help others avoid, so I thought I’d write the key findings down.
 
-To find your connection parameters in Supabase, look for Project Settings / Configuration / Database / Connection Paramters.
+To find your connection parameters in Supabase, look for Project Settings / Configuration / Database / Connection Parameters.
 
-As a separate minor challenge, I had to get my my Supabase certificate from an application configuration variable (fed in via [Doppler](https://www.doppler.com/)) to a file. To do this, I used the `Application.put_env` approach:
+As a separate minor challenge, I had to get my Supabase certificate from an application configuration variable (fed in via [Doppler](https://www.doppler.com/)) to a file. To do this, I used the `Application.put_env` approach:
 
 ```
     # application.ex
@@ -30,7 +30,7 @@ As a separate minor challenge, I had to get my my Supabase certificate from an a
     end
 ```
 
-The certificate is written to a temporary file with [Briefly](https://github.com/CargoSense/briefly). Note that Briefly will close the temporary file as soon as the temp file creator process exits&mdash;in our case it’s the application process, which means the path to the certificate will remain available as long as the application is running.
+The certificate is written to a temporary file with [Briefly](https://github.com/CargoSense/briefly). Note that Briefly will close the temporary file as soon as the temp file creator process exits&mdash;in our case, it’s the application process, which means the path to the certificate will remain available as long as the application is running.
 
 ```
   def db() do
