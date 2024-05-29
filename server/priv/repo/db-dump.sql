@@ -1370,6 +1370,24 @@ ALTER SEQUENCE public.workspace_integration_id_seq OWNED BY public.workspace_int
 
 
 --
+-- Name: workspace_llm_integration; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workspace_llm_integration (
+    workspace_id bigint NOT NULL,
+    provider text NOT NULL,
+    assistant_id text DEFAULT (gen_random_uuid())::text NOT NULL,
+    api_key text NOT NULL,
+    assistant_name text,
+    tool_url text,
+    enabled boolean DEFAULT false,
+    "default" boolean DEFAULT false,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: author_tag id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1891,6 +1909,14 @@ ALTER TABLE ONLY public.workspace_feature_flag
 
 ALTER TABLE ONLY public.workspace_integration
     ADD CONSTRAINT workspace_integration_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: workspace_llm_integration workspace_llm_integration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workspace_llm_integration
+    ADD CONSTRAINT workspace_llm_integration_pkey PRIMARY KEY (workspace_id, provider, assistant_id);
 
 
 --
@@ -2448,6 +2474,13 @@ CREATE UNIQUE INDEX workspace_id_type_project_id_uq_index ON public.workspace_in
 
 
 --
+-- Name: workspace_llm_integration_uq; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX workspace_llm_integration_uq ON public.workspace_llm_integration USING btree (workspace_id, provider, assistant_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -2585,3 +2618,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20231004060737);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004155001);
 INSERT INTO public."schema_migrations" (version) VALUES (20240122163610);
 INSERT INTO public."schema_migrations" (version) VALUES (20240312034644);
+INSERT INTO public."schema_migrations" (version) VALUES (20240317193520);
