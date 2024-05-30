@@ -5,16 +5,16 @@ export const mentions = {
   jlarky: {
     name: "Yaroslav Lapin",
     avatar: jlarky,
-    twitter: "https://twitter.com/JLarky",
+    twitter: "https://x.com/JLarky",
     jobTitle: "VP of Engineering at Fogbender",
-    social: ["https://www.linkedin.com/in/jlarky", "https://twitter.com/JLarky"],
+    social: ["https://www.linkedin.com/in/jlarky", "https://x.com/JLarky"],
   },
   andrei: {
     name: "Andrei Soroker",
     avatar: andrei,
-    twitter: "https://twitter.com/abs",
+    twitter: "https://x.com/soroker",
     jobTitle: "CEO at Fogbender",
-    social: ["https://www.linkedin.com/in/soroker", "https://twitter.com/abs"],
+    social: ["https://www.linkedin.com/in/soroker", "https://x.com/soroker"],
   },
 };
 
