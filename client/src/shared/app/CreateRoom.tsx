@@ -26,7 +26,8 @@ export const CreateRoom: React.FC<{
   helpdeskId?: string | undefined;
   onCreate: (id: string) => void;
   initialValue: string | undefined;
-}> = ({ userId, isAgent, workspaceId, helpdeskId, onCreate, initialValue }) => {
+  customerName: string | undefined;
+}> = ({ userId, isAgent, workspaceId, helpdeskId, onCreate, initialValue, customerName }) => {
   const { createRoom } = useRosterActions({
     workspaceId,
   });
@@ -238,7 +239,7 @@ export const CreateRoom: React.FC<{
 
       <div className="mb-6">{roomNameInput}</div>
 
-      {(selectedCustomer || helpdeskId) && roomName && (
+      {(selectedCustomer || (helpdeskId && customerName)) && roomName && (
         <div className="mb-6 flex flex-col gap-y-4">
           <div className="flex gap-3 cursor-pointer" onClick={() => setRoomType("public")}>
             <div className="text-blue-500">
@@ -247,22 +248,34 @@ export const CreateRoom: React.FC<{
             <div className="flex-1">
               <b className="font-semibold">Public room</b>
               <div className="text-xs">
-                All members of {formatCustomerName(selectedCustomer?.name || "")} can participate
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-3 cursor-pointer" onClick={() => setRoomType("private")}>
-            <div className="text-blue-500">
-              {roomType === "private" ? <Icons.RadioFull /> : <Icons.RadioEmpty />}
-            </div>
-            <div>
-              <b className="font-semibold">Private room</b>
-              <div className="text-xs">
-                Only invited members of {formatCustomerName(selectedCustomer?.name || "")} can
+                All members of {formatCustomerName(selectedCustomer?.name || customerName)} can
                 participate
               </div>
             </div>
           </div>
+          {isAgent && (
+            <div
+              className={classNames(["flex gap-3", isAgent && "cursor-pointer"])}
+              onClick={() => {
+                isAgent && setRoomType("private");
+              }}
+            >
+              <div className="text-blue-500">
+                {roomType === "private" ? (
+                  <Icons.RadioFull />
+                ) : (
+                  <Icons.RadioEmpty disabled={!isAgent} />
+                )}
+              </div>
+              <div>
+                <b className="font-semibold">Private room</b>
+                <div className="text-xs">
+                  Only invited members of {formatCustomerName(selectedCustomer?.name || "")} can
+                  participate
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
       {(selectedOption || helpdeskId) && roomName && (

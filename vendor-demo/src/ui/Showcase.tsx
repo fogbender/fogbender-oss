@@ -24,6 +24,7 @@ export const Showcase = () => {
   const [isFallback, setIsFallback] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const [roomCreationEnabled, setRoomCreationEnabled] = React.useState(false);
   const token = useToken();
   const tokenReadable =
     "{\n" +
@@ -141,6 +142,16 @@ const token = ${tokenReadable};
             />{" "}
             Dark mode
           </label>
+          <label className="m-2 flex gap-2">
+            <input
+              type="checkbox"
+              checked={roomCreationEnabled}
+              onChange={() => {
+                setRoomCreationEnabled(x => !x);
+              }}
+            />{" "}
+            Room creation enabled
+          </label>
 
           <HighlightCode className="language-js rounded">
             {`import { FogbenderProvider, FogbenderConfig, FogbenderIsConfigured,
@@ -149,7 +160,9 @@ const token = ${tokenReadable};
 const token = ${tokenReadable};
 
 <FogbenderProvider>
-  <FogbenderConfig token={token}${isDarkMode ? ' mode="dark"' : ""} />
+  <FogbenderConfig token={token}${isDarkMode ? ' mode="dark"' : ""}${
+              roomCreationEnabled ? " roomCreationEnabled" : ""
+            } />
   <FogbenderIsConfigured>
     <FogbenderHeadlessWidget />
     <FogbenderFloatingWidget${isVerbose ? " verbose={true}" : ""}${
@@ -171,6 +184,7 @@ const token = ${tokenReadable};
           defaultOpen={defaultOpen}
           isFallback={isFallback}
           isDarkMode={isDarkMode}
+          roomCreationEnabled={roomCreationEnabled}
         />
       </div>
     </div>
@@ -188,6 +202,7 @@ export const FBShowcase = ({
   defaultOpen,
   isFallback,
   isDarkMode,
+  roomCreationEnabled,
 }: {
   headless?: boolean;
   unreadCount?: number;
@@ -197,6 +212,7 @@ export const FBShowcase = ({
   defaultOpen: boolean;
   isFallback?: boolean;
   isDarkMode?: boolean;
+  roomCreationEnabled?: boolean;
 }) => {
   const fogbender = React.useRef(createNewFogbender());
   const token = useToken();
@@ -217,6 +233,7 @@ export const FBShowcase = ({
         clientUrl={clientUrl}
         token={isFallback ? fallbackToken : token}
         mode={isDarkMode ? "dark" : "light"}
+        roomCreationEnabled={roomCreationEnabled}
       />
       <FogbenderIsConfigured>
         {/* {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />} */}

@@ -51,7 +51,7 @@ export const Modal: React.FC<{
               <div className="sticky top-0 right-0 h-full w-0" onClick={onClose}>
                 <div
                   className={classNames(
-                    "absolute top-0 right-2 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16",
+                    "absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-2xl bg-white p-3 text-black shadow-xl hover:text-red-500 sm:top-0 sm:-right-16",
                     "dark:bg-gray-700 dark:text-white dark:hover:text-brand-red-500"
                   )}
                 >

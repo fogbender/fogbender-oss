@@ -27,6 +27,7 @@ export const createNewFogbender = (): Fogbender => {
     events: createEvents(),
     chatWindow: null as null | Window,
     mode: "dark" as "light" | "dark",
+    roomCreationEnabled: false,
     setIframeMode: undefined as ((mode: "light" | "dark") => void) | undefined,
   };
   const openWindow = () => {
@@ -84,6 +85,10 @@ export const createNewFogbender = (): Fogbender => {
       if (state.setIframeMode) {
         state.setIframeMode(mode);
       }
+      return fogbender;
+    },
+    async setRoomCreation(isEnabled) {
+      state.roomCreationEnabled = isEnabled;
       return fogbender;
     },
     async setToken(token) {
@@ -174,6 +179,7 @@ export const createNewFogbender = (): Fogbender => {
                 onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
                 initialMode: () => state.mode,
                 isFloaty: true,
+                roomCreationEnabled:state.roomCreationEnabled
               },
               openWindow
             );
@@ -214,6 +220,7 @@ export const createNewFogbender = (): Fogbender => {
             },
             onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
             initialMode: () => state.mode,
+            roomCreationEnabled:state.roomCreationEnabled
           },
           openWindow
         );
