@@ -1,4 +1,4 @@
-import type { SetStateAction } from "jotai";
+import  {type SetStateAction, atom} from "jotai";
 
 import { atomWithRealTimeLocalStorage } from "../utils/atomWithLocalStorage";
 
@@ -6,6 +6,8 @@ export const modeAtom = atomWithRealTimeLocalStorage<"light" | "dark">(
   "config.theme_mode",
   "light"
 );
+
+export const roomCreationEnabledAtom = atom(false);
 
 export const showAiHelperAtom = atomWithRealTimeLocalStorage("config.show_ai_helper", false);
 export const muteNotificationsAtom = atomWithRealTimeLocalStorage(

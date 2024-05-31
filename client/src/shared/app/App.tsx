@@ -16,7 +16,7 @@ import {
   useUserTags,
   useWs,
 } from "fogbender-proto";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import React from "react";
 import { flushSync } from "react-dom";
 import ReactGridLayout, { Responsive, WidthProvider } from "react-grid-layout";
@@ -40,6 +40,7 @@ import {
   hideWelcomeAtom,
   modeAtom,
   muteNotificationsAtom,
+  roomCreationEnabledAtom,
   type ThemeModeSetStateAction,
 } from "../store/config.store";
 import type { Agent, AuthorMe, VendorBilling } from "../types";
@@ -118,6 +119,7 @@ export const App: React.FC<{
   isFloaty,
 }) => {
   const [mode, setMode] = useAtom(modeAtom);
+  const roomCreationEnabled = useAtomValue(roomCreationEnabledAtom);
   const {
     agentRole,
     avatarLibraryUrl,
@@ -1056,9 +1058,11 @@ export const App: React.FC<{
                     placeholder="Search"
                     value={rosterSearch}
                     setValue={setRosterSearch}
-                    addButton={isAgent ? "CREATE ROOM" : undefined}
+                    addButton={isAgent || roomCreationEnabled ? "CREATE ROOM" : undefined}
                     onAddButtonClick={
-                      isAgent ? () => setCreateRoomMode(rosterSearch || true) : undefined
+                      isAgent || roomCreationEnabled
+                        ? () => setCreateRoomMode(rosterSearch || true)
+                        : undefined
                     }
                     wrapperClassName="flex-1"
                   />
@@ -1405,6 +1409,7 @@ export const App: React.FC<{
               helpdeskId={helpdeskId}
               onCreate={onCreateRoom}
               initialValue={typeof createRoomMode === "string" ? createRoomMode : undefined}
+              customerName={userInfo?.customerName}
             />
           </Modal>
         )}

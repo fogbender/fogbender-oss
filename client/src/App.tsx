@@ -24,7 +24,7 @@ import {
   WsProvider,
 } from "./shared";
 import { handleGoFullScreen } from "./shared/components/GoFullScreen";
-import { modeAtom } from "./shared/store/config.store";
+import { modeAtom, roomCreationEnabledAtom } from "./shared/store/config.store";
 import "./shared/styles/tailwind.css";
 import { queryClient } from "./shared/utils/client";
 import "./styles/tailwind.css";
@@ -34,6 +34,7 @@ const App = () => {
   const [wrongToken, onWrongToken] = React.useReducer(() => true, false);
   // const [mode, setMode] = React.useState<"light" | "dark">("light");
   const setMode = useSetAtom(modeAtom);
+  const setRoomCreation = useSetAtom(roomCreationEnabledAtom);
   const [isFloaty, setIsFloaty] = React.useState(false);
   const [tokenWithoutVersion, setToken] = React.useState<Token>();
   const token = React.useMemo(() => {
@@ -110,6 +111,10 @@ const App = () => {
     window.addEventListener("message", e => {
       if (["light", "dark"].includes(e.data.mode)) {
         setMode(e.data.mode);
+      }
+
+      if (e.data.roomCreationEnabled) {
+        setRoomCreation(true);
       }
 
       if (e.data.isFloaty) {
