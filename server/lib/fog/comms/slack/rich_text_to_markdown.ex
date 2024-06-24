@@ -72,6 +72,12 @@ defmodule Fog.Comms.Slack.RichTextToMarkdown do
     |> apply_styles(style)
   end
 
+  defp convert_sub_element(%{"type" => "emoji", "unicode" => unicode}, _known_users_map) do
+    codepoints = String.split(unicode, "-")
+    unicode_codepoints = Enum.map(codepoints, fn cp -> String.to_integer(cp, 16) end)
+    Enum.reduce(unicode_codepoints, "", fn cp, acc -> acc <> <<cp::utf8>> end)
+  end
+
   defp convert_sub_element(%{"type" => "text", "text" => text}, _known_users_map), do: text
 
   defp convert_sub_element(%{"type" => "user", "user_id" => user_id}, _known_users_map) do
