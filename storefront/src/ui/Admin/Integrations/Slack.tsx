@@ -373,7 +373,7 @@ export const ShowSlackIntegration: React.FC<{
         </div>
 
         <div className="flex gap-4">
-          <div className="flex-1 flex flex-col gap-4 bg-gray-100 p-2 rounded-lg">
+          <div className="flex-1 flex flex-col gap-4 bg-gray-100 dark:bg-brand-dark-bg p-2 rounded-lg">
             <div className="text-center border-b border-gray-500">
               Active shared channel-customer associations
             </div>
@@ -494,7 +494,7 @@ export const ShowSlackIntegration: React.FC<{
               <ThinButton
                 className={classNames(
                   "self-center h-6 w-24 text-center",
-                  createAssociationDisabled && "border-gray-300 text-gray-300 bg-white"
+                  createAssociationDisabled && "text-gray-300"
                 )}
                 onClick={() => {
                   if (channelHelpdeskAssociation) {
