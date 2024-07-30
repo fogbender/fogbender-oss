@@ -82,6 +82,28 @@ defmodule Test.Repo.FeatureOption do
     end
   end
 
+  describe "FeatureOption for helpdesk" do
+    test "return default values if not set", ctx do
+      assert %Data.FeatureOption{
+               tag_scope_enabled: false,
+               email_digest_enabled: false,
+               email_digest_period: 86400
+             } = Repo.FeatureOption.get(ctx.h1)
+    end
+
+    test "use vendor or workspace or helpdesk value", ctx do
+      Repo.FeatureOption.set(ctx.v1, tag_scope_enabled: true)
+      Repo.FeatureOption.set(ctx.w1, email_digest_enabled: true)
+      Repo.FeatureOption.set(ctx.h1, email_digest_period: 200)
+
+      assert %Data.FeatureOption{
+               tag_scope_enabled: true,
+               email_digest_enabled: true,
+               email_digest_period: 200
+             } = Repo.FeatureOption.get(ctx.h1)
+    end
+  end
+
   describe "FeatureOption for user" do
     test "return default values if not set", ctx do
       assert %Data.FeatureOption{
@@ -103,9 +125,10 @@ defmodule Test.Repo.FeatureOption do
              } = Repo.FeatureOption.get(ctx.u1)
     end
 
-    test "respect user value over vendor or workspace", ctx do
+    test "respect user value over vendor or workspace or helpdesk", ctx do
       Repo.FeatureOption.set(ctx.v1, tag_scope_enabled: true)
       Repo.FeatureOption.set(ctx.w1, tag_scope_enabled: true)
+      Repo.FeatureOption.set(ctx.h1, tag_scope_enabled: true)
       Repo.FeatureOption.set(ctx.u1, tag_scope_enabled: false)
 
       assert %Data.FeatureOption{
@@ -127,6 +150,17 @@ defmodule Test.Repo.FeatureOption do
       assert %Data.FeatureOption{
                email_digest_enabled: true,
                email_digest_period: 1000
+             } = Repo.FeatureOption.get(ctx.u1)
+    end
+
+    test "respect helpdesk value over workspace/vendor", ctx do
+      Repo.FeatureOption.vendor_defaults(email_digest_period: 100)
+      Repo.FeatureOption.set(ctx.v1, email_digest_period: 150)
+      Repo.FeatureOption.set(ctx.w1, email_digest_period: 200)
+      Repo.FeatureOption.set(ctx.h1, email_digest_period: 250)
+
+      assert %Data.FeatureOption{
+               email_digest_period: 250
              } = Repo.FeatureOption.get(ctx.u1)
     end
   end

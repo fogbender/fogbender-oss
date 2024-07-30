@@ -10,7 +10,9 @@ They are simple keys with values set on different levels, every next level value
 - 2. global_agent/user (for user/agent options)
 - 3. vendor
 - 4. workspace
-- 5. agent/user
+- 5. agent
+- 6. helpdesk (for user options)
+- 7. user
 
 FOs represented as columns in `Fog.Data.FeatureOption` module.
 
@@ -59,6 +61,7 @@ It is possible to use feature options actual values from queries.
 
 - `Data.FeatureOption.for_vendor()`
 - `Data.FeatureOption.for_workspace()`
+- `Data.FeatureOption.for_helpdesk()`
 - `Data.FeatureOption.for_user()`
 - `Data.FeatureOption.for_vendor_agent()` - it will join all accessible vendors/workspaces for agents
 
