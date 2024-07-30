@@ -1,6 +1,6 @@
 defmodule Fog.Data.FeatureOption do
   use Fog.Data
-  alias Fog.Data.{Vendor, Workspace, User, Agent}
+  alias Fog.Data.{Vendor, Workspace, User, Agent, Helpdesk}
 
   @defaults [
     tag_scope_enabled: false,
@@ -27,6 +27,7 @@ defmodule Fog.Data.FeatureOption do
     belongs_to(:workspace, Workspace, type: Fog.Types.WorkspaceId)
     belongs_to(:user, User, type: Fog.Types.UserId)
     belongs_to(:agent, Agent, type: Fog.Types.AgentId)
+    belongs_to(:helpdesk, Helpdesk, type: Fog.Types.HelpdeskId)
 
     field(:tag_scope_enabled, :boolean)
     field(:email_digest_enabled, :boolean)
@@ -49,10 +50,11 @@ defmodule Fog.Data.FeatureOption do
         :vendor_id,
         :workspace_id,
         :user_id,
-        :agent_id
+        :agent_id,
+        :helpdesk_id
       ] ++ Keyword.keys(@defaults)
     )
-    |> validate_required_one([:vendor_id, :workspace_id, :user_id, :agent_id])
+    |> validate_required_one([:vendor_id, :workspace_id, :user_id, :agent_id, :helpdesk_id])
   end
 
   def global_vendor_id, do: "v0"

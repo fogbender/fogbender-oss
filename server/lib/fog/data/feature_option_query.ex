@@ -38,6 +38,8 @@ defmodule Fog.Data.FeatureOptionQuery do
           on: wo.workspace_id == w.id,
           left_join: uo in Data.FeatureOption,
           on: uo.user_id == u.id,
+          left_join: ho in Data.FeatureOption,
+          on: ho.helpdesk_id == u.helpdesk_id,
           left_join: vg in Data.FeatureOption,
           on: vg.vendor_id == ^Data.FeatureOption.global_vendor_id(),
           left_join: ug in Data.FeatureOption,
@@ -45,9 +47,10 @@ defmodule Fog.Data.FeatureOptionQuery do
           select: %Data.FeatureOption{
             vendor_id: w.vendor_id,
             workspace_id: w.id,
+            helpdesk_id: u.helpdesk_id,
             user_id: u.id
           },
-          select_merge: feature_option_fields([uo, wo, vo, ug, vg])
+          select_merge: feature_option_fields([uo, ho, wo, vo, ug, vg])
         )
         |> subquery()
       end
@@ -100,9 +103,31 @@ defmodule Fog.Data.FeatureOptionQuery do
           left_join: vg in Data.FeatureOption,
           on: vg.vendor_id == ^Data.FeatureOption.global_vendor_id(),
           select: %Data.FeatureOption{
-            workspace_id: w.id
+            workspace_id: w.id,
+            vendor_id: w.vendor_id
           },
           select_merge: feature_option_fields([wo, vo, vg])
+        )
+        |> subquery()
+      end
+
+      def for_helpdesk() do
+        from(h in Data.Helpdesk,
+          join: w in assoc(h, :workspace),
+          left_join: vo in Data.FeatureOption,
+          on: vo.vendor_id == w.vendor_id,
+          left_join: wo in Data.FeatureOption,
+          on: wo.workspace_id == w.id,
+          left_join: ho in Data.FeatureOption,
+          on: ho.helpdesk_id == h.id,
+          left_join: vg in Data.FeatureOption,
+          on: vg.vendor_id == ^Data.FeatureOption.global_vendor_id(),
+          select: %Data.FeatureOption{
+            helpdesk_id: h.id,
+            workspace_id: w.id,
+            vendor_id: w.vendor_id
+          },
+          select_merge: feature_option_fields([ho, wo, vo, vg])
         )
         |> subquery()
       end

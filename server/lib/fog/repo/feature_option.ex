@@ -29,6 +29,9 @@ defmodule Fog.Repo.FeatureOption do
 
   def get(%Data.User{id: id}), do: Data.FeatureOption.for_user() |> Repo.get_by(user_id: id)
 
+  def get(%Data.Helpdesk{id: id}),
+    do: Data.FeatureOption.for_helpdesk() |> Repo.get_by(helpdesk_id: id)
+
   def get(%Data.Workspace{id: id}),
     do: Data.FeatureOption.for_workspace() |> Repo.get_by(workspace_id: id)
 
@@ -42,6 +45,7 @@ defmodule Fog.Repo.FeatureOption do
   defp ctx_field(%Data.User{}), do: :user_id
   defp ctx_field(%Data.Agent{}), do: :agent_id
   defp ctx_field(%Data.Workspace{}), do: :workspace_id
+  defp ctx_field(%Data.Helpdesk{}), do: :helpdesk_id
   defp ctx_field(%Data.Vendor{}), do: :vendor_id
 
   defp to_error({:ok, _}), do: :ok

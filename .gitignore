@@ -13,3 +13,4 @@ local.env
 
 # Local Netlify folder
 .netlify
+/.direnv/
