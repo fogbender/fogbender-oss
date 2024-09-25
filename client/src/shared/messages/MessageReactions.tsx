@@ -148,16 +148,16 @@ export const EmojiPicker: React.FC<{
         createPortal(
           <div
             ref={emojiPickerRef}
-            className={classNames("fixed z-10 top-2", {
+            className={classNames("fixed z-10 top-2 h-[85%]", {
               "right-2": widerRoom,
-              "left-0": !widerRoom,
+              "left-2": !widerRoom,
             })} /*Transforming the top-level of room with 'transform' style has affected the 'fixed' positioning. The emoji picker now treats the room as a relative element, positioning itself with the room as the reference parent."*/
             /*reference: https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block*/
             /*Portal used to mount emoji picker on top level inside room container, avoiding visibility issues in Safari and Firefox.*/
           >
             <Picker
               width="350px"
-              height="350px"
+              height="100%"
               theme={themeMode === "dark" ? Theme.DARK : Theme.LIGHT}
               onEmojiClick={emojiObject => {
                 cancelSelection();
