@@ -19,10 +19,14 @@ defmodule Fog.Notify.EmailDigestJob do
   end
 
   def run_for_users(ts, limit \\ @limit) do
-    Repo.EmailDigest.users_to_notify(ts, limit)
-    |> update_last_digest_check_users(ts)
+    users_data(ts, limit)
     |> Repo.EmailDigest.load_user_badges()
     |> Notify.EmailDigestTask.schedule_many()
+  end
+
+  def users_data(ts, limit) do
+    Repo.EmailDigest.users_to_notify(ts, limit)
+    |> update_last_digest_check_users(ts)
   end
 
   defp update_last_digest_check_users([], _ts), do: []

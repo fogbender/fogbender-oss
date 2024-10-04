@@ -73,6 +73,39 @@ defmodule Fog.Repo.EmailDigest do
     |> override_agent_name()
   end
 
+  def explain_user_badges(data) do
+    query =
+      Repo.Badge.base_q()
+      |> filter_users(data)
+      |> subquery()
+      |> where([q], q.count > 0)
+      |> order_by(desc: :updated_at)
+
+    {sql, bindings} = Ecto.Adapters.SQL.to_sql(:all, Repo, query)
+
+    Repo.query!("EXPLAIN #{sql}", bindings)
+    |> print_explain_analyze_result()
+  end
+
+  def analyze_user_badges(data) do
+    query =
+      Repo.Badge.base_q()
+      |> filter_users(data)
+      |> subquery()
+      |> where([q], q.count > 0)
+      |> order_by(desc: :updated_at)
+
+    {sql, bindings} = Ecto.Adapters.SQL.to_sql(:all, Repo, query)
+
+    Repo.query!("EXPLAIN ANALYZE #{sql}", bindings)
+    |> print_explain_analyze_result()
+  end
+
+  def print_explain_analyze_result(%Postgrex.Result{rows: rows}) do
+    rows
+    |> Enum.each(fn [plan] -> IO.puts(plan) end)
+  end
+
   defp override_agent_name(data) do
     for %Data.EmailDigest{} = em <- data do
       w = %Data.Workspace{} = em.workspace

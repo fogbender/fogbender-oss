@@ -191,17 +191,18 @@ config :fog, Fog.Scheduler,
            []
          }}
       end,
-      unless System.get_env("MSTEAMS_RENEW_SUBSCRIPTIONS_JOB_SCHEDULE", "") == "" do
-        {{:extended, System.get_env("MSTEAMS_RENEW_SUBSCRIPTIONS_JOB_SCHEDULE")},
-         {
-           Fog.Comms.MsTeams.RenewSubscriptionsJob,
-           :run,
-           []
-         }}
-      end,
-      {"*", {Fog.Notify.ResolvedTimerJob, :run, []}},
-      {"*", {Fog.Ai.EmbeddingsCacheJob, :run, []}},
-      {"*", {Fog.Integration.PagerDutyOncallSyncJob, :run, []}}
+      #      unless System.get_env("MSTEAMS_RENEW_SUBSCRIPTIONS_JOB_SCHEDULE", "") == "" do
+      #        {{:extended, System.get_env("MSTEAMS_RENEW_SUBSCRIPTIONS_JOB_SCHEDULE")},
+      #         {
+      #           Fog.Comms.MsTeams.RenewSubscriptionsJob,
+      #           :run,
+      #           []
+      #         }}
+      #      end,
+      # ,
+      {"*", {Fog.Notify.ResolvedTimerJob, :run, []}}
+      # {"*", {Fog.Ai.EmbeddingsCacheJob, :run, []}},
+      # {"*", {Fog.Integration.PagerDutyOncallSyncJob, :run, []}}
     ]
     |> Enum.reject(&is_nil/1)
 
