@@ -31,6 +31,20 @@ COMMENT ON EXTENSION pg_bigm IS 'text similarity measurement and index searching
 
 
 --
+-- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
+--
 -- Name: snowflake_id(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2078,6 +2092,13 @@ CREATE INDEX idx_seen_room_user ON public.seen USING btree (room_id, user_id);
 
 
 --
+-- Name: idx_tag_name_trigram; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_tag_name_trigram ON public.tag USING gin (name public.gin_trgm_ops);
+
+
+--
 -- Name: integration_issue_workspace_id_type_project_id_issue_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2660,3 +2681,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20240730090614);
 INSERT INTO public."schema_migrations" (version) VALUES (20241005145250);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006021823);
+INSERT INTO public."schema_migrations" (version) VALUES (20241006164923);
