@@ -2281,10 +2281,24 @@ CREATE UNIQUE INDEX room_membership_helpdesk_id_room_id_agent_id_index ON public
 
 
 --
+-- Name: room_membership_helpdesk_id_room_id_agent_id_prtl_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX room_membership_helpdesk_id_room_id_agent_id_prtl_index ON public.room_membership USING btree (helpdesk_id, room_id, agent_id) WHERE (agent_id IS NOT NULL);
+
+
+--
 -- Name: room_membership_helpdesk_id_room_id_user_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX room_membership_helpdesk_id_room_id_user_id_index ON public.room_membership USING btree (helpdesk_id, room_id, user_id);
+
+
+--
+-- Name: room_membership_helpdesk_id_room_id_user_id_prtl_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX room_membership_helpdesk_id_room_id_user_id_prtl_index ON public.room_membership USING btree (helpdesk_id, room_id, user_id) WHERE (user_id IS NOT NULL);
 
 
 --
@@ -2309,10 +2323,24 @@ CREATE UNIQUE INDEX seen_room_id_agent_id_index ON public.seen USING btree (room
 
 
 --
+-- Name: seen_room_id_agent_id_prtl_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX seen_room_id_agent_id_prtl_index ON public.seen USING btree (room_id, agent_id) WHERE (agent_id IS NOT NULL);
+
+
+--
 -- Name: seen_room_id_user_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX seen_room_id_user_id_index ON public.seen USING btree (room_id, user_id);
+
+
+--
+-- Name: seen_room_id_user_id_prtl_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX seen_room_id_user_id_prtl_index ON public.seen USING btree (room_id, user_id) WHERE (user_id IS NOT NULL);
 
 
 --
@@ -2631,3 +2659,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20240312034644);
 INSERT INTO public."schema_migrations" (version) VALUES (20240730090614);
 INSERT INTO public."schema_migrations" (version) VALUES (20241005145250);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
+INSERT INTO public."schema_migrations" (version) VALUES (20241006021823);
