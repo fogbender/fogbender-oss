@@ -2043,6 +2043,13 @@ CREATE UNIQUE INDEX helpdesk_workspace_id_customer_id_index ON public.helpdesk U
 
 
 --
+-- Name: idx_room_membership_helpdesk_room_agent_user; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_room_membership_helpdesk_room_agent_user ON public.room_membership USING btree (helpdesk_id, room_id, agent_id, user_id);
+
+
+--
 -- Name: idx_room_membership_room_agent; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2054,6 +2061,20 @@ CREATE INDEX idx_room_membership_room_agent ON public.room_membership USING btre
 --
 
 CREATE INDEX idx_room_membership_room_user ON public.room_membership USING btree (room_id, user_id) WHERE (user_id IS NOT NULL);
+
+
+--
+-- Name: idx_seen_room_agent; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seen_room_agent ON public.seen USING btree (room_id, agent_id);
+
+
+--
+-- Name: idx_seen_room_user; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_seen_room_user ON public.seen USING btree (room_id, user_id);
 
 
 --
@@ -2609,3 +2630,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20240122163610);
 INSERT INTO public."schema_migrations" (version) VALUES (20240312034644);
 INSERT INTO public."schema_migrations" (version) VALUES (20240730090614);
 INSERT INTO public."schema_migrations" (version) VALUES (20241005145250);
+INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
