@@ -2337,6 +2337,13 @@ CREATE UNIQUE INDEX room_tag_room_id_tag_id_index ON public.room_tag USING btree
 
 
 --
+-- Name: room_tag_tag_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX room_tag_tag_id_index ON public.room_tag USING btree (tag_id);
+
+
+--
 -- Name: seen_room_id_agent_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2682,3 +2689,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20241005145250);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006021823);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006164923);
+INSERT INTO public."schema_migrations" (version) VALUES (20241006173845);
