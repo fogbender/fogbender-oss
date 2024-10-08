@@ -25,12 +25,11 @@ defmodule Fog.Apollo.Api do
     {:error, :no_api_key}
   end
 
-  defp match(email, api_key) do
+  defp match(email, _) do
     r =
       client()
       |> Tesla.get("/people/match",
         query: [
-          api_key: api_key,
           email: email,
           reveal_personal_email: true
         ]
@@ -54,6 +53,7 @@ defmodule Fog.Apollo.Api do
     base_url = {Tesla.Middleware.BaseUrl, @api_url}
     json = Tesla.Middleware.JSON
     query = Tesla.Middleware.Query
+    api_key = Fog.env(:apollo_api_key)
 
     headers =
       {Tesla.Middleware.Headers,
@@ -61,6 +61,10 @@ defmodule Fog.Apollo.Api do
          {
            "accept",
            "application/json"
+         },
+         {
+           "X-Api-Key",
+           api_key
          }
        ]}
 
