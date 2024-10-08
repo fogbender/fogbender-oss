@@ -28,7 +28,7 @@ defmodule Fog.Notify.EmailDigestJob do
         |> Repo.EmailDigest.load_user_badges()
         |> Notify.EmailDigestTask.schedule_many()
       end,
-      max_concurrency: 10,
+      max_concurrency: 1,
       timeout: :infinity,
       on_timeout: :kill_task
     )
