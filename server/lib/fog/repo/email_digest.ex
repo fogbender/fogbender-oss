@@ -315,6 +315,7 @@ defmodule Fog.Repo.EmailDigest do
       on: h.id == ^hid,
       left_join: seen in subquery(user_seen_q()),
       on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
+      where: u.is_visitor == false,
       where: is_nil(u.deleted_at),
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
