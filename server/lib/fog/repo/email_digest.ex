@@ -12,6 +12,14 @@ defmodule Fog.Repo.EmailDigest do
     |> Repo.all()
   end
 
+  def helpdesk_users_to_notify(hid, time, limit) do
+    helpdesk_users_to_notify_q(hid)
+    |> subquery()
+    |> where([q], q.last_activity_at < datetime_add(^time, -1 * q.email_digest_period, "second"))
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
   def users_to_notify(time, limit) do
     users_to_notify_q()
     |> subquery()
@@ -288,6 +296,38 @@ defmodule Fog.Repo.EmailDigest do
       end)
 
     from(query, where: ^filter)
+  end
+
+  defp helpdesk_users_to_notify_q(hid) do
+    from(
+      fo in subquery(Data.FeatureOption.for_user()),
+      join: u in assoc(fo, :user),
+      join: h in assoc(u, :helpdesk),
+      on: h.id == ^hid,
+      left_join: seen in subquery(user_seen_q()),
+      on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
+      where: is_nil(u.deleted_at),
+      where: fo.email_digest_enabled == true,
+      select: %Data.EmailDigest{
+        vendor_id: fo.vendor_id,
+        workspace_id: fo.workspace_id,
+        user_id: fo.user_id,
+        to_type: "user",
+        last_activity_at:
+          type(
+            fragment(
+              "GREATEST(?,?,?,?)",
+              seen.last_seen_at,
+              u.last_activity_at,
+              u.last_digest_check_at,
+              u.inserted_at
+            ),
+            :utc_datetime_usec
+          ),
+        email_digest_period: fo.email_digest_period,
+        email_digest_template: fo.email_digest_template
+      }
+    )
   end
 
   defp users_to_notify_q() do
