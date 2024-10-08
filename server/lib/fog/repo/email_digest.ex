@@ -57,26 +57,35 @@ defmodule Fog.Repo.EmailDigest do
   def load_user_badges([]), do: []
 
   def load_user_badges(data) do
-    Repo.Badge.base_q()
-    |> filter_users(data)
-    |> subquery()
-    |> where([q], q.count > 0)
-    |> order_by(desc: :updated_at)
-    |> Repo.all()
-    |> enumerate()
-    |> Enum.group_by(&{&1.vendor_id, &1.workspace_id, &1.user_id})
-    |> merge_updated_users(data)
-    |> enumerate()
-    |> Repo.preload([
-      :vendor,
-      :workspace,
-      :user,
-      badges: [
-        room: :customer,
-        first_unread_message: [:from_user, :from_agent, mentions: [:agent]]
-      ]
-    ])
-    |> preload_room_messages()
+    res0 =
+      Repo.Badge.base_q()
+      |> filter_users(data)
+      |> subquery()
+      |> where([q], q.count > 0)
+      |> order_by(desc: :updated_at)
+      |> Repo.all()
+
+    res1 =
+      res0
+      |> enumerate()
+      |> Enum.group_by(&{&1.vendor_id, &1.workspace_id, &1.user_id})
+
+    res2 =
+      res1
+      |> merge_updated_users(data)
+      |> enumerate()
+      |> Repo.preload([
+        :vendor,
+        :workspace,
+        :user,
+        badges: [
+          room: :customer,
+          first_unread_message: [:from_user, :from_agent, mentions: [:agent]]
+        ]
+      ])
+      |> preload_room_messages()
+
+    res2
     |> filter_badge_messages()
     |> override_agent_name()
   end
