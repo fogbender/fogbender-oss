@@ -135,6 +135,11 @@ defmodule Fog.Repo.Helpdesk do
     |> Repo.all()
   end
 
+  def all() do
+    from(h in Data.Helpdesk)
+    |> Repo.all()
+  end
+
   defp with_last_message_at(q) do
     from([h] in q,
       left_join:
