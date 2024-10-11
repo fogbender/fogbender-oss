@@ -32,8 +32,8 @@ export type User = {
   avatar_url?: string;
   tags: Tag[];
   last_activity_at: string;
-  inserted_at: string;
-  deleted_at: string;
+  inserted_at: number;
+  deleted_at: number;
   deleted_by_agent_id: string;
   email_verified: string;
 };
