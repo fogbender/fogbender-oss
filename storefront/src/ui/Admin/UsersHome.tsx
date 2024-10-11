@@ -1,6 +1,7 @@
 import { Combobox } from "@headlessui/react";
 import classNames from "classnames";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import {
   Avatar,
   ConfirmDialog,
@@ -21,6 +22,8 @@ import { type User } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
 
 import { Tags } from "./CustomerDetails";
+
+dayjs.extend(relativeTime);
 
 type UsersHomeProps = {
   customer: Customer;
@@ -163,6 +166,7 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
                 )}
               </th>
               <th className={thClassName}>Name</th>
+              <th className={thClassName}>Added</th>
               <th className={thClassName}>Email</th>
               <th className={thClassName}>External ID</th>
               <th className={thClassName}>Tags</th>
@@ -220,6 +224,7 @@ const UserRow: React.FC<{
   toggleUser: (userId: string) => void;
   setUserToDelete: (user: User) => void;
 }> = ({ user, customer, selectedUsersIds, toggleUser, setAddTagMode, setUserToDelete }) => {
+  console.log({ user });
   const removeUserTagsMutation = useMutation(
     (params: { tagToRemove: string }) => {
       const { tagToRemove } = params;
@@ -245,11 +250,14 @@ const UserRow: React.FC<{
           {selectedUsersIds.includes(user.id) ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
         </div>
       </td>
-      <td className="p-1 align-middle">
+      <td className="p-1 align-middle whitespace-nowrap">
         <div className="flex items-center gap-x-2 group-hover:underline">
           <Avatar size={32} url={user.avatar_url} name={user.name} />
           {user.name}
         </div>
+      </td>
+      <td className="p-1 align-middle whitespace-nowrap">
+        {dayjs(user.inserted_at / 1000).fromNow()}
       </td>
       <td className="p-1 align-middle">{user.email}</td>
       <td className="p-1 align-middle">{user.external_uid}</td>

@@ -1356,6 +1356,7 @@ defmodule Fog.Web.APIRouter do
           name: &1.name,
           email: &1.email,
           external_uid: &1.external_uid,
+          inserted_at: &1.inserted_at |> to_unix(),
           avatar_url: &1.image_url,
           deleted_at: &1.deleted_at |> to_unix(),
           deleted_by_agent_id: &1.deleted_by_agent_id,
