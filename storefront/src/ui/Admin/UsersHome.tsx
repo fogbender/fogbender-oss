@@ -224,7 +224,6 @@ const UserRow: React.FC<{
   toggleUser: (userId: string) => void;
   setUserToDelete: (user: User) => void;
 }> = ({ user, customer, selectedUsersIds, toggleUser, setAddTagMode, setUserToDelete }) => {
-  console.log({ user });
   const removeUserTagsMutation = useMutation(
     (params: { tagToRemove: string }) => {
       const { tagToRemove } = params;
