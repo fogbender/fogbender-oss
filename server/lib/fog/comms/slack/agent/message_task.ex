@@ -526,97 +526,56 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
     files
     |> Enum.with_index()
     |> Enum.each(fn {file, i} ->
-      try do
-        %Fog.Data.File{
-          filename: filename,
-          content_type: content_type,
-          data: data
-        } = file
+      %Fog.Data.File{
+        filename: filename,
+        content_type: content_type,
+        data: data
+      } = file
 
-        file_path = data["file_s3_file_path"]
-        {:ok, file_body} = FileStorage.read(file_path)
+      file_path = data["file_s3_file_path"]
+      {:ok, file_body} = FileStorage.read(file_path)
 
-        # XXX response with no shares
-        _m = """
-        {:ok,
-          %{"file" => %{
-            "timestamp" => 1670864603,
-            "external_type" => "",
-            "mimetype" => "image/png",
-            "title" => "image001",
-            "original_w" => 61,
-            "channels" => [],
-            "id" => "F04EMSJPTGE",
-            "user_team" => "T04CYSQK5G9",
-            "permalink_public" => "https://slack-files.com/T04CYSQK5G9-F04EMSJPTGE-737d97e3d8",
-            "user" => "U04CYUARB41",
-            "thumb_64" => "https://files.slack.com/files-tmb/T04CYSQK5G9-F04EMSJPTGE-5ab6a5e8ad/image001_64.png",
-            "editable" => false,
-            "pretty_type" => "PNG",
-            "comments_count" => 0,
-            "file_access" => "visible",
-            "created" => 1670864603,
-            "thumb_360" => "https://files.slack.com/files-tmb/T04CYSQK5G9-F04EMSJPTGE-5ab6a5e8ad/image001_360.png",
-            "thumb_360_h" => 74,
-            "ims" => [],
-            "thumb_160" => "https://files.slack.com/files-tmb/T04CYSQK5G9-F04EMSJPTGE-5ab6a5e8ad/image001_160.png",
-            "is_public" => true,
-            "is_starred" => false,
-            "original_h" => 74,
-            "groups" => [],
-            "filetype" => "png",
-            "thumb_tiny" => "AwAwACfMoAJOAM0/Yq/fb8BQZOMINooAXyuwYFvSoyMHmin7w3DjPv3oAZRT/LB5RgaTy29qAFl6qfUUynj5osd1/lTKAADJ4p3lPjpTgdkYI+83emDczcZzQA9MqrE/Sk8ynHLKUJyVpvlNQA1WKtkU5lBG5OncelMpVYqcigBx+aNSP4eDSmTjgYY9TR5gHIXDH8qTzB12LmgBY/kUue/Ap3ne1RMxY5NJQB//2Q==",
-            "mode" => "hosted",
-            "thumb_360_w" => 61,
-            "size" => 2847,
-            "username" => "",
-            "url_private_download" => "https://files.slack.com/files-pri/T04CYSQK5G9-F04EMSJPTGE/download/image001.png",
-            "public_url_shared" => false,
-            "display_as_bot" => false,
-            "has_rich_preview" => false,
-            "thumb_80" => "https://files.slack.com/files-tmb/T04CYSQK5G9-F04EMSJPTGE-5ab6a5e8ad/image001_80.png",
-            "permalink" => "https://fogbender---test00.slack.com/files/U04CYUARB41/F04EMSJPTGE/image001.png",
-            "url_private" => "https://files.slack.com/files-pri/T04CYSQK5G9-F04EMSJPTGE/image001.png",
-            "shares" => %{},
-            "media_display_type" => "unknown",
-            "name" => "image001.png",
-            "is_external" => false},
-            "ok" => true}}
-        """
-
-        res =
-          Slack.Api.upload_file(
-            access_token,
-            linked_channel_id,
-            thread_id,
-            filename,
-            content_type,
-            file_body,
-            if i === 0 do
-              "[#{author.name}]: #{text}"
-            else
-              ""
-            end
-          )
-
-        slack_messages =
-          case res do
-            {:ok, %{"file" => %{"shares" => %{"public" => slack_messages}}}} -> slack_messages
-            {:ok, %{"file" => %{"shares" => %{"private" => slack_messages}}}} -> slack_messages
+      {:ok, res} =
+        Slack.Api.upload_file_v2(
+          access_token,
+          linked_channel_id,
+          thread_id,
+          filename,
+          content_type,
+          file_body,
+          if i === 0 do
+            "[#{author.name}]: #{text}"
+          else
+            ""
           end
+        )
 
-        {_team_id, [%{"ts" => slack_message_ts} | _]} = Enum.at(slack_messages, 0)
+      file_id =
+        case res do
+          %{"files" => [%{"id" => file_id}]} ->
+            file_id
+        end
 
-        %Data.SlackMessageMapping{} =
-          Repo.SlackMessageMapping.create(
-            message_id: message_id,
-            slack_message_ts: slack_message_ts,
-            slack_channel_id: linked_channel_id
+      case Slack.Api.find_message_with_file_id(
+             access_token,
+             linked_channel_id,
+             thread_id,
+             file_id
+           ) do
+        {:ok, %{"ts" => slack_message_ts}} ->
+          %Data.SlackMessageMapping{} =
+            Repo.SlackMessageMapping.create(
+              message_id: message_id,
+              slack_message_ts: slack_message_ts,
+              slack_channel_id: linked_channel_id
+            )
+
+        _ ->
+          Logger.error(
+            "[Slack] Failed to find message in channel #{linked_channel_id}, thread #{thread_id} with file_id #{file_id}"
           )
-      rescue
-        e ->
-          Logger.error("Failed to upload a file to Slack: #{inspect(e)}")
-          {:error, e}
+
+          :ok
       end
     end)
 

@@ -430,6 +430,136 @@ defmodule Fog.Comms.Slack.Api do
     end
   end
 
+  def upload_file_v2(
+        access_token,
+        channel_id,
+        thread_ts,
+        filename,
+        content_type,
+        content,
+        text
+      ) do
+    r =
+      client(access_token)
+      |> Tesla.post("/api/files.getUploadURLExternal", %{
+        length: byte_size(content),
+        filename: filename
+      })
+
+    case r do
+      {:ok, %{status: 200, body: %{"file_id" => file_id, "upload_url" => upload_url}}} ->
+        mp =
+          Tesla.Multipart.new()
+          |> Tesla.Multipart.add_file_content(
+            content,
+            filename,
+            headers: [{"Content-Type", content_type || "application/octet-stream"}]
+          )
+
+        r1 =
+          upload_client_v2(access_token)
+          |> Tesla.post(upload_url, mp)
+
+        params = %{
+          initial_comment: text,
+          channel_id: channel_id,
+          files: Jason.encode!([%{"id" => file_id, "title" => filename}])
+        }
+
+        params =
+          if thread_ts do
+            params |> Map.put(:thread_ts, thread_ts)
+          else
+            params
+          end
+
+        case r1 do
+          {:ok, %{status: 200}} ->
+            r2 =
+              client(access_token)
+              |> Tesla.post("/api/files.completeUploadExternal", params)
+
+            case r2 do
+              {:ok, %{status: 200, body: body}} ->
+                {:ok, body}
+            end
+        end
+    end
+  end
+
+  def find_message_with_file_id_endpoint(_, nil) do
+    "/api/conversations.history"
+  end
+
+  def find_message_with_file_id_endpoint(_, _) do
+    "/api/conversations.replies"
+  end
+
+  def find_message_with_file_id_q(channel_id, thread_ts) do
+    latest_timestamp = :os.system_time(:millisecond) / 1000
+    formatted_latest_timestamp = :erlang.float_to_binary(latest_timestamp, decimals: 6)
+
+    opts = [
+      channel: channel_id,
+      limit: 5,
+      inclusive: true,
+      latest: formatted_latest_timestamp
+    ]
+
+    case thread_ts do
+      nil ->
+        opts
+
+      _ ->
+        opts ++ [ts: thread_ts]
+    end
+  end
+
+  def find_message_with_file_id(access_token, channel_id, thread_ts, file_id) do
+    find_message_with_file_id(access_token, channel_id, thread_ts, file_id, 0)
+  end
+
+  def find_message_with_file_id(access_token, channel_id, thread_ts, file_id, attempts)
+      when attempts < 100 do
+    r =
+      client(access_token)
+      |> Tesla.get(find_message_with_file_id_endpoint(channel_id, thread_ts),
+        query: find_message_with_file_id_q(channel_id, thread_ts)
+      )
+
+    case find_message_with_file_id(file_id, r) do
+      {:ok, m} ->
+        {:ok, m}
+
+      _ ->
+        Process.sleep(100)
+        find_message_with_file_id(access_token, channel_id, thread_ts, file_id, attempts + 1)
+    end
+  end
+
+  def find_message_with_file_id(file_id, {:ok, %{status: 200, body: %{"messages" => messages}}}) do
+    res =
+      Enum.find(messages, fn
+        %{"files" => files} ->
+          Enum.any?(files, fn file -> file["id"] == file_id end)
+
+        _ ->
+          nil
+      end)
+
+    case res do
+      nil ->
+        {:error, "Failed to find message with file_id #{file_id}"}
+
+      m ->
+        {:ok, m}
+    end
+  end
+
+  def find_message_with_file_id(_, _) do
+    {:error, "Failed to retrieve thread replies"}
+  end
+
   # get message by id
   # https://api.slack.com/messaging/retrieving#individual_messages
   def get_message(access_token, channel_id, message_ts) do
@@ -738,6 +868,27 @@ defmodule Fog.Comms.Slack.Api do
     Tesla.client(middleware)
   end
 
+  defp upload_client_v2(access_token) do
+    json = Tesla.Middleware.JSON
+
+    headers =
+      {Tesla.Middleware.Headers,
+       [
+         {
+           "authorization",
+           "Bearer #{access_token}"
+         },
+         {
+           "accept",
+           "*/*"
+         }
+       ]}
+
+    middleware = [json, headers]
+
+    Tesla.client(middleware)
+  end
+
   defp json_client(access_token) do
     base_url = {Tesla.Middleware.BaseUrl, @api_url}
     json = Tesla.Middleware.JSON
@@ -748,7 +899,7 @@ defmodule Fog.Comms.Slack.Api do
        [
          {
            "content-type",
-           "application/json"
+           "application/json; charset=utf-8"
          },
          {
            "authorization",
