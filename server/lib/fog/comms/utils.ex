@@ -9,6 +9,7 @@ defmodule Fog.Comms.Utils do
         "sad" -> "disappointed"
         "heart" -> {:symbol, "❤️"}
         "hearts" -> {:symbol, "❤️"}
+        "fire" -> {:symbol, "🔥"}
         _ -> reaction
       end
 
