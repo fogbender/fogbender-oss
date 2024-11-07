@@ -23,6 +23,7 @@ defmodule Test.Repo.EmailDigestTest do
 
   describe "Sending email digest to agent" do
     setup ctx do
+      m1 = message(ctx.r1, ctx.a2, "TEST")
       t0 = DateTime.utc_now()
       t1 = DateTime.add(t0, -1000)
       t2 = DateTime.add(t0, 1000)
@@ -85,7 +86,7 @@ defmodule Test.Repo.EmailDigestTest do
       message(ctx.r2, ctx.u1, "TEST 3")
       assert ed = [_, _] = Repo.EmailDigest.agents_to_notify(ctx.t2, 100)
 
-      assert [{ctx.a1.id, [{ctx.r1.id, 1}]}, {ctx.a2.id, [{ctx.r2.id, 2}]}] ==
+      assert [{ctx.a1.id, [{ctx.r1.id, 2}]}, {ctx.a2.id, [{ctx.r2.id, 2}]}] ==
                Repo.EmailDigest.load_agent_badges(ed)
                |> Enum.map(fn digest ->
                  {digest.agent_id, Enum.map(digest.badges, &{&1.room_id, &1.count})}
@@ -95,6 +96,13 @@ defmodule Test.Repo.EmailDigestTest do
     test "don't send emails to bot agents", ctx do
       Data.Agent.update(ctx.a1, is_bot: true) |> Repo.update!()
       assert [] == Repo.EmailDigest.agents_to_notify(ctx.t0, 100)
+    end
+
+    test "don't send digest if there are no new messages in workspace", ctx do
+      assert [_, _] = Repo.EmailDigest.agents_to_notify(ctx.t2, 100)
+      seen(ctx.a1, ctx.r1, ctx.m1)
+      seen(ctx.a2, ctx.r1, ctx.m1)
+      assert [] = Repo.EmailDigest.agents_to_notify(ctx.t2, 100)
     end
 
     test "provide last N unread messages created after last activity", ctx do

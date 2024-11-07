@@ -7,6 +7,7 @@ defmodule Fog.Repo.EmailDigest do
   def agents_to_notify(time, limit) do
     agents_to_notify_q()
     |> subquery()
+    |> where([q], q.last_activity_at < q.workspace_last_message_at)
     |> where([q], q.last_activity_at < datetime_add(^time, -1 * q.email_digest_period, "second"))
     |> limit(^limit)
     |> Repo.all()
@@ -259,6 +260,8 @@ defmodule Fog.Repo.EmailDigest do
       on: a.id == ar.agent_id and a.is_bot == false,
       left_join: seen in subquery(agent_seen_q()),
       on: seen.agent_id == fo.agent_id and seen.workspace_id == fo.workspace_id,
+      left_join: wlm in subquery(workspace_last_msg_q()),
+      on: wlm.workspace_id == fo.workspace_id,
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
         vendor_id: fo.vendor_id,
@@ -276,6 +279,7 @@ defmodule Fog.Repo.EmailDigest do
             ),
             :utc_datetime_usec
           ),
+        workspace_last_message_at: wlm.last_message_at,
         email_digest_period: fo.email_digest_period,
         email_digest_template: fo.email_digest_template
       }
@@ -292,6 +296,18 @@ defmodule Fog.Repo.EmailDigest do
         workspace_id: w.id,
         agent_id: s.agent_id,
         last_seen_at: max(s.updated_at)
+      }
+    )
+  end
+
+  defp workspace_last_msg_q() do
+    from(w in Data.Workspace,
+      join: m in assoc(w, :messages),
+      where: is_nil(m.deleted_at),
+      group_by: [w.id],
+      select: %{
+        workspace_id: w.id,
+        last_message_at: max(m.inserted_at)
       }
     )
   end
