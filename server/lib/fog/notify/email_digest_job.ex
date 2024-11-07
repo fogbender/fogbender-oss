@@ -21,37 +21,13 @@ defmodule Fog.Notify.EmailDigestJob do
   end
 
   def run_for_users(ts, limit \\ @limit) do
-    Repo.Helpdesk.all()
-    |> Task.async_stream(
-      fn h ->
-        helpdesk_users_data(h.id, ts, limit)
-        |> Repo.EmailDigest.load_user_badges()
-        |> Notify.EmailDigestTask.schedule_many()
-      end,
-      max_concurrency: 1,
-      timeout: :infinity,
-      on_timeout: :kill_task
-    )
-    |> Enum.each(fn
-      {:ok, _result} ->
-        :ok
-
-      {:error, reason} ->
-        Logger.error("Process failed: #{inspect(reason)}")
-    end)
-
-    # users_data(ts, limit)
-    # |> Repo.EmailDigest.load_user_badges()
-    # |> Notify.EmailDigestTask.schedule_many()
+    users_data(ts, limit)
+    |> Repo.EmailDigest.load_user_badges()
+    |> Notify.EmailDigestTask.schedule_many()
   end
 
   def users_data(ts, limit) do
     Repo.EmailDigest.users_to_notify(ts, limit)
-    |> update_last_digest_check_users(ts)
-  end
-
-  def helpdesk_users_data(hid, ts, limit) do
-    Repo.EmailDigest.helpdesk_users_to_notify(hid, ts, limit)
     |> update_last_digest_check_users(ts)
   end
 
