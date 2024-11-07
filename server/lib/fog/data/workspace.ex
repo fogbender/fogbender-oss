@@ -44,6 +44,7 @@ defmodule Fog.Data.Workspace do
     has_many(:customers, through: [:helpdesks, :customer])
     has_many(:users, through: [:helpdesks, :users])
     has_many(:rooms, through: [:helpdesks, :rooms])
+    has_many(:messages, through: [:helpdesks, :messages])
     has_many(:feature_flags, WorkspaceFeatureFlag)
     has_many(:tags, Tag)
     has_many(:integrations, WorkspaceIntegration)

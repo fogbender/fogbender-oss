@@ -7,14 +7,7 @@ defmodule Fog.Repo.EmailDigest do
   def agents_to_notify(time, limit) do
     agents_to_notify_q()
     |> subquery()
-    |> where([q], q.last_activity_at < datetime_add(^time, -1 * q.email_digest_period, "second"))
-    |> limit(^limit)
-    |> Repo.all()
-  end
-
-  def helpdesk_users_to_notify(hid, time, limit) do
-    helpdesk_users_to_notify_q(hid)
-    |> subquery()
+    |> where([q], q.last_activity_at < q.workspace_last_message_at)
     |> where([q], q.last_activity_at < datetime_add(^time, -1 * q.email_digest_period, "second"))
     |> limit(^limit)
     |> Repo.all()
@@ -23,6 +16,7 @@ defmodule Fog.Repo.EmailDigest do
   def users_to_notify(time, limit) do
     users_to_notify_q()
     |> subquery()
+    |> where([q], q.last_activity_at < q.helpdesk_last_message_at)
     |> where([q], q.last_activity_at < datetime_add(^time, -1 * q.email_digest_period, "second"))
     |> limit(^limit)
     |> Repo.all()
@@ -259,6 +253,8 @@ defmodule Fog.Repo.EmailDigest do
       on: a.id == ar.agent_id and a.is_bot == false,
       left_join: seen in subquery(agent_seen_q()),
       on: seen.agent_id == fo.agent_id and seen.workspace_id == fo.workspace_id,
+      left_join: wlm in subquery(workspace_last_msg_q()),
+      on: wlm.workspace_id == fo.workspace_id,
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
         vendor_id: fo.vendor_id,
@@ -276,6 +272,7 @@ defmodule Fog.Repo.EmailDigest do
             ),
             :utc_datetime_usec
           ),
+        workspace_last_message_at: wlm.last_message_at,
         email_digest_period: fo.email_digest_period,
         email_digest_template: fo.email_digest_template
       }
@@ -296,6 +293,30 @@ defmodule Fog.Repo.EmailDigest do
     )
   end
 
+  defp workspace_last_msg_q() do
+    from(w in Data.Workspace,
+      join: m in assoc(w, :messages),
+      where: is_nil(m.deleted_at),
+      group_by: [w.id],
+      select: %{
+        workspace_id: w.id,
+        last_message_at: max(m.inserted_at)
+      }
+    )
+  end
+
+  defp helpdesk_last_msg_q() do
+    from(h in Data.Helpdesk,
+      join: m in assoc(h, :messages),
+      where: is_nil(m.deleted_at),
+      group_by: [h.id],
+      select: %{
+        helpdesk_id: h.id,
+        last_message_at: max(m.inserted_at)
+      }
+    )
+  end
+
   defp filter_agents(query, data) do
     filter =
       for(%Data.EmailDigest{agent_id: aid, vendor_id: vid} <- data, do: {vid, aid})
@@ -307,46 +328,16 @@ defmodule Fog.Repo.EmailDigest do
     from(query, where: ^filter)
   end
 
-  defp helpdesk_users_to_notify_q(hid) do
-    from(
-      fo in subquery(Data.FeatureOption.for_user()),
-      join: u in assoc(fo, :user),
-      join: h in assoc(u, :helpdesk),
-      on: h.id == ^hid,
-      left_join: seen in subquery(user_seen_q()),
-      on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
-      where: u.is_visitor == false,
-      where: is_nil(u.deleted_at),
-      where: fo.email_digest_enabled == true,
-      select: %Data.EmailDigest{
-        vendor_id: fo.vendor_id,
-        workspace_id: fo.workspace_id,
-        user_id: fo.user_id,
-        to_type: "user",
-        last_activity_at:
-          type(
-            fragment(
-              "GREATEST(?,?,?,?)",
-              seen.last_seen_at,
-              u.last_activity_at,
-              u.last_digest_check_at,
-              u.inserted_at
-            ),
-            :utc_datetime_usec
-          ),
-        email_digest_period: fo.email_digest_period,
-        email_digest_template: fo.email_digest_template
-      }
-    )
-  end
-
   defp users_to_notify_q() do
     from(
       fo in subquery(Data.FeatureOption.for_user()),
       join: u in assoc(fo, :user),
       left_join: seen in subquery(user_seen_q()),
       on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
+      left_join: hlm in subquery(helpdesk_last_msg_q()),
+      on: hlm.helpdesk_id == u.helpdesk_id,
       where: is_nil(u.deleted_at),
+      where: u.email_verified == true,
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
         vendor_id: fo.vendor_id,
@@ -364,6 +355,7 @@ defmodule Fog.Repo.EmailDigest do
             ),
             :utc_datetime_usec
           ),
+        helpdesk_last_message_at: hlm.last_message_at,
         email_digest_period: fo.email_digest_period,
         email_digest_template: fo.email_digest_template
       }
