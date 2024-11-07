@@ -253,7 +253,7 @@ defmodule Fog.Repo.EmailDigest do
       on: a.id == ar.agent_id and a.is_bot == false,
       left_join: seen in subquery(agent_seen_q()),
       on: seen.agent_id == fo.agent_id and seen.workspace_id == fo.workspace_id,
-      left_join: wlm in subquery(workspace_last_msg_q()),
+      left_join: wlm in "wlm_cte",
       on: wlm.workspace_id == fo.workspace_id,
       where: fo.email_digest_enabled == true,
       select: %Data.EmailDigest{
@@ -277,6 +277,7 @@ defmodule Fog.Repo.EmailDigest do
         email_digest_template: fo.email_digest_template
       }
     )
+    |> with_cte("wlm_cte", as: ^workspace_last_msg_q(), materialized: true)
   end
 
   defp agent_seen_q() do
@@ -334,7 +335,7 @@ defmodule Fog.Repo.EmailDigest do
       join: u in assoc(fo, :user),
       left_join: seen in subquery(user_seen_q()),
       on: seen.user_id == fo.user_id and seen.workspace_id == fo.workspace_id,
-      left_join: hlm in subquery(helpdesk_last_msg_q()),
+      left_join: hlm in "hlm_cte",
       on: hlm.helpdesk_id == u.helpdesk_id,
       where: is_nil(u.deleted_at),
       where: u.email_verified == true,
@@ -360,6 +361,7 @@ defmodule Fog.Repo.EmailDigest do
         email_digest_template: fo.email_digest_template
       }
     )
+    |> with_cte("hlm_cte", as: ^helpdesk_last_msg_q(), materialized: true)
   end
 
   defp user_seen_q() do
