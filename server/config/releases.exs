@@ -179,8 +179,16 @@ config :fog, Fog.Scheduler,
         {{:extended, System.get_env("FOG_EMAIL_DIGEST_JOB_SCHEDULE")},
          {
            Fog.Notify.EmailDigestJob,
-           :run,
-           [System.get_env("FOG_EMAIL_DIGEST_JOB_BATCH", "1000") |> String.to_integer()]
+           :run_for_agents,
+           [System.get_env("FOG_EMAIL_DIGEST_JOB_BATCH", "100") |> String.to_integer()]
+         }}
+      end,
+      unless System.get_env("FOG_EMAIL_DIGEST_JOB_SCHEDULE", "") == "" do
+        {{:extended, System.get_env("FOG_EMAIL_DIGEST_JOB_SCHEDULE")},
+         {
+           Fog.Notify.EmailDigestJob,
+           :run_for_users,
+           [System.get_env("FOG_EMAIL_DIGEST_JOB_BATCH", "100") |> String.to_integer()]
          }}
       end,
       unless System.get_env("FOG_EMAIL_RECEIVE_JOB_SCHEDULE", "") == "" do
