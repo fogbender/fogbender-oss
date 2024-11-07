@@ -7,14 +7,15 @@ defmodule Fog.Notify.EmailDigestJob do
   @limit 100
 
   def run(limit \\ @limit) do
-    ts = DateTime.utc_now()
-    run_for_agents(ts, limit)
-    run_for_users(ts, limit)
+    run_for_agents(limit)
+    run_for_users(limit)
     :ok
   end
 
-  def run_for_agents(ts, limit \\ @limit) do
+  def run_for_agents(limit \\ @limit) do
     Logger.info("EmailDigestJob: run_for_agents started")
+
+    ts = DateTime.utc_now()
 
     Repo.EmailDigest.agents_to_notify(ts, limit)
     |> update_last_digest_check_agents(ts)
@@ -24,8 +25,10 @@ defmodule Fog.Notify.EmailDigestJob do
     Logger.info("EmailDigestJob: run_for_agents finished")
   end
 
-  def run_for_users(ts, limit \\ @limit) do
+  def run_for_users(limit \\ @limit) do
     Logger.info("EmailDigestJob: run_for_users started")
+
+    ts = DateTime.utc_now()
 
     users_data(ts, limit)
     |> Repo.EmailDigest.load_user_badges()
