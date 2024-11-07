@@ -14,16 +14,24 @@ defmodule Fog.Notify.EmailDigestJob do
   end
 
   def run_for_agents(ts, limit \\ @limit) do
+    Logger.info("EmailDigestJob: run_for_agents started")
+
     Repo.EmailDigest.agents_to_notify(ts, limit)
     |> update_last_digest_check_agents(ts)
     |> Repo.EmailDigest.load_agent_badges()
     |> Notify.EmailDigestTask.schedule_many()
+
+    Logger.info("EmailDigestJob: run_for_agents finished")
   end
 
   def run_for_users(ts, limit \\ @limit) do
+    Logger.info("EmailDigestJob: run_for_users started")
+
     users_data(ts, limit)
     |> Repo.EmailDigest.load_user_badges()
     |> Notify.EmailDigestTask.schedule_many()
+
+    Logger.info("EmailDigestJob: run_for_users finished")
   end
 
   def users_data(ts, limit) do
@@ -34,6 +42,10 @@ defmodule Fog.Notify.EmailDigestJob do
   defp update_last_digest_check_users([], _ts), do: []
 
   defp update_last_digest_check_users(data, ts) do
+    Logger.info(
+      "EmailDigestJob: processing #{length(data)} user digests, from vendors: #{vendors(data)}"
+    )
+
     Data.User
     |> filter_users(data)
     |> Repo.update_all(set: [last_digest_check_at: ts])
@@ -44,11 +56,21 @@ defmodule Fog.Notify.EmailDigestJob do
   defp update_last_digest_check_agents([], _ts), do: []
 
   defp update_last_digest_check_agents(data, ts) do
+    Logger.info(
+      "EmailDigestJob: processing #{length(data)} agent digests, from vendors: #{vendors(data)}"
+    )
+
     from(Data.VendorAgentRole, as: :agent)
     |> filter_agents(data)
     |> Repo.update_all(set: [last_digest_check_at: ts])
 
     data
+  end
+
+  defp vendors(data) do
+    data
+    |> Enum.map(fn %Data.EmailDigest{vendor_id: vid} -> vid end)
+    |> Enum.uniq()
   end
 
   defp filter_agents(query, data) do
