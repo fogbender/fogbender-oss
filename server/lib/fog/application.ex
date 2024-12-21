@@ -10,12 +10,13 @@ defmodule Fog.Application do
       [
         # Starts a worker by calling: Fog.Worker.start_link(arg)
         # {Fog.Worker, arg}
+        Registry.child_spec(keys: :unique, name: Registry.Fogbender),
         ExMarcel.TableWrapper,
         Fog.Repo,
         Fog.Limiter,
         {Task.Supervisor, name: Fog.TaskSupervisor},
         Fog.Notify.EmailDigestTask.child_spec(),
-        Fog.Comms.Slack.Agent.MessageTask.child_spec(),
+        {Fog.Comms.Slack.Agent.RoomSupervisor, []},
         Fog.Comms.Slack.Customer.MessageTask.child_spec(),
         Fog.Comms.MsTeams.MessageTask.child_spec(),
         Fog.Merge.EventTask.child_spec(),

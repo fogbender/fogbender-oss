@@ -208,7 +208,8 @@ defmodule Fog.Api.Message do
       (sources ++ targets)
       |> Enum.map(&Repo.Message.touch(&1))
 
-    :ok = Fog.Comms.Slack.Agent.MessageTask.schedule(cmd, message, sess)
+    :ok = Fog.Comms.Slack.Agent.RoomServer.schedule(cmd: cmd, message: message, sess: sess)
+
     :ok = Fog.Comms.Slack.Customer.MessageTask.schedule(cmd, message, sess)
     :ok = Fog.Comms.MsTeams.MessageTask.schedule(cmd, message, sess)
 
@@ -249,7 +250,8 @@ defmodule Fog.Api.Message do
       Repo.Message.targets([message_id])
       |> Enum.map(fn {_, %Data.Message{id: id}} -> Repo.Message.touch(id) end)
 
-    :ok = Fog.Comms.Slack.Agent.MessageTask.schedule(cmd, message, sess)
+    :ok = Fog.Comms.Slack.Agent.RoomServer.schedule(cmd: cmd, message: message, sess: sess)
+
     :ok = Fog.Comms.Slack.Customer.MessageTask.schedule(cmd, message, sess)
     :ok = Fog.Comms.MsTeams.MessageTask.schedule(cmd, message, sess)
 
@@ -303,7 +305,8 @@ defmodule Fog.Api.Message do
       reaction
     )
 
-    :ok = Fog.Comms.Slack.Agent.MessageTask.schedule(cmd, message0, sess)
+    :ok = Fog.Comms.Slack.Agent.RoomServer.schedule(cmd: cmd, message: message0, sess: sess)
+
     :ok = Fog.Comms.Slack.Customer.MessageTask.schedule(cmd, message0, sess)
     :ok = Fog.Comms.MsTeams.MessageTask.schedule(cmd, message0, sess)
 
@@ -365,7 +368,8 @@ defmodule Fog.Api.Message do
 
       # NOTE: when this command (Api.Message.Create) is a part of a not-yet-committed transaction, getting stuff that was just created (e.g. room), but not committed, will not work inside another process, so we have to pass preloaded objects. Ideally, this whole thing should happen post-commit in a separate pipeline
 
-      :ok = Fog.Comms.Slack.Agent.MessageTask.schedule(cmd, message, sess)
+      :ok = Fog.Comms.Slack.Agent.RoomServer.schedule(cmd: cmd, message: message, sess: sess)
+
       :ok = Fog.Comms.Slack.Customer.MessageTask.schedule(cmd, message, room, sess)
       :ok = Fog.Comms.MsTeams.MessageTask.schedule(cmd, message, room, sess)
       :ok = Fog.Merge.EventTask.schedule(cmd: cmd, message: message, room: room, sess: sess)
