@@ -21,6 +21,10 @@ defmodule Fog.Comms.Slack.Agent.RoomSupervisor do
       :undefined ->
         case DynamicSupervisor.start_child(__MODULE__, child_spec) do
           {:ok, pid} ->
+            if Mix.env() == :test do
+              Ecto.Adapters.SQL.Sandbox.allow(Fog.Repo, self(), pid)
+            end
+
             {:ok, pid}
 
           {:error, {:already_started, pid}} ->
