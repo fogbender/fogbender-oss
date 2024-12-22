@@ -2295,6 +2295,13 @@ CREATE UNIQUE INDEX room_helpdesk_id_name_index ON public.room USING btree (help
 
 
 --
+-- Name: room_id_slack_channel_uq; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX room_id_slack_channel_uq ON public.slack_channel_mapping USING btree (room_id, channel_id);
+
+
+--
 -- Name: room_membership_helpdesk_id_room_id_agent_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2690,3 +2697,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006021823);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006164923);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006173845);
+INSERT INTO public."schema_migrations" (version) VALUES (20241221164145);

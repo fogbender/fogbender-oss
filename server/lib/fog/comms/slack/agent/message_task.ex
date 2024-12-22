@@ -8,14 +8,8 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
 
   @broadcast_threshold_seconds 3600
 
-  def child_spec() do
-    {Task.Supervisor, name: __MODULE__}
-  end
-
-  def schedule(cmd, message, sess) do
-    Task.Supervisor.start_child(__MODULE__, __MODULE__, :run, [cmd, message, sess])
-
-    :ok
+  def run(cmd: cmd, message: message, sess: sess) do
+    run(cmd, message, sess)
   end
 
   def run(
@@ -464,7 +458,14 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
           header_text
       end
 
-    author_text = "*#{author |> Utils.author_name()}* (<mailto:#{author.email}|#{author.email}>)"
+    author_text =
+      case author do
+        %Data.Agent{is_bot: true} ->
+          "*#{author |> Utils.author_name()}*"
+
+        _ ->
+          "*#{author |> Utils.author_name()}* (<mailto:#{author.email}|#{author.email}>)"
+      end
 
     text = message |> Slack.Utils.message_text("#{author_text}: ")
 

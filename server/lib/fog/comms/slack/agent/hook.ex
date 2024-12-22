@@ -657,6 +657,9 @@ defmodule Fog.Comms.Slack.Agent.Hook do
             [a | _] ->
               a
 
+            [] ->
+              nil
+
             nil ->
               nil
           end
