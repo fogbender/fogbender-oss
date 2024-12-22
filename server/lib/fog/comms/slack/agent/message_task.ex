@@ -458,7 +458,14 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
           header_text
       end
 
-    author_text = "*#{author |> Utils.author_name()}* (<mailto:#{author.email}|#{author.email}>)"
+    author_text =
+      case author do
+        %Data.Agent{is_bot: true} ->
+          "*#{author |> Utils.author_name()}*"
+
+        _ ->
+          "*#{author |> Utils.author_name()}* (<mailto:#{author.email}|#{author.email}>)"
+      end
 
     text = message |> Slack.Utils.message_text("#{author_text}: ")
 
