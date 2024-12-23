@@ -81,7 +81,7 @@ defmodule Fog.Repo.Integration do
         type,
         project_id,
         specifics,
-        with_both_agent \\ true,
+        with_bot_agent \\ true,
         name_override \\ nil
       ) do
     %{avatar_url: avatar_url, name: name, module: module} = Fog.Integration.info(type)
@@ -107,7 +107,7 @@ defmodule Fog.Repo.Integration do
         conflict_target: [:workspace_id, :project_id, :type]
       )
 
-    if with_both_agent do
+    if with_bot_agent do
       integration_tag = Repo.Tag.create(workspace.id, module.integration_tag_name(integration))
       app_tag = Repo.Tag.create(workspace.id, ":app")
 
@@ -127,17 +127,22 @@ defmodule Fog.Repo.Integration do
           returning: true
         )
 
-      bot_agent = Data.Agent |> Repo.get_by(email: integration_tag.name)
+      bot_agent = Data.Agent |> Repo.get_by(email: integration_tag.name) |> Repo.preload(:tags)
+
+      new_tags = [
+        %{agent_id: bot_agent.id, tag_id: integration_tag.id},
+        %{agent_id: bot_agent.id, tag_id: app_tag.id}
+      ]
+
+      old_tags =
+        bot_agent.tags
+        |> Enum.map(fn at ->
+          %{agent_id: at.agent_id, tag_id: at.tag_id}
+        end)
 
       bot_agent =
         bot_agent
-        |> Repo.preload(:tags)
-        |> Data.Agent.update(
-          tags: [
-            %{agent_id: bot_agent.id, tag_id: integration_tag.id},
-            %{agent_id: bot_agent.id, tag_id: app_tag.id}
-          ]
-        )
+        |> Data.Agent.update(tags: new_tags ++ old_tags)
         |> Repo.update!()
 
       {:ok, _} =
