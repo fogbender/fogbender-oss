@@ -140,9 +140,11 @@ defmodule Fog.Repo.Integration do
           %{agent_id: at.agent_id, tag_id: at.tag_id}
         end)
 
+      tags = (old_tags ++ new_tags) |> Enum.uniq_by(& &1.tag_id)
+
       bot_agent =
         bot_agent
-        |> Data.Agent.update(tags: new_tags ++ old_tags)
+        |> Data.Agent.update(tags: tags)
         |> Repo.update!()
 
       {:ok, _} =
