@@ -166,6 +166,7 @@ defmodule Fog.Comms.Slack.Agent.Hook do
        )
        when t === token do
     # NOTE: the meaning of context_team_id is not defined in Slack documentation, and the relationship between team_id and context_team_id is unclear. One of these should belong to an integration - looks like we'll have to check both
+
     case event do
       %{"bot_id" => _} ->
         # ignore bot messages

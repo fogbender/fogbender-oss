@@ -184,4 +184,20 @@ defmodule Fog.Comms.Slack.Utils do
     helpdesk = Repo.Helpdesk.get(helpdesk_id) |> Repo.preload([:vendor])
     Api.Session.for_agent(helpdesk.vendor.id, agent.id)
   end
+
+  def author_avatar_url(author) do
+    case author do
+      %Data.User{image_url: "https://api.dicebear.com" <> _ = image_url} ->
+        image_url |> String.replace("/svg?", "/png?")
+
+      _ ->
+        case author do
+          %Data.User{} ->
+            author.image_url
+
+          %Data.Agent{} ->
+            author.from_image_url_override || author.image_url
+        end
+    end
+  end
 end
