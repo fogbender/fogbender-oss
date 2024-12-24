@@ -386,7 +386,7 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
 
   defp f4(linked_channel_id, access_token, author, message, room) do
     name = author.name
-    avatar_url = avatar_url(author)
+    avatar_url = Slack.Utils.author_avatar_url(author)
     room = room |> Repo.preload([:customer, helpdesk: :vendor])
     message = message |> Repo.preload([:sources])
     vendor_support_name = "#{room.helpdesk.vendor.name} Support"
@@ -589,7 +589,7 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
        ) do
     %Data.Message{id: message_id, room_id: room_id, inserted_at: ts0} = message
     name = author.name
-    avatar_url = avatar_url(author)
+    avatar_url = Slack.Utils.author_avatar_url(author)
     reply_broadcast = calc_reply_broadcast(room_id, author, message, ts0)
 
     text = Slack.Utils.message_text(message)
@@ -769,16 +769,6 @@ defmodule Fog.Comms.Slack.Customer.MessageTask do
 
       _ ->
         :ok
-    end
-  end
-
-  defp avatar_url(author) do
-    case author do
-      %Data.User{image_url: "https://avatars.dicebear.com" <> _ = image_url} ->
-        image_url |> String.replace("/svg?", "/png?")
-
-      _ ->
-        author.image_url
     end
   end
 

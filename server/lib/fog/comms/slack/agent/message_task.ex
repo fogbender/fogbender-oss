@@ -153,7 +153,7 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
 
   defp f4(linked_channel_id, access_token, author, %Data.Message{room_id: room_id} = message) do
     name = author |> Utils.author_name()
-    avatar_url = author_avatar_url(author)
+    avatar_url = Slack.Utils.author_avatar_url(author)
     room = Repo.Room.get(room_id) |> Repo.preload(:customer)
 
     ok =
@@ -256,7 +256,7 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
        ) do
     %Data.Message{id: message_id, text: text, room_id: room_id, inserted_at: ts0} = message
     name = author |> Utils.author_name()
-    avatar_url = author_avatar_url(author)
+    avatar_url = Slack.Utils.author_avatar_url(author)
     reply_broadcast = calc_reply_broadcast(room_id, author, message, ts0)
 
     text =
@@ -495,22 +495,6 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
         }
       }
     ]
-  end
-
-  defp author_avatar_url(author) do
-    case author do
-      %Data.User{image_url: "https://api.dicebear.com" <> _ = image_url} ->
-        image_url |> String.replace("/svg?", "/png?")
-
-      _ ->
-        case author do
-          %Data.User{} ->
-            author.image_url
-
-          %Data.Agent{} ->
-            author.from_image_url_override || author.image_url
-        end
-    end
   end
 
   def get_slack_integrations(room_id) do
