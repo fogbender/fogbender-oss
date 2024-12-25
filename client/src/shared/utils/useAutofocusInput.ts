@@ -6,6 +6,19 @@ export const useAutoFocusInput = (
 ) => {
   React.useEffect(() => {
     const onFocusInput = (e: KeyboardEvent) => {
+      const isCmdPressed = e.metaKey; // Cmd key on macOS
+
+      const isCtrlPressed = e.ctrlKey; // Ctrl key on Windows/Linux
+
+      const isCopyKey = e.key.toLowerCase() === "c";
+
+      const tryToCopy = (isCmdPressed || isCtrlPressed) && isCopyKey;
+
+      if (isCmdPressed || isCtrlPressed || tryToCopy) {
+        // Do not trigger the action if the Ctrl or Cmd key is pressed alone, or in combination with 'C'.
+        return;
+      }
+
       const currentTextArea = textareaRef?.current;
 
       const currentActiveElement = document.activeElement;
