@@ -778,7 +778,8 @@ defmodule Fog.Comms.Slack.Agent.Hook do
             {user, helpdesk_integration}
         end
 
-      _ ->
+      x ->
+        Logger.error("resolve_fog_user_by_slack_user_id match error: #{inspect(x)}")
         nil
     end
   end
