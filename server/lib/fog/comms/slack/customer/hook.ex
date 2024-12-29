@@ -584,11 +584,15 @@ defmodule Fog.Comms.Slack.Customer.Hook do
     mappings =
       slack_user_ids
       |> Enum.map(fn slack_user_id ->
-        case Repo.SlackCustomerUserMapping.slack_user_id_to_mapping(slack_team_id, slack_user_id) do
+        case Repo.SlackCustomerUserMapping.slack_user_id_to_mapping(
+               slack_team_id,
+               slack_user_id,
+               helpdesk_integration.helpdesk_id
+             ) do
           %Data.SlackCustomerUserMapping{} = mapping ->
             mapping
 
-          nil ->
+          [] ->
             case resolve_fog_user_by_slack_user_id(helpdesk_integration, slack_user_id) do
               :bot ->
                 {:bot, slack_user_id}
