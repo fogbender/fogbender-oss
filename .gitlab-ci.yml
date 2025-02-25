@@ -121,6 +121,7 @@ web-demo-deploy-test:
     API_TOKEN: $WIDGET_DEMO_DEPLOYMENT_TOKEN
     APP_PATH: "$CI_PROJECT_DIR/widget-demo"
     OUTPUT_PATH: "$CI_PROJECT_DIR/widget-demo/dist"
+    APP_BUILD_COMMAND: "yarn build-widget-demo"
   rules:
     - if: $CI_COMMIT_BRANCH == "test--widget-demo"
   image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
