@@ -119,9 +119,9 @@ web-demo-deploy-test:
     url: https://fogbender-test.com
   variables:
     API_TOKEN: $WIDGET_DEMO_DEPLOYMENT_TOKEN
-    APP_PATH: "$CI_PROJECT_DIR/widget-demo"
+    APP_PATH: "$CI_PROJECT_DIR"
     OUTPUT_PATH: "$CI_PROJECT_DIR/widget-demo/dist"
-    APP_BUILD_COMMAND: "yarn build-widget-demo"
+    APP_BUILD_COMMAND: '"yarn build-widget-demo"'
   rules:
     - if: $CI_COMMIT_BRANCH == "test--widget-demo"
   image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
