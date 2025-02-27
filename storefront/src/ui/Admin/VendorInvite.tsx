@@ -1,7 +1,7 @@
 import { LinkButton, Modal, ThickButton } from "fogbender-client/src/shared";
 import queryString from "query-string";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 import { type VendorInvite } from "../../redux/adminApi";
@@ -22,8 +22,8 @@ export const AcceptInviteButton: React.FC<{ invite: VendorInvite }> = ({ invite 
   const [loggingOut, setLoggingOut] = React.useState(false);
   const [logout] = useLogout();
 
-  const acceptInvite = useMutation<string | undefined, Error>(
-    async () => {
+  const acceptInvite = useMutation<string | undefined, Error>({
+    mutationFn: async () => {
       const res = await fetchServerApiPost<never>("/api/vendor_invites/accept", {
         code: invite.code,
       });
@@ -43,18 +43,16 @@ export const AcceptInviteButton: React.FC<{ invite: VendorInvite }> = ({ invite 
         throw new Error(`Something went wrong: ${res.status}`);
       }
     },
-    {
-      onSuccess: () => {
-        // invalidate invites sent to you
-        queryClient.invalidateQueries("vendor_invites");
-        // invalidate invites sent from this vendor in case if you already have access to Team page
-        queryClient.invalidateQueries(["agent invite", invite.vendor.id]);
-        setShowModal(false);
-        queryClient.invalidateQueries(queryKeys.vendors());
-        navigate(`vendor/${invite.vendor.id}/workspaces`);
-      },
-    }
-  );
+    onSuccess: () => {
+      // invalidate invites sent to you
+      queryClient.invalidateQueries({ queryKey: ["vendor_invites"] });
+      // invalidate invites sent from this vendor in case if you already have access to Team page
+      queryClient.invalidateQueries({ queryKey: ["agent invite", invite.vendor.id] });
+      setShowModal(false);
+      queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+      navigate(`vendor/${invite.vendor.id}/workspaces`);
+    },
+  });
 
   const declineInvite = useDeclineInvite(invite);
 
@@ -101,7 +99,7 @@ export const AcceptInviteButton: React.FC<{ invite: VendorInvite }> = ({ invite 
                 <ThickButton
                   disabled={!formOk}
                   onClick={() => acceptInvite.mutate()}
-                  loading={acceptInvite.isLoading}
+                  loading={acceptInvite.isPending}
                 >
                   Accept
                 </ThickButton>
@@ -144,20 +142,18 @@ export const AcceptInviteButton: React.FC<{ invite: VendorInvite }> = ({ invite 
 };
 
 function useDeclineInvite(invite: VendorInvite) {
-  return useMutation(
-    () =>
+  return useMutation({
+    mutationFn: async () =>
       fetchServerApiPost<never>("/api/vendor_invites/decline", {
         code: invite.code,
       }),
-    {
-      onSettled: () => {
-        // invalidate invites sent to you
-        queryClient.invalidateQueries("vendor_invites");
-        // invalidate invites sent from this vendor in case if you already have access to Team page
-        queryClient.invalidateQueries(["agent invite", invite.vendor.id]);
-      },
-    }
-  );
+    onSettled: () => {
+      // invalidate invites sent to you
+      queryClient.invalidateQueries({ queryKey: ["vendor_invites"] });
+      // invalidate invites sent from this vendor in case if you already have access to Team page
+      queryClient.invalidateQueries({ queryKey: ["agent invite", invite.vendor.id] });
+    },
+  });
 }
 
 export const DeclineInviteButton: React.FC<{ invite: VendorInvite }> = ({ invite }) => {

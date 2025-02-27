@@ -15,7 +15,7 @@ import {
   XCircleFilled,
 } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { type User } from "../../redux/adminApi";
@@ -34,23 +34,23 @@ function tagName(t: string) {
 }
 
 export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
-  const { data: workspaceTags } = useQuery<Tag[]>(
-    queryKeys.tags(customer.workspaceId),
-    () =>
+  const { data: workspaceTags } = useQuery<Tag[]>({
+    queryKey: queryKeys.tags(customer.workspaceId),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/workspaces/${customer.workspaceId}/tags`, {
         credentials: "include",
       }).then(res => res.json()),
-    { enabled: customer !== undefined }
-  );
+    enabled: customer !== undefined,
+  });
 
-  const { data: users, isLoading: loadingUsers } = useQuery<User[]>(
-    queryKeys.users(customer.helpdeskId),
-    () =>
+  const { data: users, isLoading: loadingUsers } = useQuery<User[]>({
+    queryKey: queryKeys.users(customer.helpdeskId),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/helpdesks/${customer.helpdeskId}/users`, {
         credentials: "include",
       }).then(res => res.json()),
-    { enabled: customer !== undefined }
-  );
+    enabled: customer !== undefined,
+  });
 
   const [usersFilter, setUsersFilter] = React.useState<string>();
   const filteredUsers = React.useMemo(() => {
@@ -84,8 +84,8 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
 
   const allUsersAreSelected = users !== undefined && users.length === selectedUsersIds.length;
 
-  const addTagsToUsersMutation = useMutation(
-    (params: { userIds: string[]; tagsToAdd: string[] }) => {
+  const addTagsToUsersMutation = useMutation({
+    mutationFn: async (params: { userIds: string[]; tagsToAdd: string[] }) => {
       const { userIds, tagsToAdd } = params;
       return fetch(`${getServerUrl()}/api/helpdesks/${customer.helpdeskId}/users`, {
         method: "POST",
@@ -93,16 +93,14 @@ export const UsersHome: React.FC<UsersHomeProps> = ({ customer }) => {
         body: JSON.stringify({ userIds, tagsToAdd }),
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.users(customer.helpdeskId));
-          setSelectedUsersIds([]);
-          setSelectedTagsIds([]);
-        }
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.users(customer.helpdeskId) });
+        setSelectedUsersIds([]);
+        setSelectedTagsIds([]);
+      }
+    },
+  });
 
   const toggleSelectAllUsers = React.useCallback(() => {
     if (users) {
@@ -224,8 +222,8 @@ const UserRow: React.FC<{
   toggleUser: (userId: string) => void;
   setUserToDelete: (user: User) => void;
 }> = ({ user, customer, selectedUsersIds, toggleUser, setAddTagMode, setUserToDelete }) => {
-  const removeUserTagsMutation = useMutation(
-    (params: { tagToRemove: string }) => {
+  const removeUserTagsMutation = useMutation({
+    mutationFn: async (params: { tagToRemove: string }) => {
       const { tagToRemove } = params;
       return fetch(`${getServerUrl()}/api/helpdesks/${customer.helpdeskId}/users/${user.id}`, {
         method: "POST",
@@ -233,14 +231,12 @@ const UserRow: React.FC<{
         body: JSON.stringify({ tagToRemove }),
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.users(customer.helpdeskId));
-        }
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.users(customer.helpdeskId) });
+      }
+    },
+  });
 
   return (
     <tr key={user.id} className="cursor-pointer group" onClick={() => toggleUser(user.id)}>
@@ -400,7 +396,7 @@ const DeleteUserModal = ({
       return apiServer.url(`/api/helpdesks/${helpdeskId}/users/${user.id}`).delete().text();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.users(helpdeskId));
+      queryClient.invalidateQueries({ queryKey: queryKeys.users(helpdeskId) });
       onClose();
     },
   });
@@ -413,7 +409,7 @@ const DeleteUserModal = ({
           buttonTitle="Delete"
           onClose={onClose}
           onDelete={() => deleteUserMutation.mutate()}
-          loading={deleteUserMutation.isLoading}
+          loading={deleteUserMutation.isPending}
           error={error}
         >
           <Avatar size={32} url={user.avatar_url} name={user.name} />

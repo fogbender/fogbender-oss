@@ -121,9 +121,11 @@ export const useAgentNotifications = ({
 export const useOnNotifications = ({
   userId,
   onNotification,
+  isIdle,
 }: {
   userId: string | undefined;
   onNotification: (message: EventNotificationMessage) => void;
+  isIdle: boolean;
 }) => {
   const { notification, lastIncomingMessage } = useNotifications({ userId });
   const [muteSound] = useAtom(muteSoundAtom);
@@ -133,12 +135,12 @@ export const useOnNotifications = ({
       const oldId = prevNotification?.id;
       if (notification.id !== oldId) {
         onNotification(notification);
-        if (muteSound === false) {
+        if (muteSound === false && isIdle) {
           const audio = new Audio("/messenger-notification.wav");
           audio.playbackRate = 2;
-          console.info("Sound notification start time", Date.now());
+          console.info("Sound notification start time", Date.now(), userId);
           audio.onended = () => {
-            console.info("Sound notification end time", Date.now());
+            console.info("Sound notification end time", Date.now(), userId);
           };
           (async function playSound() {
             try {

@@ -1,4 +1,4 @@
-defmodule Fog.Integration.Tokens do
+defmodule Fog.Integration.Signatures do
   require Logger
   use Plug.Router
   plug(:match)
@@ -27,7 +27,16 @@ defmodule Fog.Integration.Tokens do
         }
 
         data = Map.merge(data, hashes)
-        ok_json(conn, %{token: data} |> Jason.encode!())
+
+        ok_json(
+          conn,
+          %{
+            # deprecated
+            token: data,
+            signatures: data
+          }
+          |> Jason.encode!()
+        )
 
       _ ->
         error_json_forbid(

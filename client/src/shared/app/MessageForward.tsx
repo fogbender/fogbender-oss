@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import {
+  calculateCounterpart,
   invariant,
   KnownCommsIntegrations,
   KnownIssueTrackerIntegrations,
@@ -13,14 +14,13 @@ import {
   useWs,
 } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
-import { Icons } from "../components/Icons";
 import { FilterInput, ThickButton } from "../components/lib";
 import { MessageView } from "../messages/MessageView";
 import { queryKeys } from "../utils/client";
-import { formatCustomerName, renderTag } from "../utils/format";
+import { formatRoomName, formatCustomerName, renderTag } from "../utils/format";
 
 type ForwardMode = "Existing room" | "Customer" | "Related rooms";
 
@@ -33,7 +33,7 @@ const filterInputPlaceholder = {
 
 export const MessageForward: React.FC<{
   fromRoomId?: string;
-  userId?: string;
+  ourId?: string;
   helpdeskId?: string;
   workspaceId?: string;
   vendorId?: string;
@@ -45,7 +45,7 @@ export const MessageForward: React.FC<{
   isAgent: boolean | undefined;
 }> = ({
   fromRoomId,
-  userId,
+  ourId,
   helpdeskId,
   workspaceId,
   selection,
@@ -61,7 +61,7 @@ export const MessageForward: React.FC<{
   const { filteredRoster, setRosterFilter } = useRoster({
     helpdeskId,
     workspaceId,
-    userId,
+    userId: ourId,
   });
 
   const room = fromRoomId ? roomById(fromRoomId) : undefined;
@@ -305,11 +305,14 @@ export const MessageForward: React.FC<{
         )}
 
         <div className="overflow-y-auto fbr-scrollbar" style={{ height: "25vh" }}>
-          <table className="relative w-full fog:text-body-m border-0">
-            <thead className={classNames("sticky top-0 bg-white", "dark:bg-brand-dark-bg")}>
-              <tr>
+          <table className="table table-fixed table-sm relative w-full">
+            <colgroup>
+              <col style={{ width: "2rem" }} />
+            </colgroup>
+            <thead className={classNames("sticky top-0")}>
+              <tr className="text-black dark:text-white">
                 <th
-                  className="w-5 p-2 border-b border-gray-200 text-blue-700 align-middle text-center"
+                  className={classNames("flex items-center", isAgent ? "visible" : "invisible")}
                   onClick={
                     allRoomsSelected
                       ? () => setSelectedRooms(new Set())
@@ -318,75 +321,95 @@ export const MessageForward: React.FC<{
                 >
                   <div
                     className={classNames(
-                      rosterToShow.length === 0 && "invisible pointer-events-none"
+                      rosterToShow.length === 0 ? "invisible pointer-events-none" : "cursor-pointer"
                     )}
                   >
-                    {allRoomsSelected ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
+                    <input
+                      type="checkbox"
+                      value={allRoomsSelected ? "yes" : "no"}
+                      onChange={() => {}}
+                      checked={allRoomsSelected}
+                      className="checkbox checkbox-sm checkbox-primary"
+                    />
                   </div>
                 </th>
-                {isAgent && (
-                  <th
-                    className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
-                    style={{ width: "40%" }}
-                  >
-                    Customer
-                  </th>
-                )}
-                <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">Room</th>
+                {isAgent && <th style={{ width: "40%" }}>Customer</th>}
+                <th>Room</th>
                 {isConnectedToIssue && forwardMode === "Related rooms" && (
-                  <th className="p-2 border-b border-gray-200 fog:text-caption-l text-left">
-                    Issue
-                  </th>
+                  <th className="">Issue</th>
                 )}
                 {isAgent && (
-                  <th
-                    className="p-2 border-b border-gray-200 fog:text-caption-l text-left"
-                    style={{ width: "40%" }}
-                  >
+                  <th className="" style={{ width: "40%" }}>
                     Customer id
                   </th>
                 )}
               </tr>
             </thead>
             <tbody>
-              {rosterToShow.map(x => (
-                <tr
-                  key={x.id}
-                  className={classNames(
-                    "w-5 p-2 hover:bg-gray-100 cursor-pointer",
-                    "dark:hover:bg-zinc-700",
-                    selectedRooms.has(x.id) && "bg-gray-100 dark:bg-zinc-700"
-                  )}
-                  onClick={() =>
-                    setSelectedRooms(rooms => {
-                      rooms.has(x.id) ? rooms.delete(x.id) : rooms.add(x.id);
-                      return new Set(rooms);
-                    })
-                  }
-                >
-                  <td className="p-2 text-blue-700 align-middle text-center">
-                    {selectedRooms.has(x.id) ? <Icons.CheckboxOn /> : <Icons.CheckboxOff />}
-                  </td>
-                  {isAgent && (
-                    <td className="p-2">
-                      <span className="overflow-ellipsis">
-                        {formatCustomerName(x.customerName)}
-                      </span>
+              {rosterToShow.map(x => {
+                const counterpart = calculateCounterpart(x, ourId);
+                const roomName = formatRoomName(x, isAgent === true, counterpart?.name);
+                return (
+                  <tr
+                    key={x.id}
+                    className={classNames("cursor-pointer")}
+                    onClick={() => {
+                      setSelectedRooms(rooms => {
+                        if (isAgent) {
+                          rooms.has(x.id) ? rooms.delete(x.id) : rooms.add(x.id);
+                          return new Set(rooms);
+                        } else {
+                          const has = rooms.has(x.id);
+                          rooms.clear();
+                          if (!has) {
+                            rooms.add(x.id);
+                          }
+                          return new Set(rooms);
+                        }
+                      });
+                    }}
+                  >
+                    <td className="flex items-center">
+                      {isAgent ? (
+                        <input
+                          type="checkbox"
+                          value={allRoomsSelected ? "yes" : "no"}
+                          onChange={() => {}}
+                          checked={selectedRooms.has(x.id)}
+                          className="checkbox checkbox-sm checkbox-primary"
+                        />
+                      ) : (
+                        <input
+                          value={selectedRooms.has(x.id) ? "yes" : "no"}
+                          onChange={() => {}}
+                          type="radio"
+                          name="radio-2"
+                          className="radio radio-sm radio-primary"
+                          checked={selectedRooms.has(x.id)}
+                        />
+                      )}
                     </td>
-                  )}
-                  <td className="p-2">
-                    <span className="overflow-ellipsis">{x.name}</span>
-                  </td>
-                  {isConnectedToIssue && connectedIssueTag && forwardMode === "Related rooms" && (
-                    <td className="p-2">{renderTag(connectedIssueTag)}</td>
-                  )}
-                  {isAgent && (
-                    <td className="p-2">
-                      <span className="overflow-ellipsis">{x.customerId}</span>
+                    {isAgent && (
+                      <td className="">
+                        <span className="overflow-ellipsis">
+                          {formatCustomerName(x.customerName)}
+                        </span>
+                      </td>
+                    )}
+                    <td>
+                      <span className="overflow-ellipsis">{roomName}</span>
                     </td>
-                  )}
-                </tr>
-              ))}
+                    {isConnectedToIssue && connectedIssueTag && forwardMode === "Related rooms" && (
+                      <td>{renderTag(connectedIssueTag)}</td>
+                    )}
+                    {isAgent && (
+                      <td>
+                        <span className="overflow-ellipsis">{x.customerId}</span>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

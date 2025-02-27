@@ -9,7 +9,7 @@ import {
 } from "fogbender-client/src/shared";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
@@ -42,7 +42,7 @@ function useUploadFile<DataIn>(vendorId: string, workspaceId: string) {
           throw r.statusText;
         })
         .then(r => {
-          queryClient.invalidateQueries(queryKeys.customers(workspaceId));
+          queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
           setRes({ data: r, loading: false, error: null });
         })
         .catch(error => {
@@ -99,8 +99,8 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
 
   const [createCustomerError, setCreateCustomerError] = React.useState<string>();
 
-  const createCustomerRes = useMutation(
-    (params: { customerName: string; customerId: string }) => {
+  const createCustomerRes = useMutation({
+    mutationFn: async (params: { customerName: string; customerId: string }) => {
       return fetch(
         `${getServerUrl()}/api/vendors/${vendorId}/workspaces/${workspaceId}/customers`,
         {
@@ -110,18 +110,16 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
         }
       );
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 200) {
-          onClose();
-        } else if (r.status === 403) {
-          const { error: err } = await r.json();
-          setCreateCustomerError(err);
-        }
-        queryClient.invalidateQueries(queryKeys.customers(workspaceId));
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 200) {
+        onClose();
+      } else if (r.status === 403) {
+        const { error: err } = await r.json();
+        setCreateCustomerError(err);
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+    },
+  });
 
   const formOk = !!customerName.trim().length && !!customerId.trim().length;
 
@@ -173,7 +171,7 @@ const CreateCustomerForm: React.FC<CreateCustomerProps> = ({
         </ThickButton>
       </div>
       <div className="ml-4 flex flex-1 items-center self-center">
-        {createCustomerError && !createCustomerRes.isLoading && (
+        {createCustomerError && !createCustomerRes.isPending && (
           <span className="fog:text-caption-xl flex text-red-500">{createCustomerError}</span>
         )}
       </div>

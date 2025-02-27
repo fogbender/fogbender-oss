@@ -14,7 +14,7 @@ import {
 } from "fogbender-proto";
 import React from "react";
 import { PiWarningCircleFill } from "react-icons/pi";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   IconAsana,
@@ -112,16 +112,23 @@ export const FileIssue: React.FC<{
     [roomNameValue, selectedIssue?.title, setRoomNameValue]
   );
 
-  const fileIssueButtonTitle =
-    fileIssueMode === "New room"
-      ? "Create room"
-      : fileIssueMode === "Create new external issue"
-      ? createNewRoom
-        ? "Create room and issue"
-        : "Link issue"
-      : createNewRoom
-      ? "Create a new room and link to issue"
-      : "Link issue";
+  const fileIssueButtonTitle = (() => {
+    if (fileIssueMode === "New room") {
+      return "Create room";
+    } else if (fileIssueMode === "Create new external issue") {
+      if (createNewRoom) {
+        return "Create room and issue";
+      } else {
+        return "Link issue";
+      }
+    } else {
+      if (createNewRoom) {
+        return "Create a new room and link to issue";
+      } else {
+        return "Link issue";
+      }
+    }
+  })();
 
   const hasIssueTrackerIntegrations = issueTrackerIntegrations.length > 0;
 
@@ -268,6 +275,8 @@ export const FileIssue: React.FC<{
         title: roomNameValue.trim(),
       });
 
+      console.log("res0", res0);
+
       if (res0) {
         console.assert(res0 !== null && res0.msgType === "Integration.Ok");
 
@@ -412,9 +421,9 @@ export const FileIssue: React.FC<{
     refetch: reSummarize,
     isLoading: nameOptionsLoading,
     isRefetching: nameOptionsRefetching,
-  } = useQuery(
-    ["messages slice summary", roomId, startMessageId, endMessageId],
-    async () => {
+  } = useQuery({
+    queryKey: ["messages slice summary", roomId, startMessageId, endMessageId],
+    queryFn: async () => {
       const roomId = selection[0]?.roomId;
       const startMessageId = selection[0]?.id;
       const endMessageId = selection.slice(-1)[0]?.id;
@@ -441,10 +450,8 @@ export const FileIssue: React.FC<{
       }
       return;
     },
-    {
-      staleTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+  });
 
   const [submitting, setSubmitting] = React.useState(false);
 

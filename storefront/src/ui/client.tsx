@@ -1,11 +1,13 @@
-import { QueryClient } from "react-query";
+import { QueryClient } from "@tanstack/react-query";
 import wretch from "wretch";
+import QueryStringAddon from "wretch/addons/queryString";
 
 import { getServerUrl } from "../config";
 
 export const queryClient = new QueryClient();
 
 export const queryKeys = {
+  me: () => ["me"],
   agents: (vendorId: string) => ["agents", vendorId],
   users: (helpdeskId: string) => ["users", helpdeskId],
   customers: (workspaceId: string | undefined) => ["customers", workspaceId || "N/A"],
@@ -39,6 +41,20 @@ export const queryKeys = {
   onboardingChecklist: (vendorId: string | undefined) => ["onboarding_checklist", vendorId],
   billing: (vendorId: string) => ["billing", vendorId],
   userInfo: (userId: string) => ["user_info", userId],
+  widgetData: (workspaceId: string) => ["widget_data", workspaceId],
+  assistants: (workspaceId: string, provider: string, apiKey: string) => [
+    "assistants",
+    workspaceId,
+    provider,
+    apiKey,
+  ],
+  assistant: (workspaceId: string, provider: string, assistantId: string, apiKey: string) => [
+    "assistants",
+    workspaceId,
+    provider,
+    assistantId,
+    apiKey,
+  ],
 };
 
 export async function fetchData<T>(url: string): Promise<T> {
@@ -52,4 +68,4 @@ export async function fetchData<T>(url: string): Promise<T> {
 }
 export const apiServer = wretch(getServerUrl(), {
   credentials: "include",
-});
+}).addon(QueryStringAddon);

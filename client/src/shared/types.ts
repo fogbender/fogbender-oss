@@ -25,7 +25,7 @@ export type Fogvite = {
   deleted_at: string | null;
 };
 
-export type AgentRole = "owner" | "admin" | "agent" | "reader" | "app";
+export type AgentRole = "owner" | "admin" | "agent" | "reader" | "app" | "assistant";
 
 export type Agent = {
   id: string;

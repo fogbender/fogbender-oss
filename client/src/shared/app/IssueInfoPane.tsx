@@ -10,10 +10,10 @@ import {
   useWs,
 } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { DetailedRoomsTable } from "../components/DetailedRoomsTable";
-import { Icons, SwitchOff, SwitchOn } from "../components/Icons";
+import { Icons } from "../components/Icons";
 import { LinkButton } from "../components/lib";
 import type { Agent } from "../types";
 import { queryKeys } from "../utils/client";
@@ -40,9 +40,9 @@ export const IssueInfoPane: React.FC<{
 
   const [, , projectId, issueId, _following] = tagName.split(":");
 
-  const roomsByTagData = useQuery(
-    queryKeys.roomsByTagName(workspaceId, tagName),
-    async () => {
+  const roomsByTagData = useQuery({
+    queryKey: queryKeys.roomsByTagName(workspaceId, tagName),
+    queryFn: async () => {
       if (tagName) {
         const res = await serverCall<SearchRoster>({
           msgType: "Search.Roster",
@@ -55,10 +55,8 @@ export const IssueInfoPane: React.FC<{
       }
       return;
     },
-    {
-      enabled: !!tagName,
-    }
-  );
+    enabled: !!tagName,
+  });
 
   const { data: roomsByTag } = roomsByTagData;
 
@@ -68,9 +66,9 @@ export const IssueInfoPane: React.FC<{
     }
   }, [lastIncomingMessage, roomsByTagData]);
 
-  const issueInfoData = useQuery(
-    queryKeys.issueInfo(workspaceId, projectId, issueId),
-    async () => {
+  const issueInfoData = useQuery({
+    queryKey: queryKeys.issueInfo(workspaceId, projectId, issueId),
+    queryFn: async () => {
       const res = await serverCall<IntegrationIssueInfo>({
         msgType: "Integration.IssueInfo",
         workspaceId,
@@ -83,10 +81,8 @@ export const IssueInfoPane: React.FC<{
         return;
       }
     },
-    {
-      enabled: !!issueId,
-    }
-  );
+    enabled: !!issueId,
+  });
 
   const { data: issueInfo } = issueInfoData;
 
@@ -157,11 +153,37 @@ export const IssueInfoPane: React.FC<{
                   </td>
                 </tr>
               )}
-              <tr className="cursor-pointer" onClick={() => setShowClosed(x => !x)}>
-                <td className="p-2 text-left">
-                  {showClosed ? <SwitchOn className="w-7" /> : <SwitchOff className="w-7" />}
+              <tr
+                className="cursor-pointer group"
+                onClick={(e?: React.MouseEvent) => {
+                  if (e) {
+                    e.stopPropagation();
+
+                    const elem = e.target as HTMLElement;
+                    const button = elem.closest("tr") as HTMLTableRowElement;
+
+                    if (button) {
+                      const toggle = button.querySelector(".toggle") as HTMLInputElement;
+
+                      if (toggle) {
+                        toggle.click();
+                      }
+                    }
+                  }
+                }}
+              >
+                <td className="align-middle pl-2 group:hover:text-brand-red-500">
+                  <input
+                    onClick={e => {
+                      e.stopPropagation();
+                      setShowClosed(x => !x);
+                    }}
+                    type="checkbox"
+                    className="align-middle toggle toggle-sm group-hover:text-brand-red-500"
+                    defaultChecked={showClosed}
+                  />
                 </td>
-                <td className="p-2 text-left">Show closed</td>
+                <td className="p-2 text-left group-hover:text-brand-red-500">Show closed</td>
               </tr>
             </tbody>
           </table>

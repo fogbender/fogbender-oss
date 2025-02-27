@@ -1,8 +1,18 @@
 import classNames from "classnames";
-import { Icons, ThinButton, type Integration, useInput } from "fogbender-client/src/shared";
+import { useQuery } from "@tanstack/react-query";
+import {
+  IconGitHub,
+  Icons,
+  ThinButton,
+  type Integration,
+  useInput,
+} from "fogbender-client/src/shared";
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { getWebhookUrl } from "../../../config";
+import { apiServer } from "../../client";
+
+import { getWebhookUrl, getGitHubAppName } from "../../../config";
 import { type Workspace } from "../../../redux/adminApi";
 import { useServerApiPostWithPayload } from "../../useServerApi";
 
@@ -12,10 +22,125 @@ import {
   error,
   InputClassName,
   operationStatus,
+  operationStatusQuery,
   useProgress,
 } from "./Utils";
 
-export const AddGitHubIntegration: React.FC<{
+export const AddGitHubIntegration = ({
+  workspace,
+  installationId,
+  onDone,
+  closing,
+  context = "default",
+}: {
+  workspace: Workspace;
+  installationId: null | string;
+  onDone: () => void;
+  closing: boolean;
+  context?: "onboarding" | "default";
+}) => {
+  console.log({ onDone, closing });
+
+  const stateObject = encodeURIComponent(JSON.stringify({ context }));
+
+  const checkInstallationQuery = useQuery({
+    queryKey: ["github_check_installation", installationId],
+    queryFn: async () => {
+      const url = `/api/workspaces/${workspace.id}/integrations/github/check-installation`;
+
+      return await apiServer.url(url).post({ installationId }).json<
+        | { id: string }
+        | {
+            error: "Must select single repository" | "No such installation";
+            installation_url: string;
+          }
+      >();
+    },
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
+    enabled: !!installationId,
+  });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const addIntegrationQuery = useQuery({
+    queryKey: ["github_add_integration", workspace.id],
+    queryFn: async () => {
+      if (checkInstallationQuery.data) {
+        const url = `/api/workspaces/${workspace.id}/integrations/github/add-integration`;
+        const res = await apiServer.url(url).post({ installationId }).res();
+
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.delete("installation_id");
+        navigate(`${location.pathname}?${searchParams.toString()}`, { replace: true });
+
+        onDone();
+
+        return res;
+      } else {
+        return;
+      }
+    },
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
+    enabled: checkInstallationQuery.isSuccess,
+  });
+
+  const errorMessage = (() => {
+    if (checkInstallationQuery.error?.message) {
+      const { error: message } = JSON.parse(checkInstallationQuery.error?.message);
+      return message;
+    }
+  })();
+
+  const fixUrl = (() => {
+    if (errorMessage === "No such installation") {
+      return `https://github.com/apps/${getGitHubAppName()}/installations/new?state=${stateObject}`;
+    }
+
+    return `https://github.com/apps/${getGitHubAppName()}/installations/${installationId}`;
+  })();
+
+  return (
+    <>
+      {installationId ? (
+        <div className="flex flex-col gap-4 w-1/2">
+          {operationStatusQuery("Checking installation", checkInstallationQuery)}
+
+          {checkInstallationQuery.isError && (
+            <div className="">
+              {errorMessage} &mdash;{" "}
+              <a
+                className="fog:text-link no-underline cursor-pointer font-bold"
+                target={errorMessage === "No such installation" ? undefined : "_blank"}
+                href={fixUrl}
+              >
+                <span>CLICK TO FIX</span>
+              </a>
+            </div>
+          )}
+
+          {operationStatusQuery("Adding integration", addIntegrationQuery)}
+        </div>
+      ) : (
+        <a
+          className="no-underline"
+          href={`https://github.com/apps/${getGitHubAppName()}/installations/new?state=${stateObject}`}
+        >
+          <div className="bg-[#238636] text-white font-medium w-36 h-11 rounded-lg flex items-center justify-center gap-2 hover:bg-[#1B6F2B]">
+            <IconGitHub />
+            <span>Connect</span>
+          </div>
+        </a>
+      )}
+    </>
+  );
+};
+
+export const AddGitHubIntegrationOld: React.FC<{
   workspace: Workspace;
   onDone: () => void;
   closing: boolean;
@@ -516,296 +641,24 @@ export const AddGitHubIntegration: React.FC<{
 export const ShowGitHubIntegration: React.FC<{
   i: Integration;
   onDeleted: () => void;
-}> = ({ i, onDeleted }) => {
-  const [accessToken, accessTokenInput] = useInput({
-    type: "new-password",
-    placeholder: "GitHub Access Token",
-    className: InputClassName,
-  });
-
-  const [getRepositoriesRes, getRepositoriesCall] = useServerApiPostWithPayload<
-    {
-      viewer: {
-        login: string;
-        repositories: {
-          nodes: { id: string; name: string; resourcePath: string; url: string }[];
-        };
-      };
-    },
-    {}
-  >(`/api/workspaces/${i.workspace_id}/integrations/${i.id}/get-repositories`);
-
-  const [createIssueRes, createIssueCall] = useServerApiPostWithPayload<
-    any,
-    { issueTitle: string }
-  >(`/api/workspaces/${i.workspace_id}/integrations/${i.id}/create-issue`);
-
-  const [deleteIssueRes, deleteIssueCall] = useServerApiPostWithPayload<
-    any,
-    { issueNumber: string; issueTitle: string }
-  >(`/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete-issue`);
-
-  const [checkWebhookRes, checkWebhookCall] = useServerApiPostWithPayload<
-    any,
-    { issueTitle: string }
-  >(`/api/workspaces/${i.workspace_id}/integrations/${i.id}/get-issue-by-name`);
-
-  const [deleteWebhookRes, deleteWebhookCall] = useServerApiPostWithPayload<any, {}>(
-    `/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete-webhook`
-  );
-
-  const [deleteIntegrationRes, deleteIntegrationCall] = useServerApiPostWithPayload<any, {}>(
-    `/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete`
-  );
-
-  const [updateApiKeyRes, updateApiKeyCall] = useServerApiPostWithPayload<any, { apiKey: string }>(
-    `/api/workspaces/${i.workspace_id}/integrations/${i.id}/update-api-key`
-  );
-
-  const [steps, setSteps] = React.useState<{
-    get_repos: number;
-    create_issue: number;
-    del_issue: number;
-    check_webhook: number;
-    del_webhook: number;
-    del_integration: number;
-  }>({
-    get_repos: 0,
-    create_issue: 0,
-    del_issue: 0,
-    check_webhook: 0,
-    del_webhook: 0,
-    del_integration: 0,
-  });
-
-  const [clear, setClear] = React.useState(0);
-
-  const [deleting, setDeleting] = React.useState(false);
-
-  const { progressElem: getRepositoriesProgressElem, progressDone: getRepositoriesProgressDone } =
-    useProgress(getRepositoriesRes.loading === true, clear);
-
-  const { progressElem: createIssueProgressElem, progressDone: createIssueProgressDone } =
-    useProgress(createIssueRes.loading === true, clear);
-
-  const { progressElem: deleteIssueProgressElem, progressDone: deleteIssueProgressDone } =
-    useProgress(deleteIssueRes.loading === true, clear, 200);
-
-  const { progressElem: checkWebhookProgressElem, progressDone: checkWebhookProgressDone } =
-    useProgress(checkWebhookRes.loading === true, clear);
-
-  const { progressElem: deleteWebhookProgressElem, progressDone: deleteWebhookProgressDone } =
-    useProgress(deleteWebhookRes.loading === true, clear);
-
-  const {
-    progressElem: deleteIntegrationProgressElem,
-    progressDone: deleteIntegrationProgressDone,
-  } = useProgress(deleteIntegrationRes.loading === true, clear);
-
-  const issueTitleRef = React.useRef<string>();
-
-  /* --- */
-
-  React.useEffect(() => {
-    if (
-      steps.create_issue === steps.get_repos - 1 &&
-      getRepositoriesRes.error === null &&
-      getRepositoriesRes.data
-    ) {
-      issueTitleRef.current = `Fogbender test ${Math.random()}`;
-      createIssueCall({ issueTitle: issueTitleRef.current });
-    }
-  }, [steps, getRepositoriesRes.data, getRepositoriesRes.error, createIssueCall]);
-
-  React.useEffect(() => {
-    if (
-      steps.del_issue === steps.create_issue - 1 &&
-      createIssueRes.error === null &&
-      createIssueRes.data
-    ) {
-      const { number: issueNumber, title: issueTitle } = createIssueRes.data;
-
-      deleteIssueCall({
-        issueNumber,
-        issueTitle,
-      });
-    }
-  }, [steps, createIssueRes.data, createIssueRes.error, deleteIssueCall]);
-
-  React.useEffect(() => {
-    if (steps.check_webhook === steps.del_issue - 1 && deleteIssueRes.error === null) {
-      if (issueTitleRef.current) {
-        checkWebhookCall({ issueTitle: issueTitleRef.current });
-      }
-    }
-  }, [steps, deleteIssueRes.error, checkWebhookCall]);
-
-  React.useEffect(() => {
-    if (steps.del_integration === steps.del_webhook - 1 && deleteWebhookRes.error === null) {
-      deleteIntegrationCall();
-    }
-  }, [steps, deleteWebhookRes.error, deleteIntegrationCall]);
-
-  /* --- */
-
-  React.useEffect(() => {
-    if (getRepositoriesProgressDone) {
-      setSteps(x => {
-        return { ...x, get_repos: x.get_repos + 1 };
-      });
-    }
-  }, [getRepositoriesProgressDone]);
-
-  React.useEffect(() => {
-    if (createIssueProgressDone) {
-      setSteps(x => {
-        return { ...x, create_issue: x.create_issue + 1 };
-      });
-    }
-  }, [createIssueProgressDone]);
-
-  React.useEffect(() => {
-    if (deleteIssueProgressDone) {
-      setSteps(x => {
-        return { ...x, del_issue: x.del_issue + 1 };
-      });
-    }
-  }, [deleteIssueProgressDone]);
-
-  React.useEffect(() => {
-    if (checkWebhookProgressDone) {
-      setSteps(x => {
-        return { ...x, check_webhook: x.check_webhook + 1 };
-      });
-    }
-  }, [checkWebhookProgressDone]);
-
-  React.useEffect(() => {
-    if (deleteWebhookProgressDone === true) {
-      setSteps(x => {
-        return { ...x, del_webhook: x.del_webhook + 1 };
-      });
-    }
-  }, [deleteWebhookProgressDone]);
-
-  React.useEffect(() => {
-    if (deleteIntegrationProgressDone === true && deleteIntegrationRes.error === null) {
-      setTimeout(() => onDeleted(), 0);
-    }
-  }, [deleteIntegrationProgressDone, deleteIntegrationRes, onDeleted]);
-
+}> = ({ i }) => {
   return (
     <div className="grid gap-6 grid-cols-2">
       <div className="col-span-2 flex flex-col gap-4">
-        {configInputItem("Access Token:", accessTokenInput)}
-        <div className="col-end-4 col-span-1 flex justify-end">
-          <ThinButton
-            className="h-6 w-24 text-center"
-            onClick={() => {
-              updateApiKeyCall({ apiKey: accessToken });
-            }}
-            loading={updateApiKeyRes.loading}
-            disabled={accessToken === ""}
-          >
-            Update
-          </ThinButton>
-        </div>
-
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-1">
           <div>Repository:</div>
           {anchor(i.project_name, i.project_url)}
         </div>
-
-        <div className="flex justify-end">
-          <ThinButton
-            className="h-6 w-24 text-center"
-            onClick={() => {
-              setClear(x => x + 1);
-              setSteps(x => {
-                const y = x.get_repos;
-                return {
-                  get_repos: y,
-                  create_issue: y,
-                  del_issue: y,
-                  check_webhook: y,
-                  del_webhook: y,
-                  del_integration: y,
-                };
-              });
-              getRepositoriesCall();
-            }}
-          >
-            Test
-          </ThinButton>
-        </div>
-        <div className="col-end-4 col-span-1 flex justify-end">
-          <ThinButton
-            className="h-6 w-24 text-center"
-            onClick={() => {
-              setSteps(x => {
-                const y = x.get_repos;
-                return {
-                  get_repos: y,
-                  create_issue: y,
-                  del_issue: y,
-                  check_webhook: y,
-                  del_webhook: y,
-                  del_integration: y,
-                };
-              });
-              setDeleting(true);
-              deleteWebhookCall();
-            }}
-          >
-            Delete
-          </ThinButton>
-        </div>
-      </div>
-      <div className="col-span-2">
-        {operationStatus(
-          "Checking access",
-          getRepositoriesProgressDone,
-          getRepositoriesRes,
-          getRepositoriesProgressElem
-        )}
-        {getRepositoriesProgressDone &&
-          operationStatus(
-            "Creating test issue",
-            createIssueProgressDone,
-            createIssueRes,
-            createIssueProgressElem
-          )}
-        {getRepositoriesProgressDone &&
-          createIssueProgressDone &&
-          operationStatus(
-            "Closing test issue",
-            deleteIssueProgressDone,
-            deleteIssueRes,
-            deleteIssueProgressElem
-          )}
-        {getRepositoriesProgressDone &&
-          createIssueProgressDone &&
-          deleteIssueProgressDone &&
-          operationStatus(
-            "Testing webhook",
-            checkWebhookProgressDone,
-            checkWebhookRes,
-            checkWebhookProgressElem
-          )}
-        {deleting &&
-          operationStatus(
-            "Deleting webhook",
-            deleteWebhookProgressDone,
-            deleteWebhookRes,
-            deleteWebhookProgressElem
-          )}
-        {deleteWebhookProgressDone &&
-          operationStatus(
-            "Deleting integration",
-            deleteIntegrationProgressDone,
-            deleteIntegrationRes,
-            deleteIntegrationProgressElem
-          )}
+        <a
+          className="no-underline"
+          target="_blank"
+          href={`https://github.com/apps/${getGitHubAppName()}/installations/${i.installation_id}`}
+        >
+          <div className="bg-[#238636] text-white font-medium w-32 h-10 rounded-lg flex items-center justify-center gap-2 hover:bg-[#1B6F2B]">
+            <IconGitHub />
+            <span>Manage</span>
+          </div>
+        </a>
       </div>
     </div>
   );

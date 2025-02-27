@@ -6,23 +6,28 @@ defmodule Fog.Api.TrivialHandler do
   defmsg(Multi, [:message1, :message2])
   defmsg(Failed)
 
-  def info({:replied, message, new_session}, _session), do: {:reply, message, new_session}
-  def info({:echo, message}, _session), do: {:reply, %{message: message}}
-  def info(%Request{message: message}, _session), do: {:reply, %Ok{message: message}}
+  def info(c, s), do: info(c, s, [])
 
-  def info(%Multi{message1: m1, message2: m2}, _session),
+  def info({:replied, message, new_session}, _session, _pipeline),
+    do: {:reply, message, new_session}
+
+  def info({:echo, message}, _session, _pipeline), do: {:reply, %{message: message}}
+  def info(%Request{message: message}, _session, _pipeline), do: {:reply, %Ok{message: message}}
+
+  def info(%Multi{message1: m1, message2: m2}, _session, _pipeline),
     do: {:reply, [%Ok{message: m1}, %Ok{message: m2}]}
 
-  def info(%Failed{}, _session), do: raise("failed")
+  def info(%Failed{}, _session, _pipeline), do: raise("failed")
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 end
 
 defmodule Fog.Api.TrivialHandler2 do
   use Fog.Api.Handler
 
-  def info({:handler2_echo, message}, _session), do: {:reply, message, :session3}
-  def info(_, _), do: :skip
+  def info(c, s), do: info(c, s, [])
+  def info({:handler2_echo, message}, _session, _pipeline), do: {:reply, message, :session3}
+  def info(_, _, _), do: :skip
 end
 
 defmodule Test.Api.TrivialHandlerTest do

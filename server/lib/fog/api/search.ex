@@ -44,7 +44,9 @@ defmodule Fog.Api.Search do
   defmsg(Ok, [:items])
   deferr(Err)
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     m = deprecate(m)
 
     if auth(m, s) do
@@ -55,7 +57,7 @@ defmodule Fog.Api.Search do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp auth(%Issues{workspaceId: wid}, sess),
     do: Perm.Workspace.allowed?(sess, :read, workspace_id: wid)

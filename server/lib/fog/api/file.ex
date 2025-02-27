@@ -20,7 +20,9 @@ defmodule Fog.Api.File do
   defmsg(Ok, [:fileId])
   deferr(Err)
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     if auth(m, s) do
       binary = get_file_binary(m)
       mime_type = ExMarcel.MimeType.for({:string, binary})
@@ -66,7 +68,7 @@ defmodule Fog.Api.File do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def auth(%Upload{roomId: roomId}, s) do
     Perm.File.allowed?(s, :upload, room_id: roomId)

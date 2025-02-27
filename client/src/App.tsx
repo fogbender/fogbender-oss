@@ -9,7 +9,7 @@ import { useSetAtom } from "jotai";
 import { parse } from "query-string";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import NoUserFallback from "./NoUserFallback";
 import {

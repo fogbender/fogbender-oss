@@ -8,7 +8,8 @@ defmodule Fog.Data.Workspace do
     Tag,
     WorkspaceAgentRole,
     WorkspaceFeatureFlag,
-    WorkspaceIntegration
+    WorkspaceIntegration,
+    WorkspaceLlmIntegration
   }
 
   @derive {Jason.Encoder,
@@ -48,6 +49,7 @@ defmodule Fog.Data.Workspace do
     has_many(:feature_flags, WorkspaceFeatureFlag)
     has_many(:tags, Tag)
     has_many(:integrations, WorkspaceIntegration)
+    has_many(:llm_integrations, WorkspaceLlmIntegration)
 
     belongs_to(:deleted_by_agent, Agent, type: Fog.Types.AgentId)
     field(:deleted_at, :utc_datetime_usec)

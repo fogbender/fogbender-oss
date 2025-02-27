@@ -4,6 +4,7 @@ import type {
   EventMessage,
   EventNotificationMessage,
   EventTyping,
+  EventStreamReply,
   Attachment,
   AuthorType,
   MessageCreate,
@@ -30,7 +31,12 @@ import { useSharedRosterInternal } from "./sharedRoster";
 import { useServerWs } from "../useServerWs";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import type { Client } from "../client";
-import { extractEventMessage, extractEventSeen, extractEventTyping } from "../utils/castTypes";
+import {
+  extractEventMessage,
+  extractEventSeen,
+  extractEventTyping,
+  extractEventStreamReply,
+} from "../utils/castTypes";
 
 export type Author = {
   id: string;
@@ -177,6 +183,7 @@ function useProviderValue(
   }
 
   const lastIncomingMessage = useAtomValue(ws.lastIncomingMessageAtom);
+  const serverCall = ws.serverCall;
 
   React.useEffect(() => {
     if (!fogSessionId) {
@@ -186,7 +193,55 @@ function useProviderValue(
     if (lastIncomingMessage?.msgType === "Event.User") {
       setUserAvatarUrl(lastIncomingMessage.imageUrl);
     }
-  }, [fogSessionId, lastIncomingMessage]);
+  }, [fogSessionId, lastIncomingMessage, serverCall]);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+
+    if (!helpdeskId && !workspaceId) {
+      return;
+    }
+
+    const controlTopic = (() => {
+      if (workspaceId) {
+        return `workspace/${workspaceId}/control`;
+      } else if (helpdeskId) {
+        return `helpdesk/${helpdeskId}/control`;
+      } else {
+        return false;
+      }
+    })();
+
+    if (controlTopic) {
+      serverCall({
+        msgType: "Stream.Sub",
+        topic: controlTopic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+
+    return () => {
+      if (controlTopic) {
+        serverCall({
+          msgType: "Stream.UnSub",
+          topic: controlTopic,
+        }).then(x => {
+          console.assert(x.msgType === "Stream.UnSubOk");
+        });
+      }
+    };
+  }, [fogSessionId, workspaceId, helpdeskId, serverCall]);
+
+  React.useEffect(() => {
+    if (lastIncomingMessage?.msgType === "Event.Control") {
+      if (lastIncomingMessage.command === "reload") {
+        window.location.reload();
+      }
+    }
+  }, [lastIncomingMessage]);
 
   return React.useMemo(() => {
     return {
@@ -369,6 +424,13 @@ export function useWsCalls() {
     [serverCall]
   );
 
+  const streamReplyCancel = React.useCallback(
+    (messageId: string) => {
+      return serverCall({ msgType: "StreamReply.Cancel", messageId });
+    },
+    [serverCall]
+  );
+
   return {
     updateRoom,
     markRoomAsSeen,
@@ -378,6 +440,7 @@ export function useWsCalls() {
     deleteTag,
     resolveRoom,
     unresolveRoom,
+    streamReplyCancel,
   };
 }
 
@@ -964,6 +1027,69 @@ export const useRoomHistory = ({
     resetHistoryToLastPage,
     serverCall,
   };
+};
+
+export const useStreamReply = ({ roomId }: { roomId: string }) => {
+  const { fogSessionId, serverCall, lastIncomingMessageAtom } = useWs();
+  const lastIncomingMessage = useAtomValue(lastIncomingMessageAtom);
+
+  const rejectIfUnmounted = useRejectIfUnmounted();
+
+  const [streamReply, setStreamReply] = React.useState<Record<string, string | null>>({});
+
+  const processStreamReply = React.useCallback(
+    (event: EventStreamReply) => {
+      const { messageId, text } = event;
+      setStreamReply(prev => {
+        if (text === null) {
+          const { [messageId]: _, ...newRecord } = prev;
+          return newRecord;
+        }
+        return { ...prev, [messageId]: text };
+      });
+    },
+    [roomId]
+  );
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    serverCall({
+      msgType: "Stream.Sub",
+      topic: `room/${roomId}/stream-reply`,
+    })
+      .then(rejectIfUnmounted)
+      .then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+        if (x.msgType === "Stream.SubOk") {
+          extractEventStreamReply(x.items).forEach(t => {
+            processStreamReply(t);
+          });
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      serverCall({
+        msgType: "Stream.UnSub",
+        topic: `room/${roomId}/stream-reply`,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.UnSubOk");
+      });
+    };
+  }, [fogSessionId, roomId, serverCall, processStreamReply]);
+
+  React.useEffect(() => {
+    if (!fogSessionId) {
+      return;
+    }
+    if (lastIncomingMessage?.msgType === "Event.StreamReply") {
+      processStreamReply(lastIncomingMessage);
+    }
+  }, [fogSessionId, lastIncomingMessage, processStreamReply]);
+
+  return { streamReply };
 };
 
 export const useRoomTyping = ({

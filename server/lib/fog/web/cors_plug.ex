@@ -5,7 +5,7 @@ defmodule Fog.CORS do
     # if we set `origins: "*"` while it works it has almost all vulnerabilities explained in the article https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties so we are doing more thorough white listing instead
     origins: [{__MODULE__, :check_origin}],
     allow_credentials: true,
-    allow_headers: ["content-type"],
+    allow_headers: ["content-type", "openai-api-key"],
     max_age: 600
 
   resource("/api/client/*", origins: [{__MODULE__, :check_authority_only}])

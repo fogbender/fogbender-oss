@@ -1,12 +1,12 @@
 // @ts-check
-import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
-import react from "@astrojs/react";
-import { defineAstro } from "qgp";
-import { common } from "./qgp.config.mjs";
-import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
 import checker from "vite-plugin-checker";
+import starlight from "@astrojs/starlight";
+import expressiveCode from "astro-expressive-code";
 
 // const assetsDir = "storefront";
 
@@ -14,7 +14,6 @@ import checker from "vite-plugin-checker";
 export default defineConfig({
   site: "https://fogbender.com",
   integrations: [
-    mdx(),
     react(),
     sitemap({
       customPages: [
@@ -30,35 +29,95 @@ export default defineConfig({
         ].includes(page),
     }),
     partytown({ config: { forward: ["dataLayer.push"] } }),
+    starlight({
+      disable404Route: true,
+      title: "docs",
+      logo: {
+        light: "./src/assets/logotype-light.svg",
+        dark: "./src/assets/logotype-dark.svg",
+      },
+      favicon: "./public/favicon.ico",
+      sidebar: [
+        {
+          label: "Docs home",
+          link: "/docs",
+        },
+        {
+          label: "Start here",
+          autogenerate: {
+            directory: "docs/start-here",
+          },
+        },
+        {
+          label: "Libraries",
+          autogenerate: {
+            directory: "docs/libraries",
+          },
+        },
+        {
+          label: "Widget configuration",
+          autogenerate: {
+            directory: "docs/widget-configuration",
+          },
+        },
+        {
+          label: "Roster",
+          autogenerate: {
+            directory: "docs/roster",
+          },
+        },
+        {
+          label: "Messaging features",
+          autogenerate: {
+            directory: "docs/messaging-features",
+          },
+        },
+        {
+          label: "Comms integrations",
+          autogenerate: {
+            directory: "docs/comms-integrations",
+          },
+        },
+        {
+          label: "Issue tracker integrations",
+          autogenerate: {
+            directory: "docs/issue-tracker-integrations",
+          },
+        },
+      ],
+    }),
+    expressiveCode(),
+    mdx(),
   ],
   build: {
     format: "file",
   },
-  vite: defineAstro(common, {
+  vite: {
     plugins: [
       checker({
         typescript: true,
         overlay: { initialIsOpen: false, badgeStyle: "left: 55px; bottom: 8px;" },
-        enableBuild: false, // we already check that in `yarn ci:check`
       }),
     ],
     build: {
-      // assetsDir,
       sourcemap: true,
-      /*
-      rollupOptions: {
-        output: {
-          entryFileNames: assetsDir + "/[name].[hash].js",
-          chunkFileNames: assetsDir + "/chunks/[name].[hash].js",
-          assetFileNames: assetsDir + "/assets/[name].[hash][extname]",
+    },
+    resolve: {
+      alias: [
+        {
+          find: "./runtimeConfig",
+          replacement: "./runtimeConfig.browser",
         },
-      },
-      */
+        {
+          find: "fogbender-proto",
+          replacement: "fogbender-proto/src",
+        },
+      ],
     },
     ssr: {
       noExternal: ["smartypants"],
       external: ["svgo", "@11ty/eleventy-img"],
     },
-  }),
+  },
   server: { port: 3100 },
 });

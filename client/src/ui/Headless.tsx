@@ -15,7 +15,7 @@ const Headless = () => {
   }, [badges]);
 
   const { onNotification } = useClientNotifications({ roomById, ourId });
-  useOnNotifications({ onNotification, userId });
+  useOnNotifications({ onNotification, userId, isIdle: true }); // XXX not user about isIdle here
   return <noscript />;
 };
 

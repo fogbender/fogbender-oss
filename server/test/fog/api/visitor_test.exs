@@ -71,10 +71,15 @@ defmodule Fog.Api.VisitorTest do
     items = ApiProcess.flush(agent_api) |> Enum.sort_by(fn %struct{} -> struct end)
 
     assert [
-             %Api.Event.Room{},
+             # returned by api/event
+             %Api.Event.Room{} = r0,
+             # also returned handled api/roster
+             %Api.Event.Room{} = r1,
              %Api.Event.RosterRoom{},
              %Api.Event.RosterSection{name: "NEW VISITOR"}
            ] = items
+
+    assert %{r0 | msgId: nil} == %{r1 | msgId: nil}
   end
 
   test "Verification should work even if user is already a room member", ctx do

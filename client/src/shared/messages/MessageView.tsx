@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import DOMPurify from "dompurify";
 import {
   type Attachment,
   type Author,
@@ -10,25 +9,27 @@ import {
 } from "fogbender-proto";
 import "highlight.js/lib/common";
 import "highlight.js/styles/base16/decaf.css";
-import { useAtomValue } from "jotai";
+// import { useAtomValue } from "jotai";
 import React from "react";
-import { rehype } from "rehype";
-import rehypeHighlight from "rehype-highlight";
 
 import { ClipboardCopy } from "../components/ClipboardCopy";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { Equalizer } from "../components/Equalizer";
 import { Icons } from "../components/Icons";
 import { Avatar, MessageCheckbox } from "../components/lib";
 import { UserInfoCard } from "../components/UserInfoCard";
-import { modeAtom } from "../store/config.store";
+// import { modeAtom } from "../store/config.store";
 import { formatCustomerName, formatRoomName } from "../utils/format";
 import { useClickOutside } from "../utils/useClickOutside";
 
+import { MessageMenu } from "./MessageMenu";
+import { UserInfoCardReveal } from "./UserInfoCardReveal";
 import { MessageFileThumbnail } from "./MessageFileThumbnail";
 import { AddMessageReaction, EmojiPicker, MessageReactions } from "./MessageReactions";
 import { NewMessagesBelowIndicator } from "./NewMessagesBelowIndicator";
 import { NoActivityIndicator } from "./NoActivityIndicator";
 import { dayjs, formatTs, isTsCloseEnough } from "./times";
+import { sanitize, toFinalHtml } from "./utils";
 
 type MessageViewProps = {
   message: MessageT;
@@ -70,11 +71,15 @@ type MessageViewProps = {
   doFileIssue?: (value: boolean) => void;
   roomId?: string;
   roomRef?: React.MutableRefObject<HTMLElement | null | undefined>;
+  historyRef?: React.MutableRefObject<HTMLElement | null | undefined>;
   roomWidth?: number;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   askAi?: () => void;
   selectHover?: boolean;
   modeContainerHeight?: number;
+  streamReply?: Record<string, string | null>;
+  streamReplyCancel?: (messageId: string) => void;
+  onOpenStreamReplyPreview?: (roomId: string, messageId: string) => void;
 };
 
 export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
@@ -116,12 +121,16 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     roomId,
     roomWidth,
     roomRef,
+    historyRef,
     pinToRoom,
     askAi,
     selectHover = false,
     modeContainerHeight,
+    streamReply,
+    streamReplyCancel,
+    onOpenStreamReplyPreview,
   } = props;
-  const themeMode = useAtomValue(modeAtom);
+  // const themeMode = useAtomValue(modeAtom);
 
   const { id, tags, targets, linkStartMessageId, linkEndMessageId, linkRoomId, linkType } = message;
 
@@ -215,6 +224,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
 
   const topRef = React.useRef<HTMLDivElement>(null);
   const bottomRef = React.useRef<HTMLDivElement>(null);
+  const selectorRef = React.useRef<HTMLDivElement>(null);
   const componentHeight = React.useRef(0);
 
   const url = window.location.href;
@@ -255,6 +265,9 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
 
   const defaultMessageReactionBottom = 160;
   const messageReactionBottom = (modeContainerHeight ?? defaultMessageReactionBottom) + "px";
+
+  const showBalloonTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
   return (
     <React.Fragment>
       <div ref={topRef} />
@@ -268,7 +281,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           !selected && !nonInteractive && !inInternalRoom && "hover:border-brand-orange-500/50",
           isFirst && "mt-auto",
           tags && tags.some(t => highlightedTags.includes(t)) && "bg-red-200",
-          // (highlight || true) && "bg-yellow-100 dark:bg-amber-700",
+          highlight && "bg-yellow-300 dark:bg-orange-700",
           isSearchView && !nonInteractive && "cursor-pointer"
         )}
         key={id}
@@ -276,16 +289,17 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
         id={id}
         onClick={isSearchView ? onClick : undefined}
       >
-        {highlight && (
+        {/* false && highlight && (
           <div
             className={classNames(
               "absolute w-full h-full z-50",
               themeMode === "dark" && "dark",
-              "bg-yellow-100 dark:bg-amber-700 opacity-70"
+              "bg-yellow-100 dark:bg-amber-700 opacity-70 rounded-lg"
             )}
           />
-        )}
+        ) */}
         <div
+          ref={selectorRef}
           className={classNames(
             "selector group flex absolute inset-y-0 -left-4 w-12 border-l-3 border-transparent",
             !nonInteractive && "cursor-pointer"
@@ -343,7 +357,22 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
         {(!isContiguous || linkType === "reply") && (
           <div
             className={classNames("flex items-center ml-8 mb-1 mt-4", isPending && "opacity-50")}
-            onMouseLeave={() => setShowBalloon(false)}
+            onMouseLeave={() => {
+              if (showBalloonTimerRef.current) {
+                clearTimeout(showBalloonTimerRef.current);
+              }
+
+              showBalloonTimerRef.current = setTimeout(() => {
+                setShowBalloon(false);
+              }, 2000);
+            }}
+            onMouseEnter={() => {
+              if (showBalloon) {
+                if (showBalloonTimerRef.current) {
+                  clearTimeout(showBalloonTimerRef.current);
+                }
+              }
+            }}
           >
             <span className="flex-1 flex items-center truncate gap-1">
               <span
@@ -353,6 +382,11 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                 )}
                 onClick={e => {
                   e.stopPropagation();
+
+                  if (showBalloonTimerRef.current) {
+                    clearTimeout(showBalloonTimerRef.current);
+                  }
+
                   setShowBalloon(x => !x);
                 }}
               >
@@ -408,14 +442,18 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
               </span>
             )}
             {!isSearchView && !nonInteractive && (
-              <UserInfoCardReveal show={showBalloon}>
+              <UserInfoCardReveal
+                show={showBalloon}
+                scrollableRef={historyRef}
+                messageRef={selectorRef}
+              >
                 <UserInfoCard
                   author={message.author}
                   onOpenClick={
                     onOpenDialog &&
                     message.author.id !== myAuthor?.id &&
                     !inDialog &&
-                    (message.author.type === "user" || myAuthor?.type === "agent")
+                    (["user", "app"].includes(message.author.type) || myAuthor?.type === "agent")
                       ? () => onOpenDialog(message.author.id, message.author.type)
                       : undefined
                   }
@@ -630,6 +668,7 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
                       cancelSelection={cancelSelection}
                       pinToRoom={pinToRoom}
                       isAgent={isAgent}
+                      historyRef={historyRef}
                     />
                   </span>
                 </>
@@ -664,6 +703,46 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
           </span>
         </div>
       )}
+
+      {streamReply && streamReply[id] /* true */ && (
+        <div className="ml-11 flex gap-4 items-center">
+          <Equalizer active={true} />
+          <div
+            className="fog:text-link fog:text-caption-s"
+            onClick={() => {
+              if (onOpenStreamReplyPreview && roomId) {
+                onOpenStreamReplyPreview(roomId, id);
+              }
+            }}
+          >
+            Preview
+          </div>
+          <div
+            className="fog:text-link fog:text-caption-s"
+            onClick={() => {
+              if (streamReplyCancel) {
+                streamReplyCancel(id);
+              }
+            }}
+          >
+            Cancel
+          </div>
+        </div>
+      )}
+
+      {/*
+        <div className="relative w-full">
+          <div className="absolute w-11 h-4 bg-white dark:bg-brand-dark-bg" />
+          <div
+            className="flex items-center pl-10 border-l-5 border-transparent text-gray-500 dark:text-gray-400 fog:text-body-xs whitespace-nowrap"
+            style={{ direction: "rtl" }}
+          >
+            <div className="" style={{ direction: "ltr" }}>
+              {streamReply[id]}
+            </div>
+          </div>
+        </div>
+        */}
 
       {targets &&
         targets.length !== 0 &&
@@ -727,34 +806,6 @@ export const MessageView: React.FC<MessageViewProps> = React.memo(props => {
     </React.Fragment>
   );
 });
-
-const UserInfoCardReveal: React.FC<{ show: boolean; children?: React.ReactNode }> = ({
-  show,
-  children,
-}) => {
-  const [mounted, setMounted] = React.useState<HTMLDivElement | null>(null);
-  const [visible, setVisible] = React.useState(false);
-  React.useLayoutEffect(() => {
-    const t = setTimeout(() => setVisible(show), 50);
-    return () => {
-      clearTimeout(t);
-    };
-  }, [show]);
-  if (show || mounted) {
-    return (
-      <div
-        ref={setMounted}
-        className={classNames(
-          "absolute z-10 top-0 -mt-24 left-4 transition delay-0 duration-300 w-11/12",
-          visible ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
-      >
-        {children}
-      </div>
-    );
-  }
-  return null;
-};
 
 const PendingMessageIndicator: React.FC<{
   failed: boolean;
@@ -859,7 +910,7 @@ export const SourceMessages: React.FC<{
             }
           }}
         >
-          {linkType === "broadcast" ? "Broadcast" : "Forwarded messages"}
+          {linkType === "broadcast" ? "Broadcast" : "Forwarded"}
           {sourceRoomName && (
             <React.Fragment>
               {" "}
@@ -872,12 +923,13 @@ export const SourceMessages: React.FC<{
 
       <div
         className={classNames(
-          "fog:chat-message fbr-link-preview py-1 px-2 rounded-md cursor-pointer",
+          "fog:chat-message py-1 px-2 bg-zinc-50 dark:bg-zinc-900",
           isPreview && "drop-shadow-[10px_-10px_4px_rgba(9,9,11,0.10)]",
           isPreview && "dark:drop-shadow-[10px_-10px_4px_rgba(9,9,11,0.5)]",
-          linkType === "forward" && "bg-indigo-50 dark:bg-indigo-950",
-          linkType === "reply" && "bg-sky-200 fog:text-body-s dark:bg-cyan-950",
-          linkType === "broadcast" && "bg-red-50 dark:bg-pink-900",
+          sourceRoomName && "cursor-pointer",
+          linkType === "forward" && "border-l-5 border-indigo-200 dark:border-indigo-800",
+          linkType === "reply" && "border-l-5 border-sky-200 fog:text-body-s dark:border-cyan-800",
+          linkType === "broadcast" && "border-l-5 border-red-200 dark:border-pink-900",
           className
         )}
         onClick={!isSearchView ? onClick : undefined}
@@ -996,45 +1048,9 @@ const MessageContent: React.FC<{
         )
       : parsed;
 
-  const sanitized = DOMPurify.sanitize(parsedWithMyMention, {
-    ALLOWED_TAGS: [
-      "p",
-      "b",
-      "i",
-      "br",
-      "strong",
-      "em",
-      "pre",
-      "code",
-      "a",
-      "blockquote",
-      "sup",
-      "hr",
-      "s",
-      "ul",
-      "ol",
-      "li",
-      "table",
-      "th",
-      "tr",
-      "td",
-      "caption",
-      "colgroup",
-      "col",
-      "thead",
-      "tbody",
-      "tfoot",
-    ],
-    ALLOWED_ATTR: ["href", "target", "class"],
-    ALLOW_DATA_ATTR: false,
-  });
+  const sanitized = sanitize(parsedWithMyMention);
 
-  const finalHtml = String(
-    rehype()
-      .data("settings", { fragment: true })
-      .use(rehypeHighlight, { detect: true })
-      .processSync(sanitized)
-  );
+  const finalHtml = toFinalHtml(sanitized);
 
   const isSingleEmoji = /^<p>\p{Extended_Pictographic}<\/p>$/u.test(finalHtml);
 
@@ -1046,6 +1062,7 @@ const MessageContent: React.FC<{
   );
 
   const inReply = linkType === "reply";
+  const inForward = linkType === "forward";
 
   const messageLength = message.rawText.length;
   let codeSnippetText = "";
@@ -1106,7 +1123,7 @@ const MessageContent: React.FC<{
                 </span>
               </div>
             )}
-          {codeSnippetText && !inReply && (
+          {codeSnippetText && !inReply && !inForward && (
             <ClipboardCopy text={codeSnippetText}>
               <div
                 className={classNames(
@@ -1187,6 +1204,7 @@ type ToolBarMenuProps = {
   cancelSelection: () => void;
   pinToRoom?: (isPinned: boolean, roomId: string, tag: string) => void;
   isAgent: boolean;
+  historyRef?: React.MutableRefObject<HTMLElement | null | undefined>;
 };
 
 const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
@@ -1199,6 +1217,7 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
     cancelSelection,
     pinToRoom,
     isAgent,
+    historyRef,
   } = props;
   const [showMenu, setShowMenu] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -1254,8 +1273,10 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
     cancelSelection();
   }, [room, groupPinTag, pinToRoom]);
 
+  const menuBarRef = React.useRef<HTMLDivElement>(null);
+
   return (
-    <>
+    <div ref={menuBarRef}>
       <div
         onClick={() => {
           setShowMenu(x => !x);
@@ -1265,93 +1286,95 @@ const ToolBarMenu: React.FC<ToolBarMenuProps> = React.memo(props => {
         <Icons.Menu className="w-4" />
       </div>
       {showMenu && (
-        <div
-          ref={menuRef}
-          className={classNames(
-            "absolute z-10 bottom-9 right-0 flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m",
-            "dark:bg-black dark:text-white"
-          )}
-        >
-          {!isGroupPinned && !isPinned && (
-            <button
-              className={classNames(
-                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-600"
-              )}
-              onClick={onGroupPinRoom}
-            >
-              <span className="pr-2">
-                <Icons.Pin
-                  className={classNames(
-                    "w-6 text-gray-500 group-hover:text-gray-800",
-                    "dark:text-gray-200 dark:group-hover:text-gray-200"
-                  )}
-                />
-              </span>
-              <span>Pin message for all </span>
-            </button>
-          )}
-          {!isPinned && !isGroupPinned && (
-            <button
-              className={classNames(
-                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-600"
-              )}
-              onClick={onPinRoom}
-            >
-              <span className="pr-2">
-                <Icons.PinMe
-                  className={classNames(
-                    "w-6 text-gray-500 group-hover:text-gray-800",
-                    "dark:text-gray-200 dark:group-hover:text-gray-200"
-                  )}
-                />
-              </span>
-              <span>Pin only for me</span>
-            </button>
-          )}
-          {(isPinned || isGroupPinned) && (
-            <button
-              className={classNames(
-                "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
-                "dark:hover:bg-gray-600"
-              )}
-              onClick={isPinned ? onPinRoom : onGroupPinRoom}
-            >
-              <span className="pr-2 text-gray-500 dark:text-gray-200">
-                <Icons.Unpin className="w-5 group-hover:text-gray-800 dark:group-hover:text-gray-200" />
-              </span>
-              <span>Unpin message</span>
-            </button>
-          )}
-          <button
+        <MessageMenu menuBarRef={menuBarRef} targetRef={historyRef}>
+          <div
+            ref={menuRef}
             className={classNames(
-              "hover:bg-gray-100 px-4 py-2 text-left whitespace-nowrap",
-              "dark:hover:bg-gray-600"
+              "flex flex-col rounded-lg py-2 bg-white fog:box-shadow-m fog:text-body-m",
+              "dark:bg-zinc-800 dark:text-white"
             )}
-            onClick={() => onMarkMessageUnread?.(message)}
           >
-            Mark as unread and close
-          </button>
-          {isAgent && (
-            <ClipboardCopy
-              className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-600")}
-              text={`${window.location.href}/${message.roomId}/${message.id}`}
-              onCopy={() => setMessageLinkCopied(true)}
+            {!isGroupPinned && !isPinned && (
+              <button
+                className={classNames(
+                  "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                  "dark:hover:bg-zinc-700"
+                )}
+                onClick={onGroupPinRoom}
+              >
+                <span className="pr-2">
+                  <Icons.Pin
+                    className={classNames(
+                      "w-5 text-gray-500 group-hover:text-gray-800",
+                      "dark:text-gray-200 dark:group-hover:text-gray-200"
+                    )}
+                  />
+                </span>
+                <span>Pin message for all </span>
+              </button>
+            )}
+            {!isPinned && !isGroupPinned && (
+              <button
+                className={classNames(
+                  "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                  "dark:hover:bg-zinc-700"
+                )}
+                onClick={onPinRoom}
+              >
+                <span className="pr-2">
+                  <Icons.PinMe
+                    className={classNames(
+                      "w-5 text-gray-500 group-hover:text-gray-800",
+                      "dark:text-gray-200 dark:group-hover:text-gray-200"
+                    )}
+                  />
+                </span>
+                <span>Pin only for me</span>
+              </button>
+            )}
+            {(isPinned || isGroupPinned) && (
+              <button
+                className={classNames(
+                  "hover:bg-gray-100 flex group items-center px-4 py-2 text-left whitespace-nowrap",
+                  "dark:hover:bg-zinc-700"
+                )}
+                onClick={isPinned ? onPinRoom : onGroupPinRoom}
+              >
+                <span className="pr-2 text-gray-500 dark:text-gray-200">
+                  <Icons.Unpin className="w-5 group-hover:text-gray-800 dark:group-hover:text-gray-200" />
+                </span>
+                <span>Unpin message</span>
+              </button>
+            )}
+            <button
+              className={classNames(
+                "hover:bg-gray-100 px-4 py-2 text-left whitespace-nowrap",
+                "dark:hover:bg-zinc-700"
+              )}
+              onClick={() => onMarkMessageUnread?.(message)}
             >
-              <AnimateOnCopy show={messageLinkCopied}>Copy link to message</AnimateOnCopy>
+              Mark as unread and close
+            </button>
+            {isAgent && (
+              <ClipboardCopy
+                className={classNames("hover:bg-gray-100", "dark:hover:bg-zinc-700")}
+                text={`${window.location.href}/${message.roomId}/${message.id}`}
+                onCopy={() => setMessageLinkCopied(true)}
+              >
+                <AnimateOnCopy show={messageLinkCopied}>Copy link to message</AnimateOnCopy>
+              </ClipboardCopy>
+            )}
+            <ClipboardCopy
+              className={classNames("hover:bg-gray-100", "dark:hover:bg-zinc-700")}
+              text={message.rawText}
+              onCopy={() => setMessageTextCopied(true)}
+            >
+              <AnimateOnCopy show={messageTextCopied}> Copy text</AnimateOnCopy>
             </ClipboardCopy>
-          )}
-          <ClipboardCopy
-            className={classNames("hover:bg-gray-100", "dark:hover:bg-gray-600")}
-            text={message.rawText}
-            onCopy={() => setMessageTextCopied(true)}
-          >
-            <AnimateOnCopy show={messageTextCopied}> Copy text</AnimateOnCopy>
-          </ClipboardCopy>
-        </div>
+          </div>
+        </MessageMenu>
       )}
-    </>
+    </div>
   );
 });
 

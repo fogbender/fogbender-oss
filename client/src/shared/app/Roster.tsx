@@ -18,7 +18,7 @@ import {
 import { useAtomValue } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { Icons } from "../components/Icons";
 import { Avatar, RosterChevronButton, UnreadCircle } from "../components/lib";
@@ -69,6 +69,8 @@ export const Roster: React.FC<{
 
   const toggleRosterSection = React.useCallback(
     (section: keyof typeof openedRosterSections) => {
+      /*
+       * mutually-exclusive accordeon sections are horrible
       if (isIframe) {
         setOpenedRosterSections(sections => {
           const newSections = { ...sections };
@@ -79,6 +81,9 @@ export const Roster: React.FC<{
       } else {
         setOpenedRosterSections(sections => ({ ...sections, [section]: !sections[section] }));
       }
+      */
+
+      setOpenedRosterSections(sections => ({ ...sections, [section]: !sections[section] }));
     },
     [isIframe]
   );
@@ -407,7 +412,7 @@ export const RoomItem: React.FC<{
       onClick={e => onClick(room, { forceFullscreen: e.metaKey || e.ctrlKey })}
     >
       {isAgent && (
-        <div className="flex items-center space-x-1 fog:text-caption-xl truncate">
+        <div className="flex items-center space-x-1 fog:text-body-m truncate">
           <div className="flex-1 flex flex-col truncate text-gray-600 dark:text-gray-400">
             {formatCustomerName(room.customerName)}
           </div>
@@ -439,7 +444,7 @@ export const RoomItem: React.FC<{
           <Icons.RoomExternal className="w-4 h-4 text-gray-500" />
         )}
 
-        <span className="flex-1 flex flex-col fog:text-body-m truncate">
+        <span className="flex-1 flex flex-col fog:text-body-m font-bold truncate">
           <span
             className={classNames(showAsInternal && "text-green-500", "leading-snug truncate")}
             title={roomName}
@@ -552,14 +557,10 @@ export const RosterViewSubscription = (props: { options: RosterViewOptions }) =>
       invariant(res.msgType === "Roster.OpenViewOk", () => {
         console.error("Roster.OpenViewOk expected", res);
       });
-      return res.items;
-    },
-    onSuccess: items => {
-      dispatchRosterSections({ action: "reset_view", items });
+      dispatchRosterSections({ action: "reset_view", items: res.items });
     },
     enabled: !!topic,
     staleTime: Infinity,
-    cacheTime: 0,
   });
 
   React.useEffect(() => {

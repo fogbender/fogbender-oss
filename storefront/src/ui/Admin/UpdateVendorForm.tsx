@@ -1,6 +1,6 @@
 import { LinkButton, ThickButton, useInputWithError } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { type Vendor } from "../../redux/adminApi";
@@ -12,27 +12,25 @@ export const UpdateVendorForm: React.FC<{
   onClose: () => void;
   onDeleteClick?: () => void;
 }> = ({ vendor, nameOk, onClose, onDeleteClick }) => {
-  const updateVendorMutation = useMutation(
-    () => {
+  const updateVendorMutation = useMutation({
+    mutationFn: async () => {
       return fetch(`${getServerUrl()}/api/vendors/${vendor.id}`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({ name: newVendorName }),
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.vendors());
-          onClose();
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          setUpdateVendorError(error);
-        }
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+        onClose();
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        setUpdateVendorError(error);
+      }
+    },
+  });
 
   const [updateVendorError, setUpdateVendorError] = React.useState<string>();
 
@@ -40,7 +38,7 @@ export const UpdateVendorForm: React.FC<{
     title: "Organization name",
     defaultValue: vendor?.name,
     error: updateVendorError,
-    disabled: updateVendorMutation.isLoading,
+    disabled: updateVendorMutation.isPending,
     redErrorBorder: !!updateVendorError,
   });
 
@@ -73,7 +71,7 @@ export const UpdateVendorForm: React.FC<{
       {newVendorNameInput}
 
       <div className="flex flex-wrap justify-between flex-col gap-y-4 md:flex-row md:gap-x-4">
-        <ThickButton disabled={!formOk} loading={updateVendorMutation.isLoading}>
+        <ThickButton disabled={!formOk} loading={updateVendorMutation.isPending}>
           Update organization
         </ThickButton>
         <LinkButton

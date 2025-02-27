@@ -12,7 +12,7 @@ import {
   useInput,
 } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { type Vendor } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
@@ -22,9 +22,10 @@ export const AgentGroups: React.FC<{
   ourId: string;
   ourRole: string;
 }> = ({ vendor, ourId, ourRole }) => {
-  const agentGroupsData = useQuery(queryKeys.agentGroups(vendor.id), () =>
-    apiServer.get(`/api/vendors/${vendor.id}/groups`).json<AgentGroup[]>()
-  );
+  const agentGroupsData = useQuery({
+    queryKey: queryKeys.agentGroups(vendor.id),
+    queryFn: async () => apiServer.get(`/api/vendors/${vendor.id}/groups`).json<AgentGroup[]>(),
+  });
 
   const { data: agentGroups } = agentGroupsData;
 
@@ -35,7 +36,7 @@ export const AgentGroups: React.FC<{
       return apiServer.url(`/api/vendors/${vendor.id}/groups/${name}`).delete().text();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.agentGroups(vendor.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.agentGroups(vendor.id) });
       setDeletingGroupName(undefined);
     },
   });
@@ -68,7 +69,6 @@ export const AgentGroups: React.FC<{
       )}
       <div className="flex flex-wrap gap-2 items-center">
         <ThickButton
-          small={true}
           onClick={() => {
             setAddNewGroup(true);
           }}
@@ -150,7 +150,7 @@ export const AgentGroups: React.FC<{
                       }}
                     >
                       {group.name !== "all" &&
-                        (deleteGroupMutation.isLoading && deletingGroupName === group.name ? (
+                        (deleteGroupMutation.isPending && deletingGroupName === group.name ? (
                           <Icons.Spinner className="w-5 ml-6" />
                         ) : (
                           <Icons.Trash
@@ -196,13 +196,13 @@ export const AddGroupForm: React.FC<{
   const [membersToRemove, setMembersToRemove] = React.useState<Set<string>>(new Set([]));
 
   const [myAgent, checkedAgents, uncheckedAgents, selectedAgents] = React.useMemo(() => {
-    const allAgents = ([...(agents as Agent[])] || [])
+    const allAgents = [...(agents as Agent[])]
       .filter(x => x.role === "owner" || x.role === "admin" || x.role === "agent")
       .filter(
         x => !agentsSearchValue || x.name.toLowerCase().includes(agentsSearchValue.toLowerCase())
       )
       .sort((a, b) => a.name.localeCompare(b.name));
-    const allSelectedAgents = ([...(agents as Agent[])] || [])
+    const allSelectedAgents = [...(agents as Agent[])]
       .filter(x => x.role === "owner" || x.role === "admin" || x.role === "agent")
       .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -243,7 +243,7 @@ export const AddGroupForm: React.FC<{
         .text();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.agentGroups(vendor.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.agentGroups(vendor.id) });
     },
   });
 
@@ -274,7 +274,7 @@ export const AddGroupForm: React.FC<{
         .text();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.agentGroups(vendor.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.agentGroups(vendor.id) });
       setShowAgents(false);
       onClose();
     },
@@ -286,7 +286,7 @@ export const AddGroupForm: React.FC<{
       className="flex flex-col gap-2.5 sm:gap-6 overflow-auto"
       onSubmit={e => {
         e.preventDefault();
-        if (!updateGroupMutation.isLoading || !addGroupMutation.isLoading) {
+        if (!updateGroupMutation.isPending || !addGroupMutation.isPending) {
           if (isNewGroup && groupName) {
             addGroupMutation.mutate({ name: groupName });
           }
@@ -353,7 +353,7 @@ export const AddGroupForm: React.FC<{
                 </div>
                 <Combobox multiple={true} value={[]}>
                   <div className="mt-2">
-                    <div className="flex bg-gray-100 dark:bg-black items-center rounded-t-xl px-2">
+                    <div className="flex bg-gray-100 dark:bg-black items-center rounded-xl px-2">
                       <Combobox.Label className="w-4 text-gray-500 cursor-pointer">
                         {agentsSearchValue ? (
                           <Icons.XCircleFilled />
@@ -364,7 +364,7 @@ export const AddGroupForm: React.FC<{
                       <Combobox.Input
                         ref={inputRef}
                         className={
-                          "flex-1 px-2 py-3 bg-transparent outline-none text-black dark:text-white placeholder-gray-500 text-base sm:text-sm pl-2"
+                          "flex-1 px-2 py-3 bg-transparent outline-none text-black dark:text-white placeholder-gray-500 text-base sm:text-sm"
                         }
                         placeholder="Search agents..."
                         onChange={evt => {
@@ -448,8 +448,7 @@ export const AddGroupForm: React.FC<{
                         addGroupName.trim().length > 0)) && (
                       <div className="px-2 pt-2 border-gray-200">
                         <ThickButton
-                          loading={updateGroupMutation.isLoading || addGroupMutation.isLoading}
-                          small={true}
+                          loading={updateGroupMutation.isPending || addGroupMutation.isPending}
                         >
                           {isNewGroup ? "Add group" : "Update"}
                         </ThickButton>

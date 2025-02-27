@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { apiServer, queryKeys } from "./client";
 
@@ -9,12 +9,11 @@ export type VerifiedDomain = {
 };
 
 export function useVerifiedDomains(vendorId: string | undefined) {
-  return useQuery(
-    queryKeys.verifiedDomains(vendorId || "N/A"),
-    () => apiServer.get(`/api/vendors/${vendorId}/verified_domains`).json<VerifiedDomain[]>(),
-    {
-      initialData: [],
-      enabled: vendorId !== undefined,
-    }
-  );
+  return useQuery({
+    queryKey: queryKeys.verifiedDomains(vendorId || "N/A"),
+    queryFn: () =>
+      apiServer.get(`/api/vendors/${vendorId}/verified_domains`).json<VerifiedDomain[]>(),
+    initialData: [],
+    enabled: vendorId !== undefined,
+  });
 }

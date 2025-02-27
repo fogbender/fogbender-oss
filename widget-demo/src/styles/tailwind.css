@@ -1,0 +1,12 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+
+@media (max-width: 980px) {
+  .header-inner {
+    width: 100%;
+  }
+}
+
+@tailwind utilities;

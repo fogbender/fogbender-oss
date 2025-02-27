@@ -13,7 +13,7 @@ export const UserInfoCard: React.FC<{
   const authorEmail = useAuthorEmail(author);
   return (
     <div>
-      <div className="flex rounded-lg shadow-lg truncate gap-x-4 p-3 bg-white dark:bg-black max-w-min">
+      <div className="flex rounded-lg shadow-lg truncate gap-x-4 p-3 bg-white dark:bg-zinc-700 dark:text-white max-w-min">
         <div className="truncate flex flex-col">
           <div className="flex items-center truncate fog:text-chat-username-m my-0.5">
             <span className="truncate">{author.name}</span>
@@ -35,7 +35,11 @@ export const UserInfoCard: React.FC<{
           )}
           {onOpenClick && (
             <div className="fog:text-caption-s my-0.5 flex items-center">
-              <ThinButton small={true} onClick={onOpenClick}>
+              <ThinButton
+                className="hover:text-brand-red-500 hover:border-brand-red-500"
+                small={true}
+                onClick={onOpenClick}
+              >
                 Open 1-1
               </ThinButton>
             </div>

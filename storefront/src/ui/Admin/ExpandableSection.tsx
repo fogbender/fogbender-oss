@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { ChevronButton } from "fogbender-client/src/shared/ui/ChevronButton";
 import React from "react";
 
@@ -12,7 +13,7 @@ export const ExpandableSection: React.FC<{
   count?: number;
   children?: React.ReactNode;
 }> = ({ title, expand, hash, anchor, url, count, children }) => {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(expand);
 
   React.useEffect(() => {
     setExpanded(expand);
@@ -50,7 +51,14 @@ export const ExpandableSection: React.FC<{
         </span>
         {count && <span className="text-base text-gray-500">{count}</span>}
       </h2>
-      <div className={expanded ? "" : "hidden"}>{children}</div>
+      <div
+        className={classNames("overflow-hidden transition-all duration-300 ease-out", {
+          "max-h-0 opacity-0": !expanded,
+          "max-h-[1000px] opacity-100": expanded,
+        })}
+      >
+        {children}
+      </div>
     </div>
   );
 };

@@ -51,7 +51,9 @@ defmodule Fog.Api.Room do
   defmsg(Ok, [:roomId])
   deferr(Err)
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     m = normalize_tags(m)
 
     if auth(m, s) do
@@ -63,7 +65,7 @@ defmodule Fog.Api.Room do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp auth(%Create{helpdeskId: hid, linkRoomId: link_room_id, tags: tags}, sess) do
     Perm.Room.allowed?(sess, :create, helpdesk_id: hid, link_room_id: link_room_id, tags: tags)

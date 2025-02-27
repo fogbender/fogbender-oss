@@ -47,6 +47,26 @@ a {
 }
 
 html pre code.hljs {
-  @apply overflow-visible bg-transparent p-0 text-black;
+  @apply overflow-visible bg-transparent p-0 text-black dark:text-white;
   white-space: pre-wrap;
+}
+
+.bg-dots {
+  background-image: radial-gradient(theme("colors.zinc.300") 1px, transparent 1px);
+  background-size: 5px 5px;
+}
+
+.dark .bg-dots {
+  background-image: radial-gradient(theme("colors.zinc.800") 1px, transparent 1px);
+  background-size: 5px 5px;
+}
+
+@layer components {
+  .table tr:not(:last-child) {
+    @apply border-b border-b-zinc-200 dark:border-b-zinc-700;
+  }
+
+  .table thead tr {
+    @apply border-b border-b-zinc-500;
+  }
 }

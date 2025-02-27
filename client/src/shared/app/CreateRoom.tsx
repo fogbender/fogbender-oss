@@ -3,7 +3,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import { type SearchCustomers, useRosterActions, useWs } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { Icons } from "../components/Icons";
 import { CustomerAvatar, FilterInput, ThickButton } from "../components/lib";
@@ -35,9 +35,9 @@ export const CreateRoom: React.FC<{
 
   const [searchInputValue, setSearchInputValue] = React.useState<string>();
 
-  const { data: internalCustomerData } = useQuery(
-    queryKeys.internalCustomers(workspaceId),
-    async () => {
+  const { data: internalCustomerData } = useQuery({
+    queryKey: queryKeys.internalCustomers(workspaceId),
+    queryFn: async () => {
       if (userId && workspaceId) {
         const res = await serverCall<SearchCustomers>({
           msgType: "Search.Customers",
@@ -51,15 +51,13 @@ export const CreateRoom: React.FC<{
       }
       return;
     },
-    {
-      enabled: !!workspaceId,
-      staleTime: Infinity,
-    }
-  );
+    enabled: !!workspaceId,
+    staleTime: Infinity,
+  });
 
-  const { data: customers } = useQuery(
-    ["searchCustomers", searchInputValue],
-    async () => {
+  const { data: customers } = useQuery({
+    queryKey: ["searchCustomers", searchInputValue],
+    queryFn: async () => {
       if (userId && workspaceId) {
         const res = await serverCall({
           msgType: "Search.Customers",
@@ -72,8 +70,8 @@ export const CreateRoom: React.FC<{
       }
       return;
     },
-    { keepPreviousData: true }
-  );
+    placeholderData: prev => prev,
+  });
 
   const options = React.useMemo(() => {
     const filteredCustomers = (customers || []).filter(

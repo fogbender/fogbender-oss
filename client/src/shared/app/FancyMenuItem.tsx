@@ -7,7 +7,7 @@ export const FancyMenuItem = ({
   icon,
   className,
 }: {
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent) => void;
   text: string;
   icon: React.ReactNode;
   className?: string;
@@ -15,11 +15,11 @@ export const FancyMenuItem = ({
   return (
     <li
       className={classNames(
-        "p-2 block text-gray-900 dark:text-white hover:text-brand-red-500 dark:hover:text-brand-red-500",
+        "group p-2 block text-gray-900 dark:text-white hover:text-brand-red-500 dark:hover:text-brand-red-500",
         className
       )}
     >
-      <button className="flex w-full text-left gap-4 px-2 items-center" onClick={onClick}>
+      <button className="flex w-full text-left gap-4 px-2 items-center" onClick={e => onClick(e)}>
         <span className="whitespace-nowrap grow">{text}</span>
         {icon}
       </button>

@@ -10,6 +10,8 @@ import logo from "../assets/logo.svg";
 import { googleLoginUrl } from "../config";
 import { store } from "../redux/store";
 
+import BackgroundImage from "../assets/kiwihug-3gifzboyZk0-unsplash.jpg?url";
+
 import { Auth } from "./amazon";
 import {
   ConfirmEmailForm,
@@ -80,8 +82,16 @@ export const SignupForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogi
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md py-12 px-6">
+    <div
+      className="flex min-h-screen items-center justify-center bg-gray-100"
+      style={{
+        backgroundImage: `url(${BackgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "50% 0%",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="w-full max-w-md py-12 px-6 bg-amber-50 rounded-lg">
         <div className="mx-auto flex items-end justify-center">
           <img className="h-12" src={logo.src} alt="" />
           <img className="ml-2 h-8" src={fogbender.src} alt="" />
@@ -263,7 +273,7 @@ export const SignupForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogi
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm leading-5">
-              <span className="bg-gray-100 px-2 text-gray-500">Already have an account?</span>
+              <span className="bg-gray-100 px-2 text-black bg-gray-300 rounded-full">Already have an account?</span>
             </div>
           </div>
           <div className="mt-5">

@@ -145,4 +145,23 @@ defmodule Fog.Repo.Workspace do
       ]
     )
   end
+
+  def delete_integration(integration, workspace) do
+    Repo.get_by(Data.WorkspaceIntegration, id: integration.id)
+    |> Repo.delete!()
+
+    integration_tag =
+      Data.Tag
+      |> Repo.get_by(
+        name: ":#{integration.type}:#{integration.project_id}",
+        workspace_id: integration.workspace_id
+      )
+
+    inactive_tag = Repo.Tag.create(workspace.id, ":app:inactive")
+    bot_agent = Repo.Agent.get_bot_by_tag_name(workspace.id, integration_tag.name)
+
+    Fog.Utils.add_tags_to_author(bot_agent, [inactive_tag.id])
+
+    :ok
+  end
 end

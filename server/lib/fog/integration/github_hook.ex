@@ -230,6 +230,30 @@ defmodule Fog.Integration.GitHubHook do
 
     issue_tag = get_issue_tag(integration, issue)
 
+    add_status_tag =
+      case issue["state"] do
+        "open" ->
+          Repo.Tag.create(integration.workspace_id, ":status:open")
+
+        "closed" ->
+          Repo.Tag.create(integration.workspace_id, ":status:closed")
+
+        _ ->
+          Repo.Tag.create(integration.workspace_id, ":issue")
+      end
+
+    remove_status_tag =
+      case issue["state"] do
+        "open" ->
+          Repo.Tag.create(integration.workspace_id, ":status:closed")
+
+        "closed" ->
+          Repo.Tag.create(integration.workspace_id, ":status:open")
+
+        _ ->
+          Repo.Tag.create(integration.workspace_id, ":noop")
+      end
+
     {:ok, room} =
       if is_nil(room) do
         admin_issue_tag = get_admin_issue_tag(integration, issue)
@@ -241,7 +265,7 @@ defmodule Fog.Integration.GitHubHook do
               helpdesk_id: internal_hid,
               name: issue["title"],
               type: "public",
-              tags: [issue_tag.id, admin_issue_tag.id]
+              tags: [issue_tag.id, admin_issue_tag.id, add_status_tag.id]
             )
 
           {:ok, room}
@@ -272,7 +296,14 @@ defmodule Fog.Integration.GitHubHook do
         {:ok, room}
       end
 
-    room = Repo.Room.update_tags(room.id, [issue_tag.id], [], nil, nil)
+    room =
+      Repo.Room.update_tags(
+        room.id,
+        [issue_tag.id, add_status_tag.id],
+        [remove_status_tag.id],
+        nil,
+        nil
+      )
 
     :ok = Api.Event.publish(room)
 

@@ -23,7 +23,9 @@ defmodule Fog.Api do
     Api.Tag,
     Api.NotifyDelay,
     Api.Event,
-    Api.Ai
+    Api.Ai,
+    Api.Llm,
+    Api.StreamReply
   ]
 
   @encoders [
@@ -78,11 +80,35 @@ defmodule Fog.Api do
         |> encode_reply(oformat)
 
       {:ok, message} ->
-        run(message, state)
-        |> override_agent_name()
-        |> update_unknown(allow_unknown)
-        |> set_reply_msg_id(message)
-        |> encode_reply(oformat)
+        replies =
+          run(message, state)
+          |> Enum.map(
+            &(&1
+              |> override_agent_name()
+              |> update_unknown(allow_unknown)
+              |> set_reply_msg_id(message)
+              |> encode_reply(oformat))
+          )
+
+        case replies do
+          [r] ->
+            r
+
+          [_ | _] ->
+            {messages, state} =
+              replies
+              |> Enum.reduce({[], state}, fn
+                {:reply, m, state}, {acc, _} ->
+                  {[m | acc], state}
+
+                {:ok, state}, {acc, _} ->
+                  {acc, state}
+              end)
+
+            messages = messages |> List.flatten()
+
+            {:reply, messages, state}
+        end
 
       {:error, :invalid_format} ->
         error = Error.Fatal.invalid_request(error: "Invalid request format")
@@ -99,16 +125,17 @@ defmodule Fog.Api do
   defp override_agent_name(reply), do: reply
 
   defp run(message, %Api{handlers: handlers, session: session} = state) do
-    case run_handlers(message, handlers, session) do
+    run_handlers(message, handlers, session, [])
+    |> Enum.map(fn
       {:ok, new_session} -> {:ok, %Api{state | session: new_session}}
       {:reply, message, new_session} -> {:reply, message, %Api{state | session: new_session}}
       :unknown -> {:unknown, state}
-    end
+    end)
   rescue
     err in Ecto.InvalidChangesetError ->
       errors = changeset_errors_to_map(err.changeset)
       Logger.error("DB conflict processing #{inspect(message)}:\n" <> inspect(errors))
-      {:reply, Error.Fatal.conflict(data: errors), state}
+      [{:reply, Error.Fatal.conflict(data: errors), state}]
 
     err ->
       Logger.error(
@@ -116,23 +143,34 @@ defmodule Fog.Api do
           Exception.format(:error, err, __STACKTRACE__)
       )
 
-      {:reply, Error.Fatal.internal(), state}
+      [{:reply, Error.Fatal.internal(), state}]
   catch
     :throw, {:reply, message} ->
-      {:reply, message, state}
+      [{:reply, message, state}]
   end
 
-  defp run_handlers(message, [], _session) do
+  defp run_handlers(message, [], _session, _replies = []) do
     Logger.warning("Unknown API message: #{inspect(message)}")
-    :unknown
+    [:unknown]
   end
 
-  defp run_handlers(message, [h | t], session) do
-    case h.info(message, session) do
-      {:ok, session} -> {:ok, session}
-      {:reply, reply} -> {:reply, reply, session}
-      {:reply, reply, session} -> {:reply, reply, session}
-      :skip -> run_handlers(message, t, session)
+  defp run_handlers(_message, [], _session, replies) do
+    replies
+  end
+
+  defp run_handlers(message, [h | t], session, replies) do
+    case h.info(message, session, replies) do
+      {:ok, session} ->
+        run_handlers(message, t, session, [{:ok, session} | replies])
+
+      {:reply, reply} ->
+        run_handlers(message, t, session, [{:reply, reply, session} | replies])
+
+      {:reply, reply, session} ->
+        run_handlers(message, t, session, [{:reply, reply, session} | replies])
+
+      :skip ->
+        run_handlers(message, t, session, replies)
     end
   end
 

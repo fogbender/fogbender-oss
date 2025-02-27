@@ -1,7 +1,7 @@
 import { Avatar, Icons, type Integration } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import React from "react";
-import { type UseMutationResult, type UseQueryResult } from "react-query";
+import { type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
 
 import { FontAwesomeCheck } from "../../../shared/font-awesome/Check";
 
@@ -30,16 +30,16 @@ export function operationStatusMutation0<T>(
   operation: string | JSX.Element,
   mutation: UseMutationResult<Response, unknown, T, unknown>
 ) {
-  const { isLoading, isSuccess, isError } = mutation;
+  const { isPending, isSuccess, isError } = mutation;
   return (
     <div className="flex justify-between">
-      {(isLoading || isSuccess || isError) && (
+      {(isPending || isSuccess || isError) && (
         <span className="whitespace-nowrap mr-1">{operation}</span>
       )}
       <span className="ml-1">
         {isSuccess && <span className="font-bold text-green-500">OK</span>}
         {isError && <span className="font-bold text-red-500">ERROR</span>}
-        {isLoading && <Icons.Spinner className="w-4 text-blue-500" />}
+        {isPending && <Icons.Spinner className="w-4 text-blue-500" />}
       </span>
     </div>
   );
@@ -67,15 +67,18 @@ export function operationStatusMutation<T>(
 
 export function operationStatusQuery<T>(operation: string | JSX.Element, query: UseQueryResult<T>) {
   const { isLoading, error, isFetchedAfterMount } = query;
+
   return isFetchedAfterMount || isLoading ? (
     <div className="flex justify-between">
       <span className="whitespace-nowrap mr-1">{operation}</span>
       <span className="ml-1">
-        {error === null && isFetchedAfterMount && (
+        {!isLoading && error === null && isFetchedAfterMount && (
           <span className="font-bold text-green-500">OK</span>
         )}
         {error !== null && isFetchedAfterMount && (
-          <span className="font-bold text-red-500">ERROR</span>
+          <span className="flex gap-1">
+            <span className="font-bold text-red-500">ERROR</span>
+          </span>
         )}
         {isLoading && !isFetchedAfterMount && <Icons.Spinner className="w-4 text-blue-500" />}
       </span>
@@ -231,12 +234,12 @@ export const IntegrationUser: React.FC<{
         <Avatar
           url={userInfo.pictureUrl}
           name={userInfo.username}
-          size={40}
+          size={24}
           bgClassName="bg-red-100"
         />
       </div>
       <div className="flex flex-col gap-y-1 truncate">
-        <span className="fog:text-caption-l truncate">{userInfo.username}</span>
+        <span className="truncate">{userInfo.username}</span>
         {userInfo.email && (
           <span className="text-gray-500 fog:text-caption-m truncate">{userInfo.email}</span>
         )}

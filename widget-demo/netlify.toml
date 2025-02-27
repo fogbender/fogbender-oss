@@ -1,0 +1,19 @@
+[build]
+  ignore = "printenv CACHED_COMMIT_REF; [[ $CACHED_COMMIT_REF != $COMMIT_REF ]] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./ ../packages/"
+  command = "PUBLIC_VERSION=$(node -p \"require('./package.json').version\") PUBLIC_SHA=$COMMIT_REF PUBLIC_BRANCH=$HEAD yarn build-vendor-demo"
+  publish = "dist"
+
+[build.environment]
+  PUBLIC_DEFAULT_ENV="staging"
+  NODE_VERSION="v18.14.1"
+  # functions env values are set in .env for dev and in UI for netlify
+
+[context.production-vendordemo.environment]
+  PUBLIC_DEFAULT_ENV="prod"
+
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

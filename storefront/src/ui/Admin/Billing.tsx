@@ -7,7 +7,7 @@ import {
   type VendorBilling,
 } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "react-router-dom";
 
 import { getQueryParam } from "../../params";
@@ -22,7 +22,7 @@ export const Billing = ({
   countInViolation: number;
 }) => {
   const setStripeSessionIdMutation = useMutation({
-    mutationFn: (session_id: string) => {
+    mutationFn: async (session_id: string) => {
       return apiServer
         .url(`/api/vendors/${vendor.id}/set-stripe-session-id`)
         .post({
@@ -31,11 +31,11 @@ export const Billing = ({
         .json<StripeCustomer>();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.billing(vendor.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.billing(vendor.id) });
     },
   });
 
-  const { data: billing, isLoading: billingIsLoading } = useQuery({
+  const { data: billing, isPending: billingIsLoading } = useQuery({
     queryKey: queryKeys.billing(vendor.id),
     queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/billing`).json<VendorBilling>(),
   });
@@ -76,7 +76,7 @@ export const Billing = ({
         .text();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(queryKeys.billing(vendor.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.billing(vendor.id) });
     },
   });
 

@@ -4,7 +4,10 @@ defmodule Fog.Integration.GitHub do
   require Logger
 
   def token(%Fog.Data.WorkspaceIntegration{} = i) do
-    i.specifics["api_key"]
+    installation_id = i.specifics["installation_id"]
+    {:ok, api_key} = installation_to_token(installation_id)
+
+    api_key
   end
 
   def url(%Fog.Data.WorkspaceIntegration{} = i) do
@@ -17,6 +20,10 @@ defmodule Fog.Integration.GitHub do
 
   def integration_tag_name(%Fog.Data.WorkspaceIntegration{} = i) do
     ":github:#{i.project_id}"
+  end
+
+  def installation_id(%Fog.Data.WorkspaceIntegration{} = i) do
+    i.specifics["installation_id"]
   end
 
   def commands(%Fog.Data.WorkspaceIntegration{}), do: nil
@@ -418,6 +425,53 @@ defmodule Fog.Integration.GitHub do
 
       {:ok, %Tesla.Env{status: 401}} ->
         {:error, :bad_credentials}
+    end
+  end
+
+  def installation_to_token(installation_id) when is_binary(installation_id) do
+    jwt = installation_to_jwt()
+
+    r =
+      client(jwt)
+      |> Tesla.post("/app/installations/#{installation_id}/access_tokens", %{})
+
+    case r do
+      {:ok, %Tesla.Env{status: 201, body: %{"token" => token}}} ->
+        {:ok, token}
+    end
+  end
+
+  def installation_to_jwt() do
+    client_id = Fog.env(:github_app_client_id)
+    private_key = Fog.env(:github_app_private_key)
+    signer = Joken.Signer.create("RS256", %{"pem" => private_key})
+
+    claims = %{
+      "iat" => :os.system_time(:second),
+      "exp" => :os.system_time(:second) + 600,
+      "iss" => client_id
+    }
+
+    Joken.generate_and_sign!(%{}, claims, signer)
+  end
+
+  def check_installation(installation_id) do
+    installation_repositories(installation_id)
+  end
+
+  def installation_repositories(installation_id) do
+    {:ok, token} = installation_to_token(installation_id)
+
+    r0 =
+      client(token)
+      |> Tesla.get("installation/repositories")
+
+    case r0 do
+      {:ok, %Tesla.Env{status: 200, body: %{"repositories" => [repository], "total_count" => 1}}} ->
+        {:ok, repository}
+
+      {:ok, %Tesla.Env{status: 200}} ->
+        {:error, :must_select_single_repository}
     end
   end
 

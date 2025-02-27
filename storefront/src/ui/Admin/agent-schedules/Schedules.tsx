@@ -14,7 +14,7 @@ import {
 } from "fogbender-client/src/shared";
 import { atom, useAtom } from "jotai";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { v4 as uuidv4 } from "uuid";
 
 import { type Vendor } from "../../../redux/adminApi";
@@ -181,7 +181,7 @@ export const Layout = (props: { children: React.ReactNode; className?: string })
       className={classNames(
         "w-full bg-white p-6 rounded-xl fog:box-shadow-s relative",
         className,
-        "dark:bg-brand-dark-bg dark:text-white"
+        "dark:bg-brand-dark-bg text-black dark:text-white"
       )}
     >
       {children}

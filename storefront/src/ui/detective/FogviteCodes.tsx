@@ -1,6 +1,6 @@
 import { type Fogvite } from "fogbender-client/src/shared";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 
 import { getServerUrl } from "../../config";
@@ -21,19 +21,23 @@ const Fogvites: React.FC<{}> = () => {
     error,
     data,
     refetch,
-  } = useQuery<FogviteCode[], React.ReactNode>("fogviteCodes", () =>
-    fetch(`${getServerUrl()}/detective_api/fogvite_codes`, {
-      credentials: "include",
-    }).then(res => res.json())
-  );
+  } = useQuery<FogviteCode[], React.ReactNode>({
+    queryKey: ["fogviteCodes"],
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/detective_api/fogvite_codes`, {
+        credentials: "include",
+      }).then(res => res.json()),
+  });
 
   const { codeId } = useParams<"codeId">();
 
-  const { data: invites } = useQuery<Fogvite[]>(["invites", codeId], () =>
-    fetch(`${getServerUrl()}/detective_api/fogvite_codes/${codeId}`, {
-      credentials: "include",
-    }).then(res => res.json())
-  );
+  const { data: invites } = useQuery<Fogvite[]>({
+    queryKey: ["invites", codeId],
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/detective_api/fogvite_codes/${codeId}`, {
+        credentials: "include",
+      }).then(res => res.json()),
+  });
 
   const formRef = React.useRef<HTMLFormElement>(null);
   const [editingCode, setEditingCode] = React.useState<string | undefined>();

@@ -5,7 +5,7 @@ import {
   type Integration,
 } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { apiServer, queryKeys } from "../client";
@@ -70,9 +70,9 @@ export const OnboardingChecklist = React.memo(
     const baseUrl = `/admin/vendor/${vendorId}/`;
 
     const {
-      agent_invited,
-      invited_agent_joined,
-      posted_in_fogbender_support,
+      // agent_invited,
+      // invited_agent_joined,
+      // posted_in_fogbender_support,
       users_posted_in_vendor_support,
     } = checklistData;
 
@@ -108,37 +108,10 @@ export const OnboardingChecklist = React.memo(
       {
         title: (
           <span>
-            Send an{" "}
-            <Link className="fog:text-link no-underline" to={baseUrl + "team?openInviteModal=true"}>
-              invite
-            </Link>{" "}
-            to a colleague
-          </span>
-        ),
-        checked: agent_invited,
-      },
-      {
-        title: "Have a colleague accept the invite",
-        checked: invited_agent_joined,
-      },
-      {
-        title: (
-          <span>
-            Send a message in{" "}
-            <Link className="fog:text-link no-underline" to={baseUrl + "support"}>
-              support
-            </Link>
-          </span>
-        ),
-        checked: posted_in_fogbender_support,
-      },
-      {
-        title: (
-          <span>
-            Send a message from{" "}
             <Link className="fog:text-link no-underline" to={baseUrl + "-/settings/embed"}>
-              live demo
-            </Link>
+              Embed
+            </Link>{" "}
+            the messaging widget
           </span>
         ),
         checked: users_posted_in_vendor_support,
@@ -146,30 +119,24 @@ export const OnboardingChecklist = React.memo(
       {
         title: (
           <span>
-            Connect an{" "}
-            <Link
-              className="fog:text-link no-underline"
-              to={"/admin/-/-/settings/integrations#issue-tracker-integrations"}
-            >
-              issue tracker integration
-            </Link>
+            <Link className="fog:text-link no-underline" to={baseUrl + "-/settings/embed"}>
+              Hook up
+            </Link>{" "}
+            your model
           </span>
         ),
-        checked: hasIssueTrackerIntegration,
+        checked: users_posted_in_vendor_support,
       },
       {
         title: (
           <span>
-            Connect a{" "}
-            <Link
-              className="fog:text-link no-underline"
-              to={"/admin/-/-/settings/integrations#comms-integrations"}
-            >
-              comms integration
-            </Link>
+            <Link className="fog:text-link no-underline" to={baseUrl + "-/settings/embed"}>
+              Send a message
+            </Link>{" "}
+            from live demo
           </span>
         ),
-        checked: hasCommsIntegration,
+        checked: users_posted_in_vendor_support,
       },
     ];
 

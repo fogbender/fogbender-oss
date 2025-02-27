@@ -16,6 +16,7 @@ defmodule Fog.Application do
         Fog.Limiter,
         {Task.Supervisor, name: Fog.TaskSupervisor},
         Fog.Notify.EmailDigestTask.child_spec(),
+        {Fog.Llm.RoomSupervisor, []},
         {Fog.Comms.Slack.Agent.RoomSupervisor, []},
         Fog.Comms.Slack.Customer.MessageTask.child_spec(),
         Fog.Comms.MsTeams.MessageTask.child_spec(),
@@ -23,7 +24,9 @@ defmodule Fog.Application do
         Fog.Ai.EventTask.child_spec(),
         Fog.Ai.FetcherTask.child_spec(),
         Fog.Service.UserAuthTask.child_spec(),
-        Fog.Integration.PagerDutyOncallSyncEventTask.child_spec()
+        Fog.Integration.PagerDutyOncallSyncEventTask.child_spec(),
+        Registry.child_spec(keys: :unique, name: Registry.MultiplayerDemoDialog),
+        {Finch, name: FogFinch}
       ] ++
         optional(
           Fog.env(:msteams_renew_job_enable),
@@ -40,6 +43,7 @@ defmodule Fog.Application do
     res = Supervisor.start_link(children, opts)
 
     :msteams_token_cache = :ets.new(:msteams_token_cache, [:public, :named_table])
+    :avatar_cache = :ets.new(:avatar_cache, [:public, :named_table])
 
     IO.puts("Fog service started with configuration:")
     IO.puts(Fog.info())

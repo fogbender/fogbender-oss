@@ -1,6 +1,6 @@
 import { CreateTagForm, FilterInput, Modal, type Tag } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
@@ -24,14 +24,14 @@ const IconTag = () => {
 export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> = ({
   designatedWorkspaceId,
 }) => {
-  const { data: tags, isLoading: loadingTags } = useQuery<Tag[]>(
-    queryKeys.tags(designatedWorkspaceId),
-    () =>
+  const { data: tags, isLoading: loadingTags } = useQuery<Tag[]>({
+    queryKey: queryKeys.tags(designatedWorkspaceId),
+    queryFn: () =>
       fetch(`${getServerUrl()}/api/workspaces/${designatedWorkspaceId}/tags`, {
         credentials: "include",
       }).then(res => res.json()),
-    { enabled: designatedWorkspaceId !== undefined }
-  );
+    enabled: designatedWorkspaceId !== undefined,
+  });
 
   const [tagsFilter, setTagsFilter] = React.useState<string>();
 
@@ -50,8 +50,8 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
 
   const [createTag, setCreateTag] = React.useState(false);
 
-  const addTagMutation = useMutation(
-    (params: { name: string }) => {
+  const addTagMutation = useMutation({
+    mutationFn: async (params: { name: string }) => {
       const { name } = params;
       return fetch(`${getServerUrl()}/api/workspaces/${designatedWorkspaceId}/tags`, {
         method: "POST",
@@ -59,15 +59,13 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
         body: JSON.stringify({ name }),
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.tags(designatedWorkspaceId));
-          setCreateTag(false);
-        }
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.tags(designatedWorkspaceId) });
+        setCreateTag(false);
+      }
+    },
+  });
 
   return (
     <div>
@@ -109,7 +107,7 @@ export const TagsList: React.FC<{ designatedWorkspaceId: string | undefined }> =
                 return filteredTags.find(x => x.name === name) === undefined;
               }}
               onCreate={name => addTagMutation.mutate({ name })}
-              creating={addTagMutation.isLoading}
+              creating={addTagMutation.isPending}
             />
           </Modal>
         )}

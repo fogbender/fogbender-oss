@@ -23,7 +23,9 @@ defmodule Fog.Api.Ai do
   defmsg(Ok, [:response])
   deferr(Err)
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     if auth(m, s) do
       case handle_command(m, s) do
         {:error, error} ->
@@ -40,7 +42,7 @@ defmodule Fog.Api.Ai do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp auth(%Summarize{roomId: room_id}, sess),
     do: Perm.Room.allowed?(sess, :read, room_id: room_id)

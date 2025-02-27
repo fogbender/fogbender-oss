@@ -321,7 +321,7 @@ defmodule Fog.Ai.FetcherTask do
     |> Floki.text()
   end
 
-  defp description(body) do
+  def description(body) do
     {:ok, document} = Floki.parse_document(body)
 
     case meta_description(document, "name", "description") do

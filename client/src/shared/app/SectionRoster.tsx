@@ -271,7 +271,7 @@ export const RoomItem: React.FC<{
       onClick={e => onClick(room, { forceFullscreen: e.metaKey || e.ctrlKey })}
     >
       {isAgent && (
-        <div className="flex items-center space-x-1 fog:text-caption-xl truncate">
+        <div className="flex items-center space-x-1 fog:text-body-m truncate">
           <div className="flex-1 flex flex-col truncate text-gray-600 dark:text-white">
             {formatCustomerName(room.customerName)}
           </div>
@@ -300,7 +300,7 @@ export const RoomItem: React.FC<{
           </span>
         )}
 
-        <span className="flex-1 flex flex-col fog:text-body-m truncate">
+        <span className="flex-1 flex flex-col fog:text-body-m font-bold truncate">
           <span
             className={classNames(showAsInternal && "text-green-500", "leading-snug truncate")}
             title={roomName}

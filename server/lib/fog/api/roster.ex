@@ -35,7 +35,9 @@ defmodule Fog.Api.Roster do
   @commands [Sub, UnSub, GetRange, GetRooms, OpenView, CloseView]
   @limit 5
 
-  def info(%struct{topic: topic} = cmd, sess) when struct in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%struct{topic: topic} = cmd, sess, _) when struct in @commands do
     with {:ok, [ctx, id]} <-
            parse_topic(topic) || Err.invalid_request(topic: topic, error: "Invalid topic"),
          true <- valid_cmd(cmd) || Err.invalid_request(topic: topic, error: "Invalid command"),
@@ -46,9 +48,9 @@ defmodule Fog.Api.Roster do
     end
   end
 
-  def info(_event, %{roster: nil}), do: :skip
+  def info(_event, %{roster: nil}, _), do: :skip
 
-  def info(event, session) do
+  def info(event, session, _) do
     event
     |> check_context(session)
     |> event(session)

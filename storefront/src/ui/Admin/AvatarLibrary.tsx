@@ -1,6 +1,6 @@
 import { Avatar } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { type Workspace } from "../../redux/adminApi";
 import { apiServer, queryClient, queryKeys } from "../client";
@@ -12,39 +12,46 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
     {
       id: "initials",
       name: "Initials",
-      url: "https://api.dicebear.com/7.x/initials/svg?seed=",
+      url: "https://api.dicebear.com/9.x/initials/svg?seed=",
     },
     {
       id: "avataars",
       name: "Avataars",
-      url: "https://api.dicebear.com/7.x/avataaars/svg?seed=",
+      url: "https://api.dicebear.com/9.x/avataaars/svg?seed=",
     },
     {
       id: "pixel-art",
       name: "Pixel Art",
-      url: "https://api.dicebear.com/7.x/pixel-art/svg?seed=",
+      url: "https://api.dicebear.com/9.x/pixel-art/svg?seed=",
+    },
+    {
+      id: "personas",
+      name: "Personas",
+      url: "https://api.dicebear.com/9.x/personas/svg?seed=",
     },
     {
       id: "identicon",
       name: "Identicon",
-      url: "https://api.dicebear.com/7.x/identicon/svg?seed=",
+      url: "https://api.dicebear.com/9.x/identicon/svg?seed=",
     },
     {
-      id: "bottts",
-      name: "Bottts",
-      url: "https://api.dicebear.com/7.x/bottts/svg?seed=",
+      id: "notionists",
+      name: "Notionists",
+      url: "https://api.dicebear.com/9.x/notionists/svg?seed=",
     },
   ];
 
-  const { data: featureOptions } = useQuery(queryKeys.featureOptions(workspace.id), ({ signal }) =>
-    apiServer
-      .url(`/api/workspaces/${workspace.id}/feature_options`)
-      .options({
-        signal,
-      })
-      .get()
-      .json<{ [id: string]: string | number }>()
-  );
+  const { data: featureOptions } = useQuery({
+    queryKey: queryKeys.featureOptions(workspace.id),
+    queryFn: async ({ signal }) =>
+      apiServer
+        .url(`/api/workspaces/${workspace.id}/feature_options`)
+        .options({
+          signal,
+        })
+        .get()
+        .json<{ [id: string]: string | number }>(),
+  });
 
   const setAvatarLibraryUrlMutation = useMutation({
     mutationFn: (id: string) => {
@@ -60,7 +67,7 @@ export const AvatarLibrary: React.FC<{ workspace: Workspace }> = ({ workspace })
         .text();
     },
     onSettled: () => {
-      queryClient.invalidateQueries(queryKeys.featureOptions(workspace.id));
+      queryClient.invalidateQueries({ queryKey: queryKeys.featureOptions(workspace.id) });
     },
   });
 

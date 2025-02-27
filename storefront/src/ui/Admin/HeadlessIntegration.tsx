@@ -34,8 +34,16 @@ export const HeadlessIntegration = () => {
 export const HeadlessIntegrationInt = () => {
   const agentId = useSelector(getAuthenticatedAgentId);
 
-  const vendors = useVendorsQuery();
-  const anyVendorId = React.useMemo(() => vendors?.find(() => true)?.id, [vendors]);
+  const vendorsQueryResponse = useVendorsQuery();
+  const vendors = (() => {
+    if (vendorsQueryResponse === undefined || vendorsQueryResponse === "loading") {
+      return [];
+    } else {
+      return vendorsQueryResponse;
+    }
+  })();
+
+  const anyVendorId = React.useMemo(() => vendors.find(() => true)?.id, [vendors]);
   const agentToken = React.useMemo(() => {
     if (agentId && anyVendorId) {
       return {

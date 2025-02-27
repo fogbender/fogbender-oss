@@ -8,7 +8,7 @@ import {
   useWs,
 } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { Icons } from "../components/Icons";
 import { Avatar, UnreadCircle } from "../components/lib";
@@ -80,7 +80,6 @@ export const Roster: React.FC<{
       return res.items;
     },
     staleTime: 60 * 1000, // 1 minute
-    keepPreviousData: true,
   });
   const rooms = searchQuery.data || roomsProp;
 

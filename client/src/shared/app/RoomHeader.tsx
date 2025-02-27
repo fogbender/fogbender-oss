@@ -16,8 +16,9 @@ import {
   useWs,
 } from "fogbender-proto";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { PiEqualizer } from "react-icons/pi";
 
 import { Icons } from "../components/Icons";
 import { IntegrationDetails } from "../components/IntegrationDetails";
@@ -63,6 +64,7 @@ export type RoomHeaderProps = {
   onClose: (id: string) => void;
   onCloseOtherRooms: (id?: string) => void;
   onOpenSearch?: (id: string) => void;
+  onOpenStreamReplyPreview?: (id: string, messageId: string) => void;
   onOpenCustomerInfo?: (id: string) => void;
   onSettings?: (id: string) => void;
   onUnseen?: () => void;
@@ -112,6 +114,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
     vendorId,
   } = props;
   const counterpart = room && calculateCounterpart(room, ourId);
+
   const tags = React.useMemo(
     () =>
       (room?.tags || [])
@@ -277,8 +280,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
   const issueKey = (t: Tag) => `${t.workspace_id}-${t.meta_entity_parent_id}-${t.meta_entity_id}`;
 
-  const closeIssueMutation = useMutation(
-    (params: {
+  const closeIssueMutation = useMutation({
+    mutationFn: (params: {
       workspaceId: string;
       integrationProjectId: string;
       issueId: string;
@@ -294,24 +297,22 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
         roomId,
       });
     },
-    {
-      onSuccess: async (_r, params) => {
-        const { key } = params;
+    onSuccess: async (_r, params) => {
+      const { key } = params;
 
-        setClosingIssueIds(s => {
-          s.delete(key);
-          return new Set(s);
-        });
-      },
-    }
-  );
+      setClosingIssueIds(s => {
+        s.delete(key);
+        return new Set(s);
+      });
+    },
+  });
 
-  const roomsByTagsData = useQuery(
-    queryKeys.roomsByTagNames(
+  const roomsByTagsData = useQuery({
+    queryKey: queryKeys.roomsByTagNames(
       workspaceId,
       issueTags.map(t => t.name)
     ),
-    async () => {
+    queryFn: async () => {
       if (workspaceId && issueTags) {
         const res = await serverCall<SearchRoster>({
           msgType: "Search.Roster",
@@ -324,10 +325,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
       }
       return;
     },
-    {
-      enabled: issueTags.length > 0,
-    }
-  );
+    enabled: issueTags.length > 0,
+  });
 
   const { data: roomsByTags } = roomsByTagsData;
 
@@ -335,8 +334,8 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
 
   const [showReopenIssueModal, setShowReopenIssueModal] = React.useState(false);
 
-  const reopenIssueMutation = useMutation(
-    (params: {
+  const reopenIssueMutation = useMutation({
+    mutationFn: (params: {
       workspaceId: string;
       integrationProjectId: string;
       issueId: string;
@@ -352,19 +351,17 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
         roomId,
       });
     },
-    {
-      onSuccess: async (_r, params) => {
-        const { key } = params;
+    onSuccess: async (_r, params) => {
+      const { key } = params;
 
-        setReopeningIssueIds(s => {
-          s.delete(key);
-          return new Set(s);
-        });
+      setReopeningIssueIds(s => {
+        s.delete(key);
+        return new Set(s);
+      });
 
-        roomsByTagsData.refetch();
-      },
-    }
-  );
+      roomsByTagsData.refetch();
+    },
+  });
 
   const [issueTagIdsToReopen, setIssueTagIdsToReopen] = React.useState<Set<string>>(new Set([]));
   const [roomIdsToReopen, setRoomIdsToReopen] = React.useState<Set<string>>(new Set([]));
@@ -423,7 +420,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
       <div
         className={classNames(
           "px-2.5 border-b border-gray-300 select-none",
-          "dark:border-gray-500 dark:text-white"
+          "dark:border-gray-500 text-black dark:text-white"
         )}
       >
         {showReopenIssueModal && (
@@ -715,9 +712,9 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                             }}
                             loading={
                               t.meta_state === "open"
-                                ? closingIssueIds.has(issueKey(t)) && closeIssueMutation.isLoading
+                                ? closingIssueIds.has(issueKey(t)) && closeIssueMutation.isPending
                                 : reopeningIssueIds.has(issueKey(t)) &&
-                                  reopenIssueMutation.isLoading
+                                  reopenIssueMutation.isPending
                             }
                           >
                             {t.meta_state === "closed" ? (
@@ -1207,7 +1204,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                           </Link>
                         </div>
                       )}
-                      {room.isTriage && (
+                      {/* room.isTriage && (
                         <a
                           className="fog:text-link fog:text-caption-m no-underline"
                           href="/blog/what-are-customer-triage-rooms"
@@ -1216,7 +1213,7 @@ export const RoomHeader: React.FC<RoomHeaderProps> = props => {
                         >
                           What’s Triage?
                         </a>
-                      )}
+                      ) */}
                     </div>
                   )}
                 </div>
@@ -1413,37 +1410,69 @@ export const RoomNameLine: React.FC<
               <Icons.RoomExternalLarge className="w-6 h-6" />
             </span>
           )}
-          {mode === "Search" ? (
-            <div className="pr-1.5">
-              <Icons.Search className="w-6 h-6" />
-            </div>
-          ) : mode === "Customer" ? (
-            <div className="pr-1.5">
-              <FontAwesomeCrown className="text-yellow-400" />
-            </div>
-          ) : room?.isTriage ? (
-            <div className="pr-1.5 hidden">
-              <Icons.RoomTriageLarge className="w-6 h-6" />
-            </div>
-          ) : isBug ? (
-            <div className="pr-1.5 hidden">
-              <Icons.RoomBugLarge className="w-6 h-6" />
-            </div>
-          ) : isFeature ? (
-            <div className="pr-1.5 hidden">
-              <Icons.RoomFeatureLarge className="w-6 h-6" />
-            </div>
-          ) : isBroadcast ? (
-            <div className="pr-1.5">
-              <Icons.Broadcast />
-            </div>
-          ) : room?.type === "public" &&
-            !isInternalHelpdesk(room?.customerName) &&
-            !isDiscussion ? (
-            <div className="pr-1.5 hidden">
-              <Icons.RoomIssueLarge className="w-6 h-6" />
-            </div>
-          ) : null}
+          {(() => {
+            if (mode === "Search") {
+              return (
+                <div className="pr-1.5">
+                  <Icons.Search className="w-6 h-6" />
+                </div>
+              );
+            }
+            if (mode === "Customer") {
+              return (
+                <div className="pr-1.5">
+                  <FontAwesomeCrown className="text-yellow-400" />
+                </div>
+              );
+            }
+            if (mode === "StreamReplyPreview") {
+              return (
+                <div className="pr-1.5">
+                  <PiEqualizer />
+                </div>
+              );
+            }
+            if (room?.isTriage) {
+              return (
+                <div className="pr-1.5 hidden">
+                  <Icons.RoomTriageLarge className="w-6 h-6" />
+                </div>
+              );
+            }
+            if (isBug) {
+              return (
+                <div className="pr-1.5 hidden">
+                  <Icons.RoomBugLarge className="w-6 h-6" />
+                </div>
+              );
+            }
+            if (isFeature) {
+              return (
+                <div className="pr-1.5 hidden">
+                  <Icons.RoomFeatureLarge className="w-6 h-6" />
+                </div>
+              );
+            }
+            if (isBroadcast) {
+              return (
+                <div className="pr-1.5">
+                  <Icons.Broadcast />
+                </div>
+              );
+            }
+            if (
+              room?.type === "public" &&
+              !isInternalHelpdesk(room?.customerName) &&
+              !isDiscussion
+            ) {
+              return (
+                <div className="pr-1.5 hidden">
+                  <Icons.RoomIssueLarge className="w-6 h-6" />
+                </div>
+              );
+            }
+            return null;
+          })()}
         </span>
       )}
       <span className="flex-1 leading-relaxed truncate" title={counterpart?.name || roomName}>
@@ -1452,7 +1481,7 @@ export const RoomNameLine: React.FC<
             <span>Search: </span>{" "}
           </>
         )}
-        {["Room", "Search"].includes(mode) &&
+        {["Room", "Search", "StreamReplyPreview"].includes(mode) &&
           (counterpart?.name || roomName || <span className="invisible">...</span>)}
         {mode === "Customer" && room && room.customerName}
       </span>

@@ -84,7 +84,7 @@ export const getIsAuthorized = (state: RootState) => !!state.session.user?.id;
 
 export const getAuthenticatedAgentId = (state: RootState) => state.session.user?.id;
 
-export const selectUserName = (state: RootState) => state.session.user?.name || "<unknown>";
+export const selectUserName = (state: RootState) => state.session.user?.name || "";
 
 export const selectUserImageUrl = (state: RootState) => state.session.user?.image_url;
 

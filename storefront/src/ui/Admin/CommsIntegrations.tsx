@@ -45,17 +45,20 @@ export function getIntegrationDetails(integration: Integration | IntegrationType
   return details ? details : undefined;
 }
 
-const integrationOptions = Object.values(IntegrationDetails).map(x => ({
-  id: x.type,
-  type: x.type,
-  name: x.name,
-  option: (
-    <div className="flex gap-2 items-center">
-      <div className="flex-shrink-0 w-4">{x.icon}</div>
-      <span>{x.name}</span>
-    </div>
-  ),
-}));
+const integrationOptions = Object.values(IntegrationDetails)
+  .filter(x => x.type !== "msteams")
+  .filter(x => x.type !== "slack-customer")
+  .map(x => ({
+    id: x.type,
+    type: x.type,
+    name: x.name,
+    option: (
+      <div className="flex gap-2 items-center">
+        <div className="flex-shrink-0 w-4">{x.icon}</div>
+        <span>{x.name}</span>
+      </div>
+    ),
+  }));
 
 export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace }) => {
   const { data: integrations } = useWorkspaceIntegrationsQuery(workspace.id);
@@ -185,7 +188,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
               <ShowSlackIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -195,7 +198,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
               <ShowMsTeamsIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -205,7 +208,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
               <ShowSlackCustomerIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -235,7 +238,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
                 workspace={workspace}
                 onDone={() => {
                   setClosing(false);
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setSelectedIntegration(undefined);
                 }}
                 closing={closing}
@@ -245,7 +248,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
                 workspace={workspace}
                 onDone={() => {
                   setClosing(false);
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setSelectedIntegration(undefined);
                 }}
                 closing={closing}
@@ -255,7 +258,7 @@ export const CommsIntegrations: React.FC<{ workspace: Workspace }> = ({ workspac
                 workspace={workspace}
                 onDone={() => {
                   setClosing(false);
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setSelectedIntegration(undefined);
                 }}
                 closing={closing}

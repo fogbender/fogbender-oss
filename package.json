@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "start": "turbo run start --filter=vendor-demo --filter=fogbender-client --filter=storefront",
-    "dev": "turbo run dev2 --filter=vendor-demo --filter=fogbender-client --filter=storefront",
+    "start": "turbo run start --filter=widget-demo --filter=vendor-demo --filter=fogbender-client --filter=storefront",
+    "dev": "yarn start",
     "build": "turbo run build --filter='!./pulumi/*'",
     "preview": "turbo run preview --filter='!./pulumi/*'",
     "build-vendor-demo": "turbo run build --filter=vendor-demo",
@@ -20,7 +20,8 @@
     "packages/fogbender-react",
     "client",
     "storefront",
-    "vendor-demo"
+    "vendor-demo",
+    "widget-demo"
   ],
   "dependencies": {
     "wsrun": "^5.2.0"

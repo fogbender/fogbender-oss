@@ -60,7 +60,7 @@ export default function SelectSearch<o extends SelectSearchOption>(props: Select
         onFocus={() => {
           inputRef.current?.focus();
         }}
-        className="bg-white focus:outline-none dark:bg-black dark:text-white"
+        className="bg-white focus:outline-none dark:bg-black text-black dark:text-white"
       >
         {!!showOptions && (
           <div className="max-h-32 my-2 overflow-y-auto fbr-scrollbar">

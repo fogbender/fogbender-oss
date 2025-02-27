@@ -17,6 +17,6 @@ defmodule Fog.Data.VendorAgentRole do
     role
     |> cast(params, [:vendor_id, :agent_id, :role, :last_digest_check_at])
     |> validate_required([:role])
-    |> validate_inclusion(:role, ["owner", "admin", "agent", "reader", "app"])
+    |> validate_inclusion(:role, ["owner", "admin", "agent", "reader", "app", "assistant"])
   end
 end

@@ -13,12 +13,14 @@ defmodule Fog.Repo.Vendor do
   end
 
   def update_customers_info(vendor_id, customers_data) do
+    customers = customers_data["customers"] || []
+
     customers =
       for %{
             "customer_id" => exuid,
             "data" => data,
             "source" => source
-          } <- customers_data["customers"] do
+          } <- customers do
         %{external_uid: exuid, name: data["name"], info_logs: [%{data: data, source: source}]}
       end
 

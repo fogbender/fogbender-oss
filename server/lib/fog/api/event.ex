@@ -45,13 +45,17 @@ defmodule Fog.Api.Event do
     Event.Agent,
     Event.User,
     Event.Customer,
-    Event.Tag
+    Event.Tag,
+    Event.Control,
+    Event.StreamReply
   ]
 
   @type msg_id() :: String.t()
   @type msg_type() :: String.t()
 
-  def info(%Event.Room{id: id} = data, sess) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%Event.Room{id: id} = data, sess, _) do
     data =
       case Perm.Room.allowed?(sess, :read, room_id: id) do
         true ->
@@ -65,12 +69,12 @@ defmodule Fog.Api.Event do
     {:reply, data, sess}
   end
 
-  def info(%event{} = data, sess) when event in @events do
+  def info(%event{} = data, sess, _) when event in @events do
     {data, sess} = set_event_id(data, sess)
     {:reply, data, sess}
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def publish(%Data.Room{} = r), do: Event.Room.publish(r)
   def publish(%Data.Message{} = m), do: Event.Message.publish(m)
