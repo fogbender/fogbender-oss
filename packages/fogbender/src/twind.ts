@@ -1,4 +1,4 @@
-import { cssomSheet, setup, Sheet } from "twind";
+import { cssomSheet, setup, type Sheet } from "twind";
 
 export const sharedSheet = () => {
   const target = document.createElement("style");
