@@ -78,6 +78,7 @@ export function renderIframe(
   }
   iFrame.src = url;
   iFrame.style.display = "block";
+  iFrame.style.border = "0";
   iFrame.style.width = headless ? "0" : "100%";
   iFrame.style.height = headless ? "0" : "100%";
   if (headless) {
@@ -165,43 +166,8 @@ export function renderIframe(
     if (!rootEl || disableFit) {
       return;
     }
-    const totalFooterHeight = (el: Element, acc: number): number => {
-      const cs = getComputedStyle(el);
-      const x =
-        parseInt(cs.paddingBottom) + parseInt(cs.marginBottom) + parseInt(cs.borderBottomWidth);
 
-      if (el.parentElement) {
-        return totalFooterHeight(el.parentElement, acc + x);
-      }
-
-      return acc;
-    };
-
-    let heightBelow = 0;
-
-    const tabletViewportBreakpoint = 640;
-
-    const isTablet = window.innerWidth < tabletViewportBreakpoint;
-
-    const getIframeHeight = () => {
-      const height = headless
-        ? "0"
-        : isTablet
-        ? "100%"
-        : `${Math.min(
-            window.innerHeight,
-            window.innerHeight - heightBelow - rootEl.getBoundingClientRect().top
-          )}px`;
-
-      return height;
-    };
-
-    try {
-      const iFrameTopBorderWidth = parseInt(getComputedStyle(iFrame).borderTopWidth);
-      heightBelow = Math.max(totalFooterHeight(iFrame, 0) + iFrameTopBorderWidth, 0);
-    } catch (e) {}
-
-    const height = getIframeHeight();
+    const height = headless ? "0" : "100%";
     iFrame.style.height = height;
   }
 
