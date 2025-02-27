@@ -5,7 +5,7 @@
 
 [build.environment]
   PUBLIC_DEFAULT_ENV="staging"
-  NODE_VERSION="v18.14.1"
+  NODE_VERSION="v18.17.1"
   # functions env values are set in .env for dev and in UI for netlify
 
 [context.production-vendordemo.environment]
