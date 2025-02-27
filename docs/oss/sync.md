@@ -165,7 +165,7 @@ The first issue you are going to see is going to be merge conflicts. For example
 
 So you have to remove everything that doesn't make sense or skip the commit entirely.
 
-    rm -rf packages/{fogbender-vue,fogbender-element,qgp} examples .changeset/ .github/ scripts/version-update.py
+    rm -rf packages/{fogbender-vue,fogbender-element} examples .changeset/ .github/ scripts/version-update.py
     git add .
     # or git rebase --skip
 

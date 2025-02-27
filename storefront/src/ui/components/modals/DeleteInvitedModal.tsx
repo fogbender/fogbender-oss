@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { Avatar, ConfirmDialog } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../../config";
 import { type Invite } from "../../../redux/adminApi";
@@ -21,26 +21,24 @@ export const DeleteInvitedModal: React.FC<DeleteInvitedModalProps> = ({
   vendorId,
 }) => {
   const [error, setError] = React.useState<string>();
-  const deleteInviteMutation = useMutation(
-    () => {
+  const deleteInviteMutation = useMutation({
+    mutationFn: async () => {
       return fetch(`${getServerUrl()}/api/invites/${invite.invite_id}`, {
         method: "DELETE",
         credentials: "include",
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.invites(vendorId));
-          onClose();
-        } else if (r.status === 403) {
-          const { error: err } = await r.json();
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.invites(vendorId) });
+        onClose();
+      } else if (r.status === 403) {
+        const { error: err } = await r.json();
 
-          setError(err);
-        }
-      },
-    }
-  );
+        setError(err);
+      }
+    },
+  });
 
   return (
     <>
@@ -50,7 +48,7 @@ export const DeleteInvitedModal: React.FC<DeleteInvitedModalProps> = ({
           buttonTitle="Revoke"
           onClose={onClose}
           onDelete={() => deleteInviteMutation.mutate()}
-          loading={deleteInviteMutation.isLoading}
+          loading={deleteInviteMutation.isPending}
           error={error}
         >
           <Avatar />

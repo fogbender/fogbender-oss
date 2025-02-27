@@ -587,7 +587,8 @@ defmodule Fog.Integration do
          %{title: title} = cmd
        ) do
     repo = integration.specifics["repo"]
-    api_key = integration.specifics["api_key"]
+    installation_id = integration.specifics["installation_id"]
+    {:ok, api_key} = Integration.GitHub.installation_to_token(installation_id)
     body = issue_body(cmd, to_parsed: false)
 
     Integration.GitHub.create_issue(
@@ -706,7 +707,8 @@ defmodule Fog.Integration do
          %Data.WorkspaceIntegration{type: "github"} = integration,
          %ForwardToIssue{issueId: issue_number} = cmd
        ) do
-    api_key = integration.specifics["api_key"]
+    installation_id = integration.specifics["installation_id"]
+    {:ok, api_key} = Integration.GitHub.installation_to_token(installation_id)
     repo = integration.specifics["repo"]
     body = issue_body(cmd)
 
@@ -786,7 +788,8 @@ defmodule Fog.Integration do
          %Data.WorkspaceIntegration{type: "github"} = integration,
          %LabelIssue{issueId: issue_number} = _cmd
        ) do
-    api_key = integration.specifics["api_key"]
+    installation_id = integration.specifics["installation_id"]
+    {:ok, api_key} = Integration.GitHub.installation_to_token(installation_id)
     repo = integration.specifics["repo"]
 
     Integration.GitHub.add_labels_to_issue(

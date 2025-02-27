@@ -9,7 +9,6 @@ import {
 } from "fogbender-client/src/shared";
 import { type RenderCustomerInfoCb } from "fogbender-client/src/shared/app/CustomerInfo";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
-import { SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -77,13 +76,36 @@ export const CustomerInfoPane: React.FC<Parameters<RenderCustomerInfoCb>[0]> = (
             </>
           )}
           <div
-            className="cursor-pointer flex gap-3 items-center"
-            onClick={() => setShowClosed(x => !x)}
+            className="show-closed cursor-pointer flex gap-3 items-center group"
+            onClick={(e?: React.MouseEvent) => {
+              if (e) {
+                e.stopPropagation();
+
+                const elem = e.target as HTMLElement;
+                const button = elem.closest("div.show-closed") as HTMLDivElement;
+
+                if (button) {
+                  const toggle = button.querySelector(".toggle") as HTMLInputElement;
+
+                  if (toggle) {
+                    toggle.click();
+                  }
+                }
+              }
+            }}
           >
             <div className="text-left">
-              {showClosed ? <SwitchOn className="w-7" /> : <SwitchOff className="w-7" />}
+              <input
+                onClick={e => {
+                  e.stopPropagation();
+                  setShowClosed(x => !x);
+                }}
+                type="checkbox"
+                className="align-middle toggle toggle-sm group-hover:text-brand-red-500"
+                defaultChecked={showClosed}
+              />
             </div>
-            <div className="text-left">Show closed</div>
+            <div className="text-left group-hover:text-brand-red-500">Show closed</div>
           </div>
         </div>
       ) : (

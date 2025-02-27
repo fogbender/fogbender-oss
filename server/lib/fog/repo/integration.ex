@@ -163,4 +163,56 @@ defmodule Fog.Repo.Integration do
       {:ok, integration}
     end
   end
+
+  def create_assistant(workspace, assistant_name, assistant_id) do
+    avatar_url =
+      "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=#{Base.url_encode64(assistant_name, padding: false)}"
+
+    integration_tag = Repo.Tag.create(workspace.id, assistant_id)
+
+    {:ok, _} =
+      Repo.insert(
+        %Data.Agent{
+          email: integration_tag.name,
+          name: assistant_name,
+          image_url: avatar_url,
+          is_bot: true
+        },
+        on_conflict: {:replace, [:name, :image_url]},
+        conflict_target: :email,
+        returning: true
+      )
+
+    bot_agent = Data.Agent |> Repo.get_by(email: integration_tag.name) |> Repo.preload(:tags)
+
+    new_tags = [
+      %{agent_id: bot_agent.id, tag_id: integration_tag.id}
+    ]
+
+    old_tags =
+      bot_agent.tags
+      |> Enum.map(fn at ->
+        %{agent_id: at.agent_id, tag_id: at.tag_id}
+      end)
+
+    tags = (old_tags ++ new_tags) |> Enum.uniq_by(& &1.tag_id)
+
+    bot_agent =
+      bot_agent
+      |> Data.Agent.update(tags: tags)
+      |> Repo.update!()
+
+    {:ok, _} =
+      Repo.insert(
+        Fog.Data.VendorAgentRole.new(
+          agent_id: bot_agent.id,
+          vendor_id: workspace.vendor_id,
+          role: "assistant"
+        ),
+        # XXX already a member
+        on_conflict: :nothing
+      )
+
+    {:ok, bot_agent}
+  end
 end

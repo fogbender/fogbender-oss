@@ -6,7 +6,9 @@ defmodule Fog.Api.Typing do
   defmsg(Set, [:roomId])
   deferr(SetErr)
 
-  def info(%Set{roomId: room_id}, sess) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%Set{roomId: room_id}, sess, _) do
     case Perm.Room.allowed?(sess, :read, room_id: room_id) do
       true ->
         room = Repo.Room.get(room_id)
@@ -32,13 +34,13 @@ defmodule Fog.Api.Typing do
     end
   end
 
-  def info({:reset_typing, room_id}, sess) do
+  def info({:reset_typing, room_id}, sess, _) do
     room = Repo.Room.get(room_id)
     Event.Typing.reset(room)
     {:ok, %{sess | typing_ref: :undefined}}
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp typing_ref(%{:typing_ref => typing_ref}) do
     typing_ref

@@ -1,12 +1,33 @@
 // @ts-check
-import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
-import { defineAstro } from "qgp";
-import { common } from "./qgp.config.mjs";
+import { defineConfig } from "astro/config";
+import checker from "vite-plugin-checker";
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [react()],
-  vite: defineAstro(common, {}),
+  vite: {
+    plugins: [
+      checker({
+        typescript: true,
+        overlay: { initialIsOpen: false, badgeStyle: "left: 55px; bottom: 8px;" },
+      }),
+    ],
+    build: {
+      sourcemap: true,
+    },
+    resolve: {
+      alias: [
+        {
+          find: "./runtimeConfig",
+          replacement: "./runtimeConfig.browser",
+        },
+        {
+          find: "fogbender-proto",
+          replacement: "fogbender-proto/src",
+        },
+      ],
+    },
+  },
   server: { port: 3300 },
 });

@@ -2,6 +2,8 @@ import browser from "browser-detect";
 import classNames from "classnames";
 import React from "react";
 
+import { getServerApiUrl } from "fogbender-proto";
+
 import { isExternalHelpdesk, isInternalHelpdesk } from "../utils/format";
 
 import { Icons } from "./Icons";
@@ -96,6 +98,13 @@ export const Avatar: React.FC<{
 }) => {
   const userMask = React.useMemo(() => "data:image/svg+xml;base64," + btoa(UserMask()), []);
   const newUrl = url?.includes("initials") ? `${url}?fontSize=40` : url;
+
+  const cachedUrl = newUrl
+    ? `${getServerApiUrl(import.meta.env.PUBLIC_DEFAULT_ENV)}/avatar_cache/${encodeURIComponent(
+        newUrl
+      )}`
+    : undefined;
+
   const defaultImg = () => {
     if (avatarType === "user") {
       return <UserDefaultIcon size={30} />;
@@ -126,7 +135,7 @@ export const Avatar: React.FC<{
         <img
           alt=""
           className={classNames("w-full h-full", className)}
-          src={newUrl}
+          src={cachedUrl}
           style={{
             width: `${imageSize}px`,
           }}
@@ -314,11 +323,11 @@ export const ThickButton: React.FC<{
       className={classNames(
         "relative flex items-center justify-center rounded-lg text-white",
         disabled
-          ? "bg-gray-200 dark:bg-gray-600 cursor-not-allowed"
+          ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
           : loading
           ? "bg-blue-500"
           : "bg-blue-500 hover:bg-blue-700",
-        small ? "fog:text-button-s px-4 py-2.5" : "min-w-24 fog:text-button-m px-4 py-3.5",
+        small ? "fog:text-button-s px-4 py-2.5" : "min-w-24 fog:text-button-m px-4 py-2.5",
         className
       )}
       onClick={disabled || loading ? undefined : onClick}
@@ -514,6 +523,7 @@ export const ConnectionIssue: React.FC<{
   return (
     <div
       className={classNames(
+        "text-black",
         "p-1 flex flex-col rounded-full fog:box-shadow-m bg-white transform transition-all duration-1000",
         size === "small" ? "fog:text-body-m" : "fog:text-header3",
         isVisible
@@ -556,7 +566,7 @@ export const ConnectionIssue: React.FC<{
         <span className="flex items-center justify-end">
           {(!isConnected || !isAuthenticated) && !isTokenWrong && (
             <span className="mr-2 text-blue-500">
-              <Icons.Spinner className={classNames(size === "small" ? "w-6" : "w-14")} />
+              <Icons.Spinner className={classNames(size === "small" ? "w-7" : "w-14")} />
             </span>
           )}
           {isConnected && isAuthenticated && !isTokenWrong && (
@@ -654,7 +664,7 @@ export const LoadingIndicator = ({ visible }: { visible: boolean }) => {
   return (
     <div
       className={classNames(
-        "w-6 h-6 mx-auto my-1 flex-shrink-0 text-gray-500 pointer-events-none overflow-hidden",
+        "w-7 h-7 mx-auto my-1 flex-shrink-0 text-gray-500 pointer-events-none overflow-hidden",
         !visible && "invisible pointer-events-none"
       )}
     >
@@ -702,7 +712,7 @@ export const TabHeaderWrapper: React.FC<{ selected: boolean; children?: React.Re
   return (
     <div
       className={classNames(
-        "flex-1 lg:flex-none justify-center fog:text-header4 leading-5 px-0 lg:px-4 py-0 lg:py-3 my-2 lg:my-0 ml-4 lg:text-center max-w-min lg:max-w-max whitespace-nowrap cursor-pointer",
+        "flex-1 lg:flex-none justify-center fog:text-body-l leading-5 px-0 lg:px-4 py-0 lg:py-3 my-2 lg:my-0 ml-4 lg:text-center max-w-min lg:max-w-max whitespace-nowrap cursor-pointer",
         selected
           ? "rounded-t-md border-brand-orange-500 text-black dark:text-white border-b-2 lg:border-b-5"
           : "fog:text-link group-hover:text-red-500 border-b-2 lg:border-b-5 border-transparent"
@@ -722,11 +732,9 @@ export const BalloonTip = () => {
         viewBox="0 0 30 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="fill-current dark:fill-zinc-700"
       >
-        <path
-          d="M13.8246 12.4177C11.9482 8.84016 7.68033 2.53102 0 0H30C22.3196 2.53054 18.0518 8.83999 16.1753 12.4177C15.7366 13.2541 14.2634 13.2541 13.8246 12.4177Z"
-          fill="currentColor"
-        />
+        <path d="M13.8246 12.4177C11.9482 8.84016 7.68033 2.53102 0 0H30C22.3196 2.53054 18.0518 8.83999 16.1753 12.4177C15.7366 13.2541 14.2634 13.2541 13.8246 12.4177Z" />
       </svg>
     </div>
   );

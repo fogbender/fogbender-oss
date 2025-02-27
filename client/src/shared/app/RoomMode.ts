@@ -1,1 +1,1 @@
-export type RoomMode = "Room" | "Search" | "Customer";
+export type RoomMode = "Room" | "Search" | "Customer" | "StreamReplyPreview";

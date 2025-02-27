@@ -10,7 +10,7 @@ import {
 
 import {
   IconAsana,
-  IconGithub,
+  IconGitHub,
   IconGitlab,
   IconHeight,
   IconJira,
@@ -195,7 +195,7 @@ const integrationIcon = (type: string) => {
   if (type === "gitlab") {
     return <IconGitlab className="w-3 h-3" />;
   } else if (type === "github") {
-    return <IconGithub className="w-3 h-3" />;
+    return <IconGitHub className="w-3 h-3" />;
   } else if (type === "asana") {
     return <IconAsana className="w-3 h-3" />;
   } else if (type === "jira") {

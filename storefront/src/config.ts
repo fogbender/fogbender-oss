@@ -5,27 +5,33 @@ const config = {
     dashboardUrl: "https://api.fogbender.com",
     clientUrl: "https://client.fogbender.com",
     demoUrl: "https://demo1.fogbender.com",
+    widgetDemoUrl: "https://widget-demo.fogbender.com",
     webhookUrl: "https://api.fogbender.com/hook",
     cognito: "prod",
+    gitHubAppName: "fogbender",
   },
   staging: {
     dashboardUrl: "https://api.fogbender-test.com",
     // clientUrl: "https://staging-client--fb-client.netlify.app",
     clientUrl: "https://main--fb-client.netlify.app",
     demoUrl: "https://demo1.fogbender-test.com",
+    widgetDemoUrl: "https://widget-demo.fogbender-test.com",
     webhookUrl: "https://api.fogbender-test.com/hook",
     cognito: "staging",
+    gitHubAppName: "fogbender-test",
   },
   dev: {
     dashboardUrl: import.meta.env.PUBLIC_API_SERVER_URL || "http://localhost:8000",
     clientUrl: import.meta.env.PUBLIC_CLIENT_WIDGET_URL || "http://localhost:3300",
     demoUrl: import.meta.env.PUBLIC_DEMO_URL || "http://localhost:3200",
+    widgetDemoUrl: import.meta.env.PUBLIC_WIDGET_DEMO_URL || "http://localhost:3400",
     webhookUrl:
       import.meta.env.PUBLIC_HOOK_URL ||
       (import.meta.env.PUBLIC_API_SERVER_URL
         ? `<Use ngrok to point to ${import.meta.env.PUBLIC_API_SERVER_URL}/hook>`
         : "<Use ngrok to point to http://localhost:8000/hook>"),
     cognito: "staging",
+    gitHubAppName: import.meta.env.PUBLIC_FOGBENDER_GITHUB_APP_NAME,
   },
 };
 
@@ -79,6 +85,10 @@ export function getWebhookUrl(env?: Env) {
   return getConfig(env).webhookUrl;
 }
 
+export function getGitHubAppName(env?: Env) {
+  return getConfig(env).gitHubAppName;
+}
+
 export function getCognitoPool(env?: Env) {
   const isStaging = getConfig(env).cognito !== "prod";
 
@@ -119,4 +129,8 @@ export function getTrelloDeveloperApiKey() {
 
 export function getDemoUrl(env?: Env) {
   return getConfig(env).demoUrl;
+}
+
+export function getWidgetDemoUrl(env?: Env) {
+  return getConfig(env).widgetDemoUrl;
 }

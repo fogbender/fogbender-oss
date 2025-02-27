@@ -1,6 +1,6 @@
 import { ThinButton, type Integration } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../../config";
 import { type Workspace } from "../../../redux/adminApi";
@@ -12,15 +12,17 @@ export const AddMsTeamsIntegration: React.FC<{
   onDone: () => void;
   closing: boolean;
 }> = ({ workspace, onDone, closing }) => {
-  const enableMutation = useMutation(() => {
-    return fetch(`${getServerUrl()}/api/workspaces/${workspace.id}/integrations/msteams/enable`, {
-      method: "POST",
-      credentials: "include",
-    });
+  const enableMutation = useMutation({
+    mutationFn: () => {
+      return fetch(`${getServerUrl()}/api/workspaces/${workspace.id}/integrations/msteams/enable`, {
+        method: "POST",
+        credentials: "include",
+      });
+    },
   });
 
   const { progressElem: enableProgressElem, progressDone: enableProgressDone } = useProgress(
-    enableMutation.isLoading === true,
+    enableMutation.isPending === true,
     0
   );
 
@@ -80,8 +82,8 @@ export const ShowMsTeamsIntegration: React.FC<{
   i: Integration;
   onDeleted: () => void;
 }> = ({ i, onDeleted }) => {
-  const deleteMutation = useMutation(
-    () => {
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
       return fetch(
         `${getServerUrl()}/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete`,
         {
@@ -90,12 +92,10 @@ export const ShowMsTeamsIntegration: React.FC<{
         }
       );
     },
-    {
-      onSuccess: () => {
-        onDeleted();
-      },
-    }
-  );
+    onSuccess: () => {
+      onDeleted();
+    },
+  });
   return (
     <div className="grid grid-cols-2 gap-6">
       <div className="col-span-2 grid grid-cols-3 gap-2">

@@ -64,39 +64,41 @@ defmodule Fog.Api.Integration do
   defmsg(Ok, [:issueId, :issueTag, :issue])
   deferr(Err)
 
-  def info(%LabelIssue{} = m, s) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%LabelIssue{} = m, s, p) do
     if Perm.Integration.allowed?(s, :label_issue, workspace_id: m.workspaceId) do
-      handle_command(m, s)
+      handle_command(m, s, p)
     else
       {:reply, Err.forbidden()}
     end
   end
 
-  def info(%IssueInfo{} = m, s) do
+  def info(%IssueInfo{} = m, s, p) do
     if Perm.Integration.allowed?(s, :issue_info, workspace_id: m.workspaceId) do
-      handle_command(m, s)
+      handle_command(m, s, p)
     else
       {:reply, Err.forbidden()}
     end
   end
 
-  def info(%CloseIssue{} = m, s) do
+  def info(%CloseIssue{} = m, s, p) do
     if Perm.Integration.allowed?(s, :close_issue, workspace_id: m.workspaceId) do
-      handle_command(m, s)
+      handle_command(m, s, p)
     else
       {:reply, Err.forbidden()}
     end
   end
 
-  def info(%ReopenIssue{} = m, s) do
+  def info(%ReopenIssue{} = m, s, p) do
     if Perm.Integration.allowed?(s, :reopen_issue, workspace_id: m.workspaceId) do
-      handle_command(m, s)
+      handle_command(m, s, p)
     else
       {:reply, Err.forbidden()}
     end
   end
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(%command{} = m, s, p) when command in @commands do
     room_id =
       case m do
         %{roomId: room_id} ->
@@ -110,29 +112,31 @@ defmodule Fog.Api.Integration do
          workspace_id: m.workspaceId,
          room_id: room_id
        ) do
-      handle_command(m, s)
+      handle_command(m, s, p)
     else
       {:reply, Err.forbidden()}
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp handle_command(
          %CreateIssue{workspaceId: wid, integrationProjectId: pid, roomId: rid} = command,
-         sess
+         sess,
+         pipeline
        ) do
     integration = Repo.Integration.get_by_project_id(wid, pid)
 
     with {:ok, issue} = Fog.Integration.create_issue(command),
          issue_id = Fog.Issue.id_from_create_data(integration.type, issue) do
-      maybe_update_room_tag(rid, integration, issue_id, sess)
+      maybe_update_room_tag(rid, integration, issue_id, sess, pipeline)
     end
   end
 
   defp handle_command(
          %CreateIssueWithForward{workspaceId: wid, integrationProjectId: pid} = command,
-         sess
+         sess,
+         pipeline
        ) do
     internal_hid = Repo.Helpdesk.get_internal(wid).id
     integration = Repo.Integration.get_by_project_id(wid, pid)
@@ -145,16 +149,17 @@ defmodule Fog.Api.Integration do
       linkEndMessageId: command.linkEndMessageId
     }
 
-    with {:reply, %Api.Room.Ok{roomId: rid}} <- Api.Room.info(create_cmd, sess),
+    with {:reply, %Api.Room.Ok{roomId: rid}} <- Api.Room.info(create_cmd, sess, pipeline),
          {:ok, issue} = Fog.Integration.create_issue(command),
          issue_id = Fog.Issue.id_from_create_data(integration.type, issue) do
-      maybe_update_room_tag(rid, integration, issue_id, sess)
+      maybe_update_room_tag(rid, integration, issue_id, sess, pipeline)
     end
   end
 
   defp handle_command(
          %ForwardToIssue{workspaceId: wid, integrationProjectId: pid} = command,
-         sess
+         sess,
+         pipeline
        ) do
     internal_hid = Repo.Helpdesk.get_internal(wid).id
     integration = Repo.Integration.get_by_project_id(wid, pid)
@@ -169,7 +174,7 @@ defmodule Fog.Api.Integration do
 
     {:ok, rid} =
       try do
-        {:reply, %Api.Room.Ok{roomId: rid}} = Api.Room.info(create_cmd, sess)
+        {:reply, %Api.Room.Ok{roomId: rid}} = Api.Room.info(create_cmd, sess, pipeline)
         {:ok, rid}
       rescue
         _ ->
@@ -194,7 +199,7 @@ defmodule Fog.Api.Integration do
     case Fog.Integration.forward_to_issue(command) do
       {:ok, %{issueId: issue_id}} ->
         {:reply, %Ok{issueTag: issue_tag}} =
-          maybe_update_room_tag(rid, integration, issue_id, sess)
+          maybe_update_room_tag(rid, integration, issue_id, sess, pipeline)
 
         {:reply, %Ok{issueId: issue_id, issueTag: issue_tag}}
 
@@ -203,32 +208,32 @@ defmodule Fog.Api.Integration do
     end
   end
 
-  defp handle_command(%LabelIssue{} = command, _) do
+  defp handle_command(%LabelIssue{} = command, _, _) do
     case Fog.Integration.label_issue(command) do
       {:ok, %{issueId: issue_id}} -> {:reply, %Ok{issueId: issue_id}}
       {:ok, _} -> {:reply, %Ok{}}
     end
   end
 
-  defp handle_command(%IssueInfo{integrationProjectId: project_id} = command, sess) do
+  defp handle_command(%IssueInfo{integrationProjectId: project_id} = command, sess, _) do
     case Fog.Integration.handle(command, sess) do
       {:ok, issue} -> {:reply, %Ok{issue: Map.merge(issue, %{integrationProjectId: project_id})}}
     end
   end
 
-  defp handle_command(%CloseIssue{} = command, sess) do
+  defp handle_command(%CloseIssue{} = command, sess, _) do
     case Fog.Integration.handle(command, sess) do
       {:ok, issue} -> {:reply, %Ok{issue: issue}}
     end
   end
 
-  defp handle_command(%ReopenIssue{} = command, sess) do
+  defp handle_command(%ReopenIssue{} = command, sess, _) do
     case Fog.Integration.handle(command, sess) do
       {:ok, issue} -> {:reply, %Ok{issue: issue}}
     end
   end
 
-  defp maybe_update_room_tag(rid, integration, {:ok, issue_id}, sess) do
+  defp maybe_update_room_tag(rid, integration, {:ok, issue_id}, sess, pipeline) do
     wid = integration.workspace_id
     internal_hid = Fog.Repo.Helpdesk.get_internal(wid).id
     room = Repo.Room.get(rid)
@@ -250,10 +255,10 @@ defmodule Fog.Api.Integration do
       tagsToRemove: []
     }
 
-    with {:reply, %Api.Room.Ok{}} <- Api.Room.info(update_cmd, sess) do
+    with {:reply, %Api.Room.Ok{}} <- Api.Room.info(update_cmd, sess, pipeline) do
       {:reply, %Ok{issueId: issue_id, issueTag: issue_tag.name}}
     end
   end
 
-  defp maybe_update_room_tag(_, _, _, sess), do: {:reply, %Ok{}, sess}
+  defp maybe_update_room_tag(_, _, _, sess, _), do: {:reply, %Ok{}, sess}
 end

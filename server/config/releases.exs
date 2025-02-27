@@ -6,6 +6,12 @@
 
 import Config
 
+github_app_private_key =
+  case System.get_env("GITHUB_APP_PRIVATE_KEY") do
+    nil -> nil
+    pem -> String.replace(pem, "\\n", "\n")
+  end
+
 # Database
 config :fog, Fog.Repo,
   database: System.get_env("PG_DB"),
@@ -113,6 +119,12 @@ config :fog,
   asana_host: "https://app.asana.com"
 
 config :fog,
+  github_app_client_id: System.get_env("GITHUB_APP_CLIENT_ID"),
+  github_app_client_secret: System.get_env("GITHUB_APP_CLIENT_SECRET"),
+  github_app_webhook_secret: System.get_env("GITHUB_APP_WEBHOOK_SECRET"),
+  github_app_private_key: github_app_private_key
+
+config :fog,
   crm_note_bucket_duration_seconds: System.get_env("CRM_NOTE_BUCKET_DURATION_SECONDS")
 
 config :fog,
@@ -130,15 +142,14 @@ config :fog,
 config :logger, :console,
   level: (System.get_env("FOG_LOG_LEVEL") || "debug") |> String.to_atom(),
   format: "\n$time [$level] $message $metadata\n",
-  metadata: [:file, :line, :mfa, :pid]
+  metadata: [:file, :line, :mfa, :pid],
+  truncate: :infinity
 
 config :snowflake,
   # values are 0 thru 1023 nodes
   machine_id: 1,
   # 2020.01.01, don't change!
   epoch: 1_577_836_800_000
-
-config :tesla, :adapter, Tesla.Adapter.Hackney
 
 config :ueberauth, Ueberauth,
   providers: [

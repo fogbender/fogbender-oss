@@ -3,13 +3,10 @@ import colors from "tailwindcss/colors";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "class",
+  darkMode: "selector",
   plugins: [require("autoprefixer"), require("daisyui")],
   daisyui: {
-    styled: true, // Set to true to enable component animations
     base: false,
-    utils: false,
-    themes: [],
   },
   theme: {
     extend: {

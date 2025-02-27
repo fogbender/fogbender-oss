@@ -90,6 +90,7 @@ defmodule Fog.Comms.Slack.Api do
             {:ok, body}
 
           %{"error" => "name_taken", "ok" => false} ->
+            Logger.info("#{name} taken, trying again")
             create_channel(access_token, next_channel_name(name), opts)
 
           _ ->
@@ -97,6 +98,7 @@ defmodule Fog.Comms.Slack.Api do
         end
 
       {:ok, %Tesla.Env{status: 429, body: body}} ->
+        Logger.info("create_channel error: #{inspect(body)}")
         {:error, body}
     end
   end
@@ -123,6 +125,38 @@ defmodule Fog.Comms.Slack.Api do
           end
 
         "#{slice}#{x}"
+    end
+  end
+
+  def rename_channel(access_token, channel_id, new_name) do
+    r =
+      client(access_token)
+      |> Tesla.post("/api/conversations.rename", %{
+        channel: channel_id,
+        name: new_name
+      })
+
+    case r do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        case body do
+          %{"ok" => true} ->
+            {:ok, body}
+
+          %{"error" => "name_taken", "ok" => false} ->
+            Logger.info("Channel rename failed: #{new_name} is already taken.")
+            rename_channel(access_token, channel_id, next_channel_name(new_name))
+
+          _ ->
+            {:error, body}
+        end
+
+      {:ok, %Tesla.Env{status: 429, body: body}} ->
+        Logger.info("rename_channel rate-limited: #{inspect(body)}")
+        {:error, :rate_limited}
+
+      {:error, reason} ->
+        Logger.error("rename_channel request failed: #{inspect(reason)}")
+        {:error, reason}
     end
   end
 
@@ -235,6 +269,10 @@ defmodule Fog.Comms.Slack.Api do
 
     # delete from map if value is nil
     data = data |> Enum.reject(fn {_, v} -> is_nil(v) end) |> Map.new()
+
+    _r =
+      json_client(access_token)
+      |> Tesla.post("/api/chat.postMessage", Map.replace(data, :text, "") |> Map.delete(:blocks))
 
     r =
       json_client(access_token)

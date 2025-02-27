@@ -48,20 +48,23 @@ defmodule Fog.Api.Auth do
   defmsg(LogoutOk, [])
   deferr(Err)
 
-  def info(%User{} = auth, %Session.Guest{headers: headers}) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%User{} = auth, %Session.Guest{headers: headers}, _) do
     login_user(auth, headers)
   end
 
-  def info(%User{}, _), do: {:reply, Err.forbidden()}
+  def info(%User{}, _, _), do: {:reply, Err.forbidden()}
 
-  def info(%Visitor{token: token} = auth, %Session.Guest{headers: headers})
+  def info(%Visitor{token: token} = auth, %Session.Guest{headers: headers}, _)
       when not is_nil(token) do
     login_user(auth, headers)
   end
 
   def info(
         %Visitor{widgetId: widget_id, token: nil, localTimestamp: local_timestamp} = auth,
-        %Session.Guest{headers: headers}
+        %Session.Guest{headers: headers},
+        _
       ) do
     with {:ok, %Data.Workspace{visitors_enabled: true} = workspace} <-
            Repo.Workspace.from_widget_id(widget_id),
@@ -84,7 +87,8 @@ defmodule Fog.Api.Auth do
 
   def info(
         %Agent{agentId: agentId, vendorId: vendorId, token: token},
-        %Session.Guest{agentId: agentId}
+        %Session.Guest{agentId: agentId},
+        _
       )
       when is_binary(agentId) do
     with %{role: :agent, id: ^agentId} <- Fog.Token.validate(token),
@@ -107,19 +111,19 @@ defmodule Fog.Api.Auth do
     end
   end
 
-  def info(%Agent{}, _), do: {:reply, Err.forbidden()}
+  def info(%Agent{}, _, _), do: {:reply, Err.forbidden()}
 
-  def info(%Logout{}, %Session.Guest{}), do: {:reply, Err.forbidden()}
+  def info(%Logout{}, %Session.Guest{}, _), do: {:reply, Err.forbidden()}
 
-  def info(%Logout{}, session) do
+  def info(%Logout{}, session, _) do
     session = Session.logout(session)
     {:reply, %LogoutOk{}, session}
   end
 
-  def info(%Resume{}, %Session.Guest{}), do: {:reply, Err.forbidden()}
-  def info(%Resume{}, _), do: {:reply, Err.not_implemented()}
+  def info(%Resume{}, %Session.Guest{}, _), do: {:reply, Err.forbidden()}
+  def info(%Resume{}, _, _), do: {:reply, Err.not_implemented()}
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def login_user(%User{} = auth), do: login_user(auth, %{})
 

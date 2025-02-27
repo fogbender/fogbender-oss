@@ -14,7 +14,9 @@ defmodule Fog.Api.User do
   defmsg(Ok, [:userId])
   deferr(Err)
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     if auth(m, s) do
       user = handle_command(m, s)
       :ok = Event.publish(user)
@@ -24,7 +26,7 @@ defmodule Fog.Api.User do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp auth(%Update{userId: user_id}, sess) do
     Perm.User.allowed?(sess, :update, user_id: user_id)

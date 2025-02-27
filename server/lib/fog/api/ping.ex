@@ -6,12 +6,14 @@ defmodule Fog.Api.Ping do
   defmsg(Ping, [:lastActivityTs])
   defmsg(Pong, [])
 
-  def info(%Ping{} = p, s) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%Ping{} = p, s, _) do
     s = update_last_activity(p, s)
     {:reply, %Pong{}, s}
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp update_last_activity(_, %Session.Guest{} = s), do: s
 

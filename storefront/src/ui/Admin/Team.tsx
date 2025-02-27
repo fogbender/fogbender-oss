@@ -15,7 +15,7 @@ import {
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
@@ -42,6 +42,7 @@ export const Team: React.FC<{
   const { data: agents } = useQuery({
     queryKey: queryKeys.agents(vendor.id),
     queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/agents`).json<Agent[]>(),
+    refetchOnWindowFocus: "always",
   });
 
   const ourAgent = React.useMemo(
@@ -53,6 +54,7 @@ export const Team: React.FC<{
     queryKey: queryKeys.invites(vendor.id),
     queryFn: () => apiServer.get(`/api/vendors/${vendor.id}/invites`).json<Invite[]>(),
     enabled: (ourAgent?.role && ["owner", "admin"].includes(ourAgent.role)) === true,
+    refetchOnWindowFocus: "always",
   });
 
   const invitesAndAgents = React.useMemo(() => {
@@ -290,11 +292,17 @@ const TeamMembers: React.FC<{
                     )}
                   </td>
                   <td className="border-t">
-                    {member.role === "app" ? (
-                      <div>Application</div>
-                    ) : (
-                      <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
-                    )}
+                    {(() => {
+                      if (member.role === "app") {
+                        return <div>Application</div>;
+                      } else if (member.role === "assistant") {
+                        return <div>Assistant</div>;
+                      } else {
+                        return (
+                          <ChangeRoleButton member={member} ourAgent={ourAgent} vendor={vendor} />
+                        );
+                      }
+                    })()}
                   </td>
                   <td className="border-t">
                     <span
@@ -420,8 +428,8 @@ const SendInviteForm: React.FC<{
         current_role?: string;
       }
     | Error
-  >(
-    async () => {
+  >({
+    mutationFn: async () => {
       const res = await fetchServerApiPost<Response>("/api/invites", {
         email: inviteEmail,
         vendor_id: vendorId,
@@ -432,17 +440,15 @@ const SendInviteForm: React.FC<{
         throw error;
       }
     },
-    {
-      onSuccess: () => {
-        onClose();
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(["invites", vendorId]);
-        // invalidate the cache for invites send to self just in case if user invites self
-        queryClient.invalidateQueries("vendor_invites");
-      },
-    }
-  );
+    onSuccess: () => {
+      onClose();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["invites", vendorId] });
+      // invalidate the cache for invites send to self just in case if user invites self
+      queryClient.invalidateQueries({ queryKey: ["vendor_invites"] });
+    },
+  });
   const renderInviteError = React.useCallback(() => {
     if (sendInviteRes.error === null || !("code" in sendInviteRes.error)) {
       return (
@@ -508,7 +514,7 @@ const SendInviteForm: React.FC<{
           />
         </div>
       </div>
-      <ThickButton disabled={!formOk} loading={sendInviteRes.isLoading}>
+      <ThickButton disabled={!formOk} loading={sendInviteRes.isPending}>
         Send invitation
       </ThickButton>
       {renderInviteError()}
@@ -524,8 +530,8 @@ const UpdateRoleModal: React.FC<{
   ourRole: AgentRole;
 }> = ({ vendor, onClose, member, newRole, ourRole }) => {
   const [error, setError] = React.useState<string>();
-  const changeRoleMutation = useMutation(
-    () => {
+  const changeRoleMutation = useMutation({
+    mutationFn: async () => {
       const url = isInvite(member)
         ? `/api/invites/${member.invite_id}`
         : `/api/vendors/${vendor.id}/agents/${member.id}`;
@@ -536,21 +542,19 @@ const UpdateRoleModal: React.FC<{
         body: JSON.stringify({ role: newRole }),
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.invites(vendor.id));
-          queryClient.invalidateQueries(queryKeys.agents(vendor.id));
-          queryClient.invalidateQueries(queryKeys.billing(vendor.id));
-          onClose();
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          setError(error);
-        }
-      },
-    }
-  );
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.invites(vendor.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.agents(vendor.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.billing(vendor.id) });
+        onClose();
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        setError(error);
+      }
+    },
+  });
 
   const handledErrors = [
     "Assign another owner first",
@@ -587,7 +591,7 @@ const UpdateRoleModal: React.FC<{
       {error === undefined ? (
         <ThickButton
           onClick={() => changeRoleMutation.mutate()}
-          loading={changeRoleMutation.isLoading}
+          loading={changeRoleMutation.isPending}
         >
           Update to <span className="capitalize font-semibold">{newRole}</span>
         </ThickButton>
@@ -608,20 +612,18 @@ const VerifiedDomains: React.FC<{
 
   const verifiedDomains = React.useMemo(() => verifiedDomains0 || [], [verifiedDomains0]);
 
-  const { data: isGeneric } = useQuery<boolean>(
-    queryKeys.isGenericDomain(domain),
-    () =>
+  const { data: isGeneric } = useQuery<boolean>({
+    queryKey: queryKeys.isGenericDomain(domain),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/is_generic/${domain}`, {
         credentials: "include",
       }).then(res => res.json()),
-    {
-      enabled: !!domain,
-      staleTime: Infinity,
-    }
-  );
+    enabled: !!domain,
+    staleTime: Infinity,
+  });
 
-  const addVerifiedDomainMutation = useMutation(
-    (params: { vendorId: string; domain: string; skipDnsProof?: boolean }) => {
+  const addVerifiedDomainMutation = useMutation({
+    mutationFn: async (params: { vendorId: string; domain: string; skipDnsProof?: boolean }) => {
       const { vendorId, domain, skipDnsProof = false } = params;
 
       const url = `/api/vendors/${vendorId}/verified_domains`;
@@ -632,23 +634,21 @@ const VerifiedDomains: React.FC<{
         body: JSON.stringify({ domain, skipDnsProof }),
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        const { vendorId } = params;
+    onSuccess: async (r, params) => {
+      const { vendorId } = params;
 
-        if (r.status === 200) {
-          queryClient.invalidateQueries(queryKeys.verifiedDomains(vendorId));
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          console.error(`${error}`);
-        }
-      },
-    }
-  );
+      if (r.status === 200) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.verifiedDomains(vendorId) });
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        console.error(`${error}`);
+      }
+    },
+  });
 
-  const verifyDomainMutation = useMutation(
-    (params: { vendorId: string; domain: string }) => {
+  const verifyDomainMutation = useMutation({
+    mutationFn: async (params: { vendorId: string; domain: string }) => {
       const { vendorId, domain } = params;
 
       const url = `/api/vendors/${vendorId}/verified_domains/${domain}`;
@@ -658,23 +658,21 @@ const VerifiedDomains: React.FC<{
         credentials: "include",
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        const { vendorId } = params;
+    onSuccess: async (r, params) => {
+      const { vendorId } = params;
 
-        if (r.status === 200) {
-          queryClient.invalidateQueries(queryKeys.verifiedDomains(vendorId));
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          console.error(`${error}`);
-        }
-      },
-    }
-  );
+      if (r.status === 200) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.verifiedDomains(vendorId) });
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        console.error(`${error}`);
+      }
+    },
+  });
 
-  const deleteDomainMutation = useMutation(
-    (params: { vendorId: string; domain: string }) => {
+  const deleteDomainMutation = useMutation({
+    mutationFn: (params: { vendorId: string; domain: string }) => {
       const { vendorId, domain } = params;
 
       const url = `/api/vendors/${vendorId}/verified_domains/${domain}`;
@@ -684,20 +682,18 @@ const VerifiedDomains: React.FC<{
         credentials: "include",
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        const { vendorId } = params;
+    onSuccess: async (r, params) => {
+      const { vendorId } = params;
 
-        if (r.status === 200) {
-          queryClient.invalidateQueries(queryKeys.verifiedDomains(vendorId));
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          console.error(`${error}`);
-        }
-      },
-    }
-  );
+      if (r.status === 200) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.verifiedDomains(vendorId) });
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        console.error(`${error}`);
+      }
+    },
+  });
 
   const [differentDomain, differentDomainInput, resetDifferentDomain] = useInputWithError({
     className: "!h-12 border-0",
@@ -763,7 +759,7 @@ const VerifiedDomains: React.FC<{
   );
 
   return isGeneric !== false ? null : (
-    <div className="w-full bg-white dark:bg-brand-dark-bg dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
+    <div className="w-full bg-white dark:bg-brand-dark-bg text-black dark:text-white p-4 overflow-auto fog:box-shadow-s rounded-xl flex flex-col gap-4">
       <div className="fog:text-header3">Auto-join configuration</div>
       <div className="flex flex-col gap-2">
         {verifiedDomains.some(d => d.verified) && (
@@ -848,7 +844,7 @@ const VerifiedDomains: React.FC<{
                                   domain: d.domain,
                                 })
                               }
-                              loading={verifyDomainMutation.isLoading}
+                              loading={verifyDomainMutation.isPending}
                             >
                               Verify
                             </ThinButton>

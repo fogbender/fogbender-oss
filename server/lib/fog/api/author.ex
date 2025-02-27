@@ -15,7 +15,9 @@ defmodule Fog.Api.Author do
   defmsg(Ok, [:settings])
   deferr(Err, [])
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     case handle_command(m, s) do
       %Data.FeatureOption{} = res ->
         {:reply, %Ok{settings: res}}
@@ -25,7 +27,7 @@ defmodule Fog.Api.Author do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp handle_command(
          %UpdateSettings{period: period, enabled: enabled},

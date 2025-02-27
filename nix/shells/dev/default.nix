@@ -32,6 +32,7 @@ let
   js_libs = with pkgs; [
     nodejs
     yarn
+    pnpm
   ];
 
   pg = pkgs.postgresql_14.withPackages (p: [ p.pg_bigm ]);

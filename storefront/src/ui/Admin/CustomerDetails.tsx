@@ -15,7 +15,7 @@ import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardC
 import { Clipboard } from "fogbender-client/src/shared/components/Icons";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { getServerUrl } from "../../config";
@@ -35,28 +35,30 @@ export const CustomerDetails: React.FC<{
     data: customerCrms,
     status: customerCrmStatus,
     isRefetching: isRefetchingCustomer,
-  } = useQuery<Customer>(
-    queryKeys.customer(customer.id),
-    () =>
+  } = useQuery<Customer>({
+    queryKey: queryKeys.customer(customer.id),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/helpdesks/${customer.helpdeskId}`, {
         credentials: "include",
       }).then(res => res.json()),
-    { enabled: customer !== undefined && customer.helpdeskId !== undefined }
-  );
+    enabled: customer !== undefined && customer.helpdeskId !== undefined,
+  });
 
-  const { data: mergeLinks } = useQuery<MergeLink[]>(queryKeys.crmConnections(workspaceId), () =>
-    fetch(`${getServerUrl()}/api/workspaces/${workspaceId}/merge-links`, {
-      credentials: "include",
-    }).then(res => {
-      if (res.status === 200) {
-        return res.json();
-      } else {
-        return {
-          data: [],
-        };
-      }
-    })
-  );
+  const { data: mergeLinks } = useQuery<MergeLink[]>({
+    queryKey: queryKeys.crmConnections(workspaceId),
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/api/workspaces/${workspaceId}/merge-links`, {
+        credentials: "include",
+      }).then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return {
+            data: [],
+          };
+        }
+      }),
+  });
 
   return (
     <div className="space-y-4 lg:space-y-6">
@@ -255,8 +257,8 @@ const DomainsInfo = ({
   customer: Customer;
   lookupCustomerById: (x: string) => Customer | undefined;
 }) => {
-  const addDomainToCustomerMutation = useMutation(
-    (params: { customerId: string; domain: string }) => {
+  const addDomainToCustomerMutation = useMutation({
+    mutationFn: (params: { customerId: string; domain: string }) => {
       const { customerId, domain } = params;
 
       return fetch(`${getServerUrl()}/api/customers/${customerId}/add-domain`, {
@@ -265,26 +267,24 @@ const DomainsInfo = ({
         body: JSON.stringify({ domain }),
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        if (r.status === 204) {
-          const { customerId } = params;
-          resetNewDomain();
-          queryClient.invalidateQueries(queryKeys.customers(workspaceId));
-          queryClient.invalidateQueries(queryKeys.customer(customerId));
-        } else if (r.status === 400) {
-          const { error: err } = await r.json();
+    onSuccess: async (r, params) => {
+      if (r.status === 204) {
+        const { customerId } = params;
+        resetNewDomain();
+        queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.customer(customerId) });
+      } else if (r.status === 400) {
+        const { error: err } = await r.json();
 
-          if (err === "domain_taken") {
-            setNewDomainError("This domain is already in use");
-          }
+        if (err === "domain_taken") {
+          setNewDomainError("This domain is already in use");
         }
-      },
-    }
-  );
+      }
+    },
+  });
 
-  const removeDomainFromCustomerMutation = useMutation(
-    (params: { customerId: string; domain: string }) => {
+  const removeDomainFromCustomerMutation = useMutation({
+    mutationFn: (params: { customerId: string; domain: string }) => {
       const { customerId, domain } = params;
 
       return fetch(`${getServerUrl()}/api/customers/${customerId}/remove-domain`, {
@@ -293,17 +293,15 @@ const DomainsInfo = ({
         body: JSON.stringify({ domain }),
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        const { customerId } = params;
+    onSuccess: async (r, params) => {
+      const { customerId } = params;
 
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.customers(workspaceId));
-          queryClient.invalidateQueries(queryKeys.customer(customerId));
-        }
-      },
-    }
-  );
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.customer(customerId) });
+      }
+    },
+  });
 
   const [newDomainError, setNewDomainError] = React.useState<string>();
 
@@ -506,9 +504,9 @@ const CrmLink: React.FC<{
   link: MergeLink;
   lookupCustomerById: (x: string) => Customer | undefined;
 }> = ({ workspaceId, customer, link, lookupCustomerById }) => {
-  const { data: accounts } = useQuery<Account[]>(
-    queryKeys.crmLinkAccounts(workspaceId, link.end_user_origin_id),
-    () =>
+  const { data: accounts } = useQuery<Account[]>({
+    queryKey: queryKeys.crmLinkAccounts(workspaceId, link.end_user_origin_id),
+    queryFn: async () =>
       fetch(
         `${getServerUrl()}/api/workspaces/${workspaceId}/merge-links/${
           link.end_user_origin_id
@@ -522,8 +520,8 @@ const CrmLink: React.FC<{
         } else {
           return [];
         }
-      })
-  );
+      }),
+  });
 
   const [selectedAccount, setSelectedAccount] = React.useState<(typeof options)[number]>();
 
@@ -551,8 +549,12 @@ const CrmLink: React.FC<{
     return accountsOptions;
   }, [accountsSearch, accounts]);
 
-  const assignMutation = useMutation(
-    (params: { crmRemoteAccountId: string; crmAccountId: string; assign?: boolean }) => {
+  const assignMutation = useMutation({
+    mutationFn: async (params: {
+      crmRemoteAccountId: string;
+      crmAccountId: string;
+      assign?: boolean;
+    }) => {
       const { crmRemoteAccountId, crmAccountId, assign } = params;
 
       setConflictCustomerName(undefined);
@@ -581,40 +583,38 @@ const CrmLink: React.FC<{
         );
       }
     },
-    {
-      onSuccess: async (r, params) => {
-        const { crmAccountId } = params;
+    onSuccess: async (r, params) => {
+      const { crmAccountId } = params;
 
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.customers(workspaceId));
-          queryClient.invalidateQueries(queryKeys.customer(customer.id));
-        } else if (r.status === 400) {
-          const {
-            error: {
-              conflictRecord: { customerId },
-            },
-          } = await r.json();
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.customer(customer.id) });
+      } else if (r.status === 400) {
+        const {
+          error: {
+            conflictRecord: { customerId },
+          },
+        } = await r.json();
 
-          if (customerId) {
-            const conflictCustomer = lookupCustomerById(customerId);
+        if (customerId) {
+          const conflictCustomer = lookupCustomerById(customerId);
 
-            if (conflictCustomer) {
-              setConflictCustomerName(conflictCustomer.name);
-            }
+          if (conflictCustomer) {
+            setConflictCustomerName(conflictCustomer.name);
           }
-
-          if (!conflictCustomerName) {
-            console.error(`Couldn't assign ${crmAccountId}`);
-          }
-        } else {
-          console.error(`Couldn't assign ${crmAccountId}`);
         }
 
-        setAccountsSearch(undefined);
-        setSelectedAccount(undefined);
-      },
-    }
-  );
+        if (!conflictCustomerName) {
+          console.error(`Couldn't assign ${crmAccountId}`);
+        }
+      } else {
+        console.error(`Couldn't assign ${crmAccountId}`);
+      }
+
+      setAccountsSearch(undefined);
+      setSelectedAccount(undefined);
+    },
+  });
 
   const existingAssignment = React.useMemo(() => {
     const crm = (customer?.crms || []).find(
@@ -668,7 +668,7 @@ const CrmLink: React.FC<{
                         !selectedAccount && "border-gray-300 text-gray-300 bg-white"
                       )}
                       onClick={() => toggleAssign()}
-                      loading={assignMutation.isLoading}
+                      loading={assignMutation.isPending}
                     >
                       Unassign
                     </ThinButton>

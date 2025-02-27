@@ -177,8 +177,8 @@
     "fetcher": "hex",
     "name": "decimal",
     "pkg": "decimal",
-    "sha256": "sha256-U8/l9JftDndxrhpHVXVgPXdCUJm6X675OUkys1Ag/8w=",
-    "version": "2.1.1"
+    "sha256": "sha256-pNZjVcspy0fDzzDnEynlg2HPyzfDQjXvO/HXvzdzrqw=",
+    "version": "2.3.0"
   },
   "earmark": {
     "builder": "mix",
@@ -220,15 +220,12 @@
   },
   "elixir_make": {
     "builder": "mix",
-    "deps": {
-      "castore": true,
-      "certifi": true
-    },
+    "deps": {},
     "fetcher": "hex",
     "name": "elixir_make",
     "pkg": "elixir_make",
-    "sha256": "sha256-enGUW5E9N+qJsGlm4TQshc/lSbFebW0IHoCBxJMGLAc=",
-    "version": "0.7.8"
+    "sha256": "sha256-2yPU/Yt1dGKtAviqc0MaQm/mZxyAsgDZcQyvPR3Q/9s=",
+    "version": "0.9.0"
   },
   "ex_aws": {
     "builder": "mix",
@@ -334,8 +331,8 @@
     "fetcher": "hex",
     "name": "fast_html",
     "pkg": "fast_html",
-    "sha256": "sha256-BkxPI7SmFo+Rh9rImEsFbyxTG7B4f1Wf1qizSziu+64=",
-    "version": "2.2.0"
+    "sha256": "sha256-dnpj7MlB0/wODpYJ3tGl55g5jlsb9NL0e8tZkqhrMs8=",
+    "version": "2.4.1"
   },
   "file_system": {
     "builder": "mix",
@@ -345,6 +342,21 @@
     "pkg": "file_system",
     "sha256": "sha256-QRle2/tWKlk3Ju2js+ixA6MJtzOtJfPWQrpJaWv3Fdw=",
     "version": "0.2.10"
+  },
+  "finch": {
+    "builder": "mix",
+    "deps": {
+      "mime": false,
+      "mint": false,
+      "nimble_options": false,
+      "nimble_pool": false,
+      "telemetry": false
+    },
+    "fetcher": "hex",
+    "name": "finch",
+    "pkg": "finch",
+    "sha256": "sha256-/FMkziCRJdHi+g/NJjRgHFKnh6/xzTPugzZkpa9OorY=",
+    "version": "0.19.0"
   },
   "floki": {
     "builder": "mix",
@@ -402,6 +414,15 @@
     "url": "https://github.com/mkurkov/hkdf.git",
     "version": "git"
   },
+  "hpax": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "hpax",
+    "pkg": "hpax",
+    "sha256": "sha256-Lwm0wQdOCr2EZ0cynqom1TW+DrPRifpp2BK/uL/v0y8=",
+    "version": "1.0.2"
+  },
   "html_entities": {
     "builder": "mix",
     "deps": {},
@@ -450,8 +471,8 @@
     "fetcher": "hex",
     "name": "jason",
     "pkg": "jason",
-    "sha256": "sha256-+7Aezf1WW1YmEwL34fzCfE+48y1W6rdNtiH8FUYEp6E=",
-    "version": "1.4.1"
+    "sha256": "sha256-xesMq5HwlFmflNVbxjQJI2qOxpohpngUUp6NX2zJCzs=",
+    "version": "1.4.4"
   },
   "joken": {
     "builder": "mix",
@@ -461,8 +482,8 @@
     "fetcher": "hex",
     "name": "joken",
     "pkg": "joken",
-    "sha256": "sha256-1Px8cDESst7cT57CFIVsOgcQjEg18PF0o2lSHyicmNE=",
-    "version": "2.4.1"
+    "sha256": "sha256-UTS1sKbjdJTkbb+eTa1TgI5eeHkEt8c5cmUbUczj1ys=",
+    "version": "2.6.2"
   },
   "joken_jwks": {
     "builder": "mix",
@@ -484,8 +505,8 @@
     "fetcher": "hex",
     "name": "jose",
     "pkg": "jose",
-    "sha256": "sha256-3NOyFbr+Aup8WyPa/T64Bipc2PLZBP2cqjI9NwNKs4Q=",
-    "version": "1.11.5"
+    "sha256": "sha256-DWzTb/i6F02ykUj8EStYQhhraKkM6fwrPsOv52WT5hQ=",
+    "version": "1.11.10"
   },
   "libsalty2": {
     "builder": "mix",
@@ -541,8 +562,20 @@
     "fetcher": "hex",
     "name": "mimerl",
     "pkg": "mimerl",
-    "sha256": "sha256-8nhYVlCqWBmGJkY46/aY+LsZ3yl/Zq2RsYkQ38bhkyM=",
-    "version": "1.2.0"
+    "sha256": "sha256-oeFaUNGIchfelfC5sHk+MoU/fCWKXNInZQiJs4g5/p0=",
+    "version": "1.3.0"
+  },
+  "mint": {
+    "builder": "mix",
+    "deps": {
+      "castore": true,
+      "hpax": false
+    },
+    "fetcher": "hex",
+    "name": "mint",
+    "pkg": "mint",
+    "sha256": "sha256-XuRB3/wYkvGuWRJ/dK/o/YL9plh3lCeNkk5NkOo9Y/k=",
+    "version": "1.6.2"
   },
   "mix_test_watch": {
     "builder": "mix",
@@ -576,14 +609,23 @@
     "sha256": "sha256-dZcwjiLjT3esqtuuPaY5dO3J5AQe9/cVTUXOgMDjPQA=",
     "version": "5.0.0"
   },
+  "nimble_options": {
+    "builder": "mix",
+    "deps": {},
+    "fetcher": "hex",
+    "name": "nimble_options",
+    "pkg": "nimble_options",
+    "sha256": "sha256-ghskcMqUQsS2mEiC/puwOJNxuN3sTUWpUE8Apm9lC0Q=",
+    "version": "1.1.1"
+  },
   "nimble_pool": {
     "builder": "mix",
     "deps": {},
     "fetcher": "hex",
     "name": "nimble_pool",
     "pkg": "nimble_pool",
-    "sha256": "sha256-HHFQVQldPycFxOI2wYthhCCjVJDalBSf+LWAohRPZT8=",
-    "version": "0.2.6"
+    "sha256": "sha256-ry5OazQZfbgfeq0jDBEY6smTrMDa5ryDusASbUrggTo=",
+    "version": "1.1.0"
   },
   "oauth2": {
     "builder": "mix",
@@ -690,8 +732,8 @@
     "fetcher": "hex",
     "name": "poison",
     "pkg": "poison",
-    "sha256": "sha256-EdxhF8UBuAxip1lPlB0EOYKhvQWhGEKAwNkWbrTY0/w=",
-    "version": "5.0.0"
+    "sha256": "sha256-u5BkYyuUd1o5ZGQtangoHAe3vhMZ4AFuFkN5BwTnOaI=",
+    "version": "6.0.0"
   },
   "postgrex": {
     "builder": "mix",
@@ -820,6 +862,7 @@
       "jason": true,
       "mime": false,
       "mint": true,
+      "mox": true,
       "msgpax": true,
       "poison": true,
       "telemetry": true
@@ -827,8 +870,8 @@
     "fetcher": "hex",
     "name": "tesla",
     "pkg": "tesla",
-    "sha256": "sha256-EFAfNgzZJqMJUBKHRwNyrxpuHL7Q9DlJIDpMEzALx58=",
-    "version": "1.8.0"
+    "sha256": "sha256-lgYJhI8e9lTDzfrWhFPNhKX+vstu2f7ZQW42zZzXJPk=",
+    "version": "1.13.2"
   },
   "timex": {
     "builder": "mix",

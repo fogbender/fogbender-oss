@@ -254,10 +254,12 @@ defmodule Fog.Comms.Slack.Agent.MessageTask do
          %Data.Message{} = message,
          slack_team_id
        ) do
-    %Data.Message{id: message_id, text: text, room_id: room_id, inserted_at: ts0} = message
+    %Data.Message{id: message_id, room_id: room_id, inserted_at: ts0} = message
     name = author |> Utils.author_name()
     avatar_url = Slack.Utils.author_avatar_url(author)
     reply_broadcast = calc_reply_broadcast(room_id, author, message, ts0)
+
+    text = Slack.Utils.message_text(message)
 
     text =
       message.mentions

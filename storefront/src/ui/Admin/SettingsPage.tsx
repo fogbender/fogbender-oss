@@ -4,25 +4,29 @@ import React from "react";
 import { lazily } from "react-lazily";
 import { Link, Route, Routes } from "react-router-dom";
 
-import { type Workspace } from "../../redux/adminApi";
+import type { Workspace, Vendor } from "../../redux/adminApi";
 
 import { AIControls } from "./AIControls";
 import { AvatarLibrary } from "./AvatarLibrary";
 import { CommsIntegrations } from "./CommsIntegrations";
-import { CrmIntegrationsWrapper as CrmIntegrations } from "./CrmIntegrationsWrapper";
+// import { CrmIntegrationsWrapper as CrmIntegrations } from "./CrmIntegrationsWrapper";
 import { DefaultGroupAssignments } from "./DefaultGroupAssignments";
+import { ExpandableAssistantConfig } from "./AssistantConfig";
+import { ExpandableWorkspaceForm } from "./UpdateWorkspaceForm";
 import { EmailForwarding } from "./EmailForwarding";
 import { Integrations as IssueTrackerIntegrations } from "./Integrations";
-import { TagsList } from "./TagsList";
+// import { TagsList } from "./TagsList";
 
 const { Customize } = lazily(() => import("./FloatingWidgetShowcase"));
 const { SnippetControls } = lazily(() => import("./SnippetControls"));
 
 export const SettingsPage: React.FC<{
   vendorId: string;
+  vendor: Vendor;
   workspace?: Workspace;
+  workspaces: Workspace[];
   ourEmail?: string;
-}> = ({ vendorId, workspace, ourEmail }) => {
+}> = ({ vendorId, vendor, workspace, workspaces, ourEmail }) => {
   return (
     <Routes>
       <Route
@@ -52,25 +56,47 @@ export const SettingsPage: React.FC<{
               <div className="flex flex-col gap-8 pb-20">
                 <IssueTrackerIntegrations workspace={workspace} />
                 <CommsIntegrations workspace={workspace} />
-                <CrmIntegrations workspace={workspace} />
+                {/* <CrmIntegrations workspace={workspace} /> */}
               </div>
             )}
           </div>
         }
       />
-      <Route
-        path="*"
-        element={
-          <div>
-            <SettingsTabs tab="settings" />
-            <div className="flex flex-col gap-8 pb-20">
-              {workspace && <EmailForwarding workspace={workspace} />}
-              {workspace && <AvatarLibrary workspace={workspace} />}
-              {workspace && <TagsList designatedWorkspaceId={workspace.id} />}
+      {workspace && (
+        <Route
+          path="*"
+          element={
+            <div>
+              <SettingsTabs tab="settings" />
+              <div className="flex flex-col gap-8 pb-20">
+                <ExpandableWorkspaceForm
+                  workspace={workspace}
+                  vendor={vendor}
+                  nameOk={name => {
+                    return workspaces?.find(w => w.name === name) === undefined;
+                  }}
+                  onClose={() => {
+                    /*
+                    setEditWorkspace(undefined);
+                    setIsCreateWorkspaceModalOpen(false);
+                    */
+                  }}
+                  onDeleteClick={() => {
+                    /*
+                    setEditWorkspace(undefined);
+                    setIsCreateWorkspaceModalOpen(false);
+                    setDeleteWorkspace(editWorkspace);
+                    */
+                  }}
+                />
+                <ExpandableAssistantConfig />
+                <EmailForwarding workspace={workspace} />
+                <AvatarLibrary workspace={workspace} />
+              </div>
             </div>
-          </div>
-        }
-      />
+          }
+        />
+      )}
       <Route
         path="notifications"
         element={
@@ -123,14 +149,16 @@ const SettingsTabs: React.FC<{
         >
           <TabHeaderWrapper selected={tab === "integrations"}>Integrations</TabHeaderWrapper>
         </Link>
-        <Link
-          to={tab === "ai" ? "." : secondaryTabs.includes(tab) ? "../ai" : "ai"}
-          className="flex-1 md:flex-none no-underline group"
-        >
-          <TabHeaderWrapper selected={tab === "ai"}>
-            <code>AI</code>
-          </TabHeaderWrapper>
-        </Link>
+        {/*
+          <Link
+            to={tab === "ai" ? "." : secondaryTabs.includes(tab) ? "../ai" : "ai"}
+            className="flex-1 md:flex-none no-underline group"
+          >
+            <TabHeaderWrapper selected={tab === "ai"}>
+              <code>AI</code>
+            </TabHeaderWrapper>
+          </Link>
+          */}
         <Link
           to={
             tab === "notifications"

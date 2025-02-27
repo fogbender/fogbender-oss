@@ -24,7 +24,9 @@ defmodule Fog.Api.Tag do
 
   @commands [Create, Update, Delete]
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     if auth(m, s) do
       handle(m, s)
     else
@@ -32,7 +34,7 @@ defmodule Fog.Api.Tag do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def auth(%Create{workspaceId: wid, tag: tag}, s) do
     Perm.Tag.allowed?(s, :create, workspace_id: wid, tag: tag)

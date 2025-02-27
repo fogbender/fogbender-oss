@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.10
--- Dumped by pg_dump version 14.10
+-- Dumped from database version 14.13
+-- Dumped by pg_dump version 14.13
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -485,6 +485,37 @@ CREATE TABLE public.fogvite_code (
 
 
 --
+-- Name: github_install; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.github_install (
+    id bigint NOT NULL,
+    installation_id integer,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: github_install_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.github_install_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: github_install_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.github_install_id_seq OWNED BY public.github_install.id;
+
+
+--
 -- Name: helpdesk; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -601,6 +632,30 @@ CREATE SEQUENCE public.integration_log_id_seq
 --
 
 ALTER SEQUENCE public.integration_log_id_seq OWNED BY public.integration_log.id;
+
+
+--
+-- Name: llm_file_mapping; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.llm_file_mapping (
+    provider text NOT NULL,
+    provider_file_id text NOT NULL,
+    file_id bigint NOT NULL
+);
+
+
+--
+-- Name: llm_thread_room_mapping; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.llm_thread_room_mapping (
+    room_id bigint NOT NULL,
+    thread_id text NOT NULL,
+    provider text NOT NULL,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
 
 
 --
@@ -1385,6 +1440,25 @@ ALTER SEQUENCE public.workspace_integration_id_seq OWNED BY public.workspace_int
 
 
 --
+-- Name: workspace_llm_integration; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.workspace_llm_integration (
+    workspace_id bigint NOT NULL,
+    provider text NOT NULL,
+    assistant_id text DEFAULT (gen_random_uuid())::text NOT NULL,
+    api_key text NOT NULL,
+    assistant_name text,
+    mcp_appliance_url text,
+    enabled boolean DEFAULT false,
+    "default" boolean DEFAULT false,
+    inserted_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    version text DEFAULT '1.0'::text NOT NULL
+);
+
+
+--
 -- Name: author_tag id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1424,6 +1498,13 @@ ALTER TABLE ONLY public.email_info_cache ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.feature_option ALTER COLUMN id SET DEFAULT nextval('public.feature_option_id_seq'::regclass);
+
+
+--
+-- Name: github_install id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_install ALTER COLUMN id SET DEFAULT nextval('public.github_install_id_seq'::regclass);
 
 
 --
@@ -1669,6 +1750,14 @@ ALTER TABLE ONLY public.fogvite
 
 
 --
+-- Name: github_install github_install_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_install
+    ADD CONSTRAINT github_install_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: helpdesk_integration helpdesk_integration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1698,6 +1787,14 @@ ALTER TABLE ONLY public.integration_issue
 
 ALTER TABLE ONLY public.integration_log
     ADD CONSTRAINT integration_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: llm_thread_room_mapping llm_thread_room_mapping_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.llm_thread_room_mapping
+    ADD CONSTRAINT llm_thread_room_mapping_pkey PRIMARY KEY (room_id, thread_id, provider);
 
 
 --
@@ -1909,6 +2006,14 @@ ALTER TABLE ONLY public.workspace_integration
 
 
 --
+-- Name: workspace_llm_integration workspace_llm_integration_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.workspace_llm_integration
+    ADD CONSTRAINT workspace_llm_integration_pkey PRIMARY KEY (workspace_id, provider, assistant_id);
+
+
+--
 -- Name: workspace workspace_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2043,6 +2148,13 @@ CREATE INDEX file_message_id_index ON public.file USING btree (message_id);
 
 
 --
+-- Name: github_install_installation_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX github_install_installation_id_index ON public.github_install USING btree (installation_id);
+
+
+--
 -- Name: helpdesk_id_type_uq_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2103,6 +2215,13 @@ CREATE INDEX idx_tag_name_trigram ON public.tag USING gin (name public.gin_trgm_
 --
 
 CREATE UNIQUE INDEX integration_issue_workspace_id_type_project_id_issue_id_index ON public.integration_issue USING btree (workspace_id, type, project_id, issue_id);
+
+
+--
+-- Name: llm_file_mapping_provider_provider_file_id_file_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX llm_file_mapping_provider_provider_file_id_file_id_index ON public.llm_file_mapping USING btree (provider, provider_file_id, file_id);
 
 
 --
@@ -2554,6 +2673,20 @@ CREATE UNIQUE INDEX workspace_id_type_project_id_uq_index ON public.workspace_in
 
 
 --
+-- Name: workspace_llm_integration_enabled_uq; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX workspace_llm_integration_enabled_uq ON public.workspace_llm_integration USING btree (workspace_id, provider) WHERE (enabled = true);
+
+
+--
+-- Name: workspace_llm_integration_uq; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX workspace_llm_integration_uq ON public.workspace_llm_integration USING btree (workspace_id, provider, assistant_id, version);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -2691,10 +2824,15 @@ INSERT INTO public."schema_migrations" (version) VALUES (20231004060737);
 INSERT INTO public."schema_migrations" (version) VALUES (20231004155001);
 INSERT INTO public."schema_migrations" (version) VALUES (20240122163610);
 INSERT INTO public."schema_migrations" (version) VALUES (20240312034644);
+INSERT INTO public."schema_migrations" (version) VALUES (20240317193520);
 INSERT INTO public."schema_migrations" (version) VALUES (20240730090614);
 INSERT INTO public."schema_migrations" (version) VALUES (20241005145250);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006004701);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006021823);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006164923);
 INSERT INTO public."schema_migrations" (version) VALUES (20241006173845);
+INSERT INTO public."schema_migrations" (version) VALUES (20241110191946);
 INSERT INTO public."schema_migrations" (version) VALUES (20241221164145);
+INSERT INTO public."schema_migrations" (version) VALUES (20250106214822);
+INSERT INTO public."schema_migrations" (version) VALUES (20250121225132);
+INSERT INTO public."schema_migrations" (version) VALUES (20250215184951);

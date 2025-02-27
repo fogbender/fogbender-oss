@@ -7,7 +7,7 @@ import {
 } from "fogbender-client/src/shared";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { apiServer, queryKeys } from "../client";
@@ -119,7 +119,7 @@ export const DefaultGroupAssignments = ({
                   </span>
                   <ThinButton
                     small={true}
-                    loading={resetting && setDefaultGroupAssignmentMutation.isLoading}
+                    loading={resetting && setDefaultGroupAssignmentMutation.isPending}
                     onClick={() => {
                       setResetting(true);
                       setDefaultGroupAssignmentMutation.mutate({ groupName: null });
@@ -167,7 +167,7 @@ export const DefaultGroupAssignments = ({
             <ThickButton
               small={true}
               className="mt-3 max-w-min"
-              loading={selectedGroup && setDefaultGroupAssignmentMutation.isLoading}
+              loading={selectedGroup && setDefaultGroupAssignmentMutation.isPending}
               disabled={!selectedGroup}
               onClick={() => {
                 if (selectedGroup) {

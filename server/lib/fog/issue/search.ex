@@ -72,7 +72,8 @@ defmodule Fog.Issue.Search do
         specifics: specifics
       },
       acc ->
-        api_key = specifics["api_key"]
+        installation_id = specifics["installation_id"]
+        {:ok, api_key} = Integration.GitHub.installation_to_token(installation_id)
         repo = specifics["repo"]
 
         case GitHub.search(api_key, "#{term} state:open type:issue repo:#{repo}") do

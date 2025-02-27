@@ -1,9 +1,10 @@
+import classNames from "classnames";
 import { Icons, ThickButton, ThinButton } from "fogbender-client/src/shared";
 import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import { stringifyUrl } from "query-string";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 
 import { defaultEnv, getClientUrl, getDemoUrl, getServerUrl } from "../../config";
@@ -100,7 +101,7 @@ export const SnippetControlsNew: React.FC<{
     },
   });
 
-  const title = <h2 className="fog:text-header2">Embed and configure the support widget</h2>;
+  const title = <h2 className="fog:text-header3">Embed and configure the messaging widget</h2>;
 
   if (res.error || res2.error || err) {
     return (
@@ -170,9 +171,9 @@ export const SnippetControlsNew: React.FC<{
         </p>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-6">
-        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-          <p className="mb-4 fog:text-header3">widgetId</p>
+      <div className="mt-4 flex flex-wrap gap-6 fog:text-body-m">
+        <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white relative">
+          <p className="mb-4 fog:text-header4">widgetId</p>
           <div className="flex items-center gap-2">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
               {widgetId}
@@ -183,19 +184,21 @@ export const SnippetControlsNew: React.FC<{
               </ClipboardCopy>
             </div>
           </div>
-          <p className="my-4">
+          <p className="mt-4">
             This is your widgetId for creating a token client-side in Step 1 below.
           </p>
-          <DemoButton widgetId={widgetId} widgetKey={widgetKey} visitorKey={visitorKey}>
-            <span className="text-[4rem]">🕵️</span> Try a live demo!
-          </DemoButton>{" "}
+          <div className="absolute bottom-2">
+            <DemoButton widgetId={widgetId} widgetKey={widgetKey} visitorKey={visitorKey}>
+              <span className="text-[4rem]">🕵️</span> Try a live demo!
+            </DemoButton>{" "}
+          </div>
         </div>
 
         {(serverSignature === "hmac" ||
           serverSignature === "paseto" ||
           queryParams.has("hmac")) && (
           <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-            <p className="mb-4 fog:text-header3">Server signature type</p>
+            <p className="mb-4 fog:text-header4">Server signature type</p>
             <div className="sm:flex gap-4 mb-2">
               <div className="flex-1">
                 <div className="mb-4">
@@ -226,7 +229,7 @@ export const SnippetControlsNew: React.FC<{
         )}
 
         <div className="flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-          <p className="mb-4 fog:text-header3">Secret</p>
+          <p className="mb-4 fog:text-header4">Secret</p>
           <div className="flex items-center gap-2">
             <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
               ••••••••••••••••••••••••••••••••
@@ -263,8 +266,8 @@ export const SnippetControlsNew: React.FC<{
         </div>
       </div>
 
-      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-        <p className="mb-4 fog:text-header3">Visitor key</p>
+      <div className="mt-4 flex-1 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
+        <p className="mb-4 fog:text-header4">Visitor key</p>
         <div className="flex gap-2 items-center">
           <code className="font-bold py-0.5 px-1 bg-green-100 dark:text-black rounded">
             ••••••••••••••••••••••••••••••••
@@ -280,46 +283,52 @@ export const SnippetControlsNew: React.FC<{
           page.
         </p>
 
-        <span className="mt-4 fog:text-header3">Status: </span>
-        <span
-          className={`py-0.5 px-1 ${
-            visitorsEnabled ? "bg-green-100" : "bg-red-100"
-          } rounded dark:text-black`}
-        >
-          {" "}
-          {visitorsEnabled ? "Enabled" : "Disabled"}{" "}
-        </span>
-
-        <div className="my-4">
-          <ThinButton
-            onClick={() => {
-              if (
-                window.confirm(
-                  `Are you sure you want to ${
-                    visitorsEnabled ? "DISABLE" : "ENABLE"
-                  } the visitor widget?`
-                ) === true
-              ) {
-                setVisitorConfigMutation.mutate();
-              }
-            }}
-          >
-            {visitorsEnabled ? "Disable" : "Enable"}
-          </ThinButton>
-          <ThinButton
-            className="ml-4"
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Are you sure? This will break your visitor support widget for this workspace until you update your code with the new visitorKey"
-                ) === true
-              ) {
-                resetVisitorKeyMutation.mutate();
-              }
-            }}
-          >
-            Reset key
-          </ThinButton>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center fog:text-body-m gap-2">
+            <span className="font-medium">Status: </span>
+            <span className="flex items-center gap-1">
+              <div
+                className={classNames(
+                  "inline-block h-3 w-3 rounded-full",
+                  visitorsEnabled ? "bg-green-500" : "bg-red-500"
+                )}
+              />
+              <span>{visitorsEnabled ? "Enabled" : "Disabled"} </span>
+            </span>
+          </div>
+          <div>
+            <div>
+              <ThinButton
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to ${
+                        visitorsEnabled ? "DISABLE" : "ENABLE"
+                      } the visitor widget?`
+                    ) === true
+                  ) {
+                    setVisitorConfigMutation.mutate();
+                  }
+                }}
+              >
+                {visitorsEnabled ? "Disable" : "Enable"}
+              </ThinButton>
+              <ThinButton
+                className="ml-4"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure? This will break your visitor support widget for this workspace until you update your code with the new visitorKey"
+                    ) === true
+                  ) {
+                    resetVisitorKeyMutation.mutate();
+                  }
+                }}
+              >
+                Reset key
+              </ThinButton>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -346,8 +355,8 @@ export const SnippetControlsNew: React.FC<{
         )}
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-        <h3 className="pb-2 fog:text-header3">Step 1: Install the JavaScript widget (Client)</h3>
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
+        <h3 className="pb-2 fog:text-header4">Step 1: Install the JavaScript widget (Client)</h3>
         <>
           <div className="pb-2">
             <b>Assumptions:</b>
@@ -586,8 +595,8 @@ fogbender.setToken(token);
         </div>
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white">
-        <h3 className="pb-2 fog:text-header3">
+      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
+        <h3 className="pb-2 fog:text-header4">
           Step 2: Secure the widget with user signature (Server)
         </h3>
         <>
@@ -724,7 +733,7 @@ console.assert(x.userId === userId && x.customerId === customerId);`;
                 in your token with <code>userJWT: [signature]</code>
               </div>
               <div className="mb-4">
-                Below is sample code that gets a signature from our <code>/tokens</code> API in
+                Below is sample code that gets a signature from our <code>/signatures</code> API in
                 Node.js:
               </div>
               {(() => {
@@ -737,14 +746,14 @@ const userId = "${userId}"; // Jim Lee’s user id; REPLACE
 const customerId = "${customerId}"; // Netflix customer id; REPLACE
 
 (async () => {
-  const res = await fetch("${getServerUrl()}/tokens", {
+  const res = await fetch("${getServerUrl()}/signatures", {
     method: "POST",
     headers: { Authorization: \`Bearer $\{secret}\` },
     // 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
     body: JSON.stringify({ userId, customerId }),
   });
   if (res.ok) {
-    const userJWT = (await res.json()).token.userJWT;
+    const userJWT = (await res.json()).signatures.userJWT;
     console.log(userJWT); // like "${userJWT}"
     // test
     const x = await JSON.parse(atob(userJWT.split(".")[1]));
@@ -768,7 +777,7 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
               <div className="mb-4 pb-2">
                 If you’re looking for the simplest possible way to generate the value of the{" "}
                 <code>{x[0]}</code> field, you can use <code>curl</code> with our{" "}
-                <code>/tokens</code> API to generate a signature:
+                <code>/signatures</code> API to generate a signature:
               </div>
               {(() => {
                 const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
@@ -777,7 +786,7 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
 
 curl -X POST -H "Authorization: Bearer ${mode === "mask" ? toMask(serverSecret) : serverSecret}" \\
      -d '{"userId":"${userId}","customerId":"${customerId}"}' \\
-     ${getServerUrl()}/tokens`;
+     ${getServerUrl()}/signatures`;
                 };
                 return (
                   <HighlightCodeWithMask
@@ -798,7 +807,7 @@ curl -X POST -H "Authorization: Bearer ${mode === "mask" ? toMask(serverSecret) 
               </div>
               <div className="pb-2">1️⃣ Form an unsigned token for your user</div>
               <div className="pb-2">
-                2️⃣ Call our <code>/tokens</code> API to sign the token
+                2️⃣ Call our <code>/signatures</code> API to sign the token
               </div>
               <div className="pb-2">3️⃣ Pass the signed token to the client</div>
               <div className="mb-4">
@@ -813,7 +822,7 @@ const secret = "${mode === "mask" ? toMask(serverSecret) : serverSecret}";
 ${constTokenWithoutSignature.replace("const token", "const unsignedToken")}
 
 (async () => {
-  const res = await fetch("${getServerUrl()}/tokens", {
+  const res = await fetch("${getServerUrl()}/signatures", {
     method: "POST",
     headers: { Authorization: \`Bearer \${secret}\` },
     body: JSON.stringify(unsignedToken),
@@ -821,15 +830,17 @@ ${constTokenWithoutSignature.replace("const token", "const unsignedToken")}
   if (!res.ok) {
     throw new Error(\`\${res.status} \${res.statusText}\`);
   }
-  const token = (await res.json()).token;
-  if (!token) {
-    throw new Error("No token returned");
+  const signatures = (await res.json()).signatures;
+  if (!signatures) {
+    throw new Error("No signatures returned");
   }
 
-  console.log(token.userJWT); // like "${userJWT}"
+  const { userJWT } = signatures;
 
-  // Now just pass this \`token\` to your web app
-  return token;
+  console.log(userJWT); // like "${userJWT}"
+
+  // Now just pass this \`userJWT\` to your web app
+  return userJWT;
 })();`;
                 };
                 return (
@@ -922,11 +933,11 @@ const DemoButton = ({
       href={supportUrl}
       target="_blank"
       rel="noopener"
-      className={[
+      className={classNames(
         "pt-4 pb-3 border-b-5 border-brand-orange-500",
         "no-underline cursor-default",
-        "border-opacity-0 cursor-pointer fog:text-link",
-      ].join(" ")}
+        "border-opacity-0 cursor-pointer fog:text-link font-medium"
+      )}
     >
       {children}
     </a>

@@ -1,12 +1,23 @@
 defmodule Fog.Integration.Hook do
   require Logger
   use Plug.Router
+
   plug(:match)
   plug(:fetch_query_params)
   plug(:dispatch)
 
   match "/:widget_id", via: :head do
     conn |> send_resp(200, "")
+  end
+
+  post "/fogbender-github-app" do
+    {:ok, data, conn} = Plug.Conn.read_body(conn)
+
+    headers = conn.req_headers
+
+    :ok = Fog.GitHub.Hook.consume(headers: headers, payload: data)
+
+    conn |> send_resp(204, "")
   end
 
   post "/slack" do

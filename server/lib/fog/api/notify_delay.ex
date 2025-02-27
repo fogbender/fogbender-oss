@@ -5,17 +5,19 @@ defmodule Fog.Api.NotifyDelay do
   alias Event.Notification.Message, as: ENM
   @delay 5000
 
-  def info(%ENM{} = e, %{pending_notifications: pns} = s) do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%ENM{} = e, %{pending_notifications: pns} = s, _) do
     pns = add_pending(e, pns)
     {:ok, %{s | pending_notifications: pns}}
   end
 
-  def info(%Event.Seen{roomId: rid, messageId: mid}, %{pending_notifications: pns} = s) do
+  def info(%Event.Seen{roomId: rid, messageId: mid}, %{pending_notifications: pns} = s, _) do
     pns = remove_seen(rid, mid, pns)
     {:ok, %{s | pending_notifications: pns}}
   end
 
-  def info({:notify, mid}, %{pending_notifications: pns} = s) do
+  def info({:notify, mid}, %{pending_notifications: pns} = s, _) do
     case Map.pop(pns, mid) do
       {nil, pns} ->
         {:ok, %{s | pending_notifications: pns}}
@@ -26,7 +28,7 @@ defmodule Fog.Api.NotifyDelay do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp start_timer(mid) do
     Process.send_after(self(), {:notify, mid}, @delay)

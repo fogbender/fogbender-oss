@@ -1,12 +1,19 @@
 import classNames from "classnames";
-import { Icons, ThinButton, type Customer, type Integration } from "fogbender-client/src/shared";
+import {
+  Icons,
+  ThinButton,
+  isInternalHelpdesk,
+  type Customer,
+  type Integration,
+} from "fogbender-client/src/shared";
 import { SelectSearch } from "fogbender-client/src/shared/ui/SelectSearch";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../../config";
 import { type Workspace } from "../../../redux/adminApi";
-import { FontAwesomeHashtag } from "../../../shared/font-awesome/Hashtag";
+// import { FontAwesomeHashtag } from "../../../shared/font-awesome/Hashtag";
+import { CgHashtag as Hashtag } from "react-icons/cg";
 import { FontAwesomeLock } from "../../../shared/font-awesome/Lock";
 import { apiServer, queryClient, queryKeys } from "../../client";
 import { fetchServerApiPost, filterOutResponse } from "../../useServerApi";
@@ -38,7 +45,7 @@ export const AddSlackIntegration: React.FC<{
         .json<{ team: { id: string; name: string; url: string } }>();
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
     retry: false,
     enabled: !!userToken,
   });
@@ -51,7 +58,7 @@ export const AddSlackIntegration: React.FC<{
       return await apiServer.url(url).post(newOauthConnection).json<{ channel: { id: string } }>();
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
     retry: false,
     enabled: checkAccessQuery.isSuccess,
   });
@@ -75,7 +82,7 @@ export const AddSlackIntegration: React.FC<{
       return;
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
     retry: false,
     enabled: createChannelQuery.isSuccess,
   });
@@ -92,21 +99,22 @@ export const AddSlackIntegration: React.FC<{
           channel: { id: channelId },
         } = createChannelQuery.data;
 
-        return await apiServer
+        const res = await apiServer
           .url(url)
           .post({ ...newOauthConnection, projectId, projectName, projectUrl, channelId })
           .res();
+
+        onDone();
+
+        return res;
       } else {
         return;
       }
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
     retry: false,
     enabled: inviteToChannelQuery.isSuccess,
-    onSuccess: () => {
-      onDone();
-    },
   });
 
   React.useEffect(() => {
@@ -128,10 +136,10 @@ export const AddSlackIntegration: React.FC<{
   ) : null;
 
   const creatingText = () => (
-    <span>
+    <span className="flex gap-1">
       Creating{" "}
-      <b>
-        <FontAwesomeHashtag className="fa-fw self-center" />
+      <b className="flex items-center gap-px">
+        <Hashtag size={18} />
         fogbender
       </b>{" "}
       channel
@@ -146,8 +154,7 @@ export const AddSlackIntegration: React.FC<{
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
-        <div>Connect a new user:</div>
+      <div className="self-start flex items-center gap-4">
         <SlackOauth workspaceId={workspace.id} onSuccess={setNewOauthConnection} />
       </div>
 
@@ -167,6 +174,7 @@ type SharedChannel = {
   num_members: number;
   is_private: boolean;
   connected_team_names: string[];
+  context_team_id: string;
 };
 
 type SlackChannel = SharedChannel;
@@ -183,10 +191,12 @@ export const ShowSlackIntegration: React.FC<{
       return await apiServer.url(url).post(newOauthConnection).json<{ channel: SlackChannel }>();
     },
     staleTime: 0,
-    cacheTime: 0,
+    gcTime: 0,
     retry: false,
     enabled: !!i,
   });
+
+  const linkedChannel = linkedChannelInfoQuery?.data?.channel;
 
   const updateApiKeyMutation = useMutation({
     mutationFn: (params: { newOauthConnection: OauthCodeExchange }) => {
@@ -202,7 +212,7 @@ export const ShowSlackIntegration: React.FC<{
     },
     onSuccess: async (r, params) => {
       if (r.status === 204) {
-        queryClient.invalidateQueries(queryKeys.sharedChannels(i.workspace_id));
+        queryClient.invalidateQueries({ queryKey: queryKeys.sharedChannels(i.workspace_id) });
       } else {
         console.error(`Couldn't update api key ${params}`);
       }
@@ -227,9 +237,9 @@ export const ShowSlackIntegration: React.FC<{
   /* --- shared channels --- */
 
   // const { data: channels, status: channelsStatus } = useQuery<SharedChannel[]>(
-  const { data: channels } = useQuery<SharedChannel[]>(
-    queryKeys.sharedChannels(i.workspace_id),
-    () =>
+  const { data: channels } = useQuery<SharedChannel[]>({
+    queryKey: queryKeys.sharedChannels(i.workspace_id),
+    queryFn: async () =>
       fetch(
         `${getServerUrl()}/api/workspaces/${i.workspace_id}/integrations/${
           i.id
@@ -239,8 +249,8 @@ export const ShowSlackIntegration: React.FC<{
           method: "POST",
         }
       ).then(res => res.status === 200 && res.json()),
-    { enabled: i.workspace_id !== undefined }
-  );
+    enabled: i.workspace_id !== undefined,
+  });
 
   const [sharedChannelSearch, setSharedChannelSearch] = React.useState<string>();
 
@@ -267,30 +277,26 @@ export const ShowSlackIntegration: React.FC<{
     return sharedChannels;
   }, [sharedChannelSearch, channels]);
 
-  const { data: allCustomers } = useQuery<Customer[]>(
-    queryKeys.customers(i.workspace_id),
-    () =>
+  const { data: allCustomers } = useQuery<Customer[]>({
+    queryKey: queryKeys.customers(i.workspace_id),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/workspaces/${i.workspace_id}/customers`, {
         credentials: "include",
       }).then(res => res.status === 200 && res.json()),
-    { enabled: i.workspace_id !== undefined }
-  );
+    enabled: i.workspace_id !== undefined,
+  });
 
   const [customersSearch, setCustomersSearch] = React.useState<string>();
-  const [selectedCustomer, setSelectedCustomer] =
-    React.useState<(typeof customersOptions)[number]>();
-  const [channelHelpdeskAssociation, setChannelHelpdeskAssociation] = React.useState<{
-    channelId?: string;
-    helpdeskId?: string;
-  }>();
 
   const customersOptions = React.useMemo(() => {
-    let customers = (allCustomers || []).map(customer => {
-      return {
-        helpdeskId: customer.helpdeskId,
-        option: `${customer.name} (${customer.externalUid})`,
-      };
-    });
+    let customers = (allCustomers || [])
+      .filter(customer => !isInternalHelpdesk(customer.name))
+      .map(customer => {
+        return {
+          helpdeskId: customer.helpdeskId,
+          option: `${customer.name} (${customer.externalUid})`,
+        };
+      });
 
     if (customersSearch?.length) {
       customers = customers.filter(customer =>
@@ -303,10 +309,18 @@ export const ShowSlackIntegration: React.FC<{
     return customers;
   }, [allCustomers, customersSearch]);
 
+  const [selectedCustomer, setSelectedCustomer] =
+    React.useState<(typeof customersOptions)[number]>();
+
+  const [channelHelpdeskAssociation, setChannelHelpdeskAssociation] = React.useState<{
+    channelId?: string;
+    helpdeskId?: string;
+  }>();
+
   const [associationInProgress, setAssociationInProgress] = React.useState(false);
 
-  const associateMutation = useMutation(
-    (params: { sharedChannelId: string; helpdeskId: string | null }) => {
+  const associateMutation = useMutation({
+    mutationFn: async (params: { sharedChannelId: string; helpdeskId: string | null }) => {
       setAssociationInProgress(true);
       const { sharedChannelId, helpdeskId } = params;
       return fetch(
@@ -320,58 +334,95 @@ export const ShowSlackIntegration: React.FC<{
         }
       );
     },
-    {
-      onSuccess: async (r, params) => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.integrations(i.workspace_id));
-        } else {
-          console.error(`Couldn't associate ${params}`);
-        }
+    onSuccess: async (r, params) => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.integrations(i.workspace_id) });
+      } else {
+        console.error(`Couldn't associate ${params}`);
+      }
 
-        setChannelHelpdeskAssociation(undefined);
+      setChannelHelpdeskAssociation(undefined);
 
-        setSharedChannelSearch(undefined);
-        setSelectedChannel(undefined);
+      setSharedChannelSearch(undefined);
+      setSelectedChannel(undefined);
 
-        setCustomersSearch(undefined);
-        setSelectedCustomer(undefined);
+      setCustomersSearch(undefined);
+      setSelectedCustomer(undefined);
 
-        setAssociationInProgress(false);
-      },
-    }
-  );
+      setAssociationInProgress(false);
+    },
+  });
 
   const channelIdToChannel = (channelId: string) =>
     (channels || []).find(channel => channel.id === channelId);
+
   const helpdeskIdToCustomerName = (helpdeskId: string) =>
     (allCustomers || []).find(customer => customer.helpdeskId === helpdeskId)?.name;
+
   const helpdeskIdToCustomerId = (helpdeskId: string) =>
     (allCustomers || []).find(customer => customer.helpdeskId === helpdeskId)?.externalUid;
+
   const createAssociationDisabled =
     (!!channelHelpdeskAssociation?.channelId && !!channelHelpdeskAssociation?.helpdeskId) === false;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="w-full flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <div>{existingOauthUser ? "Current user:" : "Connect new user:"}</div>
-          <SlackOauth
-            userInfo={existingOauthUser}
-            workspaceId={i.workspace_id}
-            onSuccess={setNewOauthConnection}
+    <div className="flex flex-col gap-8">
+      <table className="table table-sm">
+        <tbody>
+          <TableRow item={"Workspace"} value={i.project_name} />
+          <TableRow
+            item={"Workspace URL"}
+            value={
+              <a className="fog:text-link" target="_blank" rel="noopener" href={i.project_url}>
+                {i.project_url}
+              </a>
+            }
           />
-        </div>
-
-        <div
-          className={classNames(
-            "flex items-center gap-4",
-            linkedChannelInfoQuery.data ? "visible" : "invisible"
-          )}
+          <TableRow
+            item={existingOauthUser ? "Authenticated user" : "Connect new user"}
+            value={
+              <SlackOauth
+                userInfo={existingOauthUser}
+                workspaceId={i.workspace_id}
+                onSuccess={setNewOauthConnection}
+              />
+            }
+          />
+          <TableRow
+            item={"Connected channel"}
+            value={linkedChannel && <Channel channel={linkedChannel} />}
+          />
+        </tbody>
+      </table>
+      <div className="ml-2 flex flex-col gap-4">
+        {newOauthConnection && (
+          <ThinButton
+            className="h-6 w-48 text-center"
+            onClick={() => {
+              newOauthConnection && updateApiKeyMutation.mutate({ newOauthConnection });
+            }}
+            loading={updateApiKeyMutation.isPending}
+            disabled={newOauthConnection === undefined}
+          >
+            Update integration
+          </ThinButton>
+        )}
+        <ThinButton
+          className="h-6 w-48 text-center"
+          onClick={() => {
+            if (
+              window.confirm(
+                "Warning: This will remove all shared channel-customer mappings. Are you sure?"
+              ) === true
+            ) {
+              deleteIntegrationMutation.mutate();
+            }
+          }}
         >
-          <span>Connected channel:</span>
-          {linkedChannelInfoQuery.data && <Channel channel={linkedChannelInfoQuery.data.channel} />}
-        </div>
-
+          Delete integration
+        </ThinButton>
+      </div>
+      <div className="w-full flex flex-col gap-4">
         <div className="flex gap-4">
           <div className="flex-1 flex flex-col gap-4 bg-gray-100 dark:bg-brand-dark-bg p-2 rounded-lg">
             <div className="text-center border-b border-gray-500">
@@ -515,41 +566,19 @@ export const ShowSlackIntegration: React.FC<{
               </ThinButton>
             </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-end">
-              <ThinButton
-                className="h-6 w-24 text-center"
-                onClick={() => {
-                  newOauthConnection && updateApiKeyMutation.mutate({ newOauthConnection });
-                }}
-                loading={updateApiKeyMutation.isLoading}
-                disabled={newOauthConnection === undefined}
-              >
-                Update
-              </ThinButton>
-            </div>
-
-            <div className="flex justify-end">
-              <ThinButton
-                className="h-6 w-24 text-center"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Warning: This will remove all shared channel-customer mappings. Are you sure?"
-                    ) === true
-                  ) {
-                    deleteIntegrationMutation.mutate();
-                  }
-                }}
-              >
-                Delete
-              </ThinButton>
-            </div>
-          </div>
         </div>
       </div>
       <div>{operationStatusMutation0("Deleting", deleteIntegrationMutation)}</div>
     </div>
+  );
+};
+
+const TableRow = ({ item, value }: { item: React.ReactNode; value: React.ReactNode }) => {
+  return (
+    <tr>
+      <td>{item}</td>
+      <td className="font-semibold">{value}</td>
+    </tr>
   );
 };
 
@@ -569,8 +598,8 @@ const SlackOauth: React.FC<{
   onSuccess: (data: OauthCodeExchange) => void;
 }> = props => {
   const { workspaceId, userInfo } = props;
-  const oauthMutation = useMutation(
-    async (code: string) => {
+  const oauthMutation = useMutation({
+    mutationFn: async (code: string) => {
       return fetchServerApiPost<OauthCodeExchange>(
         `/api/workspaces/${workspaceId}/integrations/slack/oauth-code`,
         {
@@ -578,25 +607,23 @@ const SlackOauth: React.FC<{
         }
       ).then(filterOutResponse);
     },
-    {
-      onSuccess: x => {
-        props.onSuccess(x);
-      },
-    }
-  );
+    onSuccess: x => {
+      props.onSuccess(x);
+    },
+  });
 
   const userInfo0 = oauthMutation.data?.userInfo || userInfo;
 
   return (
     <div
       className={classNames(
-        "flex-1 flex items-center",
+        "flex-1 flex items-center gap-4",
         userInfo0 ? "justify-between" : "justify-end"
       )}
     >
       <IntegrationUser userInfo={userInfo0} />
       <ThinButton
-        className="h-6 w-24 text-center"
+        className="h-11 w-36 text-center"
         onClick={() => {
           const key = "cb" + Math.random().toString();
           const queryParams = new URLSearchParams();
@@ -632,25 +659,29 @@ const SlackOauth: React.FC<{
   );
 };
 
-const Channel: React.FC<{ channel: SharedChannel; withTeam?: boolean }> = ({
-  channel,
-  withTeam = false,
-}) => {
+const Channel = ({ channel, withTeam }: { channel: SlackChannel; withTeam?: boolean }) => {
   return (
-    <div className="flex items-center gap-1">
-      {channel.is_private ? (
-        <span className="text-gray-600">
-          <FontAwesomeLock className="fa-fw self-center" />
+    <a
+      className="fog:text-link"
+      href={`https://slack.com/app_redirect?team=${channel.context_team_id}&channel=${channel.id}`}
+      target="_blank"
+      rel="noopener"
+    >
+      <div className="flex items-center gap-px">
+        {channel.is_private ? (
+          <span>
+            <FontAwesomeLock className="fa-fw self-center" />
+          </span>
+        ) : (
+          <span>
+            <Hashtag size={18} />
+          </span>
+        )}
+        <span>
+          <span className="font-semibold">{channel.name}</span>
+          {withTeam && <span> / {channel.connected_team_names.join(", ")}</span>}
         </span>
-      ) : (
-        <span className="text-gray-600">
-          <FontAwesomeHashtag className="fa-fw self-center" />
-        </span>
-      )}
-      <span>
-        {channel.name}
-        {withTeam && <span> / {channel.connected_team_names.join(", ")}</span>}
-      </span>
-    </div>
+      </div>
+    </a>
   );
 };

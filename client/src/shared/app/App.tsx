@@ -70,6 +70,7 @@ import { RoomSettings } from "./RoomSettings";
 import { Roster } from "./Roster";
 import { RosterMenu } from "./RosterMenu";
 import { Search } from "./Search";
+import { StreamReplyPreview } from "./StreamReplyPreview";
 import { Roster as OldRoster } from "./SearchRoster";
 import type { RenderUsersInfoCb } from "./UsersInfo";
 import { UsersInfoPane } from "./UsersInfoPane";
@@ -394,6 +395,17 @@ export const App: React.FC<{
     [openRoomIds, onAddItem]
   );
 
+  const onOpenStreamReplyPreview = React.useCallback(
+    (roomId: string, messageId: string) => {
+      const streamReplyRoomId = `stream-reply-${roomId}-${messageId}`;
+      if (!openRoomIds.includes(streamReplyRoomId)) {
+        onAddItem(streamReplyRoomId);
+      }
+      setActiveRoomId(streamReplyRoomId);
+    },
+    [openRoomIds, onAddItem]
+  );
+
   const onOpenDialog = React.useCallback(
     (dialogUserId: string, dialogHelpdeskId: string) => {
       if (ourId) {
@@ -633,6 +645,7 @@ export const App: React.FC<{
   const { lastIncomingMessage } = useOnNotifications({
     onNotification: muted ? noop : isAgent ? onAgentNotification : onClientNotifications,
     userId: ourId,
+    isIdle: isIdle === true,
   });
 
   const isFaviconEnabled = isAgent === false && isIframe !== true;
@@ -850,10 +863,17 @@ export const App: React.FC<{
 
   const paneIdToRoomId = (paneId: string) => {
     const search = paneId.match(/^search[0-9]*-(.*)/);
+    const streamReply = paneId.match(/^stream-reply[0-9]*-(.*)-(.*)/);
 
     if (search) {
       const [, roomId] = search;
       return roomId;
+    } else if (streamReply) {
+      const [, roomId, messageId] = streamReply;
+      return {
+        roomId,
+        messageId,
+      };
     } else {
       console.error(`Couldn't parse paneId: ${paneId}`);
       return paneId;
@@ -864,6 +884,7 @@ export const App: React.FC<{
     if (vendorId) {
       if (
         activeRoomId &&
+        activeRoomId.startsWith("r") &&
         isExternalHelpdesk(roomById(activeRoomId)?.customerName) &&
         !showIssueInfo
       ) {
@@ -931,6 +952,7 @@ export const App: React.FC<{
                   rosterVisible={rosterVisible}
                   unreadBadge={unreadBadge}
                   roomName={roomName}
+                  ourId={ourId}
                 />
               </div>
             )}
@@ -971,7 +993,7 @@ export const App: React.FC<{
         <div
           className={classNames(
             "absolute z-10 sm:static sm:z-0 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform w-full sm:w-80",
-            "dark:bg-brand-dark-bg dark:text-white",
+            "dark:bg-brand-dark-bg text-black dark:text-white",
             rosterVisible ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
           )}
         >
@@ -1220,10 +1242,10 @@ export const App: React.FC<{
           </div>
         </div>
 
-        <div className="flex-1 dark:bg-black" ref={gridContainerRef}>
+        <div className="flex-1 bg-white dark:bg-black" ref={gridContainerRef}>
           <ResponsiveReactGridLayout
             className="layout z-0"
-            layouts={{ xxs: [...layout] || [] }}
+            layouts={{ xxs: [...layout] }}
             breakpoints={{ xxs: 0 }}
             cols={{ xxs: maxCols || 1 }}
             margin={[0, 0]}
@@ -1250,73 +1272,114 @@ export const App: React.FC<{
                   handleRoomClick(el.i);
                 }}
               >
-                {el.i.startsWith("search-") ? (
-                  <Search
-                    paneId={el.i}
-                    roomId={paneIdToRoomId(el.i)}
-                    isAgent={isAgent}
-                    myAuthor={myAuthor}
-                    activeRoomId={activeRoomId}
-                    singleRoomMode={singleRoomMode}
-                    isLayoutPinned={layoutPins.includes(el.i)}
-                    isExpanded={el.w === maxCols && el.h === maxRows}
-                    roomById={roomById}
-                    onClose={onCloseRoom}
-                    onCloseOtherRooms={onCloseOtherRooms}
-                    onSetRoomPin={setRoomPin}
-                    rosterVisible={rosterVisible}
-                  />
-                ) : (
-                  <Room
-                    openRoomCount={layout.length}
-                    myAuthor={myAuthor}
-                    ourId={ourId}
-                    isAgent={isAgent}
-                    billing={billing}
-                    agents={agents}
-                    roomId={el.i}
-                    vendorId={vendorId}
-                    workspaceId={workspaceId}
-                    helpdesk={helpdesk}
-                    activeRoomId={activeRoomId}
-                    setActiveRoomId={setActiveRoomId}
-                    onGoFullScreen={onGoFullScreen}
-                    isLayoutPinned={layoutPins.includes(el.i)}
-                    resizing={resizingRoomId === el.i}
-                    dragging={dragging}
-                    onClose={onCloseRoom}
-                    onCloseOtherRooms={onCloseOtherRooms}
-                    onSettings={setShowRoomSettings}
-                    onOpenSearch={onOpenSearch}
-                    onOpenDialog={onOpenDialog}
-                    onSetRoomPin={setRoomPin}
-                    showIssueInfo={showIssueInfo}
-                    onShowIssueInfo={onShowIssueInfo}
-                    roomById={roomById}
-                    firstUnreadId={badges[el.i]?.firstUnreadMessage?.id}
-                    firstUnreadMentionId={badges[el.i]?.nextMentionMessage?.id}
-                    workspaceIntegrations={workspaceIntegrations}
-                    isIdle={isIdle === true}
-                    singleRoomMode={singleRoomMode}
-                    isExpanded={el.w === maxCols && el.h === maxRows}
-                    isConnected={isConnected && isAuthenticated}
-                    agentRole={agentRole}
-                    internalHelpdeskId={internalHelpdeskId}
-                    rosterVisible={rosterVisible}
-                    openRoom={onRosterRoomClick}
-                  />
-                )}
+                {(() => {
+                  if (el.i.startsWith("search-")) {
+                    return (
+                      <Search
+                        paneId={el.i}
+                        roomId={paneIdToRoomId(el.i) as string}
+                        isAgent={isAgent}
+                        myAuthor={myAuthor}
+                        activeRoomId={activeRoomId}
+                        singleRoomMode={singleRoomMode}
+                        isLayoutPinned={layoutPins.includes(el.i)}
+                        isExpanded={el.w === maxCols && el.h === maxRows}
+                        roomById={roomById}
+                        onClose={onCloseRoom}
+                        onCloseOtherRooms={onCloseOtherRooms}
+                        onSetRoomPin={setRoomPin}
+                        rosterVisible={rosterVisible}
+                      />
+                    );
+                  } else if (el.i.startsWith("stream-reply-")) {
+                    const ids = paneIdToRoomId(el.i);
+
+                    const ok =
+                      typeof ids === "object" &&
+                      !Array.isArray(ids) &&
+                      ids !== null &&
+                      "roomId" in ids &&
+                      "messageId" in ids;
+
+                    if (ok) {
+                      return (
+                        <StreamReplyPreview
+                          paneId={el.i}
+                          roomId={ids.roomId}
+                          messageId={ids.messageId}
+                          isAgent={isAgent}
+                          myAuthor={myAuthor}
+                          activeRoomId={activeRoomId}
+                          singleRoomMode={singleRoomMode}
+                          isLayoutPinned={layoutPins.includes(el.i)}
+                          isExpanded={el.w === maxCols && el.h === maxRows}
+                          roomById={roomById}
+                          onClose={onCloseRoom}
+                          onCloseOtherRooms={onCloseOtherRooms}
+                          onSetRoomPin={setRoomPin}
+                          rosterVisible={rosterVisible}
+                        />
+                      );
+                    } else {
+                      return null;
+                    }
+                  } else {
+                    return (
+                      <Room
+                        openRoomCount={layout.length}
+                        myAuthor={myAuthor}
+                        ourId={ourId}
+                        isAgent={isAgent}
+                        billing={billing}
+                        agents={agents}
+                        roomId={el.i}
+                        vendorId={vendorId}
+                        workspaceId={workspaceId}
+                        helpdesk={helpdesk}
+                        activeRoomId={activeRoomId}
+                        setActiveRoomId={setActiveRoomId}
+                        onGoFullScreen={onGoFullScreen}
+                        isLayoutPinned={layoutPins.includes(el.i)}
+                        resizing={resizingRoomId === el.i}
+                        dragging={dragging}
+                        onClose={onCloseRoom}
+                        onCloseOtherRooms={onCloseOtherRooms}
+                        onSettings={setShowRoomSettings}
+                        onOpenSearch={onOpenSearch}
+                        onOpenDialog={onOpenDialog}
+                        onOpenStreamReplyPreview={onOpenStreamReplyPreview}
+                        onSetRoomPin={setRoomPin}
+                        showIssueInfo={showIssueInfo}
+                        onShowIssueInfo={onShowIssueInfo}
+                        roomById={roomById}
+                        firstUnreadId={badges[el.i]?.firstUnreadMessage?.id}
+                        firstUnreadMentionId={badges[el.i]?.nextMentionMessage?.id}
+                        workspaceIntegrations={workspaceIntegrations}
+                        isIdle={isIdle === true}
+                        singleRoomMode={singleRoomMode}
+                        isExpanded={el.w === maxCols && el.h === maxRows}
+                        isConnected={isConnected && isAuthenticated}
+                        agentRole={agentRole}
+                        internalHelpdeskId={internalHelpdeskId}
+                        rosterVisible={rosterVisible}
+                        openRoom={onRosterRoomClick}
+                      />
+                    );
+                  }
+                })()}
               </div>
             ))}
           </ResponsiveReactGridLayout>
         </div>
         {isAgent && vendorId && (
           <div
-            className={
-              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l dark:border-gray-500 dark:bg-brand-dark-bg dark:text-white"
-            }
+            className={classNames(
+              "resize-x w-1/3 hidden md:w-1/4 xl:w-1/5 md:block border-l",
+              "dark:border-gray-500 dark:bg-brand-dark-bg",
+              "text-black dark:text-white"
+            )}
           >
-            {activeRoomId && infoPane === "customer" && (
+            {activeRoomId && infoPane === "customer" && activeRoomId.startsWith("r") && (
               // TODO: without key=, useHelpdeskUsers and useHelpdeskRooms hooks accumulate rooms/users across helpdesks
               <CustomerInfoPane
                 key={roomById(activeRoomId)?.helpdeskId}
@@ -1332,7 +1395,7 @@ export const App: React.FC<{
               />
             )}
 
-            {activeRoomId && infoPane === "user" && (
+            {activeRoomId && infoPane === "user" && activeRoomId.startsWith("r") && (
               <UsersInfoPane
                 key={roomById(activeRoomId)?.helpdeskId}
                 room={roomById(activeRoomId)}
@@ -1445,10 +1508,7 @@ const ThemeModeController = ({
   setMode: (x: ThemeModeSetStateAction) => void;
   onWidgetLightDarkModeChange?: (x: "light" | "dark") => void;
 }) => {
-  const lightMode = mode === "light";
   const darkMode = mode === "dark";
-
-  const commonClassNames = "p-1 rounded-full";
 
   React.useEffect(() => {
     if (onWidgetLightDarkModeChange) {
@@ -1459,20 +1519,15 @@ const ThemeModeController = ({
   return (
     <>
       <button
-        className={classNames(commonClassNames, darkMode && "bg-blue-100")}
+        className="flex items-center"
         onClick={() => {
-          !darkMode && setMode("dark");
+          setMode(m => (m === "dark" ? "light" : "dark"));
         }}
       >
-        <Icons.Moon className="w-4 text-black" />
-      </button>
-      <button
-        className={classNames(commonClassNames, lightMode && "bg-blue-100")}
-        onClick={() => {
-          !lightMode && setMode("light");
-        }}
-      >
-        <Icons.Sun className="w-4 text-black dark:text-white" />
+        <label className={classNames("swap swap-rotate", darkMode && "swap-active")}>
+          <Icons.FancySun />
+          <Icons.FancyMoon />
+        </label>
       </button>
     </>
   );

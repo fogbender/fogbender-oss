@@ -16,10 +16,15 @@ import { hideHeadlessClientsAtom } from "../../features/config/config.store";
 import { useUserToken } from "../useUserToken";
 const clientUrl = getClientUrlWithBeta();
 
-export const HeadlessForSupport: React.FC<{
+export const HeadlessForSupport = ({
+  vendorId,
+  hideFloatie,
+  hideBadge = false,
+}: {
   vendorId: string;
   hideFloatie?: boolean;
-}> = ({ vendorId, hideFloatie }) => {
+  hideBadge?: boolean;
+}) => {
   const [hideHeadless] = useAtom(hideHeadlessClientsAtom);
   const { token } = useUserToken(vendorId);
   const fogbender = React.useRef(createNewFogbender());
@@ -36,7 +41,7 @@ export const HeadlessForSupport: React.FC<{
         )}
         <FogbenderIsConfigured>
           <FogbenderHeadlessWidget />
-          <FogbenderUnreadBadge />
+          {!hideBadge && <FogbenderUnreadBadge />}
           {!hideFloatie && <FogbenderFloatingWidget />}
         </FogbenderIsConfigured>
       </FogbenderProvider>

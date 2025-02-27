@@ -1,7 +1,7 @@
 import type { AstroGlobal } from "astro";
 import type { CollectionEntry } from "astro:content";
 
-import { getMention } from "../../mentions";
+import { getMention, type Author } from "../../mentions";
 
 export function getSchema({
   astro,
@@ -17,7 +17,7 @@ export function getSchema({
 
   const author = authors
     .map(getMention)
-    .map(({ name, social, jobTitle }) => ({
+    .map(({ name, social, jobTitle }: Author) => ({
       "@type": "Person",
       name,
       jobTitle,
@@ -25,7 +25,9 @@ export function getSchema({
     }))
     .find(() => true);
 
-  if (!author) throw new Error("No author found");
+  if (!author) {
+    throw new Error("No author found");
+  }
 
   const thumbnail = `${site?.origin}${coverImage}`;
 

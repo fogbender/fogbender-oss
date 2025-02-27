@@ -32,7 +32,7 @@ defmodule Fog.Api.Perm.Helpers do
   def reader(_, _), do: false
 
   def app(%Session.Agent{agentId: id}, ctx),
-    do: agent_role(id, ctx, ["app"])
+    do: agent_role(id, ctx, ["app", "assistant"])
 
   def app(_, _), do: false
 

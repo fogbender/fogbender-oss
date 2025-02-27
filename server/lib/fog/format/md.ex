@@ -2,7 +2,7 @@ defmodule Fog.Format.Md do
   import Fog.Format.Helpers
   require Logger
 
-  @max_size 5000
+  @max_size 15000
 
   def parse(text) when byte_size(text) > @max_size do
     [{"pre", [], [{"code", [{"class", "language-plaintext"}], [text], %{}}], %{}}]

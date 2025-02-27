@@ -18,7 +18,7 @@ defmodule Fog.Web.VendorApiRouter do
   plug(:dispatch)
 
   post "/:vendor_id/customers", assigns: %{scope: "customer:update"} do
-    data = conn.body_params
+    data = conn.params
     Fog.Repo.Vendor.update_customers_info(conn.params["vendor_id"], data)
     send_ok_json(conn, [])
   end

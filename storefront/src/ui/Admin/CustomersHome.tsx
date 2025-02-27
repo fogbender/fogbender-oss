@@ -13,7 +13,7 @@ import {
   useSortedCustomers,
 } from "fogbender-client/src/shared";
 import React, { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { getServerUrl } from "../../config";
@@ -29,13 +29,13 @@ export const CustomersHome: React.FC<{ vendorId: string; workspaceId: string }> 
   vendorId,
   workspaceId,
 }) => {
-  const { data: allCustomers, status: customersStatus } = useQuery<Customer[]>(
-    queryKeys.customers(workspaceId),
-    () =>
+  const { data: allCustomers, status: customersStatus } = useQuery<Customer[]>({
+    queryKey: queryKeys.customers(workspaceId),
+    queryFn: async () =>
       fetch(`${getServerUrl()}/api/workspaces/${workspaceId}/customers`, {
         credentials: "include",
-      }).then(res => res.json())
-  );
+      }).then(res => res.json()),
+  });
 
   const [customersSearch, setCustomersSearch] = React.useState<string>();
 
@@ -99,7 +99,7 @@ export const CustomersHome: React.FC<{ vendorId: string; workspaceId: string }> 
             "absolute sm:static sm:z-0 z-10 top-0 left-0 bottom-0 flex flex-col bg-white text-sm transform sm:transform-none transition-transform",
             isUsersDetailsVisible ? "-translate-x-full" : "translate-x-0",
             "w-full sm:w-64",
-            customersStatus === "loading" && "opacity-10",
+            customersStatus === "pending" && "opacity-10",
             "dark:text-white dark:bg-brand-dark-bg"
           )}
         >
@@ -171,11 +171,13 @@ export const CustomerHome: React.FC<{
   workspaceId: string;
   helpdeskId: string;
 }> = ({ vendorId, workspaceId, helpdeskId }) => {
-  const { data: allCustomers } = useQuery<Customer[]>(queryKeys.customers(workspaceId), () =>
-    fetch(`${getServerUrl()}/api/workspaces/${workspaceId}/customers`, {
-      credentials: "include",
-    }).then(res => res.json())
-  );
+  const { data: allCustomers } = useQuery<Customer[]>({
+    queryKey: queryKeys.customers(workspaceId),
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/api/workspaces/${workspaceId}/customers`, {
+        credentials: "include",
+      }).then(res => res.json()),
+  });
 
   const customer = React.useMemo(
     () => (allCustomers || []).find(c => c.helpdeskId === helpdeskId),
@@ -204,21 +206,19 @@ const CustomerContainer: React.FC<{
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const deleteCustomerMutation = useMutation(
-    (customerId: string) => {
+  const deleteCustomerMutation = useMutation({
+    mutationFn: async (customerId: string) => {
       return fetch(`${getServerUrl()}/api/vendors/${vendorId}/customers/${customerId}`, {
         method: "DELETE",
         credentials: "include",
       });
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKeys.customers(workspaceId));
-        navigate(`/admin/vendor/${vendorId}/workspace/${workspaceId}/customers`, { replace: true });
-        setShowDeleteModal(false);
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+      navigate(`/admin/vendor/${vendorId}/workspace/${workspaceId}/customers`, { replace: true });
+      setShowDeleteModal(false);
+    },
+  });
 
   const onDeleteCustomer = () => {
     deleteCustomerMutation.mutate(customer.id);

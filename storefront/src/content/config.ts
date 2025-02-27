@@ -1,5 +1,7 @@
 import { defineCollection, z } from "astro:content";
+import { docsSchema } from "@astrojs/starlight/schema";
 import dayjs from "dayjs";
+
 const blog = defineCollection({
   schema: ({ image }) =>
     z.object({
@@ -27,4 +29,7 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+export const collections = {
+  blog,
+  docs: defineCollection({ schema: docsSchema() }),
+};

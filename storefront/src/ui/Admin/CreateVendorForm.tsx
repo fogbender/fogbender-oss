@@ -1,6 +1,6 @@
 import { ThickButton, useInputWithError } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { queryClient, queryKeys } from "../client";
@@ -9,8 +9,8 @@ export const CreateVendorForm: React.FC<{
   nameOk: (x: string) => boolean;
   onClose: () => void;
 }> = ({ nameOk, onClose }) => {
-  const addVendorMutation = useMutation(
-    (params: { name: string }) => {
+  const addVendorMutation = useMutation({
+    mutationFn: (params: { name: string }) => {
       const { name } = params;
       return fetch(`${getServerUrl()}/api/vendors`, {
         method: "POST",
@@ -18,25 +18,23 @@ export const CreateVendorForm: React.FC<{
         body: JSON.stringify({ name }),
       });
     },
-    {
-      onSuccess: async (r, params) => {
-        if (r.status === 200) {
-          queryClient.invalidateQueries(queryKeys.vendors());
-          onClose();
-        } else {
-          const { name } = params;
-          console.error(`Couldn't create organization ${name}`);
-        }
-      },
-    }
-  );
+    onSuccess: async (r, params) => {
+      if (r.status === 200) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+        onClose();
+      } else {
+        const { name } = params;
+        console.error(`Couldn't create organization ${name}`);
+      }
+    },
+  });
 
   const [newVendorNameError, setNewVendorNameError] = React.useState<string>();
 
   const [newVendorName, newVendorNameInput] = useInputWithError({
     title: "Organization name",
     autoFocus: true,
-    disabled: addVendorMutation.isLoading,
+    disabled: addVendorMutation.isPending,
     error: newVendorNameError,
     redErrorBorder: newVendorNameError !== undefined,
   });
@@ -66,7 +64,7 @@ export const CreateVendorForm: React.FC<{
         <ThickButton
           disabled={addOk === false}
           onClick={() => addVendorMutation.mutate({ name: newVendorName })}
-          loading={addVendorMutation.isLoading}
+          loading={addVendorMutation.isPending}
         >
           Create organization
         </ThickButton>

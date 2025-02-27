@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ThickButton, useInput } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { type Vendor, type Workspace } from "../../redux/adminApi";
@@ -16,8 +16,8 @@ export const CreateWorkspaceForm: React.FC<{
   nameOk: (x: string) => boolean;
   onClose: () => void;
 }> = ({ workspace, vendor, nameOk, onClose }) => {
-  const addWorkspaceMutation = useMutation(
-    (params: { name: string; triageName: string; description: string }) => {
+  const addWorkspaceMutation = useMutation({
+    mutationFn: (params: { name: string; triageName: string; description: string }) => {
       const { name, triageName, description } = params;
       return fetch(`${getServerUrl()}/api/vendors/${vendor.id}/workspaces`, {
         method: "POST",
@@ -25,19 +25,17 @@ export const CreateWorkspaceForm: React.FC<{
         body: JSON.stringify({ name, triageName, description }),
       });
     },
-    {
-      onSuccess: async (r, _params) => {
-        if (r.status === 200) {
-          queryClient.invalidateQueries(queryKeys.workspaces(vendor.id));
-          onClose();
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          setCreateWorkspaceError(error);
-        }
-      },
-    }
-  );
+    onSuccess: async (r, _params) => {
+      if (r.status === 200) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces(vendor.id) });
+        onClose();
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        setCreateWorkspaceError(error);
+      }
+    },
+  });
 
   const [createWorkspaceError, setCreateWorkspaceError] = React.useState<string>();
 
@@ -88,7 +86,7 @@ export const CreateWorkspaceForm: React.FC<{
     <form
       onSubmit={e => {
         e.preventDefault();
-        if (formOk && !addWorkspaceMutation.isLoading) {
+        if (formOk && !addWorkspaceMutation.isPending) {
           addWorkspaceMutation.mutate({
             name: workspaceName,
             triageName: workspaceTriageName,
@@ -136,11 +134,11 @@ export const CreateWorkspaceForm: React.FC<{
       />
 
       <div className="flex flex-wrap flex-col gap-y-4 md:flex-row md:gap-x-4">
-        <ThickButton disabled={!formOk} loading={addWorkspaceMutation.isLoading}>
+        <ThickButton disabled={!formOk} loading={addWorkspaceMutation.isPending}>
           Create workspace
         </ThickButton>
         <div className="flex-1 flex items-center ml-4">
-          {createWorkspaceError && !addWorkspaceMutation.isLoading && (
+          {createWorkspaceError && !addWorkspaceMutation.isPending && (
             <span className="flex text-red-500 fog:text-caption-xl">{createWorkspaceError}</span>
           )}
         </div>

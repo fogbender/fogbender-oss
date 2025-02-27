@@ -10,7 +10,7 @@ import {
   Icons,
   IsIdleProvider,
   LocalStorageKeys,
-  // IconGithub,
+  // IconGitHub,
   Modal,
   modeAtom,
   muteNotificationsAtom,
@@ -27,11 +27,11 @@ import {
   useIsIdle,
   WsProvider,
 } from "fogbender-client/src/shared";
-import { Logout, SwitchOff, SwitchOn } from "fogbender-client/src/shared/components/Icons";
+import { Logout } from "fogbender-client/src/shared/components/Icons";
 import { Provider as JotaiProvider, useAtom } from "jotai";
 import React from "react";
 import { lazily } from "react-lazily";
-import { QueryClientProvider, useMutation, useQuery } from "react-query";
+import { QueryClientProvider, useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import {
   Link,
@@ -72,13 +72,15 @@ import { HeadlessForSupport, useFullScreenClientUrl } from "./Admin/HeadlessForS
 import { HeadlessIntegration, UnreadBadge } from "./Admin/HeadlessIntegration";
 import { HelpWidget } from "./Admin/HelpWidget";
 import { getIntegrationDetails as getIssueTrackerIntegrationDetails } from "./Admin/Integrations";
-import { NoVendors } from "./Admin/NoVendors";
-import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
+import { onboardingStateAtom } from "./Admin/OnboardingTypes";
+import { NoVendorsReboot } from "./Admin/NoVendorsReboot";
+// import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
 import { Team } from "./Admin/Team";
 import { UpdateVendorForm } from "./Admin/UpdateVendorForm";
 import { UpdateWorkspaceForm } from "./Admin/UpdateWorkspaceForm";
 import { UsersInfoPane } from "./Admin/UsersInfoPane";
 import { AcceptInviteButton, BadInviteModal, DeclineInviteButton } from "./Admin/VendorInvite";
+import { GitHubAppSetup } from "./Admin/GitHubAppSetup";
 import { apiServer, queryClient, queryKeys } from "./client";
 import { useDesignatedVendorNameCache, useDesignatedWorkspaceNameCache } from "./store";
 import { useLogout } from "./useLogout";
@@ -106,8 +108,22 @@ export const Admin = () => {
 
   const vendors = useVendorsQuery();
 
-  const designatedVendorId = vendorMatch?.params?.vid || undefined;
-  const designatedVendor = vendors?.find(x => x.id === designatedVendorId && !x.deleted_at);
+  const designatedVendorId = (() => {
+    const vid = vendorMatch?.params?.vid;
+    if (vid !== undefined && vid !== "new" && vid !== "undefined") {
+      return vid;
+    } else {
+      return undefined;
+    }
+  })();
+
+  const designatedVendor = (() => {
+    if (vendors !== undefined && vendors !== "loading") {
+      return vendors?.find(x => x.id === designatedVendorId && !x.deleted_at);
+    } else {
+      return undefined;
+    }
+  })();
 
   const [themeMode, setThemeMode] = useAtom(modeAtom);
 
@@ -119,9 +135,9 @@ export const Admin = () => {
     }
   }, [navigate, designatedVendor]);
 
-  const { data: workspaces } = useQuery<Workspace[]>(
-    queryKeys.workspaces(designatedVendorId),
-    () =>
+  const { data: workspaces } = useQuery<Workspace[]>({
+    queryKey: queryKeys.workspaces(designatedVendorId),
+    queryFn: () =>
       fetch(`${getServerUrl()}/api/vendors/${designatedVendorId}/workspaces`, {
         credentials: "include",
       }).then(res => {
@@ -134,10 +150,9 @@ export const Admin = () => {
         }
         return;
       }),
-    {
-      enabled: designatedVendorId !== undefined,
-    }
-  );
+    initialData: [],
+    enabled: designatedVendorId !== undefined,
+  });
 
   const designatedWorkspaceId = workspaceMatch?.params?.wid;
   const designatedWorkspace = workspaces?.find(x => x.id === designatedWorkspaceId);
@@ -164,6 +179,9 @@ export const Admin = () => {
     !!designatedVendorId &&
     !designatedWorkspaceId &&
     vendorMatch?.params["*"]?.startsWith("billing");
+
+  const onboardingMode = vendorMatch?.params["*"]?.startsWith("onboarding") ?? false;
+
   const settingsMode = !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("settings");
   const customersMode =
     !!designatedWorkspace && workspaceMatch?.params["*"]?.startsWith("customers");
@@ -218,27 +236,21 @@ export const Admin = () => {
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get("code");
 
-  const { data: vendorInvitesData } = useQuery<VendorInvite[]>(
-    queryKeys.vendorInvites(),
-    async () => {
+  const { data: vendorInvitesData } = useQuery<VendorInvite[]>({
+    queryKey: queryKeys.vendorInvites(),
+    queryFn: async () => {
       const url = inviteCode
         ? `${getServerUrl()}/api/vendor_invites/${inviteCode}`
         : `${getServerUrl()}/api/vendor_invites`;
       return fetch(url, {
         credentials: "include",
       }).then(res => res.json());
-    }
-  );
+    },
+  });
 
   const [notificationsPermission, setNotificationsPermission] = React.useState<
     NotificationPermission | "hide"
   >(window.Notification?.permission);
-
-  const showOnboarding =
-    vendors !== undefined &&
-    vendors.length === 0 &&
-    vendorInvitesData !== undefined &&
-    vendorInvitesData.length === 0;
 
   const isIdle = useIsIdle();
 
@@ -258,14 +270,14 @@ export const Admin = () => {
 
   const { data: workspaceIntegrations } = useWorkspaceIntegrationsQuery(designatedWorkspaceId);
 
-  const { data: workspaceTags } = useQuery<Tag[]>(
-    queryKeys.tags(designatedWorkspaceId),
-    () =>
+  const { data: workspaceTags } = useQuery<Tag[]>({
+    queryKey: queryKeys.tags(designatedWorkspaceId),
+    queryFn: () =>
       fetch(`${getServerUrl()}/api/workspaces/${designatedWorkspaceId}/tags`, {
         credentials: "include",
       }).then(res => res.json()),
-    { enabled: designatedWorkspaceId !== undefined }
-  );
+    enabled: designatedWorkspaceId !== undefined,
+  });
 
   const { data: vendorIntegrations } = useQuery({
     queryKey: queryKeys.vendorIntegrations(designatedVendorId),
@@ -280,7 +292,7 @@ export const Admin = () => {
     () => atomWithRealTimeLocalStorage(`onboarding.hide.${designatedVendorId}`, false),
     [designatedVendorId]
   );
-  const [onboardingChecklistDone, setOnboardingChecklistDone] = useAtom(checklistDoneHiddenAtom);
+  const [onboardingChecklistDone] = useAtom(checklistDoneHiddenAtom);
 
   const countNonReaders = (agents || []).reduce(
     (acc, a) => (["owner", "agent", "admin"].includes(a.role) ? acc + 1 : acc),
@@ -305,7 +317,46 @@ export const Admin = () => {
   const countInViolation =
     (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
 
-  const ThemeIcon = themeMode === "light" ? Icons.Sun : Icons.Moon;
+  const [onboardingSteps, setOnboardingSteps] = React.useState<React.ReactNode>();
+  const [onboardingState, setOnboardingState] = useAtom(onboardingStateAtom);
+
+  React.useEffect(() => {
+    if (!onboardingState.vendorId) {
+      if (designatedVendor) {
+        setOnboardingState(s => ({
+          ...s,
+          vendorId: designatedVendor.id,
+          vendorName: designatedVendor.name,
+        }));
+      } else if (vendors !== undefined && vendors !== "loading" && vendors.length !== 0) {
+        setOnboardingState(s => ({ ...s, vendorId: vendors[0].id, vendorName: vendors[0].name }));
+      }
+    }
+
+    if (onboardingState.vendorId && !onboardingState.workspaceId) {
+      if (designatedWorkspace) {
+        setOnboardingState(s => ({
+          ...s,
+          workspaceId: designatedWorkspace.id,
+          workspaceName: designatedWorkspace.name,
+        }));
+      } else if (workspaces && workspaces.length !== 0) {
+        setOnboardingState(s => ({
+          ...s,
+          workspaceId: workspaces[0].id,
+          workspaceName: workspaces[0].name,
+        }));
+      }
+    }
+  }, [onboardingState, designatedWorkspace, designatedVendor, vendors, workspaces]);
+
+  React.useEffect(() => {
+    if (vendors !== "loading" && vendors !== undefined) {
+      if (vendors.length === 0 && !onboardingMode) {
+        navigate(`/admin/vendor/new/onboarding`);
+      }
+    }
+  }, [navigate, vendors]);
 
   return (
     <div
@@ -314,6 +365,7 @@ export const Admin = () => {
         isAgentApp && "overflow-hidden",
         themeMode === "dark" && "dark"
       )}
+      data-theme={themeMode === "dark" ? "dark" : "light"}
     >
       <HeadlessIntegration />
       {designatedVendorId &&
@@ -344,7 +396,7 @@ export const Admin = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="relative bg-blue-50 dark:bg-black">
+        <div className="relative bg-transparent dark:bg-black">
           <div className="absolute bottom-0 w-full h-0 border-b border-blue-200 dark:border-gray-500" />
           <div className="relative flex items-center justify-between px-4 w-full max-w-screen-xl mx-auto">
             <Breadcrumbs
@@ -357,21 +409,33 @@ export const Admin = () => {
               supportMode={supportMode}
               analyticsMode={analyticsMode}
               isAgentApp={isAgentApp}
+              onboardingSteps={onboardingSteps}
+              onboardingMode={onboardingMode}
             />
 
-            <div className="flex items-center gap-x-2">
+            <div
+              className={classNames(
+                "flex items-center gap-x-2",
+                onboardingMode && "self-start sm:self-center mt-10 sm:mt-0"
+              )}
+            >
               <UserMenu
                 isIdle={isIdle}
                 suspendConnection={suspendConnection}
                 setSuspendConnection={setSuspendConnection}
               />
               <button
-                className="rounded-full bg-blue-100 p-2"
+                className="rounded-full bg-blue-100 p-2 flex items-center text-gray-800"
                 onClick={() => {
                   setThemeMode(x => (x === "light" ? "dark" : "light"));
                 }}
               >
-                <ThemeIcon className="w-6" />
+                <label
+                  className={classNames("swap swap-rotate", themeMode === "dark" && "swap-active")}
+                >
+                  <Icons.FancySun />
+                  <Icons.FancyMoon />
+                </label>
               </button>
             </div>
           </div>
@@ -381,7 +445,7 @@ export const Admin = () => {
             !isAgentApp ? "overflow-auto" : "mt-2",
             "w-full h-full",
             supportMode && "pt-2",
-            (homeMode || settingsMode) && "fbr-scrollbar",
+            (homeMode || settingsMode || onboardingMode) && "fbr-scrollbar",
             "dark:bg-black"
           )}
         >
@@ -393,6 +457,7 @@ export const Admin = () => {
             )}
           >
             <Routes>
+              <Route path="github-app-setup" element={<GitHubAppSetup />} />
               <Route path="showcase" element={<></>} />
               <Route path="vendor/:vid/workspace/:wid/*" element={<></>} />
               <Route path="vendor/:vid/support" element={<></>} />
@@ -400,10 +465,16 @@ export const Admin = () => {
                 path="*"
                 element={
                   <Sidebar
-                    hidden={showOnboarding}
+                    hidden={onboardingMode}
                     vendorInvites={vendorInvitesData}
                     vendorInviteCode={inviteCode}
-                    vendors={vendors}
+                    vendors={(() => {
+                      if (vendors !== undefined && vendors !== "loading") {
+                        return vendors;
+                      } else {
+                        return [];
+                      }
+                    })()}
                     designatedVendorId={designatedVendorId}
                     teamMode={teamMode}
                     billingMode={billingMode}
@@ -416,22 +487,24 @@ export const Admin = () => {
             <div
               className={classNames(
                 "relative z-0 w-full",
-                !isAgentApp && !supportMode && "pb-36",
+                !isAgentApp && !supportMode && !onboardingMode && "pb-36",
                 !isAgentApp && !customersMode && !supportMode && "max-w-screen-xl mx-auto"
               )}
             >
               <Routes>
                 <Route path="config" element={<Config />} />
-                {showOnboarding && (
-                  <Route
-                    path=""
-                    element={
-                      <NoVendors
-                        onDone={() => queryClient.invalidateQueries(queryKeys.vendors())}
-                      />
-                    }
-                  />
-                )}
+                <Route
+                  path="vendor/:vid/onboarding/*"
+                  element={
+                    <NoVendorsReboot
+                      onDone={() => {
+                        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+                        navigate(`/admin/vendor/${designatedVendorId}/workspaces`);
+                      }}
+                      setOnboardingSteps={setOnboardingSteps}
+                    />
+                  }
+                />
                 {defaultEnv !== "prod" && (
                   <Route path="/showcase" element={<ComponentsShowcase />} />
                 )}
@@ -444,12 +517,31 @@ export const Admin = () => {
                   }
                 />
                 <Route path="integrations/:integration" element={<AdminIntegrationsRedirect />} />
-                <Route path="-/*" element={<AdminRedirect vendors={vendors} />} />
+                <Route
+                  path="-/*"
+                  element={
+                    <AdminRedirect
+                      vendors={(() => {
+                        if (vendors !== undefined && vendors !== "loading") {
+                          return vendors;
+                        } else {
+                          return [];
+                        }
+                      })()}
+                    />
+                  }
+                />
                 <Route
                   path="vendor/:vid/-/*"
                   element={
                     <AdminVendorRedirect
-                      vendors={vendors}
+                      vendors={(() => {
+                        if (vendors !== undefined && vendors !== "loading") {
+                          return vendors;
+                        } else {
+                          return [];
+                        }
+                      })()}
                       workspaces={workspaces}
                       onCreateWorkspace={() => {
                         navigate(`/admin/vendor/${designatedVendorId}/workspaces`);
@@ -458,7 +550,20 @@ export const Admin = () => {
                     />
                   }
                 />
-                <Route path="support" element={<AdminSupport vendors={vendors} />} />
+                <Route
+                  path="support"
+                  element={
+                    <AdminSupport
+                      vendors={(() => {
+                        if (vendors !== undefined && vendors !== "loading") {
+                          return vendors;
+                        } else {
+                          return [];
+                        }
+                      })()}
+                    />
+                  }
+                />
                 <Route
                   path="vendor/:vid/workspaces"
                   element={
@@ -476,18 +581,20 @@ export const Admin = () => {
                         <span className="fog:text-caption-l fog:text-link">Organizations</span>
                       </Link>
                       <div className="mt-8 mb-8">
-                        {designatedVendorId && ourRole && ["owner", "admin"].includes(ourRole) && (
-                          <OnboardingChecklist
-                            onboardingChecklistDone={onboardingChecklistDone}
-                            setOnboardingChecklistDone={setOnboardingChecklistDone}
-                            vendorId={designatedVendorId}
-                            workspacesCount={workspaces?.length || 0}
-                            vendorIntegrations={vendorIntegrations}
-                            onCreateWorkspace={() => {
-                              setIsCreateWorkspaceModalOpen(true);
-                            }}
-                          />
-                        )}
+                        {/*
+                          {designatedVendorId && ourRole && ["owner", "admin"].includes(ourRole) && (
+                            <OnboardingChecklist
+                              onboardingChecklistDone={onboardingChecklistDone}
+                              setOnboardingChecklistDone={setOnboardingChecklistDone}
+                              vendorId={designatedVendorId}
+                              workspacesCount={workspaces?.length || 0}
+                              vendorIntegrations={vendorIntegrations}
+                              onCreateWorkspace={() => {
+                                setIsCreateWorkspaceModalOpen(true);
+                              }}
+                            />
+                          )}
+                          */}
 
                         <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg">
                           <ThinButton onClick={() => setIsCreateWorkspaceModalOpen(true)}>
@@ -596,10 +703,12 @@ export const Admin = () => {
                               </Link>
                               !
                             </p>
-                            <p className="fog:text-body-xs">
-                              (A good way to see what support with Fogbender feels like from a
-                              customer’s perspective)
-                            </p>
+                            {/*
+                              <p className="fog:text-body-xs">
+                                (A good way to see what support with Fogbender feels like from a
+                                customer’s perspective)
+                              </p>
+                              */}
                           </div>
                         </div>
                       )}
@@ -620,11 +729,15 @@ export const Admin = () => {
                           suspendConnection={suspendConnection}
                           client={client}
                         >
-                          <SettingsPage
-                            vendorId={designatedVendorId}
-                            workspace={designatedWorkspace}
-                            ourEmail={authorMe?.email}
-                          />
+                          {designatedVendor && (
+                            <SettingsPage
+                              vendorId={designatedVendorId}
+                              vendor={designatedVendor}
+                              workspace={designatedWorkspace}
+                              workspaces={workspaces}
+                              ourEmail={authorMe?.email}
+                            />
+                          )}
                         </WsProvider>
                       </div>
                     )
@@ -752,6 +865,7 @@ export const Admin = () => {
                           <Icons.ArrowBack />
                           <span className="fog:text-caption-l fog:text-link">Organizations</span>
                         </Link>
+                        {/*
                         {designatedVendorId && ourRole && ["owner", "admin"].includes(ourRole) && (
                           <div
                             className={classNames("sm:mt-8", !onboardingChecklistDone && "mt-16")}
@@ -769,6 +883,7 @@ export const Admin = () => {
                             />
                           </div>
                         )}
+                        */}
                         <div
                           className={classNames(
                             "sm:mt-8 flex flex-col gap-8",
@@ -1011,7 +1126,7 @@ const SubscriptionRequiredBanner = ({
             href="https://github.com/fogbender/fogbender"
             target="_blank"
           >
-            host your own Fogbender <IconGithub className="ml-1 w-5 inline-block" />
+            host your own Fogbender <IconGitHub className="ml-1 w-5 inline-block" />
           </a>
           */}
         </span>
@@ -1127,6 +1242,15 @@ const Sidebar: React.FC<{
                       <Icons.Gear />
                     </div>
                   </div>
+                  <Link
+                    className={classNames(
+                      "flex border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
+                      "border-opacity-0"
+                    )}
+                    to={`vendor/${v.id}/onboarding`}
+                  >
+                    <div className="flex-1">Onboarding</div>
+                  </Link>
                   <Link
                     className={classNames(
                       "flex border-l-5 border-brand-orange-500 rounded-r py-2.5 pl-2 fog:text-link no-underline fog:text-body-m",
@@ -1412,6 +1536,8 @@ const Breadcrumbs: React.FC<{
   supportMode: boolean | undefined;
   analyticsMode?: boolean;
   isAgentApp: boolean;
+  onboardingMode: boolean;
+  onboardingSteps: React.ReactNode;
 }> = ({
   designatedVendorId,
   designatedVendor,
@@ -1422,6 +1548,8 @@ const Breadcrumbs: React.FC<{
   supportMode,
   analyticsMode,
   isAgentApp,
+  onboardingMode,
+  onboardingSteps,
 }) => {
   const homeLink = designatedVendor ? `./vendor/${designatedVendor.id}/workspaces` : "./";
   const workspaceLink = designatedVendor
@@ -1440,7 +1568,7 @@ const Breadcrumbs: React.FC<{
   );
 
   return (
-    <div className="flex items-center gap-5 h-full truncate dark:text-white">
+    <div className="flex items-center gap-5 h-full w-full truncate dark:text-white">
       <Routes>
         <Route
           path="vendor/:vid/team/*"
@@ -1488,36 +1616,41 @@ const Breadcrumbs: React.FC<{
         />
         <Route path="*" element={<Title>Fogbender | Dashboard</Title>} />
       </Routes>
-      <Link to={homeLink} className="relative w-8 h-8">
-        <img className="w-full h-full" src={logo} alt="" />
-        <div
+      {!onboardingMode && (
+        <Link to={homeLink} className="relative w-8 h-8">
+          <img className="w-full h-full" src={logo} alt="" />
+          <div
+            className={classNames(
+              "absolute top-0 right-0 -mt-1.5 -mr-2.5",
+              designatedWorkspace === undefined && !supportMode ? "hidden" : "block sm:hidden"
+            )}
+          >
+            <UnreadBadge />
+          </div>
+        </Link>
+      )}
+      {!onboardingMode && (
+        <Link
+          to={homeLink}
           className={classNames(
-            "absolute top-0 right-0 -mt-1.5 -mr-2.5",
-            designatedWorkspace === undefined && !supportMode ? "hidden" : "block sm:hidden"
+            `relative items-center
+              h-full cursor-pointer`,
+            "mr-2.5 pt-4 pb-3 border-b-5 border-brand-orange-500 no-underline",
+            designatedWorkspace === undefined && !supportMode
+              ? "border-opacity-1"
+              : "border-opacity-0 fog:text-link hidden sm:flex"
           )}
         >
-          <UnreadBadge />
-        </div>
-      </Link>
-      <Link
-        to={homeLink}
-        className={classNames(
-          `relative items-center
-            h-full cursor-pointer`,
-          "mr-2.5 pt-4 pb-3 border-b-5 border-brand-orange-500 no-underline",
-          designatedWorkspace === undefined && !supportMode
-            ? "border-opacity-1"
-            : "border-opacity-0 fog:text-link hidden sm:flex"
-        )}
-      >
-        <div className="flex h-full items-center gap-1.5">
-          <Icons.HomeRectangle />
-          <span className="uppercase font-semibold text-base">Home</span>
-        </div>
-        <div className="absolute top-0 right-0 mt-2.5 -mr-2.5">
-          <UnreadBadge excludeWorkspaceId={excludeWorkspaceId} />
-        </div>
-      </Link>
+          <div className="flex h-full items-center gap-1.5">
+            <Icons.HomeRectangle />
+            <span className="uppercase font-semibold text-base">Home</span>
+          </div>
+          <div className="absolute top-0 right-0 mt-2.5 -mr-2.5">
+            <UnreadBadge excludeWorkspaceId={excludeWorkspaceId} />
+          </div>
+        </Link>
+      )}
+      {onboardingMode && onboardingSteps}
       {designatedVendor && (designatedWorkspace || supportMode) && (
         <>
           <div className="hidden sm:flex h-full items-center -ml-2.5 pt-4 pb-3 border-b-5 border-brand-orange-500 border-opacity-0">
@@ -1526,7 +1659,7 @@ const Breadcrumbs: React.FC<{
           <Link
             to={workspaceLink + "/chat"}
             className={classNames(
-              "flex flex-1 h-full items-center",
+              "flex h-full items-center",
               "pt-4 pb-3 border-b-5 border-brand-orange-500",
               "no-underline cursor-default truncate",
               (settingsMode || customersMode || analyticsMode) &&
@@ -1626,6 +1759,23 @@ const UserMenu: React.FC<{
   const [muteNotifications, setMuteNotifications] = useAtom(muteNotificationsAtom);
   const [showFocusedRoster, setShowFocusedRoster] = useAtom(showFocusedRosterAtom);
 
+  const handleMenuItemClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+
+      const elem = e.target as HTMLElement;
+      const button = elem.closest("button") as HTMLInputElement;
+
+      if (button) {
+        const toggle = button.querySelector(".toggle") as HTMLInputElement;
+
+        if (toggle) {
+          toggle.click();
+        }
+      }
+    }
+  };
+
   return (
     <div className="flex justify-end relative ml-5 cursor-pointer gap-2">
       {!!import.meta.env.SITE && (
@@ -1640,7 +1790,7 @@ const UserMenu: React.FC<{
       >
         <span
           className={classNames(
-            "hidden md:inline-block text-sm truncate",
+            "hidden md:inline-block text-sm truncate font-semibold",
             isIdle && "text-gray-700 dark:text-white"
           )}
         >
@@ -1653,12 +1803,14 @@ const UserMenu: React.FC<{
       <div
         id="user-menu"
         className={classNames(
-          "bg-white border rounded-xl fog:text-body-m fog:box-shadow-m absolute mt-10 top-0 right-0 overflow-auto z-30",
+          "rounded-xl fog:text-body-m fog:box-shadow-m absolute mt-10 top-0 right-0 overflow-auto z-30",
+          "bg-white dark:bg-zinc-800 dark:text-white",
+          "p-2",
           !isMenuOpen && "invisible"
         )}
       >
         <div className="fixed inset-0" onClick={() => setIsMenuOpen(false)} />
-        <ul className="relative z-10 dark:bg-black">
+        <ul className="relative z-10">
           {devMode && (
             <>
               <AgentMenuLink
@@ -1680,23 +1832,49 @@ const UserMenu: React.FC<{
             </>
           )}
           <FancyMenuItem
-            onClick={() => setShowFocusedRoster(x => !x)}
+            onClick={handleMenuItemClick}
             text="Focused roster"
             icon={
-              !showFocusedRoster ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
+              <input
+                onClick={e => {
+                  e.stopPropagation();
+                  setShowFocusedRoster(x => !x);
+                }}
+                type="checkbox"
+                className="toggle toggle-sm group-hover:text-brand-red-500"
+                defaultChecked={showFocusedRoster}
+              />
             }
           />
           <FancyMenuItem
-            onClick={() => setMuteNotifications(x => !x)}
+            onClick={handleMenuItemClick}
             text="Desktop notifications"
             icon={
-              muteNotifications ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />
+              <input
+                onClick={e => {
+                  e.stopPropagation();
+                  setMuteNotifications(x => !x);
+                }}
+                type="checkbox"
+                className="toggle toggle-sm group-hover:text-brand-red-500"
+                defaultChecked={muteNotifications}
+              />
             }
           />
           <FancyMenuItem
-            onClick={() => setMuteSound(x => !x)}
-            text="Play sound"
-            icon={muteSound ? <SwitchOff className="w-10" /> : <SwitchOn className="w-10" />}
+            onClick={handleMenuItemClick}
+            text="Notifications sound"
+            icon={
+              <input
+                onClick={e => {
+                  e.stopPropagation();
+                  setMuteSound(x => !x);
+                }}
+                type="checkbox"
+                className="toggle toggle-sm group-hover:text-brand-red-500"
+                defaultChecked={muteSound}
+              />
+            }
           />
           <FancyMenuItem
             onClick={async () => {
@@ -1733,7 +1911,7 @@ const AgentMenuLink = (props: { onClick: () => void; to: string; children: React
 const NewVersionChecker = React.memo(() => {
   const oldVersion = window._fog_version;
   const versionQuery = useQuery({
-    queryKey: "version",
+    queryKey: ["version"],
     queryFn: () => wretch("/ssg/version.json").get().json<{ version: string }>(),
     initialData: { version: oldVersion },
     // check every 3 hours
@@ -1767,26 +1945,24 @@ const DeleteWorkspace: React.FC<{
   onClose: () => void;
 }> = ({ workspace, vendorId, onClose }) => {
   const [error, setError] = React.useState<string>();
-  const deleteWorkspaceMutation = useMutation(
-    () => {
+  const deleteWorkspaceMutation = useMutation({
+    mutationFn: async () => {
       return fetch(`${getServerUrl()}/api/vendors/${vendorId}/workspaces/${workspace.id}`, {
         method: "DELETE",
         credentials: "include",
       });
     },
-    {
-      onSuccess: async (r, _params) => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.workspaces(vendorId));
-          onClose();
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          setError(error);
-        }
-      },
-    }
-  );
+    onSuccess: async (r, _params) => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces(vendorId) });
+        onClose();
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        setError(error);
+      }
+    },
+  });
 
   return (
     <ConfirmDialog
@@ -1794,7 +1970,7 @@ const DeleteWorkspace: React.FC<{
       buttonTitle="Delete"
       onClose={onClose}
       onDelete={() => deleteWorkspaceMutation.mutate()}
-      loading={deleteWorkspaceMutation.isLoading}
+      loading={deleteWorkspaceMutation.isPending}
       error={error}
     >
       <div className="flex flex-col gap-y-4">
@@ -1814,27 +1990,25 @@ const DeleteVendor: React.FC<{
   onClose: () => void;
 }> = ({ vendor, onClose }) => {
   const [error, setError] = React.useState<string>();
-  const deleteVendorMutation = useMutation(
-    () => {
+  const deleteVendorMutation = useMutation({
+    mutationFn: () => {
       return fetch(`${getServerUrl()}/api/vendors/${vendor.id}`, {
         method: "DELETE",
         credentials: "include",
       });
     },
-    {
-      onSuccess: async (r, _params) => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.vendors());
-          queryClient.invalidateQueries(queryKeys.workspaces(vendor.id));
-          onClose();
-        } else {
-          const res = await r.json();
-          const { error } = res;
-          setError(error);
-        }
-      },
-    }
-  );
+    onSuccess: async (r, _params) => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces(vendor.id) });
+        onClose();
+      } else {
+        const res = await r.json();
+        const { error } = res;
+        setError(error);
+      }
+    },
+  });
 
   return (
     <ConfirmDialog
@@ -1842,7 +2016,7 @@ const DeleteVendor: React.FC<{
       buttonTitle="Delete"
       onClose={onClose}
       onDelete={() => deleteVendorMutation.mutate()}
-      loading={deleteVendorMutation.isLoading}
+      loading={deleteVendorMutation.isPending}
       error={error}
     >
       <div className="flex flex-col gap-y-4">

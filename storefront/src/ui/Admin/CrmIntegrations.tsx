@@ -2,7 +2,7 @@ import { useMergeLink } from "@mergeapi/react-merge-link";
 import classNames from "classnames";
 import { ThinButton } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../config";
 import { type Workspace } from "../../redux/adminApi";
@@ -15,8 +15,8 @@ export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace 
   const mergeLinkTokenUrl = `/api/workspaces/${workspace.id}/get-merge-link-token`;
   const [mergeLinkToken, setMergeLinkToken] = React.useState<string>();
 
-  const setMergePublicTokenMutation = useMutation(
-    (public_token: string) => {
+  const setMergePublicTokenMutation = useMutation({
+    mutationFn: (public_token: string) => {
       return fetch(`${getServerUrl()}/api/workspaces/${workspace.id}/set-merge-public-token`, {
         method: "POST",
         credentials: "include",
@@ -26,12 +26,10 @@ export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace 
         }),
       });
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKeys.crmConnections(workspace.id));
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.crmConnections(workspace.id) });
+    },
+  });
 
   const onSuccess = (public_token: string) => {
     // Send public_token to server (Step 3)
@@ -43,19 +41,21 @@ export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace 
     onSuccess,
   });
 
-  const { data: mergeLinks } = useQuery<MergeLinkT[]>(queryKeys.crmConnections(workspace.id), () =>
-    fetch(`${getServerUrl()}/api/workspaces/${workspace.id}/merge-links`, {
-      credentials: "include",
-    }).then(res => {
-      if (res.status === 200) {
-        return res.json();
-      } else {
-        return {
-          data: [],
-        };
-      }
-    })
-  );
+  const { data: mergeLinks } = useQuery<MergeLinkT[]>({
+    queryKey: queryKeys.crmConnections(workspace.id),
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/api/workspaces/${workspace.id}/merge-links`, {
+        credentials: "include",
+      }).then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          return {
+            data: [],
+          };
+        }
+      }),
+  });
 
   const [shouldOpen, setShouldOpen] = React.useState(false);
 
@@ -95,7 +95,7 @@ export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace 
       </div>
       <ThinButton
         className="mt-4"
-        loading={setMergePublicTokenMutation.isLoading}
+        loading={setMergePublicTokenMutation.isPending}
         onClick={() => {
           mergeLinkTokenMutation.mutate();
         }}
@@ -107,8 +107,8 @@ export const CrmIntegrations: React.FC<{ workspace: Workspace }> = ({ workspace 
 };
 
 const MergeLink: React.FC<{ workspace: Workspace; link: MergeLinkT }> = ({ workspace, link }) => {
-  const deleteMergeLinkMutation = useMutation(
-    () => {
+  const deleteMergeLinkMutation = useMutation({
+    mutationFn: () => {
       return fetch(
         `${getServerUrl()}/api/workspaces/${workspace.id}/merge-links/${
           link.end_user_origin_id
@@ -119,12 +119,10 @@ const MergeLink: React.FC<{ workspace: Workspace; link: MergeLinkT }> = ({ works
         }
       );
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKeys.crmConnections(workspace.id));
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.crmConnections(workspace.id) });
+    },
+  });
 
   return (
     <div>
@@ -146,7 +144,7 @@ const MergeLink: React.FC<{ workspace: Workspace; link: MergeLinkT }> = ({ works
         </div>
         <ThinButton
           className="mt-4"
-          loading={deleteMergeLinkMutation.isLoading}
+          loading={deleteMergeLinkMutation.isPending}
           onClick={() => {
             if (window.confirm("Are you sure?") === true) {
               deleteMergeLinkMutation.mutate();

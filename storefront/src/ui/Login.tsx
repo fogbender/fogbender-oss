@@ -10,6 +10,8 @@ import logo from "../assets/logo.svg";
 import { getQueryParam } from "../params";
 import { store } from "../redux/store";
 
+import BackgroundImage from "../assets/alexander-grey-WqPAETBU2G8-unsplash.jpg?url";
+
 import { Auth } from "./amazon";
 import {
   addLocation,
@@ -143,8 +145,16 @@ export const LoginForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogin
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md py-12 px-6">
+    <div
+      className="flex min-h-screen items-center justify-center bg-gray-100"
+      style={{
+        backgroundImage: `url(${BackgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "50% 0%",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="w-full max-w-md py-12 px-6 bg-sky-50 rounded-lg">
         <a href="/">
           <div className="mx-auto flex items-end justify-center">
             <img className="h-12" src={logo.src} alt="" />
@@ -454,7 +464,7 @@ export const LoginForm: React.FC<{ doGoogleLogin?: boolean }> = ({ doGoogleLogin
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm leading-5">
-              <span className="bg-gray-100 px-2 text-gray-500">Don't have an account?</span>
+              <span className="bg-gray-100 px-2 text-black bg-gray-300 rounded-full">Don’t have an account?</span>
             </div>
           </div>
           {

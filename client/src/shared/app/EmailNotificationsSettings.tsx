@@ -3,7 +3,7 @@ import { Icons, muteSoundAtom, ThickButton } from "fogbender-client/src/shared";
 import { type GetSettings, useWs } from "fogbender-proto";
 import { useAtom } from "jotai";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const notificationFrequencies = [
   {
@@ -55,9 +55,9 @@ export const EmailNotificationsSettings = ({
 }) => {
   const { serverCall } = useWs();
 
-  const { data: featureOptions, refetch } = useQuery(
-    ["notifications-id", workspaceId, userId],
-    async () => {
+  const { data: featureOptions, refetch } = useQuery({
+    queryKey: ["notifications-id", workspaceId, userId],
+    queryFn: async () => {
       const res = await serverCall<GetSettings>({
         msgType: "Author.GetSettings",
         workspaceId: workspaceId !== undefined ? workspaceId : null,
@@ -66,8 +66,8 @@ export const EmailNotificationsSettings = ({
         return res.settings;
       }
       return;
-    }
-  );
+    },
+  });
 
   const [settingNotificationFrequency, setSettingNotificationFrequency] = React.useState(false);
 

@@ -35,7 +35,13 @@ export function useInput(opts: UseInputOptions) {
   } = opts;
 
   const [focused, setFocused] = React.useState(false);
-  const [value, setValue] = React.useState(defaultValue || "");
+  const [value, setValue] = React.useState("");
+
+  React.useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
 
   const reset = React.useCallback((value?: string) => {
     setValue(value || "");

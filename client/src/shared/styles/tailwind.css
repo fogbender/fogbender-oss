@@ -30,6 +30,13 @@
   @apply leading-normal;
 }
 
+.fog\:text-header4 {
+  @apply font-admin;
+  @apply font-normal;
+  @apply text-xl;
+  @apply leading-normal;
+}
+
 .fog\:text-body-l {
   @apply font-body;
   @apply text-base;
@@ -181,6 +188,8 @@
   @apply !py-0.5;
   @apply rounded;
   @apply !text-gray-100;
+  @apply break-all;
+  @apply whitespace-pre-wrap;
 }
 
 .fog\:chat-message code.inline {

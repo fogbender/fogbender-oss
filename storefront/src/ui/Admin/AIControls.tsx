@@ -12,7 +12,7 @@ import { showAiHelperAtom } from "fogbender-client/src/shared/store/config.store
 import { ChevronButton } from "fogbender-client/src/shared/ui/ChevronButton";
 import { useAtomValue } from "jotai";
 import React from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import TextareaAutosize from "react-textarea-autosize";
 import { throttle } from "throttle-debounce";
 
@@ -290,23 +290,23 @@ const Embeddings: React.FC<{
 
   const [urlError, setUrlError] = React.useState<string>();
 
-  const embeddingsSources = useQuery<EmbeddingsSource[]>(
-    queryKeys.embeddingsSources(workspace.id),
-    () =>
-      apiServer
+  const embeddingsSources = useQuery<EmbeddingsSource[]>({
+    queryKey: queryKeys.embeddingsSources(workspace.id),
+    queryFn: async () =>
+      await apiServer
         .get(`/api/workspaces/${workspace.id}/integrations/ai/embeddings_sources`)
         .json<EmbeddingsSource[]>(),
-    {
-      initialData: [],
-      refetchInterval: sources => {
-        if ((sources || []).some(s => s.status === "fetching" || s.fetching > 0)) {
-          return 5000;
-        } else {
-          return false;
-        }
-      },
-    }
-  );
+    initialData: [],
+    refetchInterval: query => {
+      const sources = query.state.data;
+
+      if ((sources || []).some(s => s.status === "fetching" || s.fetching > 0)) {
+        return 5000;
+      } else {
+        return false;
+      }
+    },
+  });
 
   const { data: embeddingsSourcesData } = embeddingsSources;
 
@@ -576,8 +576,8 @@ type AiMutationParams = {
 };
 
 const useAiMutation = () => {
-  return useMutation(
-    (params: AiMutationParams) => {
+  return useMutation({
+    mutationFn: (params: AiMutationParams) => {
       const { workspaceId, botName, id, command, instruction, operation, url, restrictPath } =
         params;
 
@@ -614,30 +614,28 @@ const useAiMutation = () => {
         body: JSON.stringify(bodyParams),
       });
     },
-    {
-      onSuccess: (r, opts) => {
-        const { workspaceId, operation, onError, onSuccess } = opts;
+    onSuccess: (r, opts) => {
+      const { workspaceId, operation, onError, onSuccess } = opts;
 
-        if (r.status === 400 && onError) {
-          onError(r);
-        }
+      if (r.status === 400 && onError) {
+        onError(r);
+      }
 
-        if (r.status === 204 && onSuccess) {
-          onSuccess(r);
-        }
+      if (r.status === 204 && onSuccess) {
+        onSuccess(r);
+      }
 
-        if (
-          [
-            "new-embeddings-source",
-            "delete-embeddings-source",
-            "activate-embeddings-source",
-          ].includes(operation)
-        ) {
-          queryClient.invalidateQueries(queryKeys.embeddingsSources(workspaceId));
-        } else if (operation !== "set-prompt") {
-          queryClient.invalidateQueries(queryKeys.integrations(workspaceId));
-        }
-      },
-    }
-  );
+      if (
+        [
+          "new-embeddings-source",
+          "delete-embeddings-source",
+          "activate-embeddings-source",
+        ].includes(operation)
+      ) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.embeddingsSources(workspaceId) });
+      } else if (operation !== "set-prompt") {
+        queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspaceId) });
+      }
+    },
+  });
 };

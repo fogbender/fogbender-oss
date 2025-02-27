@@ -1,13 +1,18 @@
 import classNames from "classnames";
 import DOMPurify from "dompurify";
-import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
-import { Clipboard } from "fogbender-client/src/shared/components/Icons";
-import "highlight.js/lib/common";
-import "highlight.js/styles/base16/one-light.css";
 import React from "react";
 import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
 import { rehype } from "rehype";
 import rehypeHighlight from "rehype-highlight";
+import { useAtomValue } from "jotai";
+
+import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardCopy";
+import { Clipboard } from "fogbender-client/src/shared/components/Icons";
+
+import { modeAtom } from "fogbender-client/src/shared";
+
+import "highlight.js/lib/common";
+// import "highlight.js/styles/base16/one-light.css";
 
 export type MaskMode = "mask" | "clear";
 
@@ -20,6 +25,38 @@ export const HighlightCode: React.FC<{
     length: number;
   }[];
 }> = ({ className, blurAreas, children }) => {
+  const mode = useAtomValue(modeAtom);
+
+  const styleTag = React.useRef<HTMLStyleElement | null>(null);
+
+  React.useEffect(() => {
+    const loadTheme = async (mode: "light" | "dark") => {
+      const themeStyle =
+        mode === "light"
+          ? await fetch("/assets/code-light.css")
+              .then(response => response.text())
+              .then(css => {
+                return css;
+              })
+          : await fetch("/assets/code-dark.css")
+              .then(response => response.text())
+              .then(css => {
+                return css;
+              });
+
+      styleTag.current = document.createElement("style");
+      styleTag.current.innerHTML = themeStyle;
+
+      document.head.appendChild(styleTag.current);
+    };
+
+    loadTheme(mode);
+
+    if (styleTag.current) {
+      document.head.removeChild(styleTag.current);
+    }
+  }, [mode]);
+
   const arr = React.Children.toArray(children);
   arr.forEach(node => {
     if (typeof node !== "string") {
@@ -34,7 +71,7 @@ export const HighlightCode: React.FC<{
 
     code.textContent = text;
     if (className) {
-      code.className = `${className} dark:text-white`;
+      code.className = className;
     }
     pre.appendChild(code);
     return String(
@@ -90,7 +127,7 @@ export const HighlightCodeWithMask: React.FC<{
 
     code.textContent = visibleText;
     if (className) {
-      code.className = `${className} dark:text-white`;
+      code.className = className;
     }
     pre.appendChild(code);
     return String(
@@ -99,7 +136,7 @@ export const HighlightCodeWithMask: React.FC<{
   }, [className, visibleText]);
   return (
     <div className="relative border dark:border-green-300 border-opacity-0 dark:border-opacity-100">
-      <div className="relative overflow-auto fbr-scrollbar p-4 bg-gray-100 dark:bg-black leading-relaxed">
+      <div className="break-all relative overflow-auto fbr-scrollbar p-4 bg-gray-100 dark:bg-black leading-relaxed text-xs">
         <div
           ref={el => {
             if (el) {

@@ -8,7 +8,7 @@ import {
 } from "fogbender-client/src/shared";
 import { Select } from "fogbender-client/src/shared/ui/Select";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import { type Workspace } from "../../redux/adminApi";
 import { queryClient, queryKeys } from "../client";
@@ -31,16 +31,18 @@ export function getIntegrationDetails(integration: Integration | IntegrationType
   return details ? details : undefined;
 }
 
-const integrationOptions = Object.entries(IntegrationDetails).map(([k, x]) => ({
-  id: k as IntegrationType,
-  name: x.name,
-  option: (
-    <span className="flex items-center gap-1.5">
-      <span className="flex-shrink-0 w-5">{x.icon}</span>
-      <span>{x.name}</span>
-    </span>
-  ),
-}));
+const integrationOptions = Object.entries(IntegrationDetails)
+  .map(([k, x]) => ({
+    id: k as IntegrationType,
+    name: x.name,
+    option: (
+      <span className="flex items-center gap-1.5">
+        <span className="flex-shrink-0 w-5">{x.icon}</span>
+        <span>{x.name}</span>
+      </span>
+    ),
+  }))
+  .filter(o => o.id === "github");
 
 export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) => {
   const { data: integrations } = useWorkspaceIntegrationsQuery(workspace.id);
@@ -72,13 +74,17 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
     once.current = true;
   }
 
+  const [searchParams] = useSearchParams();
+
+  const installationId = searchParams.get("installation_id");
+
   const [closing, setClosing] = React.useState(false);
 
   const onDone = React.useCallback(() => {
     setClosing(false);
     setSelectedIntegration(undefined);
-    queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
-    queryClient.invalidateQueries(queryKeys.tags(workspace.id));
+    queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.tags(workspace.id) });
   }, [workspace.id]);
 
   const title = "Issue tracker integrations";
@@ -157,7 +163,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowGitLabIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -166,7 +172,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowLinearIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -175,7 +181,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowGitHubIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -184,7 +190,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowAsanaIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -193,7 +199,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowJiraIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -202,7 +208,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowHeightIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -211,7 +217,7 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
               <ShowTrelloIntegration
                 i={integrationToShow}
                 onDeleted={() => {
-                  queryClient.invalidateQueries(queryKeys.integrations(workspace.id));
+                  queryClient.invalidateQueries({ queryKey: queryKeys.integrations(workspace.id) });
                   setIntegrationToShow(undefined);
                 }}
               />
@@ -241,7 +247,12 @@ export const Integrations: React.FC<{ workspace: Workspace }> = ({ workspace }) 
             ) : createIntegration === "linear" ? (
               <AddLinearIntegration workspace={workspace} onDone={onDone} closing={closing} />
             ) : createIntegration === "github" ? (
-              <AddGitHubIntegration workspace={workspace} onDone={onDone} closing={closing} />
+              <AddGitHubIntegration
+                workspace={workspace}
+                onDone={onDone}
+                closing={closing}
+                installationId={installationId}
+              />
             ) : createIntegration === "asana" ? (
               <AddAsanaIntegration workspace={workspace} onDone={onDone} closing={closing} />
             ) : createIntegration === "jira" ? (

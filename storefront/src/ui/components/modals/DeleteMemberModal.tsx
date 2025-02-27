@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { Avatar, ConfirmDialog } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../../config";
 import { type Agent, type Vendor } from "../../../redux/adminApi";
@@ -24,27 +24,25 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
 }) => {
   const [deleteMemberError, setDeleteMemberError] = React.useState<string>();
 
-  const deleteMemberMutation = useMutation(
-    () => {
+  const deleteMemberMutation = useMutation({
+    mutationFn: async () => {
       return fetch(`${getServerUrl()}/api/vendors/${vendor.id}/agents/${agent.id}`, {
         method: "DELETE",
         credentials: "include",
       });
     },
-    {
-      onSuccess: async r => {
-        if (r.status === 204) {
-          queryClient.invalidateQueries(queryKeys.agents(vendor.id));
-          queryClient.invalidateQueries(queryKeys.vendors());
-          onClose();
-        } else if (r.status === 403) {
-          const { error: err } = await r.json();
+    onSuccess: async r => {
+      if (r.status === 204) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.agents(vendor.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+        onClose();
+      } else if (r.status === 403) {
+        const { error: err } = await r.json();
 
-          setDeleteMemberError(err);
-        }
-      },
-    }
-  );
+        setDeleteMemberError(err);
+      }
+    },
+  });
   const numAgents = agents?.filter(x => x.role === "owner").length;
   return (
     <>
@@ -59,7 +57,7 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
             buttonTitle="Remove"
             onClose={onClose}
             onDelete={deleteMemberMutation.mutate}
-            loading={deleteMemberMutation.isLoading}
+            loading={deleteMemberMutation.isPending}
             error={deleteMemberError}
           >
             <Avatar url={agent.image_url} />

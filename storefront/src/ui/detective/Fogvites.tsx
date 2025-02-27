@@ -1,6 +1,6 @@
 import { type Fogvite } from "fogbender-client/src/shared";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 import { getServerUrl } from "../../config";
@@ -27,12 +27,14 @@ const Fogvites: React.FC<{ agentId: string }> = ({ agentId }) => {
       fogvited: Fogvite[];
     },
     React.ReactNode // Error must be of type React.ReactNode in order to use it in JSX
-  >("fogvites", () =>
-    fetch(`${getServerUrl()}/detective_api/agents/${agentId}`, {
-      credentials: "include",
-      cache: "no-cache",
-    }).then(res => res.json())
-  );
+  >({
+    queryKey: ["fogvites"],
+    queryFn: async () =>
+      fetch(`${getServerUrl()}/detective_api/agents/${agentId}`, {
+        credentials: "include",
+        cache: "no-cache",
+      }).then(res => res.json()),
+  });
   const [deletedInvites, setDeletedInvites] = React.useState<string[]>([]);
   const fogvites =
     data?.my_fogvites.filter(d => !deletedInvites.includes(d.id) && d.deleted_at === null) || [];

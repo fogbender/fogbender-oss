@@ -69,7 +69,9 @@ defmodule Fog.Api.Message do
   defmsg(Ok, [:messageId, :messageIds, :items])
   deferr(Err, [])
 
-  def info(%command{} = m, s) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{} = m, s, _) when command in @commands do
     if auth(m, s) do
       case m do
         %Seen{} ->
@@ -122,7 +124,7 @@ defmodule Fog.Api.Message do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   defp auth(%Create{roomId: room_id, linkRoomId: link_room_id}, sess) do
     Perm.Message.allowed?(sess, :create, room_id: room_id, link_room_id: link_room_id)

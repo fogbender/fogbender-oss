@@ -5,7 +5,7 @@ import { ClipboardCopy } from "fogbender-client/src/shared/components/ClipboardC
 import { Clipboard } from "fogbender-client/src/shared/components/Icons";
 import { type Room } from "fogbender-proto";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { type User } from "../../redux/adminApi";
 import { apiServer, queryKeys } from "../client";
@@ -104,7 +104,7 @@ const UserDetails = ({ userId, room }: { userId: string; room: Room }) => {
   const userEmailVerified = userInfo?.user?.email_verified;
 
   return (
-    <div className="p-2 bg-amber-50 dark:bg-brand-dark-bg dark:text-white rounded border flex flex-col">
+    <div className="p-2 bg-amber-50 dark:bg-brand-dark-bg text-black dark:text-white rounded border flex flex-col">
       <span className="font-medium">
         <Clipboardable content={userName} />
       </span>

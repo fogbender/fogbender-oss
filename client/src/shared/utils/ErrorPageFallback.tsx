@@ -9,7 +9,7 @@ export const ErrorPageFallback: React.FC<{
       <h1 className="text-2xl font-extrabold leading-8 text-gray-900 sm:text-3xl sm:leading-9">
         Oops... Sorry!
       </h1>
-      <p className="my-2">Looks like we’ve stumbled upon error:</p>
+      <p className="my-2">Looks like we’ve stumbled upon an error:</p>
       <div className="my-4 text-red-600">
         {error && <pre className="text-sm">{error.message}</pre>}
       </div>

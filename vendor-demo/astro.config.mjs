@@ -1,12 +1,21 @@
 // @ts-check
-import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
-import { defineAstro } from "qgp";
-import { common } from "./qgp.config.mjs";
+import { defineConfig } from "astro/config";
+import checker from "vite-plugin-checker";
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [react()],
-  vite: defineAstro(common, {}),
+  vite: {
+    plugins: [
+      checker({
+        typescript: true,
+        overlay: { initialIsOpen: false },
+      }),
+    ],
+    build: {
+      sourcemap: true,
+    },
+  },
   server: { port: 3200 },
 });

@@ -1,6 +1,6 @@
 import { Icons, ThinButton, type Integration } from "fogbender-client/src/shared";
 import React from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getServerUrl } from "../../../config";
 import { type Workspace } from "../../../redux/adminApi";
@@ -13,24 +13,26 @@ export const AddSlackCustomerIntegration: React.FC<{
   onDone: () => void;
   closing: boolean;
 }> = ({ workspace, onDone, closing }) => {
-  const enableMutation = useMutation((params: { aggressiveTicketing: boolean }) => {
-    const { aggressiveTicketing } = params;
+  const enableMutation = useMutation({
+    mutationFn: async (params: { aggressiveTicketing: boolean }) => {
+      const { aggressiveTicketing } = params;
 
-    return fetch(
-      `${getServerUrl()}/api/workspaces/${workspace.id}/integrations/slack-customer/enable`,
-      {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ aggressiveTicketing }),
-      }
-    );
+      return fetch(
+        `${getServerUrl()}/api/workspaces/${workspace.id}/integrations/slack-customer/enable`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({ aggressiveTicketing }),
+        }
+      );
+    },
   });
 
   const {
     progressElem: enableProgressElem,
     progressDone: enableProgressDone,
     inProgress: enableInProgress,
-  } = useProgress(enableMutation.isLoading === true, 0);
+  } = useProgress(enableMutation.isPending === true, 0);
 
   const [yesDone, setYesDone] = React.useState(false);
 
@@ -96,8 +98,8 @@ export const ShowSlackCustomerIntegration: React.FC<{
   i: Integration;
   onDeleted: () => void;
 }> = ({ i, onDeleted }) => {
-  const deleteMutation = useMutation(
-    () => {
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
       return fetch(
         `${getServerUrl()}/api/workspaces/${i.workspace_id}/integrations/${i.id}/delete`,
         {
@@ -106,15 +108,13 @@ export const ShowSlackCustomerIntegration: React.FC<{
         }
       );
     },
-    {
-      onSuccess: () => {
-        onDeleted();
-      },
-    }
-  );
+    onSuccess: () => {
+      onDeleted();
+    },
+  });
 
-  const updateIntegration = useMutation(
-    (params: { aggressiveTicketing: boolean }) => {
+  const updateIntegration = useMutation({
+    mutationFn: (params: { aggressiveTicketing: boolean }) => {
       const { aggressiveTicketing } = params;
 
       return fetch(
@@ -126,12 +126,10 @@ export const ShowSlackCustomerIntegration: React.FC<{
         }
       );
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(queryKeys.integrations(i.workspace_id));
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.integrations(i.workspace_id) });
+    },
+  });
 
   return (
     <div className="">

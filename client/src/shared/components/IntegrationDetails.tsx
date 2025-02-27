@@ -1,6 +1,6 @@
 import {
   IconAsana,
-  IconGithub,
+  IconGitHub,
   IconGitlab,
   IconHeight,
   IconJira,
@@ -9,7 +9,7 @@ import {
 } from "./IntegrationIcons";
 
 export const IntegrationDetails = {
-  "github": { name: "GitHub", icon: <IconGithub className="w-full" /> },
+  "github": { name: "GitHub", icon: <IconGitHub className="w-full" /> },
   "gitlab": { name: "GitLab", icon: <IconGitlab className="w-full" /> },
   "asana": { name: "Asana", icon: <IconAsana className="w-full" /> },
   "linear": { name: "Linear", icon: <IconLinear className="w-full" /> },

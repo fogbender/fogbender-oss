@@ -21,12 +21,13 @@ import {
   useRoomHistory,
   useRosterActions,
   useSharedRoster,
+  useStreamReply,
   useWsCalls,
 } from "fogbender-proto";
 import { useAtom, useAtomValue } from "jotai";
 import React, { Suspense } from "react";
 import { TbChevronsDown } from "react-icons/tb";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { FileUploadPreview } from "../components/FileUpload";
 import { Icons } from "../components/Icons";
@@ -85,7 +86,7 @@ const ResolvedControls = (props: {
   const showSnoozeTimer = resolved && resolvedTil;
   const [opacity, setOpacity] = React.useState("opacity-0");
   React.useEffect(() => {
-    setOpacity("transition-opacity duration-[3000ms] opacity-100");
+    setOpacity("transition-opacity duration-[500ms] opacity-100");
   }, []);
   return (
     <div
@@ -160,6 +161,7 @@ export const Room: React.FC<{
   onSettings?: (id: string) => void;
   onOpenSearch: (id: string) => void;
   onOpenDialog: (userId: string, helpdeskId: string) => void;
+  onOpenStreamReplyPreview: (roomId: string, messageId: string) => void;
   onSetRoomPin: (roomId: string | undefined, pinned: boolean) => void;
   onGoFullScreen?: () => void;
   showIssueInfo: TagT | undefined;
@@ -197,6 +199,7 @@ export const Room: React.FC<{
   onSettings,
   onOpenSearch,
   onOpenDialog,
+  onOpenStreamReplyPreview,
   onSetRoomPin,
   onGoFullScreen,
   showIssueInfo,
@@ -308,7 +311,7 @@ export const Room: React.FC<{
       const t = window.setTimeout(() => {
         setFlash(undefined);
         updateLoadAround(roomId, undefined);
-      }, 1000);
+      }, 1500);
       return () => {
         clearTimeout(t);
       };
@@ -451,7 +454,7 @@ export const Room: React.FC<{
 
   const handleUploadClick = React.useCallback(() => fileInputRef.current?.click(), []);
 
-  const isInternal = isInternalHelpdesk(roomById(roomId)?.customerName);
+  const isInternal = isInternalHelpdesk(room?.customerName);
 
   const showAiHelper = useAtomValue(showAiHelperAtom);
   const aiEnabled = workspaceIntegrations?.find(i => i.type === "ai") !== undefined;
@@ -549,7 +552,8 @@ export const Room: React.FC<{
 
   useAutoFocusInput(
     textareaRef,
-    openRoomCount > 1 && !isActiveRoom /*disable auto focus is more then 1 room is open and none is active*/
+    openRoomCount > 1 &&
+      !isActiveRoom /*disable auto focus is more then 1 room is open and none is active*/
   );
 
   React.useLayoutEffect(() => {
@@ -668,6 +672,10 @@ export const Room: React.FC<{
 
   const inViolation = (isAgent && (billing?.unpaid_seats || 0) > 0) || billing?.delinquent;
 
+  const { streamReply } = useStreamReply({ roomId });
+
+  const { streamReplyCancel } = useWsCalls();
+
   return (
     <div
       {...getRootProps({
@@ -715,6 +723,7 @@ export const Room: React.FC<{
           onClose={onClose}
           onCloseOtherRooms={onCloseOtherRooms}
           onOpenSearch={onOpenSearch}
+          onOpenStreamReplyPreview={onOpenStreamReplyPreview}
           onSettings={onSettings}
           onUnseen={onUnseen}
           onSetRoomPin={onSetRoomPin}
@@ -727,7 +736,7 @@ export const Room: React.FC<{
         />
       )}
       {sortedPins &&
-        sortedPins?.length > 0 &&
+        sortedPins.length > 0 &&
         sortedPins.map(pin => (
           <PinnedMessageComponent
             key={pin.messageId}
@@ -811,11 +820,15 @@ export const Room: React.FC<{
               doFileIssue={setShowFileIssue}
               roomId={roomId}
               roomRef={roomRef}
+              historyRef={historyRef}
               roomWidth={roomWidth}
               pinToRoom={pinToRoom}
               askAi={askAi}
               selectHover={selectHover}
               modeContainerHeight={modeContainerHeight}
+              streamReply={streamReply}
+              streamReplyCancel={streamReplyCancel}
+              onOpenStreamReplyPreview={onOpenStreamReplyPreview}
             />
           ))}
           {pendingMessages.map((msg, i) => (
@@ -995,7 +1008,7 @@ export const Room: React.FC<{
             messagesByTarget={messagesByTarget}
             messageCreateMany={messageCreateMany}
             onComplete={onForwardCompletion}
-            userId={ourId}
+            ourId={ourId}
           />
         </Modal>
       )}
@@ -1055,42 +1068,42 @@ const PinnedMessageComponent: React.FC<{
   const { messageId: pinnedMessageId, isPrivate } = pin;
   const [pinnedMessage, setPinnedMessage] = React.useState<Message>();
 
-  const { data: fetchMessages } = useQuery(
-    ["pinnedMessageId", pinnedMessageId, pinnedMessage],
-    async () => {
-      if (pinnedMessage === undefined && pinnedMessageId) {
-        const res = await serverCall<StreamGet>({
-          msgType: "Stream.Get",
-          topic: `room/${roomId}/messages`,
-          aroundId: pinnedMessageId,
-          limit: 1,
-        });
-        if (res.msgType === "Stream.GetOk") {
-          const items = extractEventMessage(res.items);
-          const message = items.map(convertEventMessageToMessage);
-          return message;
-        }
+  const queryResult = useQuery({
+    queryKey: ["pinnedMessage", pinnedMessageId, pinnedMessage],
+    queryFn: async () => {
+      const res = await serverCall<StreamGet>({
+        msgType: "Stream.Get",
+        topic: `room/${roomId}/messages`,
+        aroundId: pinnedMessageId,
+        limit: 1,
+      });
+      if (res.msgType === "Stream.GetOk") {
+        const items = extractEventMessage(res.items);
+        const message = items.map(convertEventMessageToMessage);
+        return message;
       }
+
       return;
     },
-    {
-      staleTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    placeholderData: [],
+  });
 
-  if (fetchMessages !== undefined) {
-    setPinnedMessage(fetchMessages.find(x => x.id === pinnedMessageId));
-  }
+  const { data: pinnedMessages } = queryResult;
+
+  React.useEffect(() => {
+    if (pinnedMessages && pinnedMessages.length !== 0) {
+      setPinnedMessage(pinnedMessages.find(x => x.id === pinnedMessageId));
+    }
+  }, [pinnedMessages]);
 
   return (
     <React.Fragment>
       {pinnedMessage ? (
         <Pin isPrivate={isPrivate} pinnedMessage={pinnedMessage} />
       ) : (
-        <div className="pt-2 pb-2 bg-gray-200">
-          <div className="ml-3 text-gray-500">
-            <Icons.SpinnerSmall className="h-4" />
-          </div>
+        <div className="min-h-8 bg-gray-200 dark:bg-[#312924] dark:text-gray-400 flex items-center">
+          <span className="ml-3 loading loading-xs loading-spinner text-accent dark:text-warning"></span>
         </div>
       )}
     </React.Fragment>

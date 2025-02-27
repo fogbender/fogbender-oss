@@ -15,6 +15,7 @@ export const useInputWithError = ({
   onEnter = () => {},
   className = "",
   placeholder,
+  type = "text",
 }: {
   title: string;
   defaultValue?: string;
@@ -25,9 +26,10 @@ export const useInputWithError = ({
   onEnter?: () => void;
   className?: string;
   placeholder?: string;
+  type?: "text" | "password" | "new-password" | "email";
 }) => {
   const [inputValue, inputElement, resetInput, focused, setValue, focus] = useInput({
-    type: "text",
+    type,
     className: classNames(
       "w-full rounded-lg transition focus:outline-none px-3 appearance-none leading-loose",
       !disabled ? "bg-gray-100 text-gray-800" : "bg-gray-200 text-gray-500"
@@ -43,7 +45,9 @@ export const useInputWithError = ({
   const [showErrorTooltip, setShowErrorTooltip] = React.useState(false);
 
   React.useEffect(() => {
-    if (error) setShowErrorTooltip(true);
+    if (error) {
+      setShowErrorTooltip(true);
+    }
   }, [error]);
 
   const fieldElement = React.useMemo(

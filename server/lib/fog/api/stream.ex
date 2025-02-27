@@ -68,7 +68,9 @@ defmodule Fog.Api.Stream do
     Get
   ]
 
-  def info(%command{topic: topic} = m, sess) when command in @commands do
+  def info(c, s), do: info(c, s, [])
+
+  def info(%command{topic: topic} = m, sess, _) when command in @commands do
     [name, id, resource] = parse_topic(topic)
 
     if auth(command, name, id, sess) do
@@ -80,7 +82,7 @@ defmodule Fog.Api.Stream do
     end
   end
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def event_module(resource) do
     case resource do
@@ -95,6 +97,8 @@ defmodule Fog.Api.Stream do
       "tags" -> Event.Tag
       "notifications" -> Event.Notification.Message
       "groups" -> Event.AgentGroup
+      "control" -> Event.Control
+      "stream-reply" -> Event.StreamReply
     end
   end
 
@@ -170,7 +174,9 @@ defmodule Fog.Api.Stream do
       "customers",
       "tags",
       "users",
-      "groups"
+      "groups",
+      "control",
+      "stream-reply"
     ]
   end
 

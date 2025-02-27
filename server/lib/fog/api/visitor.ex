@@ -14,13 +14,16 @@ defmodule Fog.Api.Visitor do
   @verify_delay 30000
   @verify_attempts 3
 
+  def info(c, s), do: info(c, s, [])
+
   def info(
         %VerifyEmail{email: email},
         %Session.User{
           userId: user_id,
           is_visitor: true,
           email_verified: false
-        } = sess
+        } = sess,
+        _
       ) do
     is_rate_limited = Fog.Limiter.put({__MODULE__, email}, @verify_delay) != :ok
     is_email = String.match?(email, ~r/^[[:graph:]]+@[[:graph:]]+$/)
@@ -68,7 +71,8 @@ defmodule Fog.Api.Visitor do
           email_verified: false,
           verification_code: code,
           verification_email: email
-        } = s
+        } = s,
+        _
       ) do
     user_exid = email
     user_name = email
@@ -104,11 +108,11 @@ defmodule Fog.Api.Visitor do
     {:reply, %Ok{userId: user.id, token: token}, reset_code(s)}
   end
 
-  def info(%VerifyCode{}, %Session.User{verification_code: nil}) do
+  def info(%VerifyCode{}, %Session.User{verification_code: nil}, _) do
     {:reply, Err.forbidden()}
   end
 
-  def info(%VerifyCode{}, %Session.User{verification_attempts: va} = s) do
+  def info(%VerifyCode{}, %Session.User{verification_attempts: va} = s, _) do
     if va >= @verify_attempts do
       {:reply, Err.forbidden(), reset_code(s)}
     else
@@ -116,9 +120,9 @@ defmodule Fog.Api.Visitor do
     end
   end
 
-  def info(%VerifyEmail{}, _), do: {:reply, Err.forbidden()}
+  def info(%VerifyEmail{}, _, _), do: {:reply, Err.forbidden()}
 
-  def info(_, _), do: :skip
+  def info(_, _, _), do: :skip
 
   def is_visitor?(%Data.User{external_uid: "visitor-" <> _}), do: true
   def is_visitor?(%Data.User{}), do: false
