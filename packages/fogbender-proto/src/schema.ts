@@ -116,10 +116,13 @@ export type APISchema = {
   EventRosterSectionEVT: RPC<undefined, EventRosterSection>;
   EventRosterRoomEVT: RPC<undefined, EventRosterRoom>;
   EventAgentGroupEVT: RPC<undefined, EventAgentGroup>;
+  EventControlEVT: RPC<undefined, EventControl>;
+  EventStreamReplyEVT: RPC<undefined, EventStreamReply>;
   AiSummarize: RPC<AiSummarize, AiOk>;
   AiSuggest: RPC<AiSuggest, AiOk>;
   UpdateSettingsRPC: RPC<UpdateSettings, AuthorSettingsOk>;
   GetSettingsRPC: RPC<GetSettings, AuthorSettingsOk>;
+  StreamReplyCancelRPC: RPC<StreamReplyCancel, StreamReplyOk>;
 };
 
 export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
@@ -279,6 +282,9 @@ export type Integration = {
   prompts?: Prompt[];
   agent_group?: string;
   schedule_name?: string;
+  linked_channel_id?: string;
+  linked_channel_name?: string;
+  installation_id?: string;
 };
 
 export type IntegrationCreateIssue = {
@@ -827,6 +833,17 @@ export type AiOk = {
   response: string[];
 };
 
+export type StreamReplyCancel = {
+  msgId?: string;
+  msgType: "StreamReply.Cancel";
+  messageId: string;
+};
+
+export type StreamReplyOk = {
+  msgId: string;
+  msgType: "StreamReply.Ok";
+};
+
 // BEGIN events
 
 export type EventMessage = {
@@ -925,7 +942,7 @@ export type EventAgent = {
   id: string;
   email: string;
   name: string;
-  role: "owner" | "admin" | "agent" | "reader" | "app";
+  role: "owner" | "admin" | "agent" | "reader" | "app" | "assistant";
   imageUrl: string;
   createdTs: number;
   updatedTs: number;
@@ -1210,5 +1227,19 @@ export type EventAgentGroup = {
   name: string;
   vendorId: string;
   agents: EventAgent[];
+};
+
+export type EventControl = {
+  msgId?: string;
+  msgType: "Event.Control";
+  command: "reload";
+};
+
+export type EventStreamReply = {
+  msgId?: string;
+  msgType: "Event.StreamReply";
+  roomId: string;
+  messageId: string;
+  text: string | null;
 };
 // END nested types
