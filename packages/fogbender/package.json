@@ -1,6 +1,6 @@
 {
   "name": "fogbender",
-  "version": "0.2.3",
+  "version": "0.4.0",
   "publishConfig": {
     "access": "public"
   },
@@ -50,6 +50,8 @@
     "@testing-library/user-event": "^10.1.0",
     "@types/jest": "^25.1.4",
     "@types/node": "13.13.2",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
     "cross-env": "^7.0.2",
     "css-element-queries": "^1.2.3",
     "esbuild-plugin-solid": "^0.4.2",
