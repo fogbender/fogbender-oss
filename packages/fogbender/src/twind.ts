@@ -84,7 +84,6 @@ export function getTwind() {
 }
 
 declare global {
-  // eslint-disable-next-line no-unused-vars
   interface NodeModule {
     hot?: {
       data: { singletonHolder?: typeof singletonHolder };
