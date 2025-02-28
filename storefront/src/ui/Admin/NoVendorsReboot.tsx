@@ -94,7 +94,7 @@ export const NoVendorsReboot = ({
         return 2;
       } else if (section === "github") {
         return 3;
-      } else if (section === "llm") {
+      } else if (section === "assistant") {
         return 4;
       } else if (section === "widget") {
         return 5;
@@ -157,9 +157,16 @@ export const NoVendorsReboot = ({
     );
   }, [step]);
 
-  const { vendorId: stateVendorId } = onboardingState;
+  const vendorMatch = useMatch("/admin/vendor/:vid/*");
 
-  const vendorId = stateVendorId ?? "new";
+  const vendorId = (() => {
+    const vid = vendorMatch?.params?.vid;
+    if (vid !== undefined && vid !== "new" && vid !== "undefined") {
+      return vid;
+    } else {
+      return "new";
+    }
+  })();
 
   const location = useLocation();
 
@@ -177,7 +184,7 @@ export const NoVendorsReboot = ({
     } else if (step === 3) {
       navigate(`/admin/vendor/${vendorId}/onboarding/github${search}`);
     } else if (step === 4) {
-      navigate(`/admin/vendor/${vendorId}/onboarding/llm${search}`);
+      navigate(`/admin/vendor/${vendorId}/onboarding/assistant${search}`);
     } else if (step === 5) {
       navigate(`/admin/vendor/${vendorId}/onboarding/widget${search}`);
     }
@@ -185,17 +192,19 @@ export const NoVendorsReboot = ({
 
   return (
     <div className="h-full flex flex-col pb-32 sm:pb-0 text-black dark:text-white">
-      {vendorId && <HeadlessForSupport vendorId={vendorId} hideFloatie={false} hideBadge={true} />}
+      {vendorId && vendorId !== "new" && (
+        <HeadlessForSupport vendorId={vendorId} hideFloatie={false} hideBadge={true} />
+      )}
 
-      {vendorId && (
+      {vendorId && vendorId !== "new" && (
         <div
           onClick={() => {
             onDone();
           }}
-          className="fixed right-5 top-[26rem] lg:top-[8.5rem] text-slate-400 hover:text-brand-red-500 cursor-pointer"
+          className="fixed right-5 top-[26rem] lg:top-[8.5rem] text-slate-800 dark:text-slate-300 hover:text-brand-red-500 cursor-pointer"
           title="Exit onboarding"
         >
-          <Icons.XClose className="w-4" />
+          <Icons.XClose className="w-8" />
         </div>
       )}
 
@@ -203,7 +212,7 @@ export const NoVendorsReboot = ({
         <Route path="formalities" element={<Step1 onNext={onNext} />} />
         <Route path="slack" element={<Step2 onNext={onNext} onPrev={onPrev} />} />
         <Route path="github" element={<Step3 onNext={onNext} onPrev={onPrev} />} />
-        <Route path="llm" element={<Step4 onNext={onNext} onPrev={onPrev} />} />
+        <Route path="assistant" element={<Step4 onNext={onNext} onPrev={onPrev} />} />
         <Route path="widget" element={<Step5 onDone={onDone} onPrev={onPrev} />} />
       </Routes>
     </div>
@@ -790,6 +799,8 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
     },
   });
 
+  const navigate = useNavigate();
+
   const newVendorMutation = useMutation({
     mutationFn: async ({ name }: { name: string }) => {
       return apiServer.url("/api/vendors").post({ name }).json<{ id: string; name: string }>();
@@ -798,6 +809,7 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
       const { id, name } = res;
       setOnboardingState(s => ({ ...s, vendorId: id, vendorName: name }));
       newWorkspaceMutation.mutate({ vendorId: id, name: workspaceNameValue || "Test" });
+      navigate(`/admin/vendor/${id}/onboarding/slack`);
     },
     onError: error => {
       setOrgNameError(error?.message);
@@ -831,11 +843,22 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
           return;
         }
         newVendorMutation.mutate({ name: trimmedOrgName });
+      } else if (onboardingState.vendorId && !onboardingState.workspaceId) {
+        const trimmedWorkspaceName = workspaceNameValue.trim();
+        newWorkspaceMutation.mutate({
+          vendorId: onboardingState.vendorId,
+          name: trimmedWorkspaceName || "Test",
+        });
       } else {
         onNext();
       }
     },
     [orgNameValue]
+  );
+
+  const continueOk = !!(
+    !gimmeNamePending &&
+    (potentialNameData?.name || onboardingState.workspaceName)
   );
 
   return (
@@ -873,11 +896,11 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
             className="w-36"
             onClick={onSubmit}
             loading={formLoading}
-            disabled={!(potentialNameData?.name || onboardingState.workspaceName)}
+            disabled={!continueOk}
           >
             <div className="flex items-center gap-2">
               <span>Continue </span>
-              {gimmeNamePending ? (
+              {!continueOk ? (
                 <span className="loading loading-ring loading-sm"></span>
               ) : (
                 <span>→</span>

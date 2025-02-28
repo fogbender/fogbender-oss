@@ -2,8 +2,7 @@ import { ThickButton, useInputWithError } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import { getServerUrl } from "../../config";
-import { queryClient, queryKeys } from "../client";
+import { queryClient, queryKeys, apiServer } from "../client";
 
 export const CreateVendorForm: React.FC<{
   nameOk: (x: string) => boolean;
@@ -12,20 +11,11 @@ export const CreateVendorForm: React.FC<{
   const addVendorMutation = useMutation({
     mutationFn: (params: { name: string }) => {
       const { name } = params;
-      return fetch(`${getServerUrl()}/api/vendors`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ name }),
-      });
+      return apiServer.url("/api/vendors").post({ name }).json();
     },
-    onSuccess: async (r, params) => {
-      if (r.status === 200) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
-        onClose();
-      } else {
-        const { name } = params;
-        console.error(`Couldn't create organization ${name}`);
-      }
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.vendors() });
+      onClose();
     },
   });
 

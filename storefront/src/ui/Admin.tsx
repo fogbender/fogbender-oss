@@ -28,7 +28,7 @@ import {
   WsProvider,
 } from "fogbender-client/src/shared";
 import { Logout } from "fogbender-client/src/shared/components/Icons";
-import { Provider as JotaiProvider, useAtom } from "jotai";
+import { Provider as JotaiProvider, useAtom, useSetAtom } from "jotai";
 import React from "react";
 import { lazily } from "react-lazily";
 import { QueryClientProvider, useMutation, useQuery } from "@tanstack/react-query";
@@ -72,7 +72,7 @@ import { HeadlessForSupport, useFullScreenClientUrl } from "./Admin/HeadlessForS
 import { HeadlessIntegration, UnreadBadge } from "./Admin/HeadlessIntegration";
 import { HelpWidget } from "./Admin/HelpWidget";
 import { getIntegrationDetails as getIssueTrackerIntegrationDetails } from "./Admin/Integrations";
-import { onboardingStateAtom } from "./Admin/OnboardingTypes";
+import { onboardingStateAtom, initialOnboardingState } from "./Admin/OnboardingTypes";
 import { NoVendorsReboot } from "./Admin/NoVendorsReboot";
 // import { OnboardingChecklist } from "./Admin/OnboardingChecklist";
 import { Team } from "./Admin/Team";
@@ -124,6 +124,19 @@ export const Admin = () => {
       return undefined;
     }
   })();
+
+  const prevDesignatedVendor = React.useRef<Vendor>();
+
+  React.useEffect(() => {
+    if (prevDesignatedVendor.current !== designatedVendor) {
+      setOnboardingState(() => ({
+        ...initialOnboardingState,
+        vendorId: designatedVendor?.id,
+        vendorName: designatedVendor?.name,
+      }));
+    }
+    prevDesignatedVendor.current = designatedVendor;
+  }, [designatedVendor]);
 
   const [themeMode, setThemeMode] = useAtom(modeAtom);
 
@@ -318,37 +331,7 @@ export const Admin = () => {
     (countNonReaders - freeSeats < 0 ? 0 : countNonReaders - freeSeats) - paidSeats;
 
   const [onboardingSteps, setOnboardingSteps] = React.useState<React.ReactNode>();
-  const [onboardingState, setOnboardingState] = useAtom(onboardingStateAtom);
-
-  React.useEffect(() => {
-    if (!onboardingState.vendorId) {
-      if (designatedVendor) {
-        setOnboardingState(s => ({
-          ...s,
-          vendorId: designatedVendor.id,
-          vendorName: designatedVendor.name,
-        }));
-      } else if (vendors !== undefined && vendors !== "loading" && vendors.length !== 0) {
-        setOnboardingState(s => ({ ...s, vendorId: vendors[0].id, vendorName: vendors[0].name }));
-      }
-    }
-
-    if (onboardingState.vendorId && !onboardingState.workspaceId) {
-      if (designatedWorkspace) {
-        setOnboardingState(s => ({
-          ...s,
-          workspaceId: designatedWorkspace.id,
-          workspaceName: designatedWorkspace.name,
-        }));
-      } else if (workspaces && workspaces.length !== 0) {
-        setOnboardingState(s => ({
-          ...s,
-          workspaceId: workspaces[0].id,
-          workspaceName: workspaces[0].name,
-        }));
-      }
-    }
-  }, [onboardingState, designatedWorkspace, designatedVendor, vendors, workspaces]);
+  const setOnboardingState = useSetAtom(onboardingStateAtom);
 
   React.useEffect(() => {
     if (vendors !== "loading" && vendors !== undefined) {
