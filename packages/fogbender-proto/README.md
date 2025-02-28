@@ -33,4 +33,4 @@ class Example extends Component {
 
 ## License
 
-MIT © [JLarky](https://github.com/JLarky)
+MIT © [Fogbender Software, Inc.](https://fogbender.com)

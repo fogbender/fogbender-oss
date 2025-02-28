@@ -1,7 +1,7 @@
 import { render } from "solid-js/web";
 import { createSignal } from "solid-js";
 import { tw } from "twind";
-import { Events } from "./createIframe";
+import { type Events } from "./createIframe";
 import { getTwind } from "./twind";
 
 export function renderUnreadBadge(

@@ -8,6 +8,7 @@ import type {
   EventSeen,
   EventTyping,
   EventUser,
+  EventStreamReply,
 } from "../schema";
 
 // suppose you have `items` or type `(A|B|C)[]` but you know it's actually just `A[]`
@@ -46,6 +47,8 @@ const isEventTag = (x: ExtendsMessage<EventTag>): x is EventTag => x.msgType ===
 const isEventSeen = (x: ExtendsMessage<EventSeen>): x is EventSeen => x.msgType === "Event.Seen";
 const isEventTyping = (x: ExtendsMessage<EventTyping>): x is EventTyping =>
   x.msgType === "Event.Typing";
+const isEventStreamReply = (x: ExtendsMessage<EventStreamReply>): x is EventStreamReply =>
+  x.msgType === "Event.StreamReply";
 export const isEventUser = (x: ExtendsMessage<EventUser>): x is EventUser =>
   x.msgType === "Event.User";
 const isEventAgentGroup = (x: ExtendsMessage<EventAgentGroup>): x is EventAgentGroup =>
@@ -77,6 +80,10 @@ export function extractEventSeen(items: ExtendsMessage<EventSeen>[]) {
 
 export function extractEventTyping(items: ExtendsMessage<EventTyping>[]) {
   return extract(items, isEventTyping);
+}
+
+export function extractEventStreamReply(items: ExtendsMessage<EventStreamReply>[]) {
+  return extract(items, isEventStreamReply);
 }
 
 export function extractEventUser(items: ExtendsMessage<EventUser>[]) {

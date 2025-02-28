@@ -7,4 +7,8 @@ declare global {
     type Element = JSX_.Element;
     // etc
   }
+  interface Window {
+    isMobile: () => boolean;
+    opera: any;
+  }
 }

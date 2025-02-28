@@ -9,7 +9,7 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "main": "./dist/server.cjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "repository": {
     "type": "git",
@@ -17,12 +17,14 @@
   },
   "types": "./dist/index.d.ts",
   "exports": {
-    "node": {
-      "import": "./dist/server.js",
-      "require": "./dist/server.cjs"
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs"
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    }
   },
   "source": "src/index.ts",
   "engines": {
@@ -53,14 +55,16 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-config-standard-react": "^9.2.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
-    "tsup": "^5.11.9",
-    "typescript": "^4.5.4"
+    "tsup": "^8.0.1",
+    "tsup-preset-solid": "^2.1.0",
+    "typescript": "^5.2.2"
   },
   "files": [
     "dist"
@@ -68,5 +72,7 @@
   "dependencies": {
     "solid-js": "1.8.0",
     "twind": "^0.16.16"
-  }
+  },
+  "browser": {},
+  "typesVersions": {}
 }

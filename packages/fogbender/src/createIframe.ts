@@ -1,12 +1,13 @@
 /* eslint-disable no-new */
 import { ResizeSensor } from "css-element-queries";
-import { Badge, Env, Token } from ".";
+import type { Badge, Env, Token } from ".";
 import { type VisitorInfo } from "./types";
 
 type FogbenderEventMap = {
   "configured": boolean;
   "fogbender.badges": { badges: { [roomId: string]: Badge } };
   "fogbender.unreadCount": { unreadCount: number };
+  "fogbender.closeFloaty": true;
 };
 
 export type Events = {
@@ -50,24 +51,34 @@ export function renderIframe(
     headless,
     disableFit,
     onVisitorInfo,
+    onLightDarkModeInfo,
     initialMode = () => "light",
+    roomCreationEnabled = false,
+    isFloaty = false,
   }: {
     rootEl: HTMLElement;
     env: Env | undefined;
     url: string;
     token: Token;
     onVisitorInfo: (info: VisitorInfo, reload: boolean) => void;
+    onLightDarkModeInfo: (x: "light" | "dark") => void;
     headless?: boolean;
     disableFit?: boolean;
-    initialMode: () => "dark" | "light";
+    initialMode: () => "light" | "dark";
+    roomCreationEnabled?: boolean;
+    isFloaty?: boolean;
   },
   openWindow: () => void
 ) {
   let _mode = initialMode();
   const iFrame = document.createElement("iframe");
 
+  if (!headless) {
+    rootEl.style.height = "100%";
+  }
   iFrame.src = url;
   iFrame.style.display = "block";
+  iFrame.style.border = "0";
   iFrame.style.width = headless ? "0" : "100%";
   iFrame.style.height = headless ? "0" : "100%";
   if (headless) {
@@ -85,7 +96,10 @@ export function renderIframe(
       return;
     }
     if (e.data?.type === "APP_IS_READY") {
-      iFrame.contentWindow?.postMessage({ env, initToken: token, headless, mode: _mode }, url);
+      iFrame.contentWindow?.postMessage(
+        { env, initToken: token, headless, mode: _mode, isFloaty, roomCreationEnabled },
+        url
+      );
       iFrame.contentWindow?.postMessage(
         { notificationsPermission: window.Notification?.permission },
         url
@@ -121,6 +135,8 @@ export function renderIframe(
       })();
       events.unreadCount = unreadCount;
       events.emit("fogbender.unreadCount", { unreadCount });
+    } else if (e.data?.type === "WIDGET_LIGHT_DARK_MODE" && e.data.lightDarkMode !== undefined) {
+      onLightDarkModeInfo(e.data.lightDarkMode);
     } else if (
       e.data?.type === "NOTIFICATION" &&
       e.data.notification !== undefined &&
@@ -139,6 +155,8 @@ export function renderIframe(
           }
         };
       }
+    } else if (e.data?.type === "CLOSE_FLOATY") {
+      events.emit("fogbender.closeFloaty", true);
     }
   });
 
@@ -148,32 +166,9 @@ export function renderIframe(
     if (!rootEl || disableFit) {
       return;
     }
-    const totalFooterHeight = (el: Element, acc: number): number => {
-      const cs = getComputedStyle(el);
-      const x =
-        parseInt(cs.paddingBottom) + parseInt(cs.marginBottom) + parseInt(cs.borderBottomWidth);
 
-      if (el.parentElement) {
-        return totalFooterHeight(el.parentElement, acc + x);
-      }
-
-      return acc;
-    };
-
-    let heightBelow = 0;
-
-    try {
-      const iFrameTopBorderWidth = parseInt(getComputedStyle(iFrame).borderTopWidth);
-      heightBelow = Math.max(totalFooterHeight(iFrame, 0) + iFrameTopBorderWidth, 0);
-    } catch (e) {}
-
-    const height = headless
-      ? 0
-      : Math.min(
-          window.innerHeight,
-          window.innerHeight - heightBelow - rootEl.getBoundingClientRect().top
-        );
-    iFrame.style.height = height + "px";
+    const height = headless ? "0" : "100%";
+    iFrame.style.height = height;
   }
 
   function setMode(mode: "light" | "dark") {

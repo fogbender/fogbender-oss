@@ -3,7 +3,9 @@ import { atom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
+import { flushSync } from "react-dom";
 import { UNPARSABLE_JSON_OBJECT } from "react-use-websocket/src/lib/constants";
+import throttle from "lodash.throttle";
 
 import { getServerApiUrl, getServerWsUrl } from "./config";
 import type {
@@ -96,8 +98,10 @@ export function useServerWs(
       onError("error", "other", new Error("Failed to parse incoming data"));
       return;
     }
+
     if (token !== undefined && lastJsonMessage !== null) {
       const message = lastJsonMessage as FogSchema["inbound"] | undefined;
+
       if (message) {
         if (!isServerEvent(message)) {
           const x = inFlight.current.get(message.msgId);
@@ -116,9 +120,32 @@ export function useServerWs(
   const lastIncomingMessageAtom = React.useState(() => atom(lastIncomingMessage))[0];
   {
     const setLastIncomingMessage = useUpdateAtom(lastIncomingMessageAtom);
+    const throttledFlush = React.useMemo(
+      () =>
+        throttle(
+          m => {
+            setTimeout(() => {
+              flushSync(() => {
+                setLastIncomingMessage(m);
+              });
+            }, 0);
+          },
+          100,
+          { trailing: true }
+        ),
+      [setLastIncomingMessage]
+    );
     React.useEffect(() => {
-      setLastIncomingMessage(lastIncomingMessage);
-    }, [lastIncomingMessage]);
+      if (lastIncomingMessage?.msgType === "Event.StreamReply") {
+        throttledFlush(lastIncomingMessage);
+      } else {
+        setTimeout(() => {
+          flushSync(() => {
+            setLastIncomingMessage(lastIncomingMessage);
+          });
+        }, 0);
+      }
+    }, [lastIncomingMessage, throttledFlush]);
   }
 
   const flushQueue = React.useCallback(() => {

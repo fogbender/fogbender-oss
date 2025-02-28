@@ -3,6 +3,7 @@ import { useImmer } from "use-immer";
 
 import type {
   AnyToken,
+  EventAgentGroup,
   EventBadge,
   EventCustomer,
   EventRoom,
@@ -13,7 +14,12 @@ import type {
   StreamSub,
 } from "../schema";
 
-import { extractEventBadge, extractEventCustomer, extractEventRoom } from "../utils/castTypes";
+import {
+  extractEventBadge,
+  extractEventCustomer,
+  extractEventRoom,
+  extractEventAgentGroup,
+} from "../utils/castTypes";
 import { useRejectIfUnmounted } from "../utils/useRejectIfUnmounted";
 import { eventRoomToRoom } from "../utils/counterpart";
 import type { useServerWs } from "../useServerWs";
@@ -66,6 +72,9 @@ export const useSharedRosterInternal = ({
     helpdeskId
   );
   const enoughBadges = React.useRef(0);
+  const [agentGroups, setAgentGroups] = React.useState<EventAgentGroup[]>([]);
+  const [agentGroupsLoading, setAgentGroupsLoading] = React.useState(false);
+  const vendorId = token && "vendorId" in token && token["vendorId"];
 
   React.useLayoutEffect(() => {
     // Clear roster when user's token or workspace is changed
@@ -341,6 +350,47 @@ export const useSharedRosterInternal = ({
     });
   }, [fogSessionId, workspaceId, customersLoaded, oldestCustomerTs, updateCustomers, serverCall]);
 
+  const updateAgentGroups = React.useCallback((groupsIn: EventAgentGroup[]) => {
+    setAgentGroups(groups => {
+      let newGroups = groups;
+      groupsIn
+        .filter(g => g.vendorId === vendorId)
+        .forEach(group => {
+          newGroups = newGroups.filter(x => x.name !== group.name);
+          newGroups.push(group);
+        });
+      return newGroups;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (ourId && ourId.startsWith("a") && vendorId && token) {
+      const topic = `vendor/${vendorId}/groups`;
+
+      setAgentGroupsLoading(true);
+
+      serverCall({
+        msgType: "Stream.Get",
+        topic,
+      })
+        .then(x => {
+          if (x.msgType !== "Stream.GetOk") {
+            throw x;
+          }
+          updateAgentGroups(extractEventAgentGroup(x.items));
+          setAgentGroupsLoading(false);
+        })
+        .catch(() => {});
+
+      serverCall({
+        msgType: "Stream.Sub",
+        topic,
+      }).then(x => {
+        console.assert(x.msgType === "Stream.SubOk");
+      });
+    }
+  }, [ourId, vendorId, token, serverCall]);
+
   React.useEffect(() => {
     if (lastIncomingMessage?.msgType === "Event.Room") {
       updateRoster([lastIncomingMessage], []);
@@ -350,6 +400,8 @@ export const useSharedRosterInternal = ({
       updateCustomers([lastIncomingMessage]);
     } else if (lastIncomingMessage?.msgType === "Event.User") {
       updateUserAvatarUrlInRoster(lastIncomingMessage);
+    } else if (lastIncomingMessage?.msgType === "Event.AgentGroup") {
+      updateAgentGroups([lastIncomingMessage]);
     }
   }, [lastIncomingMessage, updateRoster, updateBadges]);
 
@@ -378,6 +430,23 @@ export const useSharedRosterInternal = ({
     return newRoster;
   }, [rawRoster, badges, workspaceId]);
 
+  React.useEffect(() => {
+    return () => {
+      if (ourId && ourId.startsWith("a")) {
+        const topic = `vendor/${vendorId}/groups`;
+
+        if (vendorId && token) {
+          serverCall({
+            msgType: "Stream.UnSub",
+            topic,
+          }).then(x => {
+            console.assert(x.msgType === "Stream.UnSubOk");
+          });
+        }
+      }
+    };
+  }, [ourId, vendorId, serverCall]);
+
   return React.useMemo(() => {
     return {
       roster,
@@ -389,6 +458,8 @@ export const useSharedRosterInternal = ({
       rosterSectionsActionsAtom,
       rosterRoomFamily,
       ourId,
+      agentGroups,
+      agentGroupsLoading,
     };
-  }, [roster, roomById, badges, customers]);
+  }, [roster, roomById, badges, customers, agentGroups, agentGroupsLoading]);
 };

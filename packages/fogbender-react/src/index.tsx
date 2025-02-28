@@ -1,18 +1,18 @@
 import React from "react";
-import { Badge, Env, Token, createNewFogbender, Fogbender } from "fogbender";
-import { FogbenderProvider, useFogbender, FogbenderProviderProps } from "./FogbenderProvider";
+import { type Badge, type Env, type Token, createNewFogbender, type Fogbender } from "fogbender";
+import { FogbenderProvider, useFogbender, type FogbenderProviderProps } from "./FogbenderProvider";
 import { FogbenderIsConfigured } from "./FogbenderIsConfigured";
 import { noopCleanup, useRenderComponent } from "./utils";
 
 export {
-  Badge,
-  Env,
-  Token,
+  type Badge,
+  type Env,
+  type Token,
   createNewFogbender,
-  Fogbender,
+  type Fogbender,
   FogbenderProvider,
   useFogbender,
-  FogbenderProviderProps,
+  type FogbenderProviderProps,
   FogbenderIsConfigured,
 };
 
@@ -120,7 +120,8 @@ export const FogbenderConfig: React.FC<{
   env?: Env;
   token: Token | undefined;
   mode?: "light" | "dark";
-}> = ({ clientUrl, env, token, mode = "light" }) => {
+  roomCreationEnabled?: boolean;
+}> = ({ clientUrl, env, token, mode = "light", roomCreationEnabled = false }) => {
   const fogbender = useFogbender();
   React.useEffect(() => {
     fogbender.setClientUrl(clientUrl);
@@ -143,6 +144,9 @@ export const FogbenderConfig: React.FC<{
   React.useEffect(() => {
     fogbender.setMode(mode);
   }, [mode]);
+  React.useEffect(() => {
+    fogbender.setRoomCreation(roomCreationEnabled);
+  }, [roomCreationEnabled]);
   return null;
 };
 

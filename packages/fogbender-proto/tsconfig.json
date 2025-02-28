@@ -3,6 +3,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Vite React https://github.com/tsconfig/bases/blob/main/bases/vite-react.json",
   "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "jsx": "react",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -20,7 +22,6 @@
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "noEmit": true
   }
 }

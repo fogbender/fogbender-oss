@@ -241,7 +241,7 @@ export const useConnectRosterSections = (
       rosterSectionsActionsAtom,
       rosterRoomFamily,
     };
-  }, []);
+  }, [topic]);
   const setRosterViewSections = useUpdateAtom(rosterViewSectionsAtom);
   const setIsRosterReady = useUpdateAtom(isRosterReadyAtom);
 
