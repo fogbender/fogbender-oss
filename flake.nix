@@ -17,7 +17,7 @@
             bashInteractive
           ];
           buildInputs = with pkgs; [
-            nodePackages_latest.yarn
+            corepack_20
           ];
         };
       }
