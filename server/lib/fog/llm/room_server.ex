@@ -173,15 +173,12 @@ defmodule Fog.Llm.RoomServer do
   end
 
   @impl true
-  def handle_cast({:handle, cmd: _cmd, message: message, sess: sess} = args, state) do
+  def handle_cast(
+        {:handle, cmd: _cmd, message: message, sess: sess} = args,
+        %{room_id: room_id, llmi: llmi, pending_messages: pending_messages} = state
+      ) do
     message = message |> Repo.preload(:files)
     %{id: message_id} = message
-
-    %{
-      room_id: room_id,
-      llmi: llmi,
-      pending_messages: pending_messages
-    } = state
 
     :ok = maybe_upload_files(llmi, message)
 
@@ -248,6 +245,11 @@ defmodule Fog.Llm.RoomServer do
     %{room_id: room_id, assistant_sess: assistant_sess} = state
     IO.inspect("STOPPING TYPING")
     stop_typing(room_id, assistant_sess)
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast(_, state) do
     {:noreply, state}
   end
 

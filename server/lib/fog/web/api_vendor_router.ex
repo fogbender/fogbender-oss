@@ -657,9 +657,10 @@ defmodule Fog.Web.ApiVendorRouter do
     ok_json(conn, data)
   end
 
-  post "" do
+  post "/" do
     agent_id = conn.assigns[:agent_id]
     new_vendor_name = conn.params["name"]
+
     {:ok, new_vendor_id} = Snowflake.next_id()
 
     {:ok,
