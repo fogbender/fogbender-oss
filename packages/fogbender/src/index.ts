@@ -179,7 +179,7 @@ export const createNewFogbender = (): Fogbender => {
                 onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
                 initialMode: () => state.mode,
                 isFloaty: true,
-                roomCreationEnabled:state.roomCreationEnabled
+                roomCreationEnabled: state.roomCreationEnabled,
               },
               openWindow
             );
@@ -220,7 +220,7 @@ export const createNewFogbender = (): Fogbender => {
             },
             onLightDarkModeInfo: mode => storeLightDarkModeInfo(mode),
             initialMode: () => state.mode,
-            roomCreationEnabled:state.roomCreationEnabled
+            roomCreationEnabled: state.roomCreationEnabled,
           },
           openWindow
         );
