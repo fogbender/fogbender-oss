@@ -9,7 +9,7 @@
   PUBLIC_GTM_ID="GTM-NSXTRCD"
   PUBLIC_SEGMENT_SOURCE_ID="a6B6PkdZlNFgMTIzMC0ruJiStExzd9BE"
   PUBLIC_DEFAULT_ENV="staging"
-  NODE_VERSION="v18.17.1"
+  NODE_VERSION="v18.18.0"
 
 [context.production-client.environment]
   PUBLIC_DEFAULT_ENV="prod"
