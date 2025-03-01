@@ -124,7 +124,15 @@ export const AssistantConfig = ({
   );
 };
 
-const OpenAI = ({ onNext, onPrev, onSkip, }: { onNext?: () => void; onPrev?: () => void; onSkip?: () => void; }) => {
+const OpenAI = ({
+  onNext,
+  onPrev,
+  onSkip,
+}: {
+  onNext?: () => void;
+  onPrev?: () => void;
+  onSkip?: () => void;
+}) => {
   const [onboardingState, setOnboardingState] = useAtom(onboardingStateAtom);
   const { apiKeys, workspaceId } = onboardingState;
   const [apiKey, apiKeyField] = useInputWithError({
@@ -210,6 +218,25 @@ const OpenAI = ({ onNext, onPrev, onSkip, }: { onNext?: () => void; onPrev?: () 
     },
   });
 
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const currentMonth = monthNames[new Date().getMonth()];
+
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -222,7 +249,7 @@ const OpenAI = ({ onNext, onPrev, onSkip, }: { onNext?: () => void; onPrev?: () 
         >
           OpenAI Assistants API
         </a>{" "}
-        (in Beta as of February 2025).
+        (in Beta as of {currentMonth} {currentYear}).
       </div>
       <div>
         We’ll need your OpenAI API key to create your Support Assistant and to communicate with it
