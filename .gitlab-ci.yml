@@ -108,3 +108,22 @@ production:
       allow_failure: true
   script:
     - sudo -u deploy fog-deploy $(pwd) $CI_COMMIT_TAG prod
+
+# Widget demo deploy to Azure Static Web App
+web-demo-deploy-test:
+  tags:
+    - gitlab-org-docker
+  stage: deploy
+  environment:
+    name: testing
+    url: https://fogbender-test.com
+  variables:
+    API_TOKEN: $WIDGET_DEMO_DEPLOYMENT_TOKEN
+    APP_PATH: "$CI_PROJECT_DIR"
+    OUTPUT_PATH: "$CI_PROJECT_DIR/widget-demo/dist"
+    APP_BUILD_COMMAND: '"yarn build-widget-demo"'
+  rules:
+    - if: $CI_COMMIT_BRANCH == "test--widget-demo"
+  image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
+  script:
+    - echo "App deployed successfully."
