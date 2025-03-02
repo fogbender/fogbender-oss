@@ -124,6 +124,11 @@ web-demo-deploy-test:
     APP_BUILD_COMMAND: '"yarn build-widget-demo"'
   rules:
     - if: $CI_COMMIT_BRANCH == "test--widget-demo"
+      variables:
+        PUBLIC_DEFAULT_ENV: "staging"
+    - if: $CI_COMMIT_BRANCH == "production--widget-demo"
+      variables:
+        PUBLIC_DEFAULT_ENV: "production"
   image: registry.gitlab.com/static-web-apps/azure-static-web-apps-deploy
   script:
     - echo "App deployed successfully."

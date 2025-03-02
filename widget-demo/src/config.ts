@@ -21,8 +21,16 @@ const config = {
 
 const defaultEnvValue = import.meta.env.PUBLIC_DEFAULT_ENV;
 
-export const defaultEnv =
-  defaultEnvValue === "prod" ? "prod" : defaultEnvValue === "staging" ? "staging" : "dev";
+export const defaultEnv = (() => {
+  if (defaultEnvValue === "prod") {
+    return "prod";
+  } else if (defaultEnvValue === "staging") {
+    return "staging";
+  } else {
+    return "dev";
+  }
+})();
+defaultEnvValue === "prod" ? "prod" : defaultEnvValue === "staging" ? "staging" : "dev";
 
 export type Env = typeof defaultEnv;
 
