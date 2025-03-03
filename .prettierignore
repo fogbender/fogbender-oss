@@ -3,4 +3,5 @@ build
 dist
 .netlify
 .vscode
+.turbo
 coverage
