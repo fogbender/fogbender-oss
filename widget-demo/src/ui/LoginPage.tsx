@@ -17,6 +17,46 @@ export const LoginPage = () => {
   const storageToken = useStorageToken();
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (
+      storageToken.customerName &&
+      storageToken.customerId &&
+      storageToken.userId &&
+      storageToken.userEmail &&
+      storageToken.userName
+    ) {
+      const token: Record<
+        | Exclude<
+            keyof Token,
+            | "visitor"
+            | "visitorKey"
+            | "visitorToken"
+            | "visitUrl"
+            | "widgetId"
+            | "userAvatarUrl"
+            | "userHMAC"
+            | "userJWT"
+            | "userPaseto"
+            | "widgetKey"
+            | "versions"
+          >
+        | "override"
+        | "redirectUrl",
+        string
+      > = {
+        override: "true",
+        redirectUrl: window.location.pathname,
+        customerId: storageToken.customerId,
+        customerName: storageToken.customerName,
+        userId: storageToken.userId,
+        userEmail: storageToken.userEmail,
+        userName: storageToken.userName,
+      };
+
+      navigate(`/login-redirect?${new URLSearchParams(token).toString()}`);
+    }
+  }, [storageToken, navigate]);
+
   if (!storageToken.widgetId && !storageToken.widgetKey) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
