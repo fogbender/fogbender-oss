@@ -53,7 +53,7 @@ export async function updateApp(pkgManager: string, opts: UpdateAppOptions) {
       for (const dir of Array.from(dirs)) {
         try {
           fs.mkdirSync(dir, { recursive: true });
-        } catch (e) {
+        } catch {
           //
         }
       }

@@ -28,8 +28,8 @@ export function defineCommon<T extends UserConfig>(config: QgpConfig<T>): T {
   if (!config.skipReactAppEnv) {
     userConfig.envPrefix = "REACT_APP_";
   }
-  const conf = mergeConfig(config.vite, userConfig);
-  return conf as T;
+  const conf = mergeConfig(config.vite as any, userConfig as any) as T;
+  return conf;
 }
 
 export function defineVite<T extends UserConfig, U extends UserConfig>(
@@ -37,14 +37,9 @@ export function defineVite<T extends UserConfig, U extends UserConfig>(
   config: U,
   _opts?: {}
 ) {
-  const conf1 = mergeConfig(
-    common,
-    defineConfig({
-      cacheDir: "node_modules/.qgp",
-    })
-  );
-  const conf2 = mergeConfig(conf1, config);
-  return conf2 as U;
+  const conf1 = mergeConfig(common as any, defineConfig({ cacheDir: "node_modules/.qgp" }) as any);
+  const conf2 = mergeConfig(conf1, config as any) as U;
+  return conf2;
 }
 
 export function defineAstro<T extends UserConfig, U extends UserConfig>(
@@ -52,6 +47,7 @@ export function defineAstro<T extends UserConfig, U extends UserConfig>(
   config: U,
   _opts?: {}
 ) {
-  const conf = mergeConfig(common, config);
-  return conf as U;
+  const conf = mergeConfig(common as any, config as any) as U;
+  return conf;
 }
+

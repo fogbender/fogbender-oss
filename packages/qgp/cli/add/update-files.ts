@@ -72,7 +72,7 @@ async function mergePackageJsons(fileUpdates: FsUpdates, srcPath: string, destPa
       content: JSON.stringify(destPkgJson, null, 2) + "\n",
       type: "modify",
     });
-  } catch (e) {
+  } catch (_) {
     fileUpdates.files.push({
       path: destPath,
       content: srcContent,
@@ -107,7 +107,7 @@ async function mergeReadmes(fileUpdates: FsUpdates, srcPath: string, destPath: s
     destContent = await fs.promises.readFile(destPath, "utf-8");
     destContent = destContent.trim() + "\n\n" + srcContent;
     type = "modify";
-  } catch (e) {
+  } catch (_) {
     destContent = srcContent;
     type = "create";
   }
@@ -144,7 +144,7 @@ async function mergeGitIgnores(fileUpdates: FsUpdates, srcPath: string, destPath
       content: destLines.join("\n").trim() + "\n",
       type: "modify",
     });
-  } catch (e) {
+  } catch (_) {
     fileUpdates.files.push({
       path: destPath,
       content: srcContent,

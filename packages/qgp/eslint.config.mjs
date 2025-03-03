@@ -14,6 +14,7 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.node,
       },
 
       parser: tsParser,
@@ -34,5 +35,13 @@ export default [
       ...js.configs.recommended.rules,
       "import/no-named-as-default": "off",
       "require-resolve-not-external": "off",
+      "tsEslintPlugin/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_",
+        },
+      ],
     },
 }];
