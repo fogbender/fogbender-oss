@@ -102,4 +102,3 @@ if (mod.hot) {
     data.singletonHolder = singletonHolder;
   });
 }
-

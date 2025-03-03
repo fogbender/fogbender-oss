@@ -50,4 +50,3 @@ export function defineAstro<T extends UserConfig, U extends UserConfig>(
   const conf = mergeConfig(common as any, config as any) as U;
   return conf;
 }
-
