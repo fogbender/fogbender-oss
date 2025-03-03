@@ -230,7 +230,6 @@ export const useConnectRosterSections = (
             }
           }
         }
-        // eslint-disable-next-line no-useless-return
         return;
       })
     );
