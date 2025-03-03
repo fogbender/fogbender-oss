@@ -6,23 +6,18 @@ import prettier from "eslint-plugin-prettier";
 import react from "eslint-plugin-react";
 import eslintPluginStandard from "eslint-plugin-standard";
 import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
+import jestPlugin from "eslint-plugin-jest";
 
 export default [
   {
-    ignores: [
-      "eslint.config.mjs",
-      "**/build/",
-      "**/dist/",
-      "**/node_modules/",
-      "**/.snapshots/",
-      "**/*.min.js",
-    ],
+    ignores: ["**/build/", "**/dist/", "**/node_modules/", "**/.snapshots/", "**/*.min.js"],
   },
   {
     languageOptions: {
       globals: {
         ...globals.node,
         ...globals.browser,
+        ...jestPlugin.environments.globals.globals,
       },
 
       parser: tsParser,
@@ -44,6 +39,7 @@ export default [
       tsEslintPlugin,
       react,
       prettier,
+      jest: jestPlugin,
     },
 
     settings: {
@@ -54,17 +50,30 @@ export default [
 
     rules: {
       ...js.configs.recommended.rules,
-      "no-useless-return": 0,
-      "react/no-unknown-property": 0,
       "space-before-function-paren": 0,
       "react/prop-types": 0,
       "react/jsx-handler-names": 0,
       "react/jsx-fragments": 0,
       "react/no-unused-prop-types": 0,
-      "no-unused-vars": 0,
-      "react/react-in-jsx-scope": 0,
       "import/export": 0,
-      "no-useless-escape": 0,
+      "no-unused-vars": 0,
+      "tsEslintPlugin/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_",
+        },
+      ],
+      "no-redeclare": 0,
+    },
+  },
+  {
+    files: ["**/*.d.ts"],
+    languageOptions: {
+      globals: {
+        React: "readonly",
+      },
     },
   },
 ];

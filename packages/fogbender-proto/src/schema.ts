@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 // configuration types
 export type UserToken = {
   widgetId: string;
