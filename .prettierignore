@@ -3,5 +3,6 @@ build
 dist
 .netlify
 .vscode
+.cache
 .turbo
 coverage
