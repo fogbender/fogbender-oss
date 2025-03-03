@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*!
  * Original code by BuilderIO
  * MIT Licensed, Copyright(c) 2021 BuilderIO, see LICENSE.qwik.md for details
