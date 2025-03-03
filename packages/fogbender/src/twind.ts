@@ -1,3 +1,5 @@
+/* global NodeModule */
+
 import { cssomSheet, setup, type Sheet } from "twind";
 
 export const sharedSheet = () => {
@@ -92,9 +94,12 @@ declare global {
   }
 }
 
-if (typeof module === "object" && module.hot) {
-  singletonHolder = module.hot?.data?.singletonHolder || singletonHolder;
-  module.hot.dispose(data => {
+const mod = module as NodeModule;
+
+if (mod.hot) {
+  singletonHolder = mod.hot.data?.singletonHolder || singletonHolder;
+  mod.hot.dispose((data: { singletonHolder?: typeof singletonHolder }) => {
     data.singletonHolder = singletonHolder;
   });
 }
+
