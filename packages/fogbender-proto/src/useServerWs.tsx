@@ -32,13 +32,10 @@ export type ServerEvent = ServerEvents["inbound"];
 
 const defaultOnError: NonNullable<Client["onError"]> = (type, kind, ...errors) => {
   if (type === "error") {
-    // eslint-disable-next-line no-console
     console.error(kind, ...errors);
   } else if (type === "warning") {
-    // eslint-disable-next-line no-console
     console.warn(kind, ...errors);
   } else {
-    // eslint-disable-next-line no-console
     console.log(kind, ...errors);
   }
 };
