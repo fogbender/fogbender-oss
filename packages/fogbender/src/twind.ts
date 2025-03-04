@@ -94,9 +94,13 @@ declare global {
   }
 }
 
-if (typeof module !== "undefined" && module.hot) {
-  singletonHolder = module.hot.data?.singletonHolder || singletonHolder;
-  module.hot.dispose((data: { singletonHolder?: typeof singletonHolder }) => {
+if (typeof module !== "undefined" && (module as any).hot) {
+  const hot = (module as any).hot as {
+    data?: { singletonHolder?: typeof singletonHolder };
+    dispose: (callback: (data: { singletonHolder?: typeof singletonHolder }) => void) => void;
+  };
+  singletonHolder = hot.data?.singletonHolder || singletonHolder;
+  hot.dispose(data => {
     data.singletonHolder = singletonHolder;
   });
 }
