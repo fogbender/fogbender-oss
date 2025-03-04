@@ -477,6 +477,7 @@ defmodule Fog.Integration.GitHub do
 
   defp host(), do: Fog.env(:github_host)
   defp api_url(), do: host()
+  defp app_name(), do: Fog.env(:github_app_name)
 
   defp client(token) do
     base_url = {Tesla.Middleware.BaseUrl, api_url()}
@@ -492,6 +493,10 @@ defmodule Fog.Integration.GitHub do
          {
            "accept",
            "application/vnd.github.v3+json"
+         },
+         {
+           "user-agent",
+           app_name()
          }
        ]}
 
