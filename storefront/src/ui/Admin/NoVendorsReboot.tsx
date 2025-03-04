@@ -771,12 +771,21 @@ const DemoAnchor = ({ href, children }: { href: string; children: React.ReactNod
 
 const Step1 = ({ onNext }: { onNext: () => void }) => {
   const [onboardingState, setOnboardingState] = useAtom(onboardingStateAtom);
-  const { data: potentialNameData, isPending: gimmeNamePending } = useQuery({
+
+  const gimmeName = useQuery({
     queryKey: ["potential_name"],
     queryFn: async () => fetchData<{ name: string }>("api/vendors/gimme-vendor-name"),
     staleTime: Infinity,
     enabled: !!onboardingState.vendorName === false,
   });
+
+  const {
+    data: potentialNameData,
+    isPending: gimmeNamePending,
+    isFetching: gimmeNameFetching,
+  } = gimmeName;
+
+  const gimmeNameInProgress = gimmeNamePending && gimmeNameFetching;
 
   const userName = useSelector(selectUserName);
 
@@ -822,7 +831,7 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
     title: "Your company or product name",
     defaultValue: onboardingState.vendorName ?? potentialNameData?.name,
     error: orgNameError,
-    disabled: formLoading || gimmeNamePending || !!newVendorMutation.data,
+    disabled: formLoading || gimmeNameInProgress || !!newVendorMutation.data,
   });
 
   const [workspaceNameValue, workspaceNameField] = useInputWithError({
@@ -857,9 +866,16 @@ const Step1 = ({ onNext }: { onNext: () => void }) => {
   );
 
   const continueOk = !!(
-    !gimmeNamePending &&
+    !gimmeNameInProgress &&
     (potentialNameData?.name || onboardingState.workspaceName)
   );
+
+  console.log({
+    gimmeName: gimmeName,
+    potentialNameData: potentialNameData?.name,
+    workspaceName: onboardingState.workspaceName,
+    continueOk,
+  });
 
   return (
     <div className="fog:text-body-m mt-8 flex max-w-screen-md flex-col gap-y-4 pr-16 dark:text-white">
