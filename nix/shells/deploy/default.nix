@@ -9,7 +9,7 @@ with pkgs; mkShell {
     deploy-rs
     sops
     awscli2
-    azure-cli bicep azure-storage-azcopy
+    azure-cli azure-storage-azcopy
   ];
 
   shellHook = ''
