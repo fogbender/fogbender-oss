@@ -122,6 +122,7 @@ config :fog,
   github_app_client_id: System.get_env("GITHUB_APP_CLIENT_ID"),
   github_app_client_secret: System.get_env("GITHUB_APP_CLIENT_SECRET"),
   github_app_webhook_secret: System.get_env("GITHUB_APP_WEBHOOK_SECRET"),
+  github_app_name: System.get_env("PUBLIC_FOGBENDER_GITHUB_APP_NAME"),
   github_app_private_key: github_app_private_key
 
 config :fog,
