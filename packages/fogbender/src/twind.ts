@@ -94,12 +94,9 @@ declare global {
   }
 }
 
-const mod = module as NodeModule;
-
-if (mod.hot) {
-  singletonHolder = mod.hot.data?.singletonHolder || singletonHolder;
-  mod.hot.dispose((data: { singletonHolder?: typeof singletonHolder }) => {
+if (typeof module !== "undefined" && module.hot) {
+  singletonHolder = module.hot.data?.singletonHolder || singletonHolder;
+  module.hot.dispose((data: { singletonHolder?: typeof singletonHolder }) => {
     data.singletonHolder = singletonHolder;
   });
 }
-
