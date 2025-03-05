@@ -141,20 +141,15 @@ defmodule Fog.Web.APIRouter do
           # we need to have a 'delete' button in the UI to remove unneeded Fogbender assistants
           # enabled column should allow unchecking the radio button - so the states are none selected or one selected
 
-          Data.WorkspaceLlmIntegration.new(
-            workspace_id: workspace_id,
-            assistant_name: assistant_name,
-            provider: "OpenAI",
-            api_key: api_key,
-            assistant_id: assistant_id,
-            version: version
-          )
-          |> Repo.insert!(
-            on_conflict: :nothing,
-            conflict_target: [:workspace_id, :provider, :assistant_id, :version]
-          )
-
-          {:ok, _} = Repo.Integration.create_assistant(workspace, assistant_name, assistant_id)
+          :ok =
+            add_assistant(
+              workspace: workspace,
+              assistant_name: assistant_name,
+              provider: "OpenAI",
+              api_key: api_key,
+              assistant_id: assistant_id,
+              version: version
+            )
 
           ok_json(
             conn,
@@ -183,13 +178,46 @@ defmodule Fog.Web.APIRouter do
       else
         "enabled" = conn.params["toggle"]
 
-        %{enabled: enabled} =
+        get_llmi = fn ->
           Data.WorkspaceLlmIntegration
           |> Repo.get_by(
             workspace_id: workspace_id,
             provider: provider,
             assistant_id: assistant_id
           )
+        end
+
+        assistant = get_llmi.()
+
+        %{enabled: enabled} =
+          case assistant do
+            nil ->
+              %{api_key: api_key} =
+                from(
+                  llmi in Data.WorkspaceLlmIntegration,
+                  where: llmi.provider == ^provider,
+                  where: llmi.workspace_id == ^workspace_id,
+                  limit: 1
+                )
+                |> Repo.one()
+
+              %{"name" => assistant_name} = Fog.Llm.OpenAi.Api.assistant(api_key, assistant_id)
+
+              :ok =
+                add_assistant(
+                  workspace: workspace,
+                  assistant_name: assistant_name,
+                  provider: "OpenAI",
+                  api_key: api_key,
+                  assistant_id: assistant_id,
+                  version: "0.1"
+                )
+
+              get_llmi.()
+
+            _ ->
+              assistant
+          end
 
         Repo.update_all(
           from(w in Data.WorkspaceLlmIntegration,
@@ -3631,5 +3659,31 @@ defmodule Fog.Web.APIRouter do
       _ ->
         false
     end
+  end
+
+  def add_assistant(
+        workspace: workspace,
+        assistant_name: assistant_name,
+        provider: provider,
+        api_key: api_key,
+        assistant_id: assistant_id,
+        version: version
+      ) do
+    Data.WorkspaceLlmIntegration.new(
+      workspace_id: workspace.id,
+      assistant_name: assistant_name,
+      provider: provider,
+      api_key: api_key,
+      assistant_id: assistant_id,
+      version: version
+    )
+    |> Repo.insert!(
+      on_conflict: :nothing,
+      conflict_target: [:workspace_id, :provider, :assistant_id, :version]
+    )
+
+    {:ok, _} = Repo.Integration.create_assistant(workspace, assistant_name, assistant_id)
+
+    :ok
   end
 end
