@@ -6,6 +6,8 @@ import { useAtom } from "jotai";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
+import { useMatch } from "react-router-dom";
+
 import { apiServer, queryClient } from "../client";
 
 import { ThickButton, useInputWithError } from "fogbender-client/src/shared";
@@ -39,6 +41,18 @@ export const AssistantConfig = ({
 }) => {
   const [onboardingState, setOnboardingState] = useAtom(onboardingStateAtom);
   const [provider, setProvider] = React.useState<LlmProvider>(onboardingState.provider ?? "OpenAI");
+
+  const workspaceMatch = useMatch("/admin/vendor/:vid/workspace/:wid/*");
+  const workspaceId = workspaceMatch?.params?.wid;
+
+  React.useEffect(() => {
+    if (workspaceId) {
+      setOnboardingState(s => ({
+        ...s,
+        workspaceId,
+      }));
+    }
+  }, [workspaceId]);
 
   const onSelection = (selection: string) => {
     setProvider(selection);
