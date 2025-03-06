@@ -75,7 +75,7 @@ export const AssistantConfig = ({
 
   return (
     <div className="fog:text-body-m mt-8 flex flex-col gap-y-4 pr-16 dark:text-white my-4 max-w-screen-md w-full">
-      {showHeader && <h1 className="fog:text-header2">Create Assistant</h1>}
+      {showHeader && <h1 className="fog:text-header2">Create Assistant<sub className="ml-1 font-bold text-sm text-slate-500">β</sub></h1>}
 
       <div className="flex flex-col sm:flex-row gap-12">
         <div className="min-w-max border-r-0 sm:border-r pr-0 sm:pr-4 dark:border-r-slate-700">
