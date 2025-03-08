@@ -47,9 +47,8 @@ See [Terminology](/docs/start-here/terminology) for details.
 
 At this point you've got your minimally-viable setup for in-app team-to-team support! From here, you can:
 
-- Add an issue tracker integration, to connect customer conversations to issues in your developer-facing issue tracker
-- Add a CRM integration
-- Create agent shifts and default group assignments
+- Enable the Fogbender GitHub issue tracker integration, to connect customer conversations to issues in your developer-facing issue tracker
+- Add the Fogbender Slack integration, where customer rooms appears a threads in a single Slack channel
 - Connect existing Slack Connect channels to customers in Fogbender
 
 # [Get started ➤](/docs/start-here/getting-started)
