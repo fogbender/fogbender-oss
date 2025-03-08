@@ -20,7 +20,7 @@ import { OnboardingNavControls } from "./OnboardingNavControls";
 import { HighlightCode } from "./HighlightCode";
 import { useWorkspaceIntegrationsQuery } from "../useWorkspaceIntegrations";
 import { apiServer, fetchData, queryKeys, queryClient } from "../client";
-import { type Workspace } from "../../redux/adminApi";
+import type { VendorInvite, Workspace } from "../../redux/adminApi";
 import { selectUserName } from "../../redux/session";
 import { getClientUrl, getWidgetDemoUrl } from "../../config";
 
@@ -59,9 +59,11 @@ export function isObject(x: any) {
 export const NoVendorsReboot = ({
   onDone,
   setOnboardingSteps,
+  invites,
 }: {
   onDone: () => void;
   setOnboardingSteps: (x: React.ReactNode) => void;
+  invites: VendorInvite[];
 }) => {
   const navigate = useNavigate();
   const onboardingMatch = useMatch("/admin/vendor/:vid/onboarding/:section");
@@ -196,7 +198,7 @@ export const NoVendorsReboot = ({
         <HeadlessForSupport vendorId={vendorId} hideFloatie={false} hideBadge={true} />
       )}
 
-      {vendorId && vendorId !== "new" && (
+      {((vendorId && vendorId !== "new") || invites.length !== 0) && (
         <div
           onClick={() => {
             onDone();
