@@ -17,10 +17,9 @@ Note that if the word "Triage" is too clinical, too French, or both, you can cha
 
 [![Workspace settings - general](https://fogbender-blog.s3.us-east-1.amazonaws.com/workspace-settings-general.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/workspace-settings-general.png)
 
-
 ### Customer public - issue
 
-If a conversation merits its own discussion space and - optionally - an item in your developer-facing issue tracker, you can turn forward a contiguous sequence of messages to a new room. In the example below, this room is associated with a GitHub issue #7:
+If a conversation merits its own discussion space and - optionally - an item in your developer-facing issue tracker, you can forward a contiguous sequence of messages to a new room. In the example below, this room is associated with a GitHub issue #7:
 
 [![Room type - customer linked issue](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-customer-linked-issue.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-customer-linked-issue.png)
 
@@ -91,4 +90,3 @@ Once broadcast, these messages appear in all selected triage rooms with special 
 Search mode is not really a room type, more of a room _view_. Selecting a message matching a search term opens the room in question and highlights the message:
 
 [![](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-search.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-search.png)
-
