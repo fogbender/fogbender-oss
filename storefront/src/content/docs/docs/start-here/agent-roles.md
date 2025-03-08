@@ -7,9 +7,10 @@ sidebar:
 
 ### Readers
 
-Readers have read-only access to customer-facing conversations. The reader role serves two key purposes:
+Readers have read-only access to customer-facing conversations. The reader role serves three key purposes:
 
 - Help you ensure only qualified personnel can communicate with customers
+- Help you ensure customer support data is easily available to your entire team, regardless of function
 - Help us establish a pricing policy where - roughly - the more successful you are, the more you pay for Fogbender (see [Pricing and billing](/docs/start-here/pricing) for details)
 
 Note that readers have unlimited access to _Internal conversations_, convered in [the next section](/docs/start-here/internal-conversations).
