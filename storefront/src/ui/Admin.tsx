@@ -249,7 +249,11 @@ export const Admin = () => {
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get("code");
 
-  const { data: vendorInvitesData } = useQuery<VendorInvite[]>({
+  const {
+    data: vendorInvitesData,
+    isLoading: vendorInvitesLoading,
+    isPending: vendorInvitesPending,
+  } = useQuery<VendorInvite[]>({
     queryKey: queryKeys.vendorInvites(),
     queryFn: async () => {
       const url = inviteCode
@@ -260,6 +264,9 @@ export const Admin = () => {
       }).then(res => res.json());
     },
   });
+
+  const vendorInvites = vendorInvitesData ?? [];
+  const vendorInvitesInProgress = vendorInvitesLoading || vendorInvitesPending;
 
   const [notificationsPermission, setNotificationsPermission] = React.useState<
     NotificationPermission | "hide"
@@ -335,7 +342,12 @@ export const Admin = () => {
 
   React.useEffect(() => {
     if (vendors !== "loading" && vendors !== undefined) {
-      if (vendors.length === 0 && !onboardingMode) {
+      if (
+        vendors.length === 0 &&
+        vendorInvites.length === 0 &&
+        !vendorInvitesInProgress &&
+        !onboardingMode
+      ) {
         navigate(`/admin/vendor/new/onboarding`);
       }
     }
@@ -399,7 +411,7 @@ export const Admin = () => {
             <div
               className={classNames(
                 "flex items-center gap-x-2",
-                onboardingMode && "self-start sm:self-center mt-10 sm:mt-0"
+                onboardingMode && "self-start mt-10"
               )}
             >
               <UserMenu
@@ -485,6 +497,7 @@ export const Admin = () => {
                         navigate(`/admin/vendor/${designatedVendorId}/workspaces`);
                       }}
                       setOnboardingSteps={setOnboardingSteps}
+                      invites={vendorInvites}
                     />
                   }
                 />
@@ -579,10 +592,17 @@ export const Admin = () => {
                           )}
                           */}
 
-                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg">
+                        <div className="mb-8 py-4 px-5 rounded-xl fog:box-shadow bg-white dark:bg-brand-dark-bg flex items-center gap-5">
                           <ThinButton onClick={() => setIsCreateWorkspaceModalOpen(true)}>
                             {workspaces?.length === 1 ? "Add another workspace" : "Add workspace"}
                           </ThinButton>
+                          <a
+                            className="fog:text-link no-underline cursor-pointer"
+                            href="/docs"
+                            target="_blank"
+                          >
+                            Documentation
+                          </a>
                         </div>
                         {sortedWorkspaces.map(w => (
                           <div
