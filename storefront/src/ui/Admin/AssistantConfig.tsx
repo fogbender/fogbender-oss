@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+
+import relativeTime from "dayjs/plugin/relativeTime";
 import classNames from "classnames";
 
 import React from "react";
@@ -19,6 +22,8 @@ import { onboardingStateAtom, llmProviders, type LlmProvider } from "./Onboardin
 import { OnboardingNavControls } from "./OnboardingNavControls";
 
 import { ExpandableSection } from "./ExpandableSection";
+
+dayjs.extend(relativeTime);
 
 export const ExpandableAssistantConfig = () => {
   return (
@@ -75,7 +80,11 @@ export const AssistantConfig = ({
 
   return (
     <div className="fog:text-body-m mt-8 flex flex-col gap-y-4 pr-16 dark:text-white my-4 max-w-screen-md w-full">
-      {showHeader && <h1 className="fog:text-header2">Create Assistant<sub className="ml-1 font-bold text-sm text-slate-500">β</sub></h1>}
+      {showHeader && (
+        <h1 className="fog:text-header2">
+          Create Assistant<sub className="ml-1 font-bold text-sm text-slate-500">β</sub>
+        </h1>
+      )}
 
       <div className="flex flex-col sm:flex-row gap-12">
         <div className="min-w-max border-r-0 sm:border-r pr-0 sm:pr-4 dark:border-r-slate-700">
@@ -160,11 +169,14 @@ const OpenAI = ({
     refetch: refetchAssistants,
     error: knownAssistantsError,
     isLoading: knownAssistantsLoading,
+    isPending: knownAssistantsPending,
+    isRefetching: knownAssistantsRefetching,
   } = useQuery({
     queryKey: [workspaceId, "llm_assistants"],
     queryFn: async () => {
       return await apiServer
         .url(`/api/workspaces/${workspaceId}/llm`)
+        .headers({ "openai-api-key": apiKey })
         .query({ provider: "OpenAI" })
         .get()
         .json<Assistant[]>();
@@ -173,6 +185,8 @@ const OpenAI = ({
     enabled: !!workspaceId,
   });
 
+  const knownAssistantsInProgress =
+    knownAssistantsLoading || knownAssistantsPending || knownAssistantsRefetching;
   const [selectedAssistantId, setSelectedAssistantId] = React.useState<string | null>(null);
   const openAiSelectedAssistantId = onboardingState.assistantIds["OpenAI"];
 
@@ -279,7 +293,7 @@ const OpenAI = ({
         &mdash;restricted to <b>Assistants</b> in <b>Write</b> mode.
       </div>
       <div className="flex gap-2 items-center">{apiKeyField}</div>
-      {knownAssistantsLoading && (
+      {apiKey && knownAssistantsInProgress && (
         <div className="flex flex-col gap-4 w-52">
           <div className="skeleton h-4 w-28"></div>
           <div className="skeleton h-4 w-full"></div>
@@ -287,19 +301,20 @@ const OpenAI = ({
         </div>
       )}
 
-      <div className="mt-6">
-        <ThickButton
-          disabled={!apiKey}
-          className="max-w-min"
-          onClick={() => {
-            if (apiKey) {
-              createOpenAiAssistantMutation.mutate();
-            }
-          }}
-        >
-          Create&nbsp;Assistant
-        </ThickButton>
-      </div>
+      {apiKey && !knownAssistantsInProgress && (
+        <div className="mt-6">
+          <ThickButton
+            className="max-w-min min-w-40 h-10"
+            onClick={() => {
+              if (apiKey) {
+                createOpenAiAssistantMutation.mutate();
+              }
+            }}
+          >
+            <span>Create&nbsp;Assistant</span>
+          </ThickButton>
+        </div>
+      )}
 
       {!knownAssistantsError && knownAssistants && (
         <div className="flex flex-col gap-2">
@@ -363,62 +378,66 @@ const AssistantsTable = ({
           <th>ID</th>
           <th>Version</th>
           <th>API key</th>
+          <th>Created</th>
           <th>Manage</th>
           <th>Playground</th>
         </tr>
       </thead>
       <tbody>
-        {data.map(a => (
-          <tr key={a.id}>
-            <td onClick={() => onClick && onClick(a)} className="cursor-pointer">
-              <div className="flex items-center justify-center">
-                {isToggling && togglingId === a.id ? (
-                  <span className="loading loading-spinner loading-xs text-zinc-500" />
-                ) : (
-                  <input
-                    onChange={() => {
-                      setTogglingId(a.id);
-                      toggleEnabled(a, () => {
-                        setTogglingId(null);
-                      });
-                    }}
-                    type="checkbox"
-                    className="toggle toggle-sm hover:text-brand-orange-500"
-                    checked={a.enabled}
-                  />
-                )}
-              </div>
-            </td>
-            <td onClick={() => onClick && onClick(a)} className="">
-              {a.name ?? "N/A"}
-            </td>
-            <td onClick={() => onClick && onClick(a)} className="truncate overflow-hidden">
-              {a.id}
-            </td>
-            <td>{a.metadata?.["fogbender-version"]}</td>
-            <td>...{a.api_key_last_4}</td>
-            <td>
-              <a
-                className="fog:text-link font-semibod"
-                target="_blank"
-                rel="noopener"
-                href={manageUrl(a)}
-              >
-                <BiLinkExternal size={18} />
-              </a>
-            </td>
-            <td>
-              <a
-                className="fog:text-link font-semibod"
-                target="_blank"
-                rel="noopener"
-                href={playgroundUrl(a)}
-              >
-                <BiLinkExternal size={18} />
-              </a>
-            </td>
-          </tr>
-        ))}
+        {data.map(a => {
+          return (
+            <tr key={a.id}>
+              <td onClick={() => onClick && onClick(a)} className="cursor-pointer">
+                <div className="flex items-center justify-center">
+                  {isToggling && togglingId === a.id ? (
+                    <span className="loading loading-spinner loading-xs text-zinc-500" />
+                  ) : (
+                    <input
+                      onChange={() => {
+                        setTogglingId(a.id);
+                        toggleEnabled(a, () => {
+                          setTogglingId(null);
+                        });
+                      }}
+                      type="checkbox"
+                      className="toggle toggle-sm hover:text-brand-orange-500"
+                      checked={a.enabled ?? false}
+                    />
+                  )}
+                </div>
+              </td>
+              <td onClick={() => onClick && onClick(a)} className="">
+                {a.name ?? "N/A"}
+              </td>
+              <td onClick={() => onClick && onClick(a)} className="truncate overflow-hidden">
+                {a.id}
+              </td>
+              <td>{a.metadata?.["fogbender-version"]}</td>
+              <td>...{a.api_key_last_4}</td>
+              <td>{dayjs(a.created_at * 1000).fromNow()}</td>
+              <td>
+                <a
+                  className="fog:text-link font-semibod"
+                  target="_blank"
+                  rel="noopener"
+                  href={manageUrl(a)}
+                >
+                  <BiLinkExternal size={18} />
+                </a>
+              </td>
+              <td>
+                <a
+                  className="fog:text-link font-semibod"
+                  target="_blank"
+                  rel="noopener"
+                  href={playgroundUrl(a)}
+                >
+                  <BiLinkExternal size={18} />
+                </a>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

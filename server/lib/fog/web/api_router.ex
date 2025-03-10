@@ -40,6 +40,17 @@ defmodule Fog.Web.APIRouter do
     if role_at_or_above(our_role, "admin") do
       provider = conn.params["provider"]
 
+      api_keys =
+        get_req_header(conn, "openai-api-key")
+        |> Enum.map(fn k -> {provider, k} end)
+        |> Enum.reject(fn
+          {_, ""} ->
+            true
+
+          _ ->
+            false
+        end)
+
       integrations =
         workspace.llm_integrations
         |> Enum.filter(&(is_nil(provider) || &1.provider === provider))
@@ -48,7 +59,7 @@ defmodule Fog.Web.APIRouter do
       providerKeys = integrations |> Enum.map(&{&1.provider, &1.api_key}) |> Enum.uniq()
 
       assistants =
-        providerKeys
+        (api_keys ++ providerKeys)
         |> Enum.flat_map(fn {provider, api_key} ->
           %{"data" => assistants} =
             case provider do
@@ -75,6 +86,7 @@ defmodule Fog.Web.APIRouter do
             end
           end)
         end)
+        |> Enum.uniq_by(& &1["id"])
 
       ok_json(
         conn,
@@ -192,14 +204,26 @@ defmodule Fog.Web.APIRouter do
         %{enabled: enabled} =
           case assistant do
             nil ->
-              %{api_key: api_key} =
-                from(
-                  llmi in Data.WorkspaceLlmIntegration,
-                  where: llmi.provider == ^provider,
-                  where: llmi.workspace_id == ^workspace_id,
-                  limit: 1
-                )
-                |> Repo.one()
+              api_key =
+                case get_req_header(conn, "openai-api-key") do
+                  [[_ | _] = api_key] ->
+                    api_key
+
+                  _ ->
+                    %{api_key: api_key} =
+                      x =
+                      from(
+                        llmi in Data.WorkspaceLlmIntegration,
+                        where: llmi.provider == ^provider,
+                        where: llmi.workspace_id == ^workspace_id,
+                        limit: 1
+                      )
+                      |> Repo.one()
+
+                    IO.inspect({"x", x})
+
+                    api_key
+                end
 
               %{"name" => assistant_name} = Fog.Llm.OpenAi.Api.assistant(api_key, assistant_id)
 
