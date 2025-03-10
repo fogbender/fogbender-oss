@@ -43,7 +43,6 @@ defmodule Fog.Llm.RoomServer do
           state
 
         [llmi] ->
-          IO.inspect(llmi)
           assistant = Repo.Agent.get_bot_by_tag_name(llmi.workspace_id, llmi.assistant_id)
           assistant_sess = Api.Session.for_agent(room.vendor.id, assistant.id)
 
@@ -246,6 +245,12 @@ defmodule Fog.Llm.RoomServer do
     IO.inspect("STOPPING TYPING")
     stop_typing(room_id, assistant_sess)
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_cast(cmd, %{room_id: _} = state) when map_size(state) === 1 do
+    Process.send(self(), {:cast, cmd}, [])
+    handle_continue(:post_init, state)
   end
 
   @impl true
