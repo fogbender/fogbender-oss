@@ -169,11 +169,14 @@ const OpenAI = ({
     refetch: refetchAssistants,
     error: knownAssistantsError,
     isLoading: knownAssistantsLoading,
+    isPending: knownAssistantsPending,
+    isRefetching: knownAssistantsRefetching,
   } = useQuery({
     queryKey: [workspaceId, "llm_assistants"],
     queryFn: async () => {
       return await apiServer
         .url(`/api/workspaces/${workspaceId}/llm`)
+        .headers({ "openai-api-key": apiKey })
         .query({ provider: "OpenAI" })
         .get()
         .json<Assistant[]>();
@@ -182,6 +185,8 @@ const OpenAI = ({
     enabled: !!workspaceId,
   });
 
+  const knownAssistantsInProgress =
+    knownAssistantsLoading || knownAssistantsPending || knownAssistantsRefetching;
   const [selectedAssistantId, setSelectedAssistantId] = React.useState<string | null>(null);
   const openAiSelectedAssistantId = onboardingState.assistantIds["OpenAI"];
 
@@ -288,7 +293,7 @@ const OpenAI = ({
         &mdash;restricted to <b>Assistants</b> in <b>Write</b> mode.
       </div>
       <div className="flex gap-2 items-center">{apiKeyField}</div>
-      {knownAssistantsLoading && (
+      {apiKey && knownAssistantsInProgress && (
         <div className="flex flex-col gap-4 w-52">
           <div className="skeleton h-4 w-28"></div>
           <div className="skeleton h-4 w-full"></div>
@@ -296,19 +301,20 @@ const OpenAI = ({
         </div>
       )}
 
-      <div className="mt-6">
-        <ThickButton
-          disabled={!apiKey}
-          className="max-w-min"
-          onClick={() => {
-            if (apiKey) {
-              createOpenAiAssistantMutation.mutate();
-            }
-          }}
-        >
-          Create&nbsp;Assistant
-        </ThickButton>
-      </div>
+      {apiKey && !knownAssistantsInProgress && (
+        <div className="mt-6">
+          <ThickButton
+            className="max-w-min min-w-40 h-10"
+            onClick={() => {
+              if (apiKey) {
+                createOpenAiAssistantMutation.mutate();
+              }
+            }}
+          >
+            <span>Create&nbsp;Assistant</span>
+          </ThickButton>
+        </div>
+      )}
 
       {!knownAssistantsError && knownAssistants && (
         <div className="flex flex-col gap-2">
@@ -395,7 +401,7 @@ const AssistantsTable = ({
                       }}
                       type="checkbox"
                       className="toggle toggle-sm hover:text-brand-orange-500"
-                      checked={a.enabled}
+                      checked={a.enabled ?? false}
                     />
                   )}
                 </div>
