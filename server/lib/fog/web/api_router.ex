@@ -206,12 +206,8 @@ defmodule Fog.Web.APIRouter do
             nil ->
               api_key =
                 case get_req_header(conn, "openai-api-key") do
-                  [[_ | _] = api_key] ->
-                    api_key
-
-                  _ ->
+                  [h] when h in [nil, ""] ->
                     %{api_key: api_key} =
-                      x =
                       from(
                         llmi in Data.WorkspaceLlmIntegration,
                         where: llmi.provider == ^provider,
@@ -220,8 +216,9 @@ defmodule Fog.Web.APIRouter do
                       )
                       |> Repo.one()
 
-                    IO.inspect({"x", x})
+                    api_key
 
+                  [api_key] when is_binary(api_key) ->
                     api_key
                 end
 
