@@ -2071,6 +2071,13 @@ CREATE INDEX customer_domain_customer_id_index ON public.customer_domain USING b
 
 
 --
+-- Name: customer_domain_vendor_id_customer_id_domain_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX customer_domain_vendor_id_customer_id_domain_index ON public.customer_domain USING btree (vendor_id, customer_id, domain);
+
+
+--
 -- Name: customer_info_log_customer_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2836,3 +2843,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20241221164145);
 INSERT INTO public."schema_migrations" (version) VALUES (20250106214822);
 INSERT INTO public."schema_migrations" (version) VALUES (20250121225132);
 INSERT INTO public."schema_migrations" (version) VALUES (20250215184951);
+INSERT INTO public."schema_migrations" (version) VALUES (20250311223307);
