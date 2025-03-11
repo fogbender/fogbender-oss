@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import dayjs from "dayjs";
+import type { WretchError } from "wretch";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
   Icons,
@@ -19,7 +20,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { getServerUrl } from "../../config";
-import { queryClient, queryKeys } from "../client";
+import { queryClient, queryKeys, apiServer } from "../client";
 
 import { type MergeLink } from "./MergeLink";
 
@@ -261,25 +262,28 @@ const DomainsInfo = ({
     mutationFn: (params: { customerId: string; domain: string }) => {
       const { customerId, domain } = params;
 
-      return fetch(`${getServerUrl()}/api/customers/${customerId}/add-domain`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ domain }),
-      });
+      return apiServer
+        .url(`/api/customers/${customerId}/add-domain`)
+        .post({
+          domain,
+        })
+        .json();
     },
-    onSuccess: async (r, params) => {
-      if (r.status === 204) {
-        const { customerId } = params;
-        resetNewDomain();
-        queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
-        queryClient.invalidateQueries({ queryKey: queryKeys.customer(customerId) });
-      } else if (r.status === 400) {
-        const { error: err } = await r.json();
+    onError: async res => {
+      if ("response" in res) {
+        const wretchError = res as WretchError;
 
-        if (err === "domain_taken") {
+        if (wretchError.json && wretchError.json.error === "domain_taken") {
           setNewDomainError("This domain is already in use");
         }
       }
+    },
+    onSuccess: (_, params) => {
+      const { customerId } = params;
+      resetNewDomain();
+      setNewDomainError(undefined);
+      queryClient.invalidateQueries({ queryKey: queryKeys.customers(workspaceId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.customer(customerId) });
     },
   });
 

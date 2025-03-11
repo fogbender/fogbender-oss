@@ -236,7 +236,7 @@ defmodule Fog.Web.ApiHelpdeskRouter do
     end
   end
 
-  post "/customers/:id/:operation" do
+  post "/:id/:operation" do
     case Data.Customer |> Repo.get(id) |> Repo.preload(:domains) do
       nil ->
         send_resp(conn, 404, "Not found")
@@ -253,7 +253,7 @@ defmodule Fog.Web.ApiHelpdeskRouter do
               remove_domain_from_customer(conn, customer)
 
             _ ->
-              send_resp(conn, 400, %{error: %{unknown_operation: operation}} |> Jason.encode!())
+              conn |> send_bad_request_json(%{error: %{unknown_operation: operation}})
           end
         else
           forbid(conn)
@@ -270,7 +270,7 @@ defmodule Fog.Web.ApiHelpdeskRouter do
 
     case data["domain"] do
       nil ->
-        send_resp(conn, 400, %{error: %{missing: "domain"}} |> Jason.encode!())
+        conn |> send_bad_request_json(%{error: %{missing: "domain"}})
 
       domain ->
         domains =
@@ -292,12 +292,11 @@ defmodule Fog.Web.ApiHelpdeskRouter do
          conn,
          %Data.Customer{id: id, vendor_id: vendor_id, domains: domains} = customer
        ) do
-    {:ok, data, conn} = Plug.Conn.read_body(conn)
-    {:ok, data} = Jason.decode(data)
+    domain = conn.params["domain"]
 
-    case data["domain"] do
+    case domain do
       nil ->
-        send_resp(conn, 400, %{error: %{missing: "domain"}} |> Jason.encode!())
+        conn |> send_bad_request_json(%{error: %{missing: "domain"}})
 
       domain ->
         domains =
@@ -315,7 +314,7 @@ defmodule Fog.Web.ApiHelpdeskRouter do
         rescue
           e in [Ecto.ConstraintError] ->
             Logger.error("Error: #{inspect(e)}")
-            send_resp(conn, 400, %{error: "domain_taken"} |> Jason.encode!())
+            conn |> send_bad_request_json(%{error: "domain_taken"})
         end
     end
   end
