@@ -49,7 +49,7 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
 
   const optionsRef = React.useRef<HTMLUListElement>(null);
 
-  const value = React.useMemo(() => selectedOption?.toString() || "", [selectedOption]);
+  // const value = React.useMemo(() => selectedOption?.toString() || "", [selectedOption]);
 
   React.useLayoutEffect(() => {
     autoFocus && inputRef.current?.focus();
@@ -64,7 +64,15 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
         darkModeClassNames
       )}
     >
-      <Combobox value={value} disabled={disabled} onChange={onChange}>
+      <Combobox<O>
+        value={selectedOption ?? undefined} // Ensure value is O | undefined
+        disabled={disabled}
+        onChange={option => {
+          if (option !== null) {
+            onChange?.(option);
+          }
+        }}
+      >
         <div
           className={classNames(
             "flex items-center justify-between dark:bg-black pr-2",
