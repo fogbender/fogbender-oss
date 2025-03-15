@@ -38,6 +38,6 @@ Note: at the moment, deleting an organization merely marks it as `deleted` and h
 
 Integrations appear as agents with role `Application` under Team:
 
-![app-agents](https://fogbender-blog.s3.amazonaws.com/app-agent.png)
+[![app-agents](https://fogbender-blog.s3.amazonaws.com/app-agents.png)](https://fogbender-blog.s3.amazonaws.com/app-agents.png)
 
 All applications have read and write access to customer-facing converstaions.
