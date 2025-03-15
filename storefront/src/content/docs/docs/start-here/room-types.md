@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-### Customer public - triage
+### Customer public - triage {#triage-rooms}
 
 Customer triage rooms are the workhorses of team-to-team customer support - each customer automatically gets one of these rooms, and in the simplest scenarios, that's all you need for a humming - perhaps purring, even - happy, support crew.
 
@@ -49,7 +49,7 @@ It goes without saying that 1-1 conversations belong to the organization, not th
 
 ### Agent 1-1 with customer/user
 
-An agent can initiate a 1-1 with a customer user by search for the user's name in the roster or by clicking the "Open 1-1" button the user's user card.
+An agent can initiate a 1-1 with a customer user by searching for the user's name in the roster or by clicking the "Open 1-1" button in the user's card.
 
 [![Room type - Agent 1-1 with customer user](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-1-1-agent-with-user.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-1-1-agent-with-user.png)
 

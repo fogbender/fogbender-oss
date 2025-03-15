@@ -529,7 +529,7 @@ const Step5 = ({ onDone, onPrev }: { onDone: () => void; onPrev: () => void }) =
             userId: "U234328",
             userEmail: "hpotter@example.com",
             userName: "Harry Potter", // Don’t know the name? Reuse email here
-            userAvatarUrl: "https://api.dicebear.com/7.x/pixel-art/svg?seed=Garfield" // optional
+            userAvatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Garfield" // optional
         };
 
         fogbender.setClientUrl("${clientUrl}")
@@ -625,7 +625,7 @@ const Step5 = ({ onDone, onPrev }: { onDone: () => void; onPrev: () => void }) =
                   <img
                     height={28}
                     width={28}
-                    src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1710177407796"
+                    src="https://api.dicebear.com/9.x/pixel-art/svg?seed=1710177407796"
                     alt="Alice"
                   />
                   <span>Open widget as Alice</span>
@@ -648,7 +648,7 @@ const Step5 = ({ onDone, onPrev }: { onDone: () => void; onPrev: () => void }) =
                   <img
                     height={28}
                     width={28}
-                    src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1710177442228"
+                    src="https://api.dicebear.com/9.x/pixel-art/svg?seed=1710177442228"
                     alt="Alice"
                   />
                   <span>Open widget as Bob</span>

@@ -1393,7 +1393,7 @@ defmodule Fog.Web.ApiVendorRouter do
         subscription
       end
 
-    if subscription && count_used_seats - free_seats > 0 do
+    if subscription && count_used_seats - free_seats >= 0 do
       %{"items" => %{"data" => [subscription_item]}} = subscription
 
       case Fog.Stripe.Api.set_subscription_plan_quantity(

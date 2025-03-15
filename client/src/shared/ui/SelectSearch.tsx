@@ -49,7 +49,7 @@ export function SelectSearch<O extends SelectSearchOption>(props: SelectSearchPr
 
   const optionsRef = React.useRef<HTMLUListElement>(null);
 
-  const value = React.useMemo(() => selectedOption || "", [selectedOption]);
+  const value = React.useMemo(() => selectedOption?.toString() || "", [selectedOption]);
 
   React.useLayoutEffect(() => {
     autoFocus && inputRef.current?.focus();

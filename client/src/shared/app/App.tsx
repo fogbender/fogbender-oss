@@ -752,7 +752,7 @@ export const App: React.FC<{
     setShowUserWelcome(false);
   }, [setHideWelcome]);
 
-  const initialsUrl = "https://api.dicebear.com/7.x/initials/";
+  const initialsUrl = "https://api.dicebear.com/9.x/initials/";
 
   React.useEffect(() => {
     if (

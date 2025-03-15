@@ -16,7 +16,7 @@ import { HighlightCode } from "./HighlightCode";
 import { useToken as useUserToken } from "./Support";
 
 export const Showcase = () => {
-  const [isFallback, setIsFallback] = React.useState(false);
+  const [isFallback] = React.useState(false);
   const token = useToken();
   const tokenValues = Object.entries(token)
     .filter(([key]) => (isFallback ? key === "widgetId" || key === "widgetKey" : true))
@@ -31,6 +31,7 @@ export const Showcase = () => {
     <div className="h-full shadow sm:m-24">
       <div className="h-full flex-col justify-center bg-white p-4">
         <h3 className="text-xl font-bold">Options:</h3>
+        {/*
         <label className="m-2 flex gap-2">
           <input
             type="checkbox"
@@ -41,6 +42,7 @@ export const Showcase = () => {
           />{" "}
           Unknown user flow
         </label>
+        */}
         <h3 className="text-xl font-bold">For Console in Chrome Dev Tools:</h3>
         <div className="w-full py-2 px-4 sm:p-4">
           <h3 className="text-xl font-bold">Floating widget demo</h3>

@@ -143,7 +143,7 @@ defmodule Fog.Repo.User do
     customer = Repo.Helpdesk.get_external(workspace_id).customer
     uexid = "visitor-#{Snowflake.next_id() |> elem(1)}"
 
-    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
+    user_picture = "https://api.dicebear.com/9.x/adventurer/svg?seed=#{Base.url_encode64(uexid)}"
 
     user_name = "#{Fog.Names.name()} from #{Fog.Names.place()}"
     user_email = "#{uexid}@example.com"

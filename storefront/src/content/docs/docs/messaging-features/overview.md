@@ -1,6 +1,6 @@
 ---
-title: Messaging features
-description: Messaging features
+title: "Overview: messaging features"
+description: Messaging features overview
 sidebar:
   order: 1
 ---

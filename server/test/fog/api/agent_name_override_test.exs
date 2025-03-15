@@ -46,14 +46,14 @@ defmodule Fog.Api.AgentNameOverrideTest do
       assert [
                %Event.Message{
                  fromName: "Support Agent",
-                 fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=Support%20Agent"
+                 fromAvatarUrl: "https://api.dicebear.com/9.x/initials/svg?seed=Support%20Agent"
                }
              ] = ApiProcess.flush(ctx.user_api)
 
       assert [
                %Event.Message{
                  fromName: "Support Agent",
-                 fromAvatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=Support%20Agent"
+                 fromAvatarUrl: "https://api.dicebear.com/9.x/initials/svg?seed=Support%20Agent"
                }
              ] = stream_get(ctx.user_api, topic)
     end

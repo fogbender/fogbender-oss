@@ -1,0 +1,9 @@
+code {
+  white-space: pre-wrap!important; /* Allows wrapping */
+  word-wrap: break-word!important; /* Break long words if necessary */
+  overflow-wrap: break-word!important; /* Ensures breaking inside flex containers */
+}
+
+:root {
+  --sl-content-width: 65rem;
+}

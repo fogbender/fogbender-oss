@@ -6,7 +6,6 @@ import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import checker from "vite-plugin-checker";
 import starlight from "@astrojs/starlight";
-import expressiveCode from "astro-expressive-code";
 
 // const assetsDir = "storefront";
 
@@ -32,6 +31,7 @@ export default defineConfig({
     starlight({
       disable404Route: true,
       title: "docs",
+      customCss: ["./src/styles/starlight-custom.css"],
       logo: {
         light: "./src/assets/logotype-light.svg",
         dark: "./src/assets/logotype-dark.svg",
@@ -86,8 +86,6 @@ export default defineConfig({
         },
       ],
     }),
-    expressiveCode(),
-    mdx(),
   ],
   build: {
     format: "file",

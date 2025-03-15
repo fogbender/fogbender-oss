@@ -289,7 +289,7 @@ defmodule Fog.Api.Auth do
     {:reply, res, session}
   end
 
-  defp user_picture_url("https://api.dicebear.com/7.x/initials/" = url, %{userName: user_name}) do
+  defp user_picture_url("https://api.dicebear.com/9.x/initials/" = url, %{userName: user_name}) do
     "#{url}svg?seed=#{user_name}"
   end
 

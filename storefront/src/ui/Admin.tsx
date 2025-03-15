@@ -357,6 +357,7 @@ export const Admin = () => {
     <div
       className={classNames(
         "flex flex-col h-full",
+        "text-black dark:text-white",
         isAgentApp && "overflow-hidden",
         themeMode === "dark" && "dark"
       )}
@@ -391,7 +392,7 @@ export const Admin = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="relative bg-transparent dark:bg-black">
+        <div className="relative bg-transparent dark:bg-zinc-900">
           <div className="absolute bottom-0 w-full h-0 border-b border-blue-200 dark:border-gray-500" />
           <div className="relative flex items-center justify-between px-4 w-full max-w-screen-xl mx-auto">
             <Breadcrumbs
@@ -441,7 +442,7 @@ export const Admin = () => {
             "w-full h-full",
             supportMode && "pt-2",
             (homeMode || settingsMode || onboardingMode) && "fbr-scrollbar",
-            "dark:bg-black"
+            "dark:bg-zinc-900"
           )}
         >
           <div

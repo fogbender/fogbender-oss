@@ -413,7 +413,7 @@ export const SnippetControlsNew: React.FC<{
               {(() => {
                 const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
                 const text = (mode: MaskMode) => {
-                  return `import { FogbenderSimpleWidget } from "fogbender-react";
+                  return `  import { FogbenderSimpleWidget } from "fogbender-react";
 
   ${constTokenWithKeyWithMask(mode)}
 
@@ -622,7 +622,11 @@ fogbender.setToken(token);
               server
             </b>{" "}
             for each user token. Make sure to replace the key "widgetKey" with "{x[0]}", not just
-            the value.
+            the value. The{" "}
+            <b>
+              <code className="text-blue-600">userJWT</code> must be
+            </b>{" "}
+            a JWT signed using the HS256 algorithm.
           </div>
           <div className="pb-2">
             🚩 If you need help, we will help you&mdash;please reach out to us in <SupportLink />
@@ -748,6 +752,7 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
 (async () => {
   const res = await fetch("${getServerUrl()}/signatures", {
     method: "POST",
+    // Bearer token is your secret
     headers: { Authorization: \`Bearer $\{secret}\` },
     // 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
     body: JSON.stringify({ userId, customerId }),
@@ -782,7 +787,9 @@ const customerId = "${customerId}"; // Netflix customer id; REPLACE
               {(() => {
                 const [maskMode, setMaskMode] = React.useState<MaskMode>("mask");
                 const text = (mode: MaskMode) => {
-                  return `# 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
+                  return `
+# 🙋 NOTE: you can optionally also sign customerName, userEmail, and userName here for a stronger check
+# (Bearer token is your secret)
 
 curl -X POST -H "Authorization: Bearer ${mode === "mask" ? toMask(serverSecret) : serverSecret}" \\
      -d '{"userId":"${userId}","customerId":"${customerId}"}' \\
@@ -824,6 +831,7 @@ ${constTokenWithoutSignature.replace("const token", "const unsignedToken")}
 (async () => {
   const res = await fetch("${getServerUrl()}/signatures", {
     method: "POST",
+    // Bearer token is your secret
     headers: { Authorization: \`Bearer \${secret}\` },
     body: JSON.stringify(unsignedToken),
   });
