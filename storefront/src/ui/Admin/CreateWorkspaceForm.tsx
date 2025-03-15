@@ -3,9 +3,8 @@ import { ThickButton, useInput } from "fogbender-client/src/shared";
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import { getServerUrl } from "../../config";
-import { type Vendor, type Workspace } from "../../redux/adminApi";
-import { queryClient, queryKeys } from "../client";
+import type { Vendor, Workspace } from "../../redux/adminApi";
+import { queryClient, queryKeys, apiServer } from "../client";
 
 const InputClassName =
   "w-full bg-gray-100 text-gray-800 dark:text-gray-200 dark:placeholder-gray-400 transition focus:outline-none px-3 appearance-none leading-loose";
@@ -19,20 +18,26 @@ export const CreateWorkspaceForm: React.FC<{
   const addWorkspaceMutation = useMutation({
     mutationFn: (params: { name: string; triageName: string; description: string }) => {
       const { name, triageName, description } = params;
-      return fetch(`${getServerUrl()}/api/vendors/${vendor.id}/workspaces`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ name, triageName, description }),
-      });
+      return apiServer
+        .url(`/api/vendors/${vendor.id}/workspaces`)
+        .post({
+          name,
+          triageName,
+          description,
+        })
+        .json();
     },
-    onSuccess: async (r, _params) => {
-      if (r.status === 200) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces(vendor.id) });
-        onClose();
-      } else {
-        const res = await r.json();
-        const { error } = res;
-        setCreateWorkspaceError(error);
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces(vendor.id) });
+      onClose();
+    },
+    onError: e => {
+      if ("error" in e) {
+        const { error } = e;
+
+        if (typeof error === "string") {
+          setCreateWorkspaceError(error);
+        }
       }
     },
   });
