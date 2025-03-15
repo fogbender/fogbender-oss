@@ -5,10 +5,11 @@
   "sideEffects": false,
   "dependencies": {
     "@astrojs/react": "^3.0.9",
+    "@floating-ui/react": "^0.27.5",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@headlessui/react": "^1.7.4",
+    "@headlessui/react": "^2.2.0",
     "@hyperdx/browser": "^0.19.3",
     "@reach/dialog": "^0.18.0",
     "@reduxjs/toolkit": "^1.9.7",
