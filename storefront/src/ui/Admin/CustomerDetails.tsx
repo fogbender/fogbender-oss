@@ -31,7 +31,7 @@ export const CustomerDetails: React.FC<{
   workspaceId: string;
   vendorId: string;
   lookupCustomerById: (x: string) => Customer | undefined;
-}> = ({ customer, workspaceId, vendorId, lookupCustomerById }) => {
+}> = ({ customer, workspaceId, lookupCustomerById }) => {
   const {
     data: customerCrms,
     status: customerCrmStatus,
@@ -65,12 +65,14 @@ export const CustomerDetails: React.FC<{
     <div className="space-y-4 lg:space-y-6">
       <div className="flex flex-col justify-between space-y-6 lg:space-y-0 lg:flex-row lg:space-x-6">
         <CustomerInfo customer={customer} />
+        {/*
         <DomainsInfo
           vendorId={vendorId}
           workspaceId={workspaceId}
           customer={customer}
           lookupCustomerById={lookupCustomerById}
         />
+        */}
       </div>
 
       <div className="flex flex-col gap-6">
@@ -247,7 +249,7 @@ const CustomerInfoWrapper = ({
   );
 };
 
-const DomainsInfo = ({
+export const DomainsInfo = ({
   vendorId,
   workspaceId,
   customer,
