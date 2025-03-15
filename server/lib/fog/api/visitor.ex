@@ -77,7 +77,7 @@ defmodule Fog.Api.Visitor do
     user_exid = email
     user_name = email
 
-    user_picture = "https://api.dicebear.com/7.x/adventurer/svg?seed=#{Base.url_encode64(email)}"
+    user_picture = "https://api.dicebear.com/9.x/adventurer/svg?seed=#{Base.url_encode64(email)}"
 
     helpdesk = Repo.Helpdesk.get(helpdesk_id) |> Repo.preload([:customer, :workspace])
 
