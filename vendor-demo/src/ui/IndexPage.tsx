@@ -108,6 +108,7 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                           <Badge />
                         </div>
                       </NavLink>
+                      {/*
                       <NavLink
                         activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
                         to="/support-unknown-user"
@@ -115,6 +116,7 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
                       >
                         Unknown User
                       </NavLink>
+                      */}
                       <NavLink
                         activeClassName="text-white bg-gray-900 hover:text-white hover:bg-gray-900 focus:bg-gray-900"
                         to="/support-visitor"

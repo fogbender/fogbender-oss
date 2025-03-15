@@ -21,7 +21,7 @@ export const Showcase = () => {
   const [openInNewTab, setOpenInNewTab] = React.useState(false);
   const [isClosable, setIsClosable] = React.useState(false);
   const [defaultOpen, setDefaultOpen] = React.useState(false);
-  const [isFallback, setIsFallback] = React.useState(false);
+  const [isFallback] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [unreadCount, setUnreadCount] = React.useState(0);
   const token = useToken();
@@ -121,6 +121,7 @@ const token = ${tokenReadable};
             />{" "}
             Start widget with chat open
           </label>
+          {/*
           <label className="m-2 flex gap-2">
             <input
               type="checkbox"
@@ -131,6 +132,7 @@ const token = ${tokenReadable};
             />{" "}
             Unknown user flow
           </label>
+          */}
           <label className="m-2 flex gap-2">
             <input
               type="checkbox"
