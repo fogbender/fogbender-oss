@@ -61,4 +61,4 @@ A room is a named, persistent, searchable space for messages and files. A room a
 
 #### Triage
 
-Whenever a new customer is created (upon the first login of a user from said customer) a _[Triage](/docs/start-here/room-types#triage-rooms)_ room is automatically created—it's a starting point for all support conversations.
+Whenever a new customer is created (upon the first login of a user from said customer) a _[Triage](/docs/start-here/room-types#customer-public---triage)_ room is automatically created—it's a starting point for all support conversations.

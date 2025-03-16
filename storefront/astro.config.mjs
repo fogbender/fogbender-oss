@@ -6,11 +6,33 @@ import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import checker from "vite-plugin-checker";
 import starlight from "@astrojs/starlight";
+import { rehypeHeadingIds } from '@astrojs/markdown-remark';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import remarkToc from 'remark-toc';
 
 // const assetsDir = "storefront";
 
 // https://astro.build/config
 export default defineConfig({
+  markdown: {
+    rehypeHeadingIds,
+    remarkPlugins: [ [remarkToc, { heading: "contents"} ] ],
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: "prepend", // Change to "wrap" if needed
+          content: {
+            type: "text",
+            value: " ⚓", // Adds a visible link icon
+          },
+          properties: { class: "header-anchor" },
+        },
+      ],
+    ],
+  },
   site: "https://fogbender.com",
   integrations: [
     react(),

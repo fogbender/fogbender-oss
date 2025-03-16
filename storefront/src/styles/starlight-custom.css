@@ -7,3 +7,27 @@ code {
 :root {
   --sl-content-width: 65rem;
 }
+
+.header-anchor {
+  margin-right: 0.4rem;
+  font-size: 0.75em; /* Smaller size */
+  text-decoration: none; /* Removes underline */
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.header-anchor:hover {
+  opacity: 1;
+}
+
+/* Ensure the icon is aligned properly */
+h1 .header-anchor,
+h2 .header-anchor,
+h3 .header-anchor,
+h4 .header-anchor,
+h5 .header-anchor,
+h6 .header-anchor {
+  vertical-align: middle;
+  text-decoration: none; /* Ensures it stays unlined */
+}
+
