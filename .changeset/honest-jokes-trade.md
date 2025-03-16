@@ -1,7 +1,7 @@
 ---
-"fogbender": patch
-"fogbender-element": patch
-"fogbender-react": patch
+"fogbender": minor
+"fogbender-element": minor
+"fogbender-react": minor
 ---
 
 Add option to enable user room creation via roomCreationEnabled prop
