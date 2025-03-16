@@ -30,7 +30,7 @@ export default defineConfig({
     partytown({ config: { forward: ["dataLayer.push"] } }),
     starlight({
       disable404Route: true,
-      title: "docs",
+      title: "Fogbender Docs",
       customCss: ["./src/styles/starlight-custom.css"],
       logo: {
         light: "./src/assets/logotype-light.svg",
@@ -86,6 +86,7 @@ export default defineConfig({
         },
       ],
     }),
+    mdx(),
   ],
   build: {
     format: "file",
