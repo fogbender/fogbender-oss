@@ -1,5 +1,19 @@
 # fogbender-react
 
+## 0.5.0
+
+### Minor Changes
+
+- e608311: Add option to enable user room creation via roomCreationEnabled prop
+
+### Patch Changes
+
+- Updated dependencies [e608311]
+- Updated dependencies [e608311]
+- Updated dependencies [e608311]
+- Updated dependencies [e608311]
+  - fogbender@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # fogbender-proto
 
+## 0.17.0
+
+### Minor Changes
+
+- e608311: support bot process.env and import.meta.env
+
+### Patch Changes
+
+- e608311: Switch fogbender-proto to tsup
+- e608311: update to react-use-websocket@4 and use React's flushSync to set lastIncomingMessage
+
 ## 0.16.0
 
 ### Minor Changes
