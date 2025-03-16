@@ -63,17 +63,17 @@ Users from the same customer account are free to chat with each other in 1-1 roo
 
 [![Room type - user-to-user 1-1](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-user-to-user-1-1.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-user-to-user-1-1.png)
 
-### Internal conversations: public
+### Internal Conversations: public
 
 Internal (green) rooms can be public - visible to all agents in an organization.
 
-### Internal conversations: private
+### Internal Conversations: private
 
 Internal (green) rooms can be private - visible to a subset of agents in an organization.
 
-### Internal conversations: broadcast
+### Internal Conversations: broadcast
 
-A **Broadcast** room is a public room in Internal conversations with _Room type_ set to "Broadcast":
+A **Broadcast** room is a public room in Internal Conversations with _Room type_ set to "Broadcast":
 
 [![Room type - broadcast](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-broadcast.png)](https://fogbender-blog.s3.us-east-1.amazonaws.com/room-type-broadcast.png)
 

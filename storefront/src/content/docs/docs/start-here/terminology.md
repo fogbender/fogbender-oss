@@ -1,6 +1,6 @@
 ---
 title: Terminology
-description: Terminology
+description: Fogbender terminology
 ---
 
 #### Organization
@@ -13,7 +13,7 @@ An _agent_ is a Fogbender user—if you can sign into https://fogbender.com/admi
 
 #### Owner
 
-An _owner_ is an agent role with all privileges.
+An _owner_ is an agent role with all priviledges.
 
 #### Admin
 
@@ -25,7 +25,7 @@ An _agent_ is an agent (sorry) role without administrative priviledges, such as 
 
 #### Reader
 
-A _reader_ is an agent role with read-only access to customer conversations, but full access to [Internal conversations](/docs/start-here/internal-conversations).
+A _reader_ is an agent role with read-only access to customer conversations, but full access to [Internal Conversations](/docs/start-here/internal-conversations).
 
 #### Application
 
@@ -33,7 +33,7 @@ An _application_ is an agent role for non-human actors, such as GitHub, or Suppo
 
 #### Customer
 
-A _customer_ is the rightmost _B_ in _B2B_—it's a company who is buying a or product or service from your company. Customers contain rooms and users.
+A _customer_ is the rightmost _B_ in _B2B_—it's a company who is buying a or product or service from your company. A customer entity contains rooms and users.
 
 #### User
 
@@ -41,7 +41,7 @@ A _user_ represents an individual who works at a customer company.
 
 #### Visitor
 
-A _visitor_ is either an anonymous (uknown email) user, or a user (known email) without a customer.
+A _visitor_ is either an anonymous (unknown email) user, or a user (known email) without a customer.
 
 #### Visitor inbox
 
@@ -57,7 +57,7 @@ An integration connects Fogbender with external systems.
 
 #### Room
 
-A room is a named, persistent, searchable space for messages and files. A room always belongs to a customer, though sometime customers are special, like _Visitor inbox_ or _Internal conversations_. Room names must be unique within a customer.
+A room is a named, persistent, searchable space for messages and files. A room always belongs to a customer, though some customers are special, like _Visitor inbox_ or _Internal Conversations_. Room names must be unique within a customer.
 
 #### Triage
 
