@@ -2,7 +2,7 @@ import { render } from "solid-js/web";
 import { type Accessor, createMemo, createSignal, createEffect } from "solid-js";
 import { tw } from "twind";
 import { css } from "twind/css";
-import { type Events } from "./createIframe";
+import type { Events } from "./createIframe";
 import { getTwind } from "./twind";
 
 export function createFloatingWidget(
