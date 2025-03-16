@@ -50,4 +50,4 @@ export const Example = () => {
 
 ## License
 
-MIT © [JLarky](https://github.com/JLarky)
+MIT © [Fogbender Software, Inc.](https://github.com/fogbender)
