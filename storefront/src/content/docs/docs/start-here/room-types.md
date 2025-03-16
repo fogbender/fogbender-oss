@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-### Customer public - triage {#triage-rooms}
+### Customer public - triage
 
 Customer triage rooms are the workhorses of team-to-team customer support - each customer automatically gets one of these rooms, and in the simplest scenarios, that's all you need for a humming - perhaps purring, even - happy, support crew.
 
