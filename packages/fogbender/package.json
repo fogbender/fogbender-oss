@@ -5,7 +5,7 @@
     "access": "public"
   },
   "description": "Made with create-react-library",
-  "author": "JLarky",
+  "author": "Fogbender Software, Inc.",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
