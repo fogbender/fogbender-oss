@@ -355,7 +355,7 @@ export const SnippetControlsNew: React.FC<{
         )}
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
+      <div className="mt-4 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
         <h3 className="pb-2 fog:text-header4">Step 1: Install the JavaScript widget (Client)</h3>
         <>
           <div className="pb-2">
@@ -595,7 +595,7 @@ fogbender.setToken(token);
         </div>
       </div>
 
-      <div className="mt-8 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
+      <div className="mt-4 py-2 px-4 rounded-lg fog:box-shadow-m bg-white dark:bg-brand-dark-bg dark:text-white fog:text-body-m">
         <h3 className="pb-2 fog:text-header4">
           Step 2: Secure the widget with user signature (Server)
         </h3>
