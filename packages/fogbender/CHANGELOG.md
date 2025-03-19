@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.6.0
+
+### Minor Changes
+
+- 06c11d3: Make iFrame parent div flex: 1 to fix vertical fill issues
+
 ## 0.5.0
 
 ### Minor Changes
