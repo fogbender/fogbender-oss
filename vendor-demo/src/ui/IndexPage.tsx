@@ -350,6 +350,7 @@ export const IndexPage = ({ children, title }: { title: string; children: React.
           <div
             className={classNames(
               "flex-1",
+              "flex",
               "rounded-t-lg shadow",
               isSupportPage ? "overflow-hidden bg-white" : "bg-gray-100 p-2 sm:px-6 sm:pt-6"
             )}
