@@ -1,5 +1,34 @@
 # fogbender
 
+## 0.5.0
+
+### Minor Changes
+
+- e608311: Add option to enable user room creation via roomCreationEnabled prop
+- e608311: Make widget to span full height if screen size is less then 640px
+
+### Patch Changes
+
+- e608311: Remember dark/light mode setting in widget; make iframe bg transparent
+- e608311: Add fogbender.closeFloaty; make floaty take up whole screen
+
+## 0.4.0
+
+### Minor Changes
+
+- 5e4f264: Dark/light mode switch
+
+## 0.3.0
+
+### Minor Changes
+
+- c1c5dd3: Visitor (anon user) support
+
+### Patch Changes
+
+- 568ec86: add nosemgrep comment to ignore false positive security report
+- 524b866: Update README to point to a new client url (staging)
+
 ## 0.2.3
 
 ### Patch Changes
