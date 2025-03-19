@@ -6,7 +6,7 @@ import {
   FogbenderIsConfigured,
   FogbenderProvider,
   FogbenderUnreadBadge,
-  FogbenderWidget,
+  FogbenderRoomyWidget,
 } from "fogbender-react";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -30,7 +30,7 @@ export const Support = ({ headless }: { headless?: boolean }) => {
     <FogbenderProvider fogbender={fogbender.current}>
       <FogbenderConfig clientUrl={clientUrl} token={token} />
       <FogbenderIsConfigured>
-        {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />}
+        {headless ? <FogbenderHeadlessWidget /> : <FogbenderRoomyWidget />}
         {headless ? <FogbenderFloatingWidget /> : null}
       </FogbenderIsConfigured>
     </FogbenderProvider>
@@ -59,7 +59,7 @@ export const SupportFallback = ({ headless }: { headless?: boolean }) => {
     <FogbenderProvider fogbender={fogbender.current}>
       <FogbenderConfig clientUrl={clientUrl} token={token} />
       <FogbenderIsConfigured>
-        {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />}
+        {headless ? <FogbenderHeadlessWidget /> : <FogbenderRoomyWidget />}
         {headless ? <FogbenderFloatingWidget /> : null}
       </FogbenderIsConfigured>
     </FogbenderProvider>
@@ -90,7 +90,7 @@ export const SupportVisitor = ({ headless }: { headless?: boolean }) => {
     <FogbenderProvider fogbender={fogbender.current}>
       <FogbenderConfig clientUrl={clientUrl} token={token} />
       <FogbenderIsConfigured>
-        {headless ? <FogbenderHeadlessWidget /> : <FogbenderWidget />}
+        {headless ? <FogbenderHeadlessWidget /> : <FogbenderRoomyWidget />}
         {headless ? <FogbenderFloatingWidget /> : null}
       </FogbenderIsConfigured>
     </FogbenderProvider>
