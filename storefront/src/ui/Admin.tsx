@@ -508,7 +508,7 @@ export const Admin = () => {
                 <Route
                   path="vendor/:vid/support"
                   element={
-                    <div className="absolute inset-0 -mt-2 -mx-4 mb-0">
+                    <div className="absolute inset-0 -mt-2 -mx-4 mb-0 flex">
                       <HelpWidget vendorId={designatedVendorId} />
                     </div>
                   }

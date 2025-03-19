@@ -112,6 +112,12 @@ export const CreateRoom: React.FC<{
 
   const [selectedOption, setSelectedOption] = React.useState<NonNullable<typeof options>[number]>();
 
+  React.useEffect(() => {
+    if (selectedOption === undefined && options.length > 0) {
+      setSelectedOption(options[0]);
+    }
+  }, [options, selectedOption]);
+
   const selectedCustomer = selectedOption?.customer;
 
   const [roomNameError, setRoomNameError] = React.useState<string>();
@@ -161,7 +167,7 @@ export const CreateRoom: React.FC<{
   return (
     <form onSubmit={onCreateRoom}>
       <div className="font-bold font-admin text-4xl mb-8">New room</div>
-      {isAgent && (
+      {isAgent && selectedOption && (
         <div className="mb-6">
           <Select
             options={options}
