@@ -1,6 +1,6 @@
 import React from "react";
-import { atom, useAtomValue } from "jotai";
-import { atomFamily, useUpdateAtom } from "jotai/utils";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atomFamily } from "jotai/utils";
 
 import type {
   EventRosterRoom,
@@ -241,8 +241,8 @@ export const useConnectRosterSections = (
       rosterRoomFamily,
     };
   }, [topic]);
-  const setRosterViewSections = useUpdateAtom(rosterViewSectionsAtom);
-  const setIsRosterReady = useUpdateAtom(isRosterReadyAtom);
+  const setRosterViewSections = useSetAtom(rosterViewSectionsAtom);
+  const setIsRosterReady = useSetAtom(isRosterReadyAtom);
 
   React.useEffect(() => {
     setIsRosterReady(false);
