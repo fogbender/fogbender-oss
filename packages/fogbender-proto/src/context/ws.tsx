@@ -22,8 +22,7 @@ import type {
   EventUser,
 } from "../schema";
 import throttle from "lodash.throttle";
-import { atom, useAtomValue } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import React from "react";
 
 import { useLoadAround } from "./loadAround";
@@ -176,7 +175,7 @@ function useProviderValue(
   });
   const sharedRosterAtom = React.useState(() => atom(sharedRoster))[0];
   {
-    const setSharedRoster = useUpdateAtom(sharedRosterAtom);
+    const setSharedRoster = useSetAtom(sharedRosterAtom);
     React.useEffect(() => {
       setSharedRoster(sharedRoster);
     }, [sharedRoster, setSharedRoster]);
