@@ -15,8 +15,7 @@ import {
   useSharedRoster,
   useWs,
 } from "fogbender-proto";
-import { useAtomValue } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useSetAtom } from "jotai";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -519,7 +518,7 @@ export type RosterViewOptions = {
 export const RosterViewSubscription = (props: { options: RosterViewOptions }) => {
   const { fogSessionId, workspaceId, helpdeskId, serverCall } = useWs();
   const { rosterSectionsActionsAtom } = useSharedRoster();
-  const dispatchRosterSections = useUpdateAtom(rosterSectionsActionsAtom);
+  const dispatchRosterSections = useSetAtom(rosterSectionsActionsAtom);
 
   const topic = fogSessionId
     ? workspaceId

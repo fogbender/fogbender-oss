@@ -1,6 +1,5 @@
 import { serialize } from "bson";
-import { atom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { atom, useSetAtom } from "jotai";
 import React from "react";
 import useWebSocket, { ReadyState, Options } from "react-use-websocket";
 import { flushSync } from "react-dom";
@@ -116,7 +115,7 @@ export function useServerWs(
 
   const lastIncomingMessageAtom = React.useState(() => atom(lastIncomingMessage))[0];
   {
-    const setLastIncomingMessage = useUpdateAtom(lastIncomingMessageAtom);
+    const setLastIncomingMessage = useSetAtom(lastIncomingMessageAtom);
     const throttledFlush = React.useMemo(
       () =>
         throttle(

@@ -1,5 +1,5 @@
-import { useAtomValue } from "jotai";
-import { selectAtom, useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useSetAtom } from "jotai";
+import { selectAtom } from "jotai/utils";
 import React from "react";
 import type { RosterSections } from "./rosterSections";
 
@@ -16,7 +16,7 @@ export function useRosterSections(viewId = "main") {
   );
   const isRosterReady = useAtomValue(isRosterReadyAtom);
   const rosterSections = useAtomValue(mainRosterSectionsAtom);
-  const dispatch = useUpdateAtom(rosterSectionsActionsAtom);
+  const dispatch = useSetAtom(rosterSectionsActionsAtom);
   return { isRosterReady, rosterSections, dispatch };
 }
 
@@ -24,6 +24,6 @@ export function useRosterRoom(roomId: string) {
   const sharedRoster = useSharedRoster();
   const { rosterRoomFamily, rosterSectionsActionsAtom } = sharedRoster;
   const rosterRoom = useAtomValue(rosterRoomFamily(roomId));
-  const dispatch = useUpdateAtom(rosterSectionsActionsAtom);
+  const dispatch = useSetAtom(rosterSectionsActionsAtom);
   return { rosterRoom, dispatch };
 }

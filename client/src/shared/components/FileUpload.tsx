@@ -1,6 +1,6 @@
 import { type FileUpload, type Message, useWs } from "fogbender-proto";
 import { atom, type PrimitiveAtom, useAtom } from "jotai";
-import { useImmerAtom } from "jotai/immer";
+import { useImmerAtom } from "jotai-immer";
 import prettyBytes from "pretty-bytes";
 import React, { Suspense } from "react";
 

@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { type Author, type Room, useRoomMembers, useRoster } from "fogbender-proto";
 import { filter } from "fuzzy";
-import { atom, type WritableAtom, useAtom } from "jotai";
-import { atomFamily, useAtomCallback, useUpdateAtom } from "jotai/utils";
+import { atom, type WritableAtom, useAtom, useSetAtom } from "jotai";
+import { atomFamily, useAtomCallback } from "jotai/utils";
 import React from "react";
 import { throttle } from "throttle-debounce";
 
@@ -32,7 +32,7 @@ export const useAutoCompleteUpdateFor = (roomId: string) => {
   const autocompleteAtom = roomAutocompleteFamily(roomId);
   return {
     readMentions: useAsyncAtomValue(autocompleteAtom),
-    setMentions: useUpdateAtom(autocompleteAtom),
+    setMentions: useSetAtom(autocompleteAtom),
   };
 };
 
@@ -46,7 +46,7 @@ export const useRoomMentionDispatchFor = (roomId: string) => {
   const selectorAtom = roomSelectorFamily(roomId);
   const maxSelectorAtom = roomMaxSelectorFamily(roomId);
   const acceptedRoomAtom = roomAcceptedIdFamily(roomId);
-  return useAtomCallback<void | "cant_accept", Actions>(
+  return useAtomCallback<void | "cant_accept", [Actions]>(
     React.useCallback(
       (get, set, update) => {
         const maxIndex = get(maxSelectorAtom);
@@ -72,7 +72,9 @@ export const useRoomMentionDispatchFor = (roomId: string) => {
   );
 };
 
-export function useAsyncAtomValue<V>(atom: WritableAtom<V, any>) {
+export function useAsyncAtomValue<V, A extends unknown[] = [], R = void>(
+  atom: WritableAtom<V, A, R>
+) {
   return useAtomCallback(React.useCallback(async get => get(atom), [atom]));
 }
 
@@ -177,7 +179,7 @@ export const UserList: React.FC<{
   } = props;
   const [activateSelected, setActivateSelected] = useAtom(roomAcceptedIdFamily(roomId));
   const [selectorIndex, setSelectorIndex] = useAtom(roomSelectorFamily(roomId));
-  const updateMaxSelector = useUpdateAtom(roomMaxSelectorFamily(roomId));
+  const updateMaxSelector = useSetAtom(roomMaxSelectorFamily(roomId));
 
   const throttled = React.useMemo(
     () => throttle(500, (cb: (v: string) => void, v: string) => cb(v)),

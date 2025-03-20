@@ -238,7 +238,7 @@ export const useTextarea = ({
       }
       afterSend();
 
-      resetFileUpload();
+      resetFileUpload(undefined);
 
       setMentions(undefined);
       setAcceptedMentions([]);
@@ -283,7 +283,7 @@ export const useTextarea = ({
             ),
         });
       }
-      resetFileUpload();
+      resetFileUpload(undefined);
       setMentions(undefined);
       setAcceptedMentions([]);
       cancelOperation();

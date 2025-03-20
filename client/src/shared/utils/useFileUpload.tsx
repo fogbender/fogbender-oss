@@ -1,5 +1,4 @@
-import { atom, type PrimitiveAtom, type WritableAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { atom, useSetAtom, type PrimitiveAtom, type WritableAtom } from "jotai";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -11,8 +10,8 @@ export interface Upload {
 }
 
 export type FileUploads = { files: Upload[] };
-export type FileIdsAtom = WritableAtom<string[] | undefined, undefined>;
-export type DeletedFileIdsAtom = WritableAtom<string[], string[]>;
+export type FileIdsAtom = WritableAtom<string[] | undefined, [string[] | undefined], void>;
+export type DeletedFileIdsAtom = PrimitiveAtom<string[]>;
 
 export const useFileUpload = ({
   roomId,
@@ -25,22 +24,22 @@ export const useFileUpload = ({
 
   const fileIdsAtom = React.useMemo(
     () =>
-      atom(
+      atom<string[] | undefined, [string[] | undefined], void>(
         get => {
           const fileIds = get(fileUploadAtom)?.files.map(x => get(x.fileIdAtom));
-          if (fileIds?.every((x): x is string => x !== undefined)) {
-            return fileIds;
-          }
-          return;
+          return fileIds?.every((x): x is string => x !== undefined) ? fileIds : undefined;
         },
-        (_get, set, _reset?: undefined) => {
-          set(fileUploadAtom, { files: [] });
+        (_get, set, update) => {
+          // ⬅️ Now `update` matches `[string[] | undefined]`
+          if (update === undefined) {
+            set(fileUploadAtom, { files: [] });
+          }
         }
       ),
     [fileUploadAtom]
   );
 
-  const setUpload = useUpdateAtom(fileUploadAtom);
+  const setUpload = useSetAtom(fileUploadAtom);
 
   const onNewDrop = React.useCallback(
     (acceptedFiles: File[]) => {

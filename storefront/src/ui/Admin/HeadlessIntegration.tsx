@@ -9,8 +9,7 @@ import {
   useSharedRoster,
   WsProvider,
 } from "fogbender-client/src/shared";
-import { atom, useAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { atom, useAtom, useSetAtom } from "jotai";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from "react-redux";
@@ -75,7 +74,7 @@ const HeadlessAgentApp = () => {
   const lastIncomingMessage = useLastIncomingMessage();
   const { badges, roomById } = useSharedRoster();
 
-  const setBadges = useUpdateAtom(badgesAtom);
+  const setBadges = useSetAtom(badgesAtom);
 
   React.useEffect(() => {
     setBadges(Object.values(badges));
