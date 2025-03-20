@@ -18,7 +18,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsup --dts",
+    "build": "tsc --version && tsup --dts",
     "start": "run-p build start:tsc",
     "start:tsup": "tsup --watch",
     "start:tsc": "tsc --noEmit --watch | awk '{gsub(/\\033c/,\"\") system(\"\")}1'",
