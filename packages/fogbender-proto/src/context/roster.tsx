@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { useImmerAtom } from "jotai/immer";
+import { useImmerAtom } from "jotai-immer";
 import React from "react";
 
 import type {

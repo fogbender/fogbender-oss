@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { withImmer } from "jotai/immer";
+import { withImmer } from "jotai-immer";
 import React from "react";
 
 const loadAroundAtom = atom<{ roomId: string | undefined; ts?: number }>({ roomId: undefined });
