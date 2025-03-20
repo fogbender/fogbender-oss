@@ -1,8 +1,8 @@
 import type { WritableAtom } from "jotai";
 
-const atoms = new Map<string, WritableAtom<unknown, unknown>>();
+const atoms = new Map<string, WritableAtom<unknown, unknown[], unknown>>();
 
-export const atomWithKey = <A extends WritableAtom<any, any>>(key: string, atom: A) => {
+export const atomWithKey = <A extends WritableAtom<any, any[], any>>(key: string, atom: A) => {
   if (!atom.debugLabel) {
     atom.debugLabel = key;
   }

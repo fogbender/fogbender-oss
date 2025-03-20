@@ -15,7 +15,7 @@ import {
   useWsCalls,
 } from "fogbender-proto";
 import { atom } from "jotai";
-import { useImmerAtom } from "jotai/immer";
+import { useImmerAtom } from "jotai-immer";
 import React from "react";
 
 import { Icons } from "../components/Icons";

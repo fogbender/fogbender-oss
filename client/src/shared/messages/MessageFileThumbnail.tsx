@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { type Attachment, type Message as MessageT } from "fogbender-proto";
-import { atom, type PrimitiveAtom } from "jotai";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { atom, type PrimitiveAtom, useAtomValue, useSetAtom } from "jotai";
 import prettyBytes from "pretty-bytes";
 import React from "react";
 import { PiFileTextDuotone, PiFileVideoDuotone } from "react-icons/pi";
@@ -341,7 +340,7 @@ const ExpirationChecker = ({
 }) => {
   const now = new Date().getTime();
   const isExpired = attachment.fileExpirationTs ? attachment.fileExpirationTs / 1000 < now : false;
-  const setIsExpiredAtom = useUpdateAtom(isExpiredAtom);
+  const setIsExpiredAtom = useSetAtom(isExpiredAtom);
   React.useEffect(() => {
     setIsExpiredAtom(isExpired);
   }, [isExpired, setIsExpiredAtom]);
