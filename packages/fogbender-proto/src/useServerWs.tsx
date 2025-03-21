@@ -272,7 +272,7 @@ export function useServerWs(
         );
       } else if ("widgetId" in token && !("visitor" in token)) {
         const clone = { ...token };
-        clone.versions = { ...clone.versions, "fogbender-proto": "0.17.0" };
+        clone.versions = { ...clone.versions, "fogbender-proto": "0.17.1" };
         serverCall({
           ...clone,
           msgType: "Auth.User",

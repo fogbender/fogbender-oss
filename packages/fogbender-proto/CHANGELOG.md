@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.17.1
+
+### Patch Changes
+
+- 3e1f15e: Update jotai
+
 ## 0.17.0
 
 ### Minor Changes
