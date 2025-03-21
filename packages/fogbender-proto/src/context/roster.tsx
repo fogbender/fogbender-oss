@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import { useImmerAtom } from "jotai-immer";
 import React from "react";
+import { type Draft, produce } from "immer";
 
 import type {
   EventRoom,
@@ -29,7 +30,19 @@ import { useLastIncomingMessage } from "./useLastIncomingMessage";
 export type { Room } from "./sharedRoster";
 
 function useImmer<T>(initialValue: T) {
-  return useImmerAtom(React.useRef(atom(initialValue)).current);
+  const baseAtom = React.useMemo(() => {
+    const stateAtom = atom(initialValue);
+    const immerAtom = atom(
+      get => get(stateAtom),
+      (get, set, fn: (draft: Draft<T>) => void) => {
+        const nextState = produce(get(stateAtom), fn);
+        set(stateAtom, nextState);
+      }
+    );
+    return immerAtom;
+  }, []);
+
+  return useImmerAtom(baseAtom);
 }
 
 export function useAuthorEmail(author: Author) {
