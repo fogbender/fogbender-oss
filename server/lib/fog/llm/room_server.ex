@@ -33,19 +33,17 @@ defmodule Fog.Llm.RoomServer do
 
     llm_integrations =
       workspace.llm_integrations
-      |> Enum.filter(fn i ->
-        i.enabled
-      end)
+      |> Enum.filter(& &1.enabled)
 
-    state =
-      case llm_integrations do
-        [] ->
-          state
+    case llm_integrations do
+      [] ->
+        {:stop, :normal, state}
 
-        [llmi] ->
-          assistant = Repo.Agent.get_bot_by_tag_name(llmi.workspace_id, llmi.assistant_id)
-          assistant_sess = Api.Session.for_agent(room.vendor.id, assistant.id)
+      [llmi] ->
+        assistant = Repo.Agent.get_bot_by_tag_name(llmi.workspace_id, llmi.assistant_id)
+        assistant_sess = Api.Session.for_agent(room.vendor.id, assistant.id)
 
+        new_state =
           state
           |> Map.merge(%{
             room: room,
@@ -55,9 +53,9 @@ defmodule Fog.Llm.RoomServer do
             llmi: llmi,
             pending_messages: []
           })
-      end
 
-    {:noreply, state}
+        {:noreply, new_state}
+    end
   end
 
   @impl true
