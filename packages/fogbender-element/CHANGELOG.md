@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.3.0
+
+### Minor Changes
+
+- f6d8d8c: Clean up, fix demo
+
 ## 0.2.0
 
 ### Minor Changes
