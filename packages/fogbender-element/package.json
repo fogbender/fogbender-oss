@@ -4,8 +4,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Web Component wrapper for `fogbender` to embed the Fogbender Widget on your website",
-  "author": "JLarky",
+  "description": "Web Component wrapper for `fogbender` to embed the Fogbender messaging widget on your website",
+  "author": "Fogbender Software, Inc.",
   "type": "module",
   "main": "./dist/fogbender-element.umd.cjs",
   "module": "./dist/fogbender-element.js",
