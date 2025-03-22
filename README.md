@@ -31,8 +31,8 @@ This repository contains the source code for Fogbender's open-source SDKs, publi
 
 ## Live Examples
 
-- [Vanilla JavaScript (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vanilla?file=/src/index.ts)  
-- [React (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/react)  
-- [Vue (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vue)  
-- [Element via CDN (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-cdn)  
+- [Vanilla JavaScript (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vanilla?file=/src/index.ts)
+- [React (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/react)
+- [Vue (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vue)
+- [Element via CDN (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-cdn)
 - [Element with Lit (CodeSandbox)](https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-lit)
