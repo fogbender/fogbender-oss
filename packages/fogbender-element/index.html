@@ -5,18 +5,15 @@
     <meta name="theme-color" content="#000000" />
     <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
     <title>Fogbender Solid Element</title>
-    <script defer src="./src/index.tsx" type="module"></script>
+    <script type="module">
+      import "./src/index.tsx";
+    </script>
   </head>
-  <body>
-    <!-- native HTML:
-    <fogbender-simple-widget
-      client-url="https://master--fb-client.netlify.app"
-      token='{"widgetId":"dzAwMTQ5OTEzNjgyNjkwNzA3NDU2","customerId":"org123","customerName":"Org Name","userId":"example_PLEASE_CHANGE","userEmail":"user@example.com","userHMAC":"04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3","userName":"User Name","userAvatarUrl":"https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png"}'
-    ></fogbender-simple-widget>
-    -->
+  <body style="min-height: 100vh; display: flex; flex-direction: column; margin: 0">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module">
       import { html, render } from "https://unpkg.com/lit-html?module";
+
       const clientUrl = "https://master--fb-client.netlify.app";
       const token = {
         widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
@@ -27,70 +24,100 @@
         userHMAC: "04b7c1aab187a84bfa3160b99c100df08c78b3a1e25884fc13d8d72a9b96ddc3",
         userName: "User Name",
         userAvatarUrl:
-          "https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png", // optional
+          "https://user-images.githubusercontent.com/7026/108277328-19c97700-712e-11eb-96d6-7de0c98c9e3d.png",
       };
-      let show = true;
-      const clickHandler = () => {
-        show = !show;
-        app();
-      };
+
+      const scenarioKeys = ["scenario1", "scenario2", "scenario3", "scenario4", "scenario5"];
+      let activeScenario = "scenario1";
+      let showScenario = true;
+
       const app = () => {
-        const scenario1 = html`<div>
-          ${show ? html`<fogbender-simple-widget client-url=${clientUrl} .token=${token} />` : ""}
-        </div>`;
+        const scenarioTemplates = {
+          scenario1: html`
+            <fogbender-simple-roomy-widget client-url=${clientUrl} .token=${token} />
+          `,
+          scenario2: html`
+            <fogbender-provider>
+              <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
+              <fogbender-roomy-widget />
+            </fogbender-provider>
+          `,
+          scenario3: html`
+            <fogbender-provider>
+              <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
+              <fogbender-is-configured>
+                <template data-is-configured>
+                  <fogbender-headless-widget />
+                  <fogbender-floaty-widget />
+                </template>
+              </fogbender-is-configured>
+            </fogbender-provider>
+          `,
+          scenario4: html`
+            <fogbender-simple-floaty-widget client-url=${clientUrl} .token=${token} />
+          `,
+          scenario5: html`
+            <div style="justify-items: center; align-content: center; flex: 1;">
+              <div style="display: flex; gap: 2px;">
+                <span style="margin-top: 11px;">Note: mark a message unread to see badge ↗</span>
+                <fogbender-provider>
+                  <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
+                  <fogbender-is-configured>
+                    <template data-is-configured>
+                      <fogbender-headless-widget />
+                      <fogbender-unread-badge />
+                      <fogbender-floaty-widget />
+                    </template>
+                  </fogbender-is-configured>
+                </fogbender-provider>
+              </div>
+            </div>
+          `,
+        };
 
-        const scenario2 = html`<div>
-          ${show
-            ? html`<fogbender-provider>
-                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
-                ${show && html`<fogbender-widget />`}
-              </fogbender-provider>`
-            : ""}
-        </div>`;
-
-        const scenario3 = html`<div>
-          ${show
-            ? html`<fogbender-provider>
-                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
-                <fogbender-is-configured>
-                  <template data-is-configured>
-                    <fogbender-headless-widget />
-                    <fogbender-floating-widget />
-                  </template>
-                </fogbender-is-configured>
-              </fogbender-provider>`
-            : ""}
-        </div>`;
-
-        const scenario4 = html`<div>
-          ${show
-            ? html`<fogbender-simple-floatie
-                client-url=${clientUrl}
-                .token=${token}
-              ></fogbender-simple-floatie>`
-            : ""}
-        </div>`;
-
-        const scenerio5 = html`<div>
-          ${show
-            ? html`<fogbender-provider>
-                <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
-                <fogbender-is-configured>
-                  <template data-is-configured>
-                    <fogbender-headless-widget />
-                    <fogbender-unread-badge />
-                  </template>
-                </fogbender-is-configured>
-              </fogbender-provider>`
-            : ""}
-        </div>`;
-
-        const myTemplate = html`
-          <button id="button" @click=${clickHandler}>${show ? "Unmount" : "Remount"}</button>
-          ${scenario4}
+        const scenarioButtons = html`
+          <div style="margin-bottom: 1rem;">
+            ${scenarioKeys.map(
+              key => html`
+                <button
+                  style="margin-right: 8px;"
+                  @click=${() => {
+                    activeScenario = key;
+                    showScenario = true;
+                    app();
+                  }}
+                >
+                  Show ${key}
+                </button>
+              `
+            )}
+          </div>
         `;
-        render(myTemplate, document.body);
+
+        const toggleButton = html`
+          <button
+            style="margin-bottom: 1rem;"
+            @click=${() => {
+              showScenario = !showScenario;
+              app();
+            }}
+          >
+            ${showScenario ? "Unmount" : "Remount"} ${activeScenario}
+          </button>
+        `;
+
+        const output = html`
+          <div style="padding: 1rem 1rem 0; flex-shrink: 0; border-bottom: 1px solid #ccc;">
+            ${scenarioButtons} ${toggleButton}
+          </div>
+          <div style="flex: 1; display: flex;">
+            ${showScenario ? scenarioTemplates[activeScenario] : ""}
+          </div>
+        `;
+
+        render(output, document.body);
       };
+
       app();
     </script>
   </body>

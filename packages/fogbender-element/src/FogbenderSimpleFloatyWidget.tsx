@@ -3,28 +3,26 @@ import { customElement, noShadowDOM } from "solid-element";
 import { createEffect, onCleanup } from "solid-js";
 import { addVersion } from "./utils";
 
-interface SimpleFlatieProps {
+interface SimpleFloatyProps {
   env?: Env;
   token?: Token;
   clientUrl?: string;
-  verbose?: boolean;
   openInNewTab?: boolean;
   defaultOpen?: boolean;
   closeable?: boolean;
 }
 
-customElement<SimpleFlatieProps>(
-  "fogbender-simple-floatie",
+customElement<SimpleFloatyProps>(
+  "fogbender-simple-floaty-widget",
   {
     env: undefined,
     clientUrl: undefined,
     token: undefined,
-    verbose: undefined,
     openInNewTab: undefined,
     defaultOpen: undefined,
     closeable: undefined,
   },
-  (props: SimpleFlatieProps, { element }) => {
+  (props: SimpleFloatyProps, { element }) => {
     noShadowDOM();
     let divRef: HTMLDivElement | undefined;
 
@@ -41,7 +39,6 @@ customElement<SimpleFlatieProps>(
         });
       }
       const promise = fogbender.createFloatingWidget({
-        verbose: props.verbose,
         openInNewTab: props.openInNewTab,
         defaultOpen: props.defaultOpen,
         closeable: props.closeable,

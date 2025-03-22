@@ -5,8 +5,12 @@ import { consumeFogbender } from "./FogbenderProvider";
 
 interface FogbenderWidgetProps {}
 
-customElement<FogbenderWidgetProps>("fogbender-widget", {}, (props, { element }) => {
+customElement<FogbenderWidgetProps>("fogbender-roomy-widget", {}, (props, { element }) => {
   noShadowDOM();
+
+  element.style.display = "flex";
+  element.style.flex = "1";
+  element.style.width = "100%";
 
   const fogbender = consumeFogbender(element);
   let divRef: HTMLDivElement | undefined;
