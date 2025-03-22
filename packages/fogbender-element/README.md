@@ -59,8 +59,8 @@ render(myTemplate(), document.body);
 
 ## Examples
 
-- https://codepen.io/jlarky/pen/vYjVYxM?editors=1000
+- https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/element-lit
 
 ## License
 
-MIT © [JLarky](https://github.com/JLarky)
+MIT © [Fogbender Software, Inc.](https://fogbender.com)
