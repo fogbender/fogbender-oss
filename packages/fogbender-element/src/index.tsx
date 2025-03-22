@@ -1,9 +1,9 @@
 import "./FogbenderProvider";
-import "./FogbenderSimpleWidget";
+import "./FogbenderSimpleRoomyWidget";
 import "./FogbenderConfig";
-import "./FogbenderWidget";
+import "./FogbenderRoomyWidget";
 import "./FogbenderHeadlessWidget";
-import "./FogbenderFloatingWidget";
+import "./FogbenderFloatyWidget";
 import "./FogbenderIsConfigured";
-import "./FogbenderSimpleFloatie";
+import "./FogbenderSimpleFloatyWidget";
 import "./FogbenderUnreadBadge";

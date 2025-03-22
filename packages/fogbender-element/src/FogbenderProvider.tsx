@@ -26,8 +26,11 @@ export function consumeFogbender(element: ICustomElement) {
 customElement<FogbenderProviderProps>(
   "fogbender-provider",
   { fogbender: undefined, children: undefined },
-  props => {
+  (props, { element }) => {
     noShadowDOM();
+
+    element.style.display = "flex";
+    element.style.flex = "1";
 
     const fogbender = props.fogbender || createNewFogbender();
 
