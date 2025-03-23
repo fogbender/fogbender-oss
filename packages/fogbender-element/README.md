@@ -110,6 +110,10 @@ const token = {
 };
 ```
 
+## Demo
+
+https://codesandbox.io/p/sandbox/github/fogbender/fogbender-oss/tree/main/packages/fogbender-element/
+
 ## License
 
 MIT
