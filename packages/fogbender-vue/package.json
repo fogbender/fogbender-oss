@@ -5,7 +5,7 @@
     "access": "public"
   },
   "description": "Fogbender wrapper for Vue 2 and Vue 3",
-  "author": "JLarky",
+  "author": "Fogbender Software, Inc.",
   "license": "MIT",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
