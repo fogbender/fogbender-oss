@@ -5,16 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "fogbender-react": "^0.2.12",
+    "fogbender-react": "^0.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.9"
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
   }
 }
