@@ -1,6 +1,7 @@
 module.exports = {
   devServer: {
-    https: true,
     allowedHosts: "all",
+    hot: false,
+    liveReload: false,
   },
 };
