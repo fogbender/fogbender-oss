@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.6.2
+
+### Patch Changes
+
+- 1ac1cec: Update package description
+
 ## 0.6.1
 
 ### Patch Changes
