@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.6.1
+
+### Patch Changes
+
+- ff5ca20: target: ES2020
+
 ## 0.6.0
 
 ### Minor Changes
