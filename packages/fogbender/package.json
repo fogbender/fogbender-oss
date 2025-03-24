@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Made with create-react-library",
+  "description": "Framework-agnostic JavaScript library for rendering Fogbender’s embeddable messaging UI in any frontend environment",
   "author": "Fogbender Software, Inc.",
   "license": "MIT",
   "sideEffects": false,
