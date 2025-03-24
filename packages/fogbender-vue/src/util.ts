@@ -8,7 +8,7 @@ export const noopCleanup = () => {
 export const addVersion = (token?: Token): Token | undefined => {
   if (token) {
     token.versions = token.versions || {};
-    token.versions["fogbender-vue"] = "0.2.0";
+    token.versions["fogbender-vue"] = "0.3.0";
   }
   return token;
 };

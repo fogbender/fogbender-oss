@@ -1,5 +1,11 @@
 # fogbender-vue
 
+## 0.3.0
+
+### Minor Changes
+
+- dec3969: Update docs
+
 ## 0.2.0
 
 ### Minor Changes
