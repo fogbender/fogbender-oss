@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.17.2
+
+### Patch Changes
+
+- ca5be34: Remove react-scripts dependency
+
 ## 0.17.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # fogbender-react
 
+## 0.5.2
+
+### Patch Changes
+
+- ca5be34: Remove react-scripts dependency
+
 ## 0.5.1
 
 ### Patch Changes
