@@ -20,7 +20,7 @@ npm i -g @antfu/ni && ni fogbender-react
 
 ```tsx
 import React from "react";
-import { FogbenderSimpleWidget } from "fogbender-react";
+import { FogbenderSimpleRoomyWidget } from "fogbender-react";
 
 export const Example = () => {
   const token = {
@@ -35,9 +35,11 @@ export const Example = () => {
       "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png", // optional
   };
   return (
-    <div>
+    <div style={{ minHeight: "100vh" }}>
       <p>Hello Fogbender</p>
-      <FogbenderSimpleWidget clientUrl="https://main--fb-client.netlify.app" token={token} />
+      <div style={{ height: "500px", display: "flex" }}>
+        <FogbenderSimpleRoomyWidget clientUrl="https://main--fb-client.netlify.app" token={token} />
+      </div>
     </div>
   );
 };
