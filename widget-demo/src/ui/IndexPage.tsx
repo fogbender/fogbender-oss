@@ -160,7 +160,7 @@ export const IndexPage = ({ children }: { title: string; children: React.ReactNo
       )}
       onDragOver={e => e.preventDefault()}
     >
-      <div id="rcontent" className="absolute" style={rcontentStyle}>
+      <div id="rcontent" className="absolute flex" style={rcontentStyle}>
         {children}
       </div>
 
