@@ -1,5 +1,12 @@
 # fogbender
 
+## 0.6.4
+
+### Patch Changes
+
+- 3c9ec63: Change signature from userHMAC to userJWT
+- cb622e4: Update README
+
 ## 0.6.3
 
 ### Patch Changes
