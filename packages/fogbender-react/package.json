@@ -1,6 +1,6 @@
 {
   "name": "fogbender-react",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "publishConfig": {
     "access": "public"
   },
@@ -28,7 +28,7 @@
     "predeploy": "cd example && yarn install && yarn run build"
   },
   "dependencies": {
-    "fogbender": ">=0.6.0"
+    "fogbender": ">=0.6.4"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
