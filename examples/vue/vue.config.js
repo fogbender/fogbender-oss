@@ -5,10 +5,10 @@ module.exports = {
     liveReload: false,
     client: {
       webSocketURL: {
-        protocol: 'wss',
+        protocol: "wss",
         hostname: process.env.CODESANDBOX_HOST || "localhost",
         port: 443,
-        pathname: '/ws',
+        pathname: "/ws",
       },
       overlay: false,
     },
