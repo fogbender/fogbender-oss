@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.6.3
+
+### Patch Changes
+
+- 079fbe3: Update README
+
 ## 0.6.2
 
 ### Patch Changes
