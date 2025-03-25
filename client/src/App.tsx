@@ -64,11 +64,29 @@ const App = () => {
     }
     if (typeof parsedSearch.token === "string") {
       const userData = JSON.parse(decodeURI(parsedSearch.token));
-      if (typeof parsedSearch.visitorJWT === "string") {
-        const visitorJWT = JSON.parse(decodeURI(parsedSearch.visitorJWT));
-        setToken({ ...userData, visitorToken: visitorJWT } as Token);
-      } else {
-        setToken(userData as Token);
+
+      const { widgetId } = userData;
+
+      const key = `visitor-fullscreen-${widgetId}`;
+
+      try {
+        const visitorInfo = localStorage.getItem(key);
+
+        if (visitorInfo) {
+          const info = JSON.parse(visitorInfo);
+          const visitorToken = info.token;
+
+          setToken({ ...userData, visitorToken } as Token);
+        } else {
+          if (typeof parsedSearch.visitorJWT === "string") {
+            const visitorJWT = JSON.parse(decodeURI(parsedSearch.visitorJWT));
+            setToken({ ...userData, visitorToken: visitorJWT } as Token);
+          } else {
+            setToken(userData as Token);
+          }
+        }
+      } catch (e) {
+        console.error(e);
       }
     }
     if (typeof parsedSearch.room_id === "string") {
@@ -101,6 +119,13 @@ const App = () => {
       if (isUserToken(token) || isVisitorToken(token)) {
         const { token: visitorJWT } = info;
         handleGoFullScreen(token, visitorJWT, true);
+      } else {
+        try {
+          const { widgetId } = info;
+          localStorage.setItem(`visitor-fullscreen-${widgetId}`, JSON.stringify(info));
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
   };
