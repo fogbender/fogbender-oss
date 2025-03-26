@@ -2,6 +2,10 @@
 
 This is a minimal example of embedding the Fogbender widget without using a framework.
 
+## CodeSandbox
+
+https://codesandbox.io/s/github/fogbender/fogbender-oss/tree/main/examples/vanilla
+
 ## Setup
 
 ```bash
