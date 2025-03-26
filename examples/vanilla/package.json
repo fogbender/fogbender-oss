@@ -1,22 +1,24 @@
 {
   "name": "fogbender-demo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.html",
   "scripts": {
-    "start": "parcel index.html --open",
+    "start": "parcel index.html",
     "build": "parcel build index.html"
   },
   "dependencies": {
-    "fogbender": "0.2.3",
-    "parcel-bundler": "^1.6.1"
+    "fogbender": "0.6.4"
   },
   "devDependencies": {
-    "@babel/core": "7.2.0",
-    "typescript": "4.4.4"
+    "parcel": "^2.14.2",
+    "typescript": "5.8.2"
   },
-  "resolutions": {
-    "@babel/preset-env": "7.13.8"
-  },
-  "keywords": []
+  "keywords": [
+    "messaging",
+    "b2b support",
+    "customer support",
+    "chat widget",
+    "embeddable chat"
+  ],
+  "browserslist": "> 0.25%, not dead"
 }
