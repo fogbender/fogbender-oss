@@ -5,10 +5,13 @@
     <meta charset="UTF-8" />
   </head>
 
-  <body>
+  <body style="min-height: 100vh; display: flex; flex-direction: column; margin: 0">
     <button id="button">Unmount</button>
-    <div id="app" />
 
-    <script src="src/index.ts"></script>
+    <div style="flex: 1; display: flex">
+      <div id="app" />
+    </div>
+
+    <script type="module" src="src/index.ts"></script>
   </body>
 </html>

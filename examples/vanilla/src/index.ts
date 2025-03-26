@@ -18,6 +18,7 @@ const addFogbender = async (rootEl: HTMLElement) => {
   const fogbender = createNewFogbender();
   fogbender.setClientUrl(clientUrl);
   fogbender.setToken(token);
+  fogbender.setMode("light");
   const cleanup = await fogbender.renderIframe({ rootEl, headless: false });
   return cleanup;
 };
