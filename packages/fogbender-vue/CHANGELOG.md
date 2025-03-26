@@ -1,5 +1,15 @@
 # fogbender-vue
 
+## 0.3.2
+
+### Patch Changes
+
+- e200d5c: Change signature from userHMAC to userJWT
+- Updated dependencies [4bdaf5c]
+- Updated dependencies [e200d5c]
+- Updated dependencies [8d84d64]
+  - fogbender@0.7.0
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # fogbender
 
+## 0.7.0
+
+### Minor Changes
+
+- 4bdaf5c: Hide window.parent.location behind try/catch
+
+### Patch Changes
+
+- e200d5c: Change signature from userHMAC to userJWT
+- 8d84d64: Update README
+
 ## 0.6.4
 
 ### Patch Changes

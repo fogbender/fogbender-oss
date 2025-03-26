@@ -1,5 +1,15 @@
 # fogbender-react
 
+## 0.5.4
+
+### Patch Changes
+
+- e200d5c: Change signature from userHMAC to userJWT
+- Updated dependencies [4bdaf5c]
+- Updated dependencies [e200d5c]
+- Updated dependencies [8d84d64]
+  - fogbender@0.7.0
+
 ## 0.5.3
 
 ### Patch Changes
