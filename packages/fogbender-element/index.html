@@ -28,22 +28,28 @@
           "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png",
       };
 
-      const scenarioKeys = ["scenario1", "scenario2", "scenario3", "scenario4", "scenario5"];
-      let activeScenario = "scenario1";
+      const scenarioKeys = [
+        "Roomy (Simple)",
+        "Roomy (With Provider)",
+        "Floaty + Headless",
+        "Floaty (Simple)",
+        "Unread Badge + Floaty",
+      ];
+      let activeScenario = "Roomy (Simple)";
       let showScenario = true;
 
       const app = () => {
         const scenarioTemplates = {
-          scenario1: html`
+          "Roomy (Simple)": html`
             <fogbender-simple-roomy-widget client-url=${clientUrl} .token=${token} />
           `,
-          scenario2: html`
+          "Roomy (With Provider)": html`
             <fogbender-provider>
               <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
               <fogbender-roomy-widget />
             </fogbender-provider>
           `,
-          scenario3: html`
+          "Floaty + Headless": html`
             <fogbender-provider>
               <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
               <fogbender-is-configured>
@@ -54,10 +60,10 @@
               </fogbender-is-configured>
             </fogbender-provider>
           `,
-          scenario4: html`
+          "Floaty (Simple)": html`
             <fogbender-simple-floaty-widget client-url=${clientUrl} .token=${token} />
           `,
-          scenario5: html`
+          "Unread Badge + Floaty": html`
             <div style="justify-items: center; align-content: center; flex: 1;">
               <div style="display: flex; gap: 2px;">
                 <span style="margin-top: 11px;">Note: mark a message unread to see badge ↗</span>
@@ -88,7 +94,7 @@
                     app();
                   }}
                 >
-                  Show ${key}
+                  ${key}
                 </button>
               `
             )}
