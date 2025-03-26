@@ -1187,10 +1187,10 @@ fill-range@^7.1.1:
   dependencies:
     to-regex-range "^5.0.1"
 
-fogbender@0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.6.4.tgz#f120cd3b444313d1788b170c836e5531b94be452"
-  integrity sha512-rxlGeNo4apmWXCCamBwqBCFvtEwkByKBRxZshdQwSfj4Sc1X4x/L0vzrlMrMQP+O5Y9HWMX2ZyzAhQBlduRyMA==
+fogbender@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.7.0.tgz#d497bced54f84bc9f4d906c3982c56d011bdd7d7"
+  integrity sha512-56eATa4iWhThppjxVAR1ePOITUjctN/GzuhzoJLLp2bZjVYvi8KOq7jGrzHd23mdFPwCkgf4NumuBk3QhrqDxA==
   dependencies:
     "@babel/eslint-parser" "^7.26.8"
     solid-js "1.8.0"
