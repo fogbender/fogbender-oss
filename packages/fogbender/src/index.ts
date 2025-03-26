@@ -130,7 +130,13 @@ export const createNewFogbender = (): Fogbender => {
           ...state.token,
           versions: { ...state.token.versions, ...state.versions, fogbender: "0.6.4" },
           visitorToken,
-          visitUrl: window?.parent?.location?.toString(),
+          visitUrl: (() => {
+            try {
+              return window.parent.location.toString();
+            } catch {
+              return undefined;
+            }
+          })(),
         };
       }
       updateConfigured();
