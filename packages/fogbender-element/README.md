@@ -18,9 +18,13 @@ Fogbender Element provides Web Components for embedding Fogbender's collaborativ
 npm install @fogbender/element
 ```
 
-## Usage
+# Usage
 
 Below are examples of various widget setups depending on your desired integration level.
+
+## All You Need
+
+Below examples should cover 99% of use cases.
 
 ### Simple Roomy Widget
 
@@ -29,6 +33,27 @@ Below are examples of various widget setups depending on your desired integratio
 ```
 
 _Roomy Widget: A team messaging experience that occupies all available space of its parent container. For proper expansion, ensure the parent container uses `display: flex`._
+
+### Simple Floaty Widget
+
+```html
+<fogbender-simple-floaty-widget .token="${yourTokenObject}"> </fogbender-simple-floaty-widget>
+```
+
+_Floaty Widget: A compact, Intercom‑style button anchored to the bottom-right corner that opens into a full chat interface._
+
+### Unread Badge
+
+```html
+<fogbender-provider>
+  <fogbender-config .token="${yourTokenObject}"> </fogbender-config>
+  <fogbender-unread-badge></fogbender-unread-badge>
+</fogbender-provider>
+```
+
+_Unread Badge: This standalone unread badge can be placed anywhere on your page to notify users of unread support messages._
+
+## Advanced
 
 ### Roomy Widget with Provider
 
@@ -41,7 +66,7 @@ _Roomy Widget: A team messaging experience that occupies all available space of 
 
 _Roomy Widget: This variant uses a provider for configuration and renders a team messaging experience that fills its container (which should have `display: flex`)._
 
-### Headless and Floaty Widgets
+### Headless and Floaty Widgets with Provider
 
 ```html
 <fogbender-provider>
@@ -57,15 +82,7 @@ _Roomy Widget: This variant uses a provider for configuration and renders a team
 
 _Floaty Widget: An Intercom‑style widget anchored to the bottom-right corner of the screen. It expands into a full chat interface when activated._
 
-### Simple Floaty Widget
-
-```html
-<fogbender-simple-floaty-widget .token="${yourTokenObject}"> </fogbender-simple-floaty-widget>
-```
-
-_Floaty Widget: A compact, Intercom‑style button anchored to the bottom-right corner that opens into a full chat interface._
-
-### Unread Badge with Floaty Widget
+### Unread Badge with Floaty Widget with Provider
 
 ```html
 <fogbender-provider>
@@ -81,17 +98,6 @@ _Floaty Widget: A compact, Intercom‑style button anchored to the bottom-right 
 ```
 
 _Unread Badge: A visual indicator that can be placed anywhere on a web page to notify users of unread support messages. Combined with a Floaty Widget, it alerts users while maintaining a clean interface._
-
-### Unread Badge Only
-
-```html
-<fogbender-provider>
-  <fogbender-config .token="${yourTokenObject}"> </fogbender-config>
-  <fogbender-unread-badge></fogbender-unread-badge>
-</fogbender-provider>
-```
-
-_Unread Badge: This standalone unread badge can be placed anywhere on your page to notify users of unread support messages._
 
 ## Token Format
 
