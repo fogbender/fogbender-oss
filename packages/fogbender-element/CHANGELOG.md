@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.3.5
+
+### Patch Changes
+
+- f1b0091: Improve examples
+
 ## 0.3.4
 
 ### Patch Changes
