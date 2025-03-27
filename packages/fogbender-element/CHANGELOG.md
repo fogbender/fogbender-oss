@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.3.6
+
+### Patch Changes
+
+- 3d93210: Update README
+
 ## 0.3.5
 
 ### Patch Changes
