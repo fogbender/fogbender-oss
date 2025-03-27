@@ -30,10 +30,11 @@
 
       const scenarioKeys = [
         "Roomy (Simple)",
-        "Roomy (With Provider)",
-        "Floaty + Headless",
         "Floaty (Simple)",
-        "Unread Badge + Floaty",
+        "Unread Badge (with Provider + Headless)",
+        "(advanced) Roomy (with Provider)",
+        "(advanced) Floaty + Headless (with Provider)",
+        "(advanced) Unread Badge + Floaty (with Provider)",
       ];
       let activeScenario = "Roomy (Simple)";
       let showScenario = true;
@@ -43,13 +44,32 @@
           "Roomy (Simple)": html`
             <fogbender-simple-roomy-widget client-url=${clientUrl} .token=${token} />
           `,
-          "Roomy (With Provider)": html`
+          "Floaty (Simple)": html`
+            <fogbender-simple-floaty-widget client-url=${clientUrl} .token=${token} />
+          `,
+          "Unread Badge (with Provider + Headless)": html`
+            <div style="justify-items: center; align-content: center; flex: 1;">
+              <div style="display: flex; gap: 2px;">
+                <span style="margin-top: 11px;">Note: mark a message unread to see badge ↗</span>
+                <fogbender-provider>
+                  <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
+                  <fogbender-is-configured>
+                    <template data-is-configured>
+                      <fogbender-headless-widget />
+                      <fogbender-unread-badge />
+                    </template>
+                  </fogbender-is-configured>
+                </fogbender-provider>
+              </div>
+            </div>
+          `,
+          "(advanced) Roomy (with Provider)": html`
             <fogbender-provider>
               <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
               <fogbender-roomy-widget />
             </fogbender-provider>
           `,
-          "Floaty + Headless": html`
+          "(advanced) Floaty + Headless (with Provider)": html`
             <fogbender-provider>
               <fogbender-config client-url=${clientUrl} .token=${token}></fogbender-config>
               <fogbender-is-configured>
@@ -60,10 +80,7 @@
               </fogbender-is-configured>
             </fogbender-provider>
           `,
-          "Floaty (Simple)": html`
-            <fogbender-simple-floaty-widget client-url=${clientUrl} .token=${token} />
-          `,
-          "Unread Badge + Floaty": html`
+          "(advanced) Unread Badge + Floaty (with Provider)": html`
             <div style="justify-items: center; align-content: center; flex: 1;">
               <div style="display: flex; gap: 2px;">
                 <span style="margin-top: 11px;">Note: mark a message unread to see badge ↗</span>
