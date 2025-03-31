@@ -80,5 +80,15 @@
     "twind": "^0.16.19"
   },
   "browser": {},
-  "typesVersions": {}
+  "typesVersions": {},
+  "keywords": [
+    "messaging",
+    "b2b support",
+    "customer support",
+    "chat widget",
+    "embeddable chat",
+    "intercom",
+    "pylon",
+    "slack"
+  ]
 }
