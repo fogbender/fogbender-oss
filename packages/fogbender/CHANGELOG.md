@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.7.1
+
+### Patch Changes
+
+- 8bcaa72f: Update descriptions; add keywords
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # fogbender-react
 
+## 0.5.5
+
+### Patch Changes
+
+- 8bcaa72f: Update descriptions; add keywords
+- Updated dependencies [8bcaa72f]
+  - fogbender@0.7.1
+
 ## 0.5.4
 
 ### Patch Changes

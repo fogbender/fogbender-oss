@@ -128,7 +128,7 @@ export const createNewFogbender = (): Fogbender => {
       if (state.token) {
         state.token = {
           ...state.token,
-          versions: { ...state.token.versions, ...state.versions, fogbender: "0.7.0" },
+          versions: { ...state.token.versions, ...state.versions, fogbender: "0.7.1" },
           visitorToken,
           visitUrl: (() => {
             try {
