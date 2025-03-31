@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Made with create-react-library",
+  "description": "Fogbender library for React—embedded team messaging on your website",
   "author": "Fogbender Software, Inc.",
   "license": "MIT",
   "main": "dist/index.cjs",

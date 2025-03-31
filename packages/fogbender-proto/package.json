@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Made with create-react-library",
+  "description": "Fogbender PubSub protocol implementation (websocket) and types for TypeScript",
   "author": "Fogbender Software, Inc.",
   "license": "MIT",
   "repository": {
