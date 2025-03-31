@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.17.3
+
+### Patch Changes
+
+- 8bcaa72f: Update descriptions; add keywords
+
 ## 0.17.2
 
 ### Patch Changes
