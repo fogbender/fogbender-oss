@@ -1,5 +1,11 @@
 # fogbender-vue
 
+## 0.3.3
+
+### Patch Changes
+
+- da51cae: Add aliases for Roomy and Floaty
+
 ## 0.3.2
 
 ### Patch Changes
