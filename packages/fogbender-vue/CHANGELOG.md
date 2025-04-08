@@ -1,5 +1,11 @@
 # fogbender-vue
 
+## 0.3.4
+
+### Patch Changes
+
+- 56c98d2: Update README
+
 ## 0.3.3
 
 ### Patch Changes
