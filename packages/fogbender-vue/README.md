@@ -20,7 +20,7 @@ npm i -g @antfu/ni && ni fogbender-vue
 
 ```html
 <script setup lang="ts">
-  import { FogbenderSimpleWidget } from "fogbender-vue";
+  import { FogbenderSimpleRoomyWidget } from "fogbender-vue";
   const token = {
     widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
     customerId: "org123",
@@ -37,7 +37,9 @@ npm i -g @antfu/ni && ni fogbender-vue
 <template>
   <div>
     <p>Hello Fogbender</p>
-    <FogbenderSimpleWidget clientUrl="https://main--fb-client.netlify.app" :token="token" />
+    <div style="display: flex; height: 600px;">
+      <FogbenderSimpleRoomyWidget clientUrl="https://main--fb-client.netlify.app" :token="token" />
+    </div>
   </div>
 </template>
 ```
