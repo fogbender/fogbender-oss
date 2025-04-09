@@ -7,9 +7,9 @@ import {
   FogbenderProvider,
   FogbenderConfig,
   FogbenderIsConfigured,
-  FogbenderFloatyWidget,
-  FogbenderUnreadBadge,
-  FogbenderHeadlessWidget,
+  // FogbenderFloatyWidget,
+  // FogbenderUnreadBadge,
+  // FogbenderHeadlessWidget,
 } from "fogbender-react";
 
 const buttonClass =
