@@ -1,5 +1,11 @@
 # fogbender-element
 
+## 0.4.0
+
+### Minor Changes
+
+- 9c7fcef: Add mode and setRoomCreation options to fogbender-element
+
 ## 0.3.6
 
 ### Patch Changes
