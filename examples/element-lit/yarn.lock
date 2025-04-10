@@ -366,10 +366,10 @@ estraverse@^5.2.0:
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-5.3.0.tgz#2eea5290702f26ab8fe5370370ff86c965d21123"
   integrity sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==
 
-fogbender-element@^0.3.0:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/fogbender-element/-/fogbender-element-0.3.6.tgz#1ae6cad0ac96933107e7ba0a286834403d79c0f7"
-  integrity sha512-4hqMPTUjJpS3d/zEQOjwgpEHfBCmED0Cve3Qu/vJ12tCHblNqQeOC5QLgAwH0kuOCZEwY+BfMS4QdmQ2aqwQdw==
+fogbender-element@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/fogbender-element/-/fogbender-element-0.4.0.tgz#fed10966baf4691f28d2f5bababdf7b65327afe5"
+  integrity sha512-5cxAEEpEn9CaOQ2vwAT8Ojls7Bck/QTLik8FyvrGRnjoTXFyjqpEdGYmUWFI4FRqr0H5ZdWjpldZDjr8sR03OA==
   dependencies:
     component-register "^0.8.7"
     fogbender "*"

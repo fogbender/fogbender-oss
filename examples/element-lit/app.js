@@ -1,119 +1,133 @@
 import "fogbender-element";
 import { html, render } from "lit-html";
 
-const app = document.getElementById("app");
+const clientUrl = "https://main--fb-client.netlify.app"; // XXX remove in production
 
 const token = {
-  widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
+  widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2", // XXX replace with your own from https://fogbender.com/admin/-/-/settings/embed
   customerId: "org123",
   customerName: "Customer Firm",
   userId: "example_PLEASE_CHANGE",
   userEmail: "user@example.com",
   userJWT:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg", // XXX replace with your own - see https://fogbender.com/admin/-/-/settings/embed
   userName: "Customer User",
   userAvatarUrl: "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png",
 };
 
-const clientUrl = "https://main--fb-client.netlify.app";
-
-let widget = "simple-roomy";
+const scenarioKeys = ["Simple Roomy", "Roomy", "Roomy with Room Creation"];
+let activeScenario = "Simple Roomy";
 let show = true;
 let mode = "light";
+let roomCreationEnabled = true;
 
-const rerender = () => {
-  render(template(), app);
+const buttonStyle = (selected = false) =>
+  `cursor: pointer; padding: 0.5rem 1rem; margin: 0.25rem; border: none; border-radius: 4px; font-weight: 500; transition: background 0.2s ease; ${
+    selected
+      ? "background: #0284c7; color: white;"
+      : "background: white; color: #374151; border: 1px solid #ccc;"
+  }`;
+
+const scenarioTemplates = {
+  "Simple Roomy": () =>
+    html`<fogbender-simple-roomy-widget
+      client-url=${clientUrl}
+      .token=${token}
+    ></fogbender-simple-roomy-widget>`,
+  "Roomy": () =>
+    html`
+      <fogbender-provider>
+        <fogbender-config client-url=${clientUrl} .mode=${mode} .token=${token}></fogbender-config>
+        <fogbender-roomy-widget></fogbender-roomy-widget>
+      </fogbender-provider>
+    `,
+  "Roomy with Room Creation": () =>
+    html`
+      <fogbender-provider>
+        <fogbender-config
+          client-url=${clientUrl}
+          .mode=${mode}
+          .token=${token}
+          .roomCreationEnabled=${roomCreationEnabled}
+        ></fogbender-config>
+        <fogbender-roomy-widget></fogbender-roomy-widget>
+      </fogbender-provider>
+    `,
 };
 
-const button = (label, onclick, selected = false) => html`
-  <button
-    style="
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      margin: 0.25rem 0;
-      border: none;
-      border-radius: 4px;
-      font-weight: 500;
-      background: ${selected ? "#0284c7" : "#fff"};
-      color: ${selected ? "#fff" : "#374151"};
-    "
-    @click=${onclick}
-  >
-    ${label}
-  </button>
-`;
-
-const template = () => html`
-  <div style="display: flex; min-height: 100vh">
-    <div
-      style="padding: 2rem 1rem; background: #d1d5db; display: flex; flex-direction: column; gap: 0.5rem;"
-    >
-      ${button(
-        "FogbenderSimpleRoomyWidget",
-        () => {
-          widget = "simple-roomy";
-          rerender();
-        },
-        widget === "simple-roomy"
+const rerender = () => {
+  const controls = html`
+    <div style="padding: 1rem; background: #d1d5db; display: flex; flex-wrap: wrap;">
+      ${scenarioKeys.map(
+        key => html`
+          <button
+            style=${buttonStyle(key === activeScenario)}
+            @click=${() => {
+              activeScenario = key;
+              show = true;
+              rerender();
+            }}
+          >
+            ${key}
+          </button>
+        `
       )}
-      ${button(
-        "FogbenderRoomyWidget",
-        () => {
-          widget = "roomy";
-          rerender();
-        },
-        widget === "roomy"
-      )}
-      ${button(
-        "FogbenderRoomyWidget\nwith room creation ON",
-        () => {
-          widget = "roomy-with-room-creation";
-          rerender();
-        },
-        widget === "roomy-with-room-creation"
-      )}
-    </div>
-
-    <div style="flex: 1; display: flex; flex-direction: column">
-      <div
-        style="display: flex; justify-content: center; gap: 1rem; background: #d1d5db; padding: 0.5rem"
-      >
-        ${button(show ? "Unmount" : "Remount", () => {
+      <button
+        style=${buttonStyle()}
+        @click=${() => {
           show = !show;
           rerender();
-        })}
-        ${["roomy", "roomy-with-room-creation"].includes(widget)
-          ? button(mode === "dark" ? "Switch to light mode" : "Switch to dark mode", () => {
-              mode = mode === "dark" ? "light" : "dark";
-              rerender();
-            })
-          : null}
-      </div>
-
-      <div style="flex: 1; display: flex;">
-        ${show
-          ? widget === "simple-roomy"
-            ? html`<fogbender-simple-roomy-widget
-                client-url=${clientUrl}
-                .token=${token}
-              ></fogbender-simple-roomy-widget>`
-            : html`
-                <fogbender-provider>
-                  <fogbender-config
-                    client-url=${clientUrl}
-                    mode=${mode}
-                    .token=${token}
-                    ?room-creation-enabled=${widget === "roomy-with-room-creation"}
-                  ></fogbender-config>
-                  <fogbender-is-configured style="display: flex; flex: 1;">
-                    <fogbender-roomy-widget></fogbender-roomy-widget>
-                  </fogbender-is-configured>
-                </fogbender-provider>
-              `
-          : null}
-      </div>
+        }}
+      >
+        ${show ? "Unmount" : "Remount"}
+      </button>
+      ${activeScenario !== "Simple Roomy"
+        ? html`
+            <button
+              style=${buttonStyle()}
+              @click=${() => {
+                mode = mode === "light" ? "dark" : "light";
+                rerender();
+              }}
+            >
+              Switch to ${mode === "light" ? "dark" : "light"} mode
+            </button>
+          `
+        : ""}
+      ${activeScenario === "Roomy with Room Creation"
+        ? html`
+            <button
+              style=${buttonStyle()}
+              @click=${async () => {
+                roomCreationEnabled = !roomCreationEnabled;
+                show = false;
+                rerender();
+                await Promise.resolve(); // wait one tick
+                show = true;
+                rerender();
+              }}
+            >
+              Turn room creation ${roomCreationEnabled ? "OFF" : "ON"}
+            </button>
+          `
+        : ""}
     </div>
-  </div>
-`;
+  `;
+
+  const content = html`
+    <div style="flex: 1; display: flex; min-height: 0; padding: 1rem;">
+      ${show ? scenarioTemplates[activeScenario]() : ""}
+    </div>
+  `;
+
+  render(
+    html`
+      <div style="display: flex; flex-direction: column; min-height: 100vh;">
+        ${controls} ${content}
+      </div>
+    `,
+    document.getElementById("app")
+  );
+};
 
 rerender();
