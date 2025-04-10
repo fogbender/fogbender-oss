@@ -20,8 +20,8 @@ customElement(
     env: undefined,
     clientUrl: undefined,
     token: undefined,
-    mode: undefined,
-    roomCreationEnabled: undefined,
+    mode: "light",
+    roomCreationEnabled: false,
     children: undefined,
   },
   (props: FogbenderConfigProps, { element }) => {
@@ -44,13 +44,13 @@ customElement(
     });
 
     createEffect(() => {
-      fogbender.setMode(props.mode);
-      onCleanup(() => fogbender.setMode(undefined));
+      fogbender.setMode(props.mode ?? "light");
+      onCleanup(() => fogbender.setMode("light"));
     });
 
     createEffect(() => {
-      fogbender.setRoomCreation(props.roomCreationEnabled);
-      onCleanup(() => fogbender.setRoomCreation(undefined));
+      fogbender.setRoomCreation(props.roomCreationEnabled ?? false);
+      onCleanup(() => fogbender.setRoomCreation(false));
     });
   }
 );
