@@ -8,36 +8,49 @@ import { addVersion } from "./utils";
 interface FogbenderConfigProps {
   env?: Env;
   token?: Token;
-  children?: JSX.Element[];
   clientUrl?: string;
+  mode?: "light" | "dark";
+  roomCreationEnabled?: boolean;
+  children?: JSX.Element[];
 }
 
 customElement(
   "fogbender-config",
-  { env: undefined, clientUrl: undefined, token: undefined, children: undefined },
+  {
+    env: undefined,
+    clientUrl: undefined,
+    token: undefined,
+    mode: undefined,
+    roomCreationEnabled: undefined,
+    children: undefined,
+  },
   (props: FogbenderConfigProps, { element }) => {
     noShadowDOM();
     const fogbender = consumeFogbender(element);
 
     createEffect(() => {
       fogbender.setClientUrl(props.clientUrl);
-      onCleanup(() => {
-        fogbender.setClientUrl(undefined);
-      });
+      onCleanup(() => fogbender.setClientUrl(undefined));
     });
 
     createEffect(() => {
       fogbender.setEnv(props.env);
-      onCleanup(() => {
-        fogbender.setEnv(undefined);
-      });
+      onCleanup(() => fogbender.setEnv(undefined));
     });
 
     createEffect(() => {
       fogbender.setToken(addVersion(props.token));
-      onCleanup(() => {
-        fogbender.setToken(undefined);
-      });
+      onCleanup(() => fogbender.setToken(undefined));
+    });
+
+    createEffect(() => {
+      fogbender.setMode(props.mode);
+      onCleanup(() => fogbender.setMode(undefined));
+    });
+
+    createEffect(() => {
+      fogbender.setRoomCreation(props.roomCreationEnabled);
+      onCleanup(() => fogbender.setRoomCreation(undefined));
     });
   }
 );
