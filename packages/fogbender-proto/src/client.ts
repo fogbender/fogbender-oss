@@ -12,6 +12,7 @@ export type ClientSession = {
   userName?: string;
   userEmail?: string;
   customerName?: string;
+  roomCreationEnabled?: boolean;
 };
 
 export type VisitorInfo = {

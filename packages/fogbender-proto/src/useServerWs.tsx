@@ -288,6 +288,7 @@ export function useServerWs(
                 helpdeskId,
                 userAvatarUrl,
                 customerName,
+                roomCreationEnabled,
               } = r;
               authenticated.current = true;
               setHelpdesk(r.helpdesk);
@@ -301,6 +302,7 @@ export function useServerWs(
                 userName,
                 userEmail,
                 customerName,
+                roomCreationEnabled,
               });
             } else if (r.msgType === "Auth.Err") {
               if (r.code === 401 || r.code === 403) {
