@@ -80,7 +80,6 @@ export interface Fogbender {
   setClientUrl(url: string | undefined): Promise<Fogbender>;
   setToken(token: Token | undefined): Promise<Fogbender>;
   setMode(mode: "light" | "dark"): Promise<Fogbender>;
-  setRoomCreation(isEnabled: boolean): Promise<Fogbender>;
   isClientConfigured(): Promise<Snapshot<boolean>>;
   renderIframe(opts: {
     rootEl: HTMLElement;
@@ -102,7 +101,7 @@ export type FogbenderLoader = {
     methodName: keyof Fogbender,
     args: any[],
     resolve: (value: any) => any,
-    reject: (value: any) => any
+    reject: (value: any) => any,
   ][];
   _fogbender?: Fogbender;
 };
