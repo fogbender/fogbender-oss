@@ -120,8 +120,7 @@ export const FogbenderConfig: React.FC<{
   env?: Env;
   token: Token | undefined;
   mode?: "light" | "dark";
-  roomCreationEnabled?: boolean;
-}> = ({ clientUrl, env, token, mode = "light", roomCreationEnabled = false }) => {
+}> = ({ clientUrl, env, token, mode = "light" }) => {
   const fogbender = useFogbender();
   React.useEffect(() => {
     fogbender.setClientUrl(clientUrl);
@@ -144,9 +143,6 @@ export const FogbenderConfig: React.FC<{
   React.useEffect(() => {
     fogbender.setMode(mode);
   }, [mode]);
-  React.useEffect(() => {
-    fogbender.setRoomCreation(roomCreationEnabled);
-  }, [roomCreationEnabled]);
   return null;
 };
 
