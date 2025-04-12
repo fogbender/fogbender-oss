@@ -777,6 +777,7 @@ export type AuthOk = {
   isVisitor?: boolean;
   emailVerified?: boolean;
   visitorToken?: string;
+  roomCreationEnabled?: boolean;
 };
 
 export type VisitorOk = {

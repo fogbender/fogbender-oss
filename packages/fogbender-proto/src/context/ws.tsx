@@ -136,6 +136,7 @@ function useProviderValue(
       userName,
       userEmail,
       customerName,
+      roomCreationEnabled,
     }) {
       setFogSessionId(sessionId);
       if (userId) {
@@ -155,6 +156,7 @@ function useProviderValue(
         userName,
         userEmail,
         customerName,
+        roomCreationEnabled,
       });
     },
   }));
