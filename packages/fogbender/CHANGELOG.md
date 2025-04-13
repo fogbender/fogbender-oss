@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.8.0
+
+### Minor Changes
+
+- 2649782: Remove roomCreationEnabled from widget config - moved to workspace
+
 ## 0.7.1
 
 ### Patch Changes
