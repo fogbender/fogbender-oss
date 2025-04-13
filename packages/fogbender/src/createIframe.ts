@@ -76,6 +76,7 @@ export function renderIframe(
   }
   iFrame.src = url;
   iFrame.style.display = "block";
+  iFrame.style.backgroundColor = "#161616";
   iFrame.style.border = "0";
   iFrame.style.width = headless ? "0" : "100%";
   iFrame.style.height = headless ? "0" : "100%";
