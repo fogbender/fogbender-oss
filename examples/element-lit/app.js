@@ -4,22 +4,21 @@ import { html, render } from "lit-html";
 const clientUrl = "https://main--fb-client.netlify.app"; // XXX remove in production
 
 const token = {
-  widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2", // XXX replace with your own from https://fogbender.com/admin/-/-/settings/embed
+  widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
   customerId: "org123",
   customerName: "Customer Firm",
   userId: "example_PLEASE_CHANGE",
   userEmail: "user@example.com",
   userJWT:
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg", // XXX replace with your own - see https://fogbender.com/admin/-/-/settings/embed
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg",
   userName: "Customer User",
   userAvatarUrl: "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png",
 };
 
-const scenarioKeys = ["Simple Roomy", "Roomy", "Roomy with Room Creation"];
+const scenarioKeys = ["Simple Roomy", "Roomy"];
 let activeScenario = "Simple Roomy";
 let show = true;
 let mode = "light";
-let roomCreationEnabled = true;
 
 const buttonStyle = (selected = false) =>
   `cursor: pointer; padding: 0.5rem 1rem; margin: 0.25rem; border: none; border-radius: 4px; font-weight: 500; transition: background 0.2s ease; ${
@@ -38,18 +37,6 @@ const scenarioTemplates = {
     html`
       <fogbender-provider>
         <fogbender-config client-url=${clientUrl} .mode=${mode} .token=${token}></fogbender-config>
-        <fogbender-roomy-widget></fogbender-roomy-widget>
-      </fogbender-provider>
-    `,
-  "Roomy with Room Creation": () =>
-    html`
-      <fogbender-provider>
-        <fogbender-config
-          client-url=${clientUrl}
-          .mode=${mode}
-          .token=${token}
-          .roomCreationEnabled=${roomCreationEnabled}
-        ></fogbender-config>
         <fogbender-roomy-widget></fogbender-roomy-widget>
       </fogbender-provider>
     `,
@@ -91,23 +78,6 @@ const rerender = () => {
               }}
             >
               Switch to ${mode === "light" ? "dark" : "light"} mode
-            </button>
-          `
-        : ""}
-      ${activeScenario === "Roomy with Room Creation"
-        ? html`
-            <button
-              style=${buttonStyle()}
-              @click=${async () => {
-                roomCreationEnabled = !roomCreationEnabled;
-                show = false;
-                rerender();
-                await Promise.resolve(); // wait one tick
-                show = true;
-                rerender();
-              }}
-            >
-              Turn room creation ${roomCreationEnabled ? "OFF" : "ON"}
             </button>
           `
         : ""}

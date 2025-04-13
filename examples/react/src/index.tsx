@@ -52,15 +52,13 @@ const SimpleRoomyWidget = () => {
   );
 };
 
-const RoomyWidget = ({ roomCreationEnabled = false }: { roomCreationEnabled?: boolean }) => {
+const RoomyWidget = () => {
   const [show, setShow] = React.useState(true);
   const [mode, setMode] = React.useState<"light" | "dark">("light");
 
   const hide = () => {
     setShow(!show);
   };
-
-  console.log("roomCreationEnabled", roomCreationEnabled);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -78,12 +76,7 @@ const RoomyWidget = ({ roomCreationEnabled = false }: { roomCreationEnabled?: bo
       </div>
       {show && (
         <FogbenderProvider>
-          <FogbenderConfig
-            clientUrl={clientUrl}
-            mode={mode}
-            roomCreationEnabled={roomCreationEnabled}
-            token={token}
-          />
+          <FogbenderConfig clientUrl={clientUrl} mode={mode} token={token} />
           <FogbenderIsConfigured>
             <FogbenderRoomyWidget />
           </FogbenderIsConfigured>
@@ -94,9 +87,7 @@ const RoomyWidget = ({ roomCreationEnabled = false }: { roomCreationEnabled?: bo
 };
 
 const App = () => {
-  const [widget, setWidget] = React.useState<"simple-roomy" | "roomy" | "roomy-with-room-creation">(
-    "simple-roomy"
-  );
+  const [widget, setWidget] = React.useState<"simple-roomy" | "roomy">("simple-roomy");
 
   const navButtonClass = (id: string) =>
     classNames("cursor-pointer", "text-left px-4 py-2 rounded w-full font-medium transition", {
@@ -117,21 +108,11 @@ const App = () => {
         <button onClick={() => setWidget("roomy")} className={navButtonClass("roomy")}>
           FogbenderRoomyWidget
         </button>
-
-        <button
-          onClick={() => setWidget("roomy-with-room-creation")}
-          className={navButtonClass("roomy-with-room-creation")}
-        >
-          FogbenderRoomyWidget
-          <br />
-          <small>with room creation ON</small>
-        </button>
       </div>
 
       <div className="flex flex-1">
         {widget === "simple-roomy" && <SimpleRoomyWidget />}
         {widget === "roomy" && <RoomyWidget />}
-        {widget === "roomy-with-room-creation" && <RoomyWidget roomCreationEnabled={true} />}
       </div>
     </div>
   );

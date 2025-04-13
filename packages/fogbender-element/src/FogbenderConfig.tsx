@@ -10,7 +10,6 @@ interface FogbenderConfigProps {
   token?: Token;
   clientUrl?: string;
   mode?: "light" | "dark";
-  roomCreationEnabled?: boolean;
   children?: JSX.Element[];
 }
 
@@ -21,7 +20,6 @@ customElement(
     clientUrl: undefined,
     token: undefined,
     mode: "light",
-    roomCreationEnabled: false,
     children: undefined,
   },
   (props: FogbenderConfigProps, { element }) => {
@@ -46,11 +44,6 @@ customElement(
     createEffect(() => {
       fogbender.setMode(props.mode ?? "light");
       onCleanup(() => fogbender.setMode("light"));
-    });
-
-    createEffect(() => {
-      fogbender.setRoomCreation(props.roomCreationEnabled ?? false);
-      onCleanup(() => fogbender.setRoomCreation(false));
     });
   }
 );
