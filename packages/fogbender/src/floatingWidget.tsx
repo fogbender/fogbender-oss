@@ -268,7 +268,7 @@ function Iframe(props: { renderIframe: (el: HTMLElement) => () => void }) {
   let cleanup = () => {};
   return (
     <div
-      class={tw("flex-1 rounded-none overflow-hidden")}
+      class={tw("flex-1 rounded-none overflow-hidden bg-[#161616]")}
       ref={el => {
         if (el) {
           cleanup = props.renderIframe(el);
