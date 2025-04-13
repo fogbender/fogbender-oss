@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.8.1
+
+### Patch Changes
+
+- 906421b: Start off with dark bg to avoid seizures in dark mode
+
 ## 0.8.0
 
 ### Minor Changes
