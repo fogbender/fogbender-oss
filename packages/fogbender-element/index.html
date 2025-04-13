@@ -17,13 +17,13 @@
       const clientUrl = "https://main--fb-client.netlify.app"; // XXX remove in production
 
       const token = {
-        widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2", // XXX replace with your own from https://fogbender.com/admin/-/-/settings/embed
+        widgetId: "dzAwMTQ5OTEzNjgyNjkwNzA3NDU2",
         customerId: "org123",
         customerName: "Customer Firm",
         userId: "example_PLEASE_CHANGE",
         userEmail: "user@example.com",
         userJWT:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg", // XXX replace with your own - see https://fogbender.com/admin/-/-/settings/embed
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg",
         userName: "Customer User",
         userAvatarUrl:
           "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png",
@@ -34,7 +34,6 @@
       let activeScenario = "Roomy";
       let showScenario = true;
       let mode = "light";
-      let roomCreationEnabled = false;
 
       const buttonStyle = (active = false) =>
         `cursor: pointer; font-weight: 500; padding: 0.5rem 1rem; margin: 0.25rem 0.25rem 0.25rem 0; border: none; border-radius: 6px; transition: background 0.2s ease; ${
@@ -53,7 +52,6 @@
               client-url=${clientUrl}
               .mode=${mode}
               .token=${token}
-              .roomCreationEnabled=${roomCreationEnabled}
             ></fogbender-config>
             <fogbender-roomy-widget />
           </fogbender-provider>
@@ -104,28 +102,10 @@
           </button>
         `;
 
-        const toggleRoomCreation = html`
-          <button
-            style=${buttonStyle()}
-            @click=${async () => {
-              roomCreationEnabled = !roomCreationEnabled;
-              showScenario = false;
-              app();
-              await Promise.resolve(); // wait a tick
-              showScenario = true;
-              app();
-            }}
-          >
-            Turn room creation ${roomCreationEnabled ? "OFF" : "ON"}
-          </button>
-        `;
-
         const output = html`
           <div style="padding: 1rem; border-bottom: 1px solid #ccc;">
             ${scenarioButtons} ${toggleMount}
-            ${activeScenario === "Roomy (with Provider and Config)"
-              ? html` ${toggleMode} ${toggleRoomCreation} `
-              : ""}
+            ${activeScenario === "Roomy (with Provider and Config)" ? html` ${toggleMode} ` : ""}
           </div>
 
           <div style="flex: 1; display: flex; min-height: 0">

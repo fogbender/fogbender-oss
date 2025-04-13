@@ -101,7 +101,7 @@ export type FogbenderLoader = {
     methodName: keyof Fogbender,
     args: any[],
     resolve: (value: any) => any,
-    reject: (value: any) => any,
+    reject: (value: any) => any
   ][];
   _fogbender?: Fogbender;
 };
