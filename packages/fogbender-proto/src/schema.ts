@@ -122,6 +122,7 @@ export type APISchema = {
   UpdateSettingsRPC: RPC<UpdateSettings, AuthorSettingsOk>;
   GetSettingsRPC: RPC<GetSettings, AuthorSettingsOk>;
   StreamReplyCancelRPC: RPC<StreamReplyCancel, StreamReplyOk>;
+  ControlResolveAllRPC: RPC<ControlResolveAll, ControlOk>;
 };
 
 export type EventStreamSubRPC = EventRoom | EventMessage | EventTyping | EventSeen;
@@ -842,6 +843,17 @@ export type StreamReplyCancel = {
 export type StreamReplyOk = {
   msgId: string;
   msgType: "StreamReply.Ok";
+};
+
+export type ControlResolveAll = {
+  msgId?: string;
+  msgType: "Control.ResolveAll";
+  workspaceId: string;
+};
+
+export type ControlOk = {
+  msgId: string;
+  msgType: "Control.Ok";
 };
 
 // BEGIN events
