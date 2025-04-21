@@ -111,7 +111,7 @@
   resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.26.8.tgz#821c1d35641c355284d4a870b8a4a7b0c141e367"
   integrity sha512-oH5UPLMWR3L2wEFLnFJ1TZXqHufiTKAiLfqw5zkhS4dKXLJ10yVztfil/twG8EDTA4F/tvVNw9nOl4ZMslB8rQ==
 
-"@babel/core@^7.16.5", "@babel/core@^7.20.12":
+"@babel/core@^7.16.5":
   version "7.25.8"
   resolved "https://registry.npmjs.org/@babel/core/-/core-7.25.8.tgz"
   integrity sha512-Oixnb+DzmRT30qu9d3tJSQkxuygWm32DFykT4bRoORPa9hZ/L4KhVB/XiRm6KG+roIEM7DBQlmg27kw2HZkdZg==
@@ -421,7 +421,7 @@
     "@babel/helper-skip-transparent-expression-wrappers" "^7.25.7"
     "@babel/plugin-syntax-typescript" "^7.25.7"
 
-"@babel/preset-typescript@^7.16.5", "@babel/preset-typescript@^7.18.6":
+"@babel/preset-typescript@^7.16.5":
   version "7.25.7"
   resolved "https://registry.yarnpkg.com/@babel/preset-typescript/-/preset-typescript-7.25.7.tgz#43c5b68eccb856ae5b52274b77b1c3c413cde1b7"
   integrity sha512-rkkpaXJZOFN45Fb+Gki0c+KMIglk4+zZXOoMJuyEK8y8Kkc8Jd3BDmP7qPsz0zQMJj+UD7EprF+AqAXcILnexw==
@@ -2242,7 +2242,7 @@ babel-plugin-jsx-dom-expressions@^0.39.7:
     parse5 "^7.1.2"
     validate-html-nesting "^1.2.1"
 
-babel-preset-solid@^1.2.6, babel-preset-solid@^1.6.9:
+babel-preset-solid@^1.2.6:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/babel-preset-solid/-/babel-preset-solid-1.9.2.tgz#29c8c6a6c358b2dcf982e8b42553c054ebad7174"
   integrity sha512-rWx968GIDghgFStRDQaoqelGspEm9rgPci/yNzNPFlkzMqHaL2yob+t7BbzyqZw5b9/llkzjqUNIOybT9Z9mcg==
@@ -2999,15 +2999,6 @@ esbuild-plugin-solid@^0.4.2:
     "@babel/core" "^7.16.5"
     "@babel/preset-typescript" "^7.16.5"
     babel-preset-solid "^1.2.6"
-
-esbuild-plugin-solid@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/esbuild-plugin-solid/-/esbuild-plugin-solid-0.5.0.tgz#07353537ab0123c64a58ef6b49f3df4d469f50aa"
-  integrity sha512-ITK6n+0ayGFeDVUZWNMxX+vLsasEN1ILrg4pISsNOQ+mq4ljlJJiuXotInd+HE0MzwTcA9wExT1yzDE2hsqPsg==
-  dependencies:
-    "@babel/core" "^7.20.12"
-    "@babel/preset-typescript" "^7.18.6"
-    babel-preset-solid "^1.6.9"
 
 esbuild@^0.25.0:
   version "0.25.0"
@@ -6112,13 +6103,6 @@ tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
-
-tsup-preset-solid@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/tsup-preset-solid/-/tsup-preset-solid-2.2.0.tgz#80a0fd92bbf231ca70cc7825c4ef2db3c89cc8df"
-  integrity sha512-sPAzeArmYkVAZNRN+m4tkiojdd0GzW/lCwd4+TQDKMENe8wr2uAuro1s0Z59ASmdBbkXoxLgCiNcuQMyiidMZg==
-  dependencies:
-    esbuild-plugin-solid "^0.5.0"
 
 tsup@^8.0.1, tsup@^8.4.0:
   version "8.4.0"
