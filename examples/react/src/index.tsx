@@ -7,9 +7,9 @@ import {
   FogbenderProvider,
   FogbenderConfig,
   FogbenderIsConfigured,
-  // FogbenderFloatyWidget,
-  // FogbenderUnreadBadge,
-  // FogbenderHeadlessWidget,
+  FogbenderFloatyWidget,
+  FogbenderUnreadBadge,
+  FogbenderHeadlessWidget,
 } from "fogbender-react";
 
 const buttonClass =
@@ -26,28 +26,21 @@ const token = {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJjdXN0b21lcklkIjoib3JnMTIzIiwiY3VzdG9tZXJOYW1lIjoiQ3VzdG9tZXIgRmlybSIsInVzZXJFbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJ1c2VySWQiOiJleGFtcGxlX1BMRUFTRV9DSEFOR0UiLCJ1c2VyTmFtZSI6IkN1c3RvbWVyIFVzZXIifQ.upRXqWj7WOb-DcjqtJ_jJ96WShbx6npL8hboAurBhYg",
   userEmail: "user@example.com",
   userName: "Customer User",
-  userAvatarUrl: "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png", // optional
+  userAvatarUrl: "https://fogbender-blog.s3.us-east-1.amazonaws.com/fogbender-cardinal-closeup.png",
 };
 
 const SimpleRoomyWidget = () => {
   const [show, setShow] = React.useState(true);
-  const hide = () => {
-    setShow(!show);
-  };
+  const hide = () => setShow(!show);
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="bg-gray-300 w-full mx-auto flex gap-3 border-b-1 border-dashed border-gray-500 justify-center">
-        <button className={buttonClass} id="show-button" onClick={hide}>
+        <button className={buttonClass} onClick={hide}>
           {show ? "Unmount" : "Remount"}
         </button>
       </div>
-      {show && (
-        <FogbenderSimpleRoomyWidget
-          clientUrl={clientUrl} // this is optional, default is https://client.fogbender.com
-          token={token}
-        />
-      )}
+      {show && <FogbenderSimpleRoomyWidget clientUrl={clientUrl} token={token} />}
     </div>
   );
 };
@@ -55,20 +48,16 @@ const SimpleRoomyWidget = () => {
 const RoomyWidget = () => {
   const [show, setShow] = React.useState(true);
   const [mode, setMode] = React.useState<"light" | "dark">("light");
-
-  const hide = () => {
-    setShow(!show);
-  };
+  const hide = () => setShow(!show);
 
   return (
     <div className="flex flex-1 flex-col">
       <div className="bg-gray-300 w-full mx-auto flex gap-3 border-b-1 border-dashed border-gray-500 justify-center">
-        <button className={buttonClass} id="show-button" onClick={hide}>
+        <button className={buttonClass} onClick={hide}>
           {show ? "Unmount" : "Remount"}
         </button>
         <button
           className={buttonClass}
-          id="mode-button"
           onClick={() => setMode(x => (x === "dark" ? "light" : "dark"))}
         >
           {mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
@@ -86,8 +75,30 @@ const RoomyWidget = () => {
   );
 };
 
+const FloatyWidget = () => {
+  return (
+    <FogbenderProvider>
+      <FogbenderConfig clientUrl={clientUrl} token={token} />
+      <FogbenderIsConfigured>
+        <FogbenderHeadlessWidget />
+        <FogbenderFloatyWidget />
+      </FogbenderIsConfigured>
+    </FogbenderProvider>
+  );
+};
+
+const UnreadBadgeWidget = () => (
+  <FogbenderProvider>
+    <FogbenderConfig clientUrl={clientUrl} mode="light" token={token} />
+    <FogbenderHeadlessWidget />
+    <FogbenderUnreadBadge />
+  </FogbenderProvider>
+);
+
 const App = () => {
-  const [widget, setWidget] = React.useState<"simple-roomy" | "roomy">("simple-roomy");
+  const [widget, setWidget] = React.useState<
+    "simple-roomy" | "roomy" | "simple-floaty" | "unread-badge"
+  >("simple-roomy");
 
   const navButtonClass = (id: string) =>
     classNames("cursor-pointer", "text-left px-4 py-2 rounded w-full font-medium transition", {
@@ -104,18 +115,31 @@ const App = () => {
         >
           FogbenderSimpleRoomyWidget
         </button>
-
         <button onClick={() => setWidget("roomy")} className={navButtonClass("roomy")}>
           FogbenderRoomyWidget
+        </button>
+        <button
+          onClick={() => setWidget("simple-floaty")}
+          className={navButtonClass("simple-floaty")}
+        >
+          FogbenderFloatyWidget
+        </button>
+        <button
+          onClick={() => setWidget("unread-badge")}
+          className={navButtonClass("unread-badge")}
+        >
+          FogbenderUnreadBadge
         </button>
       </div>
 
       <div className="flex flex-1">
         {widget === "simple-roomy" && <SimpleRoomyWidget />}
         {widget === "roomy" && <RoomyWidget />}
+        {widget === "simple-floaty" && <FloatyWidget />}
+        {widget === "unread-badge" && <UnreadBadgeWidget />}
       </div>
     </div>
   );
 };
 
-createRoot(document.getElementById("app")).render(<App />);
+createRoot(document.getElementById("app")!).render(<App />);

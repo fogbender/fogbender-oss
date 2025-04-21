@@ -344,7 +344,7 @@ classnames@^2.5.1:
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
   integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
-csstype@^3.0.5, csstype@^3.1.0:
+csstype@^3.0.5:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.2.tgz#1d4bf9d572f11c14031f0436e1c10bc1f571f50b"
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
@@ -458,20 +458,16 @@ estraverse@^5.2.0:
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-5.3.0.tgz#2eea5290702f26ab8fe5370370ff86c965d21123"
   integrity sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==
 
-fogbender-react@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/fogbender-react/-/fogbender-react-0.5.5.tgz#34096f34092341ff682198ed04f5f03c7ba1783e"
-  integrity sha512-rLwP1pATsbc6AZ6aQNWiblRfyZ16lwDPwipheL84tvDWbauMWeuciKOcCACxJh/+5BlJzyHy6wqaWAOuV3Wv6Q==
+"fogbender-react@file:../../packages/fogbender-react":
+  version "0.6.1"
   dependencies:
-    fogbender ">=0.7.1"
+    fogbender "file:../../../../.cache/yarn/v6/npm-fogbender-react-0.6.1-8bcafa34-51fc-4638-9970-859c89b94f73-1745275151493/packages/fogbender"
 
-fogbender@>=0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.7.1.tgz#a5be6932f26f61739a55497142deb4f73f35a99f"
-  integrity sha512-MF/ZN+B8lraJ8216P3HJWp711TidD4hoKJoWZQ/NCni/+UW++yE/k7YgdYAeUGcf/zcpskHl2lLF5Fliz7VInQ==
+"fogbender@file:../../packages/fogbender":
+  version "0.9.0-local"
   dependencies:
     "@babel/eslint-parser" "^7.26.8"
-    solid-js "1.8.0"
+    preact "^10.26.5"
     twind "^0.16.19"
 
 fsevents@~2.3.2, fsevents@~2.3.3:
@@ -598,6 +594,11 @@ postcss@^8.5.3:
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
+preact@^10.26.5:
+  version "10.26.5"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.26.5.tgz#7e1e998af178f139e4c7cb53f441bf2179f44ad2"
+  integrity sha512-fmpDkgfGU6JYux9teDWLhj9mKN55tyepwYbxHgQuIxbWQzgFg5vk7Mrrtfx7xRxq798ynkY4DDDxZr235Kk+4w==
+
 react-dom@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
@@ -653,19 +654,6 @@ semver@^6.3.1:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
-
-seroval@^0.10.4:
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/seroval/-/seroval-0.10.4.tgz#7c47761d7651b2471bcdb44906213df4114bb1d0"
-  integrity sha512-TdaE9JkoATjKu+vjwllieX8zWyBTUVxbgWDnOsDJFfmKbM7vLSukuCXuD3pO3kkCtX4daywOW8ps2VCdPhS8/w==
-
-solid-js@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.8.0.tgz#b12f5ec448d0b924930f7de17a34bbff9aef4c30"
-  integrity sha512-SYVRIUPwCW8K56/add1Yf7xYMOipDUcxGHIxzieRNu9tieqJpaygqcGdJOGXtrMBHSHyVEC7cSp9jz1cNZTFLA==
-  dependencies:
-    csstype "^3.1.0"
-    seroval "^0.10.4"
 
 source-map-js@^1.2.1:
   version "1.2.1"
