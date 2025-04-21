@@ -33,5 +33,9 @@ export default defineConfig(config => {
     preset.writePackageJson(package_fields);
   }
 
-  return preset.generateTsupOptions(parsed_data);
+  const options = preset.generateTsupOptions(parsed_data);
+  options.forEach(option => {
+    option.noExternal = ["solid-js/web", "solid-js"];
+  });
+  return options;
 });
