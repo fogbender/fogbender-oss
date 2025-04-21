@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FogbenderSimpleWidget, type Token as FogbenderToken } from "fogbender-react";
+import {
+  FogbenderSimpleWidget,
+  type Token as FogbenderToken,
+  FogbenderSimpleFloatie,
+} from "fogbender-react";
 
 export default function FogbenderWidget() {
   const clientUrl = "https://main--fb-client.netlify.app";
@@ -31,5 +35,5 @@ export default function FogbenderWidget() {
     return null;
   }
 
-  return <FogbenderSimpleWidget clientUrl={clientUrl} token={token} />;
+  return <FogbenderSimpleFloatie clientUrl={clientUrl} token={token} />;
 }
