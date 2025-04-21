@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.9.1
+
+### Patch Changes
+
+- 26750f6: Remove tsup-preset-solid
+
 ## 0.9.0
 
 ### Minor Changes
