@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.9.0
+
+### Minor Changes
+
+- 92e2ea9: Update solid-js
+
 ## 0.8.1
 
 ### Patch Changes
