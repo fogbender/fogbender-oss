@@ -1,6 +1,6 @@
 import { checkToken, isVisitorToken } from "./checkToken";
 import { createEvents, renderIframe } from "./createIframe";
-import { createFloatingWidget } from "./floatingWidget";
+import { createFloatyWidget } from "./floatyWidget";
 import { renderUnreadBadge } from "./renderUnreadBadge";
 import type { Env, Fogbender, Token, VisitorInfo } from "./types";
 export type {
@@ -155,10 +155,10 @@ export const createNewFogbender = (): Fogbender => {
         throw new Error("Fogbender: no token given");
       }
       const { token, url, env } = state;
-      return createFloatingWidget(
+      return createFloatyWidget(
         state,
         openWindow,
-        el => {
+        (el: HTMLElement) => {
           const rerender = () => {
             return renderIframe(
               state,
