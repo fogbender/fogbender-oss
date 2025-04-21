@@ -5653,11 +5653,6 @@ seroval-plugins@^1.1.0:
   resolved "https://registry.yarnpkg.com/seroval-plugins/-/seroval-plugins-1.2.1.tgz#fa535e70ade8af553634b2b5c80d8a6fd8c2ff72"
   integrity sha512-H5vs53+39+x4Udwp4J5rNZfgFuA+Lt+uU+09w1gYBVWomtAl98B+E9w7yC05Xc81/HgLvJdlyqJbU0fJCKCmdw==
 
-seroval@^0.10.4:
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/seroval/-/seroval-0.10.4.tgz#7c47761d7651b2471bcdb44906213df4114bb1d0"
-  integrity sha512-TdaE9JkoATjKu+vjwllieX8zWyBTUVxbgWDnOsDJFfmKbM7vLSukuCXuD3pO3kkCtX4daywOW8ps2VCdPhS8/w==
-
 seroval@^1.1.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/seroval/-/seroval-1.2.1.tgz#fc671d63445923ab64f7abaf3967c83901382f40"
@@ -5762,15 +5757,7 @@ solid-element@^1.9.1:
   dependencies:
     component-register "^0.8.7"
 
-solid-js@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.8.0.tgz#b12f5ec448d0b924930f7de17a34bbff9aef4c30"
-  integrity sha512-SYVRIUPwCW8K56/add1Yf7xYMOipDUcxGHIxzieRNu9tieqJpaygqcGdJOGXtrMBHSHyVEC7cSp9jz1cNZTFLA==
-  dependencies:
-    csstype "^3.1.0"
-    seroval "^0.10.4"
-
-solid-js@^1.9.5:
+solid-js@1.9.5, solid-js@^1.9.5:
   version "1.9.5"
   resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.9.5.tgz#168ae067c27d3d437c868484d21751335ec16063"
   integrity sha512-ogI3DaFcyn6UhYhrgcyRAMbu/buBJitYQASZz5WzfQVPP10RD2AbCoRZ517psnezrasyCbWzIxZ6kVqet768xw==

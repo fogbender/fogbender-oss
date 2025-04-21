@@ -76,7 +76,7 @@
   ],
   "dependencies": {
     "@babel/eslint-parser": "^7.26.8",
-    "solid-js": "1.8.0",
+    "solid-js": "1.9.5",
     "twind": "^0.16.19"
   },
   "browser": {},
