@@ -3596,15 +3596,6 @@ flatted@^3.2.9:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.9.tgz"
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
-fogbender@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.9.0.tgz#3813d8e55bec74701b5d5ea596531eeb19603548"
-  integrity sha512-Pf1KuiCDGzuSfs5D+4E70JllxZ916/3kR+FfQuAIRVAJI/6r+ktWugGgU43+p7IGygAAcTsi9DBTS8MWZxjMgQ==
-  dependencies:
-    "@babel/eslint-parser" "^7.26.8"
-    solid-js "1.9.5"
-    twind "^0.16.19"
-
 for-each@^0.3.3:
   version "0.3.3"
   resolved "https://registry.npmjs.org/for-each/-/for-each-0.3.3.tgz"
