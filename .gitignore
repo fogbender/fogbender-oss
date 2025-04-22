@@ -27,5 +27,3 @@ pnpm-debug.log*
 .direnv
 
 local.env
-
-.next

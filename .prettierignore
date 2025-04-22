@@ -5,4 +5,5 @@ dist
 .vscode
 .cache
 .turbo
+.next
 coverage
