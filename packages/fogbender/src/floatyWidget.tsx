@@ -1,4 +1,3 @@
-// Preact version of the SolidJS floaty widget
 import { render } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { tw } from "twind";
