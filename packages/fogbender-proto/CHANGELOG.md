@@ -1,5 +1,11 @@
 # fogbender-proto
 
+## 0.18.1
+
+### Patch Changes
+
+- 2641320: Add 'resolve all'
+
 ## 0.18.0
 
 ### Minor Changes
