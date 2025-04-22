@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "solid-js"],
+    "types": ["node", "preact"],
     "outDir": "dist",
     "target": "ES2020",
     "module": "esnext",
