@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.10.0
+
+### Minor Changes
+
+- bfb15ed: Switch to preact
+
 ## 0.9.1
 
 ### Patch Changes

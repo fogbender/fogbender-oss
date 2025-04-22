@@ -3587,22 +3587,6 @@ flatted@^3.2.9:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.9.tgz"
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
-fogbender@*, fogbender@>=0.7.0:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.9.1.tgz#1e8bb23fa7b46dba94649856fede1447ab673ba5"
-  integrity sha512-EleCCkAZKIRLcK4poD1nja5yz76lIiWJCEbVoCJ5nZzNHM0eF7SHM3Ujkoy7+pDo+T/cjdSV2xdaDFCHcoo3rw==
-  dependencies:
-    "@babel/eslint-parser" "^7.26.8"
-    solid-js "1.9.5"
-    twind "^0.16.19"
-
-"fogbender@file:packages/fogbender":
-  version "0.9.0-local"
-  dependencies:
-    "@babel/eslint-parser" "^7.26.8"
-    preact "^10.26.5"
-    twind "^0.16.19"
-
 for-each@^0.3.3:
   version "0.3.3"
   resolved "https://registry.npmjs.org/for-each/-/for-each-0.3.3.tgz"
@@ -5769,7 +5753,7 @@ solid-element@^1.9.1:
   dependencies:
     component-register "^0.8.7"
 
-solid-js@1.9.5, solid-js@^1.9.5:
+solid-js@^1.9.5:
   version "1.9.5"
   resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.9.5.tgz#168ae067c27d3d437c868484d21751335ec16063"
   integrity sha512-ogI3DaFcyn6UhYhrgcyRAMbu/buBJitYQASZz5WzfQVPP10RD2AbCoRZ517psnezrasyCbWzIxZ6kVqet768xw==
