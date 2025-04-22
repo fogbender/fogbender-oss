@@ -88,11 +88,22 @@ const FloatyWidget = () => {
 };
 
 const UnreadBadgeWidget = () => (
-  <FogbenderProvider>
-    <FogbenderConfig clientUrl={clientUrl} mode="light" token={token} />
-    <FogbenderHeadlessWidget />
-    <FogbenderUnreadBadge />
-  </FogbenderProvider>
+  <div className="flex flex-col gap-2 w-full h-full justify-center items-center">
+    <div className="flex gap-2 items-center">
+      <span>Badge:</span>
+      <FogbenderProvider>
+        <FogbenderConfig clientUrl={clientUrl} mode="light" token={token} />
+        <FogbenderHeadlessWidget />
+        <FogbenderUnreadBadge />
+      </FogbenderProvider>
+      <span> - if you don't see it, mark message unread</span>
+    </div>
+    <img
+      className="border border-zinc-600 rounded-lg shadow-md"
+      width="400"
+      src="https://fogbender-blog.s3.us-east-1.amazonaws.com/mark-message-unread-react-example.png"
+    />
+  </div>
 );
 
 const App = () => {
