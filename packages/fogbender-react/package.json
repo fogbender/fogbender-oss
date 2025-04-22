@@ -28,7 +28,7 @@
     "predeploy": "cd example && yarn install && yarn run build"
   },
   "dependencies": {
-    "fogbender": "file:../../packages/fogbender"
+    "fogbender": "^0.9.1"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
