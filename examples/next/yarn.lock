@@ -1543,13 +1543,17 @@ flatted@^3.2.9:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.3.tgz#67c8fad95454a7c7abebf74bb78ee74a44023358"
   integrity sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==
 
-"fogbender-react@file:../../packages/fogbender-react":
-  version "0.6.1"
+fogbender-react@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/fogbender-react/-/fogbender-react-0.6.2.tgz#01ac7a6da7d4308310b4467f6939dcb18446036e"
+  integrity sha512-7ROsfJQgO1FgsV5YtfbtpUh7IwmuudKNQCaJD4brR1ihcDyUkoY7WS+xd1svvmcr0x7Y7BxqgrnXsQs9Y5sw1w==
   dependencies:
-    fogbender "file:../../../../.cache/yarn/v6/npm-fogbender-react-0.6.1-eedb81cb-6d41-49f8-83b7-bce15547bd81-1745275734248/packages/fogbender"
+    fogbender "^0.10.0"
 
-"fogbender@file:../../packages/fogbender":
-  version "0.9.0-local"
+fogbender@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/fogbender/-/fogbender-0.10.0.tgz#d9c2075be63215dfc13e746da46825a0aedeba68"
+  integrity sha512-KyyZW8u6BnZ/XpG3Q+ABNgvvaNV7OK/lgdBxg7D2Mxzahmi1TYkSOYypfvo+mNL8NqtyZHVN1mrN5X7wpztNyg==
   dependencies:
     "@babel/eslint-parser" "^7.26.8"
     preact "^10.26.5"
