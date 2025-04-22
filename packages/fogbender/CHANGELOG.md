@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.10.1
+
+### Patch Changes
+
+- 0a272b9: Switch types to preact
+
 ## 0.10.0
 
 ### Minor Changes
