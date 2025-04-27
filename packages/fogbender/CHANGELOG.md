@@ -1,5 +1,11 @@
 # fogbender
 
+## 0.10.2
+
+### Patch Changes
+
+- bafcef9: "Fix for Linux/Windows 'scrollbar-gutter: stable'; block scroll on mobileonly"
+
 ## 0.10.1
 
 ### Patch Changes
